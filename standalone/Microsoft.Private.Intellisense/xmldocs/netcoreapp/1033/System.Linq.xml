@@ -424,9 +424,9 @@
       <returns>The first element in the sequence that passes the test in the specified predicate function.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="source" /> or <paramref name="predicate" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.  
- -or-  
- The source sequence is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.
+-or-
+The source sequence is empty.</exception>
     </member>
     <member name="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
       <summary>Returns the first element of a sequence, or a default value if the sequence contains no elements.</summary>
@@ -637,9 +637,9 @@
       <returns>The last element in the sequence that passes the test in the specified predicate function.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="source" /> or <paramref name="predicate" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.  
- -or-  
- The source sequence is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.
+-or-
+The source sequence is empty.</exception>
     </member>
     <member name="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
       <summary>Returns the last element of a sequence, or a default value if the sequence contains no elements.</summary>
@@ -1142,8 +1142,8 @@
       <param name="count">The number of sequential integers to generate.</param>
       <returns>An <c>IEnumerable&lt;Int32&gt;</c> in C# or <c>IEnumerable(Of Int32)</c> in Visual Basic that contains a range of sequential integral numbers.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="count" /> is less than 0.  
--or-  
+        <paramref name="count" /> is less than 0.
+-or-
 <paramref name="start" /> + <paramref name="count" /> -1 is larger than <see cref="F:System.Int32.MaxValue" />.</exception>
     </member>
     <member name="M:System.Linq.Enumerable.Repeat``1(``0,System.Int32)">
@@ -1255,9 +1255,9 @@
       <returns>The single element of the input sequence.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="source" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The input sequence contains more than one element.  
- -or-  
- The input sequence is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">The input sequence contains more than one element.
+-or-
+The input sequence is empty.</exception>
     </member>
     <member name="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
       <summary>Returns the only element of a sequence that satisfies a specified condition, and throws an exception if more than one such element exists.</summary>
@@ -1267,11 +1267,11 @@
       <returns>The single element of the input sequence that satisfies a condition.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="source" /> or <paramref name="predicate" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.  
- -or-  
- More than one element satisfies the condition in <paramref name="predicate" />.  
- -or-  
- The source sequence is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.
+-or-
+More than one element satisfies the condition in <paramref name="predicate" />.
+-or-
+The source sequence is empty.</exception>
     </member>
     <member name="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
       <summary>Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence.</summary>
@@ -1586,8 +1586,8 @@
       <typeparam name="TKey">The type of the key returned by <paramref name="keySelector" />.</typeparam>
       <returns>A <see cref="T:System.Collections.Generic.Dictionary`2" /> that contains keys and values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="source" /> or <paramref name="keySelector" /> is <see langword="null" />.  
--or-  
+        <paramref name="source" /> or <paramref name="keySelector" /> is <see langword="null" />.
+-or-
 <paramref name="keySelector" /> produces a key that is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="keySelector" /> produces duplicate keys for two elements.</exception>
@@ -1601,8 +1601,8 @@
       <typeparam name="TKey">The type of the keys returned by <paramref name="keySelector" />.</typeparam>
       <returns>A <see cref="T:System.Collections.Generic.Dictionary`2" /> that contains keys and values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="source" /> or <paramref name="keySelector" /> is <see langword="null" />.  
--or-  
+        <paramref name="source" /> or <paramref name="keySelector" /> is <see langword="null" />.
+-or-
 <paramref name="keySelector" /> produces a key that is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="keySelector" /> produces duplicate keys for two elements.</exception>
@@ -1617,8 +1617,8 @@
       <typeparam name="TElement">The type of the value returned by <paramref name="elementSelector" />.</typeparam>
       <returns>A <see cref="T:System.Collections.Generic.Dictionary`2" /> that contains values of type <paramref name="TElement" /> selected from the input sequence.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="source" /> or <paramref name="keySelector" /> or <paramref name="elementSelector" /> is <see langword="null" />.  
--or-  
+        <paramref name="source" /> or <paramref name="keySelector" /> or <paramref name="elementSelector" /> is <see langword="null" />.
+-or-
 <paramref name="keySelector" /> produces a key that is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="keySelector" /> produces duplicate keys for two elements.</exception>
@@ -1634,8 +1634,8 @@
       <typeparam name="TElement">The type of the value returned by <paramref name="elementSelector" />.</typeparam>
       <returns>A <see cref="T:System.Collections.Generic.Dictionary`2" /> that contains values of type <paramref name="TElement" /> selected from the input sequence.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="source" /> or <paramref name="keySelector" /> or <paramref name="elementSelector" /> is <see langword="null" />.  
--or-  
+        <paramref name="source" /> or <paramref name="keySelector" /> or <paramref name="elementSelector" /> is <see langword="null" />.
+-or-
 <paramref name="keySelector" /> produces a key that is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="keySelector" /> produces duplicate keys for two elements.</exception>
@@ -1647,7 +1647,7 @@
       <returns>A <see cref="T:System.Collections.Generic.HashSet`1" /> that contains values of type TSource selected from the input sequence.</returns>
     </member>
     <member name="M:System.Linq.Enumerable.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
-      <summary>Creates a <see cref="T:System.Collections.Generic.HashSet`1" /> from an <see cref="T:System.Collections.Generic.IEnumerable`1" /> using the <paramref name="comparer" /> to compare keys</summary>
+      <summary>Creates a <see cref="T:System.Collections.Generic.HashSet`1" /> from an <see cref="T:System.Collections.Generic.IEnumerable`1" /> using the <paramref name="comparer" /> to compare keys.</summary>
       <param name="source">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> to create a <see cref="T:System.Collections.Generic.HashSet`1" /> from.</param>
       <param name="comparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> to compare keys.</param>
       <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>

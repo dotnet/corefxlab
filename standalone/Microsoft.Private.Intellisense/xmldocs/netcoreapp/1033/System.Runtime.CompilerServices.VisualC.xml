@@ -78,8 +78,8 @@
     </member>
     <member name="M:System.Runtime.CompilerServices.RequiredAttributeAttribute.#ctor(System.Type)">
       <summary>Initializes a new instance of the <see cref="T:System.Runtime.CompilerServices.RequiredAttributeAttribute" /> class.</summary>
-      <param name="requiredContract">A type that an importing compiler must fully understand.  
- This parameter is not supported in the .NET Framework version 2.0 and later.</param>
+      <param name="requiredContract">A type that an importing compiler must fully understand.
+This parameter is not supported in the .NET Framework version 2.0 and later.</param>
     </member>
     <member name="P:System.Runtime.CompilerServices.RequiredAttributeAttribute.RequiredContract">
       <summary>Gets a type that an importing compiler must fully understand.</summary>

@@ -147,7 +147,7 @@
       <returns>An enumerable collection of strings that contain the event provider names.</returns>
     </member>
     <member name="M:System.Diagnostics.Eventing.Reader.EventLogConfiguration.SaveChanges">
-      <summary>Saves the configuration settings that</summary>
+      <summary>Saves the configuration settings that.</summary>
     </member>
     <member name="P:System.Diagnostics.Eventing.Reader.EventLogConfiguration.SecurityDescriptor">
       <summary>Gets or sets the security descriptor of the event log. The security descriptor defines the users and groups of users that can read and write to the event log.</summary>
@@ -1142,9 +1142,9 @@
       <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.EventInstance" /> class using the specified resource identifiers for the localized message and category text of the event entry.</summary>
       <param name="instanceId">A resource identifier that corresponds to a string defined in the message resource file of the event source.</param>
       <param name="categoryId">A resource identifier that corresponds to a string defined in the category resource file of the event source, or zero to specify no category for the event.</param>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="instanceId" /> parameter is a negative value or a value larger than <see cref="F:System.UInt32.MaxValue" />.  
- -or-  
- The <paramref name="categoryId" /> parameter is a negative value or a value larger than <see cref="F:System.UInt16.MaxValue" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="instanceId" /> parameter is a negative value or a value larger than <see cref="F:System.UInt32.MaxValue" />.
+-or-
+The <paramref name="categoryId" /> parameter is a negative value or a value larger than <see cref="F:System.UInt16.MaxValue" />.</exception>
     </member>
     <member name="M:System.Diagnostics.EventInstance.#ctor(System.Int64,System.Int32,System.Diagnostics.EventLogEntryType)">
       <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.EventInstance" /> class using the specified resource identifiers for the localized message and category text of the event entry and the specified event log entry type.</summary>
@@ -1154,8 +1154,8 @@
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="entryType" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" /> value.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="instanceId" /> is a negative value or a value larger than <see cref="F:System.UInt32.MaxValue" />.  
--or-  
+        <paramref name="instanceId" /> is a negative value or a value larger than <see cref="F:System.UInt32.MaxValue" />.
+-or-
 <paramref name="categoryId" /> is a negative value or a value larger than <see cref="F:System.UInt16.MaxValue" />.</exception>
     </member>
     <member name="P:System.Diagnostics.EventInstance.CategoryId">
@@ -1190,9 +1190,9 @@
       <param name="logName">The name of the log on the specified computer.</param>
       <param name="machineName">The computer on which the log exists.</param>
       <exception cref="T:System.ArgumentNullException">The log name is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The log name is invalid.  
- -or-  
- The computer name is invalid.</exception>
+      <exception cref="T:System.ArgumentException">The log name is invalid.
+-or-
+The computer name is invalid.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.#ctor(System.String,System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.EventLog" /> class. Associates the instance with a log on the specified computer and creates or assigns the specified source to the <see cref="T:System.Diagnostics.EventLog" />.</summary>
@@ -1200,9 +1200,9 @@
       <param name="machineName">The computer on which the log exists.</param>
       <param name="source">The source of event log entries.</param>
       <exception cref="T:System.ArgumentNullException">The log name is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The log name is invalid.  
- -or-  
- The computer name is invalid.</exception>
+      <exception cref="T:System.ArgumentException">The log name is invalid.
+-or-
+The computer name is invalid.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.BeginInit">
       <summary>Begins the initialization of an <see cref="T:System.Diagnostics.EventLog" /> used on a form or used by another component. The initialization occurs at runtime.</summary>
@@ -1211,9 +1211,9 @@
     </member>
     <member name="M:System.Diagnostics.EventLog.Clear">
       <summary>Removes all entries from the event log.</summary>
-      <exception cref="T:System.ComponentModel.Win32Exception">The event log was not cleared successfully.  
- -or-  
- The log cannot be opened. A Windows error code is not available.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The event log was not cleared successfully.
+-or-
+The log cannot be opened. A Windows error code is not available.</exception>
       <exception cref="T:System.ArgumentException">A value is not specified for the <see cref="P:System.Diagnostics.EventLog.Log" /> property. Make sure the log name is not an empty string.</exception>
       <exception cref="T:System.InvalidOperationException">The log does not exist.</exception>
     </member>
@@ -1224,23 +1224,23 @@
     <member name="M:System.Diagnostics.EventLog.CreateEventSource(System.Diagnostics.EventSourceCreationData)">
       <summary>Establishes a valid event source for writing localized event messages, using the specified configuration properties for the event source and the corresponding event log.</summary>
       <param name="sourceData">The configuration properties for the event source and its target event log.</param>
-      <exception cref="T:System.ArgumentException">The computer name specified in <paramref name="sourceData" /> is not valid.  
+      <exception cref="T:System.ArgumentException">The computer name specified in <paramref name="sourceData" /> is not valid.
 -or-
- The source name specified in <paramref name="sourceData" /> is <see langword="null" />.  
+The source name specified in <paramref name="sourceData" /> is <see langword="null" />.
 -or-
- The log name specified in <paramref name="sourceData" /> is not valid. Event log names must consist of printable characters and cannot include the characters '*', '?', or '\'.  
+The log name specified in <paramref name="sourceData" /> is not valid. Event log names must consist of printable characters and cannot include the characters '*', '?', or '\'.
 -or-
- The log name specified in <paramref name="sourceData" /> is not valid for user log creation. The Event log names AppEvent, SysEvent, and SecEvent are reserved for system use.  
+The log name specified in <paramref name="sourceData" /> is not valid for user log creation. The Event log names AppEvent, SysEvent, and SecEvent are reserved for system use.
 -or-
- The log name matches an existing event source name.  
+The log name matches an existing event source name.
 -or-
- The source name specified in <paramref name="sourceData" /> results in a registry key path longer than 254 characters.  
+The source name specified in <paramref name="sourceData" /> results in a registry key path longer than 254 characters.
 -or-
- The first 8 characters of the log name specified in <paramref name="sourceData" /> are not unique.  
+The first 8 characters of the log name specified in <paramref name="sourceData" /> are not unique.
 -or-
- The source name specified in <paramref name="sourceData" /> is already registered.  
+The source name specified in <paramref name="sourceData" /> is already registered.
 -or-
- The source name specified in <paramref name="sourceData" /> matches an existing event log name.</exception>
+The source name specified in <paramref name="sourceData" /> matches an existing event log name.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="sourceData" /> is <see langword="null" />.</exception>
@@ -1250,21 +1250,21 @@
       <param name="source">The source name by which the application is registered on the local computer.</param>
       <param name="logName">The name of the log the source's entries are written to. Possible values include Application, System, or a custom event log.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="source" /> is an empty string ("") or <see langword="null" />.  
+        <paramref name="source" /> is an empty string ("") or <see langword="null" />.
 -or-
- <paramref name="logName" /> is not a valid event log name. Event log names must consist of printable characters, and cannot include the characters '*', '?', or '\'.  
+<paramref name="logName" /> is not a valid event log name. Event log names must consist of printable characters, and cannot include the characters '*', '?', or '\'.
 -or-
- <paramref name="logName" /> is not valid for user log creation. The event log names AppEvent, SysEvent, and SecEvent are reserved for system use.  
+<paramref name="logName" /> is not valid for user log creation. The event log names AppEvent, SysEvent, and SecEvent are reserved for system use.
 -or-
- The log name matches an existing event source name.  
+The log name matches an existing event source name.
 -or-
- The source name results in a registry key path longer than 254 characters.  
+The source name results in a registry key path longer than 254 characters.
 -or-
- The first 8 characters of <paramref name="logName" /> match the first 8 characters of an existing event log name.  
+The first 8 characters of <paramref name="logName" /> match the first 8 characters of an existing event log name.
 -or-
- The source cannot be registered because it already exists on the local computer.  
+The source cannot be registered because it already exists on the local computer.
 -or-
- The source name matches an existing event log name.</exception>
+The source name matches an existing event log name.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened on the local computer.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.CreateEventSource(System.String,System.String,System.String)">
@@ -1272,23 +1272,23 @@
       <param name="source">The source by which the application is registered on the specified computer.</param>
       <param name="logName">The name of the log the source's entries are written to. Possible values include Application, System, or a custom event log. If you do not specify a value, <paramref name="logName" /> defaults to Application.</param>
       <param name="machineName">The name of the computer to register this event source with, or "." for the local computer.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> is not a valid computer name.  
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> is not a valid computer name.
 -or-
- <paramref name="source" /> is an empty string ("") or <see langword="null" />.  
+<paramref name="source" /> is an empty string ("") or <see langword="null" />.
 -or-
- <paramref name="logName" /> is not a valid event log name. Event log names must consist of printable characters, and cannot include the characters '*', '?', or '\'.  
+<paramref name="logName" /> is not a valid event log name. Event log names must consist of printable characters, and cannot include the characters '*', '?', or '\'.
 -or-
- <paramref name="logName" /> is not valid for user log creation. The event log names AppEvent, SysEvent, and SecEvent are reserved for system use.  
+<paramref name="logName" /> is not valid for user log creation. The event log names AppEvent, SysEvent, and SecEvent are reserved for system use.
 -or-
- The log name matches an existing event source name.  
+The log name matches an existing event source name.
 -or-
- The source name results in a registry key path longer than 254 characters.  
+The source name results in a registry key path longer than 254 characters.
 -or-
- The first 8 characters of <paramref name="logName" /> match the first 8 characters of an existing event log name on the specified computer.  
+The first 8 characters of <paramref name="logName" /> match the first 8 characters of an existing event log name on the specified computer.
 -or-
- The source cannot be registered because it already exists on the specified computer.  
+The source cannot be registered because it already exists on the specified computer.
 -or-
- The source name matches an existing event source name.</exception>
+The source name matches an existing event source name.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened on the specified computer.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.Delete(System.String)">
@@ -1296,44 +1296,44 @@
       <param name="logName">The name of the log to delete. Possible values include: Application, Security, System, and any custom event logs on the computer.</param>
       <exception cref="T:System.ArgumentException">
         <paramref name="logName" /> is an empty string ("") or <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened on the local computer.  
+      <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened on the local computer.
 -or-
- The log does not exist on the local computer.</exception>
-      <exception cref="T:System.ComponentModel.Win32Exception">The event log was not cleared successfully.  
- -or-  
- The log cannot be opened. A Windows error code is not available.</exception>
+The log does not exist on the local computer.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The event log was not cleared successfully.
+-or-
+The log cannot be opened. A Windows error code is not available.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.Delete(System.String,System.String)">
       <summary>Removes an event log from the specified computer.</summary>
       <param name="logName">The name of the log to delete. Possible values include: Application, Security, System, and any custom event logs on the specified computer.</param>
       <param name="machineName">The name of the computer to delete the log from, or "." for the local computer.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="logName" /> is an empty string ("") or <see langword="null" />.  
+        <paramref name="logName" /> is an empty string ("") or <see langword="null" />.
 -or-
- <paramref name="machineName" /> is not a valid computer name.</exception>
-      <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened on the specified computer.  
+<paramref name="machineName" /> is not a valid computer name.</exception>
+      <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened on the specified computer.
 -or-
- The log does not exist on the specified computer.</exception>
-      <exception cref="T:System.ComponentModel.Win32Exception">The event log was not cleared successfully.  
- -or-  
- The log cannot be opened. A Windows error code is not available.</exception>
+The log does not exist on the specified computer.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The event log was not cleared successfully.
+-or-
+The log cannot be opened. A Windows error code is not available.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.DeleteEventSource(System.String)">
       <summary>Removes the event source registration from the event log of the local computer.</summary>
       <param name="source">The name by which the application is registered in the event log system.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="source" /> parameter does not exist in the registry of the local computer.  
+      <exception cref="T:System.ArgumentException">The <paramref name="source" /> parameter does not exist in the registry of the local computer.
 -or-
- You do not have write access on the registry key for the event log.</exception>
+You do not have write access on the registry key for the event log.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.DeleteEventSource(System.String,System.String)">
       <summary>Removes the application's event source registration from the specified computer.</summary>
       <param name="source">The name by which the application is registered in the event log system.</param>
       <param name="machineName">The name of the computer to remove the registration from, or "." for the local computer.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter is invalid.  
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter is invalid.
 -or-
- The <paramref name="source" /> parameter does not exist in the registry of the specified computer.  
+The <paramref name="source" /> parameter does not exist in the registry of the specified computer.
 -or-
- You do not have write access on the registry key for the event log.</exception>
+You do not have write access on the registry key for the event log.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="source" /> cannot be deleted because in the registry, the parent registry key for <paramref name="source" /> does not contain a subkey with the same name.</exception>
     </member>
@@ -1371,25 +1371,25 @@
       <param name="machineName">The name of the computer on which to search for the log, or "." for the local computer.</param>
       <returns>
         <see langword="true" /> if the log exists on the specified computer; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter is an invalid format. Make sure you have used proper syntax for the computer on which you are searching.  
- -or-  
- The <paramref name="logName" /> is <see langword="null" /> or the value is empty.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter is an invalid format. Make sure you have used proper syntax for the computer on which you are searching.
+-or-
+The <paramref name="logName" /> is <see langword="null" /> or the value is empty.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.GetEventLogs">
       <summary>Searches for all event logs on the local computer and creates an array of <see cref="T:System.Diagnostics.EventLog" /> objects that contain the list.</summary>
       <returns>An array of type <see cref="T:System.Diagnostics.EventLog" /> that represents the logs on the local computer.</returns>
-      <exception cref="T:System.SystemException">You do not have read access to the registry.  
- -or-  
- There is no event log service on the computer.</exception>
+      <exception cref="T:System.SystemException">You do not have read access to the registry.
+-or-
+There is no event log service on the computer.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLog.GetEventLogs(System.String)">
       <summary>Searches for all event logs on the given computer and creates an array of <see cref="T:System.Diagnostics.EventLog" /> objects that contain the list.</summary>
       <param name="machineName">The computer on which to search for event logs.</param>
       <returns>An array of type <see cref="T:System.Diagnostics.EventLog" /> that represents the logs on the given computer.</returns>
       <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter is an invalid computer name.</exception>
-      <exception cref="T:System.InvalidOperationException">You do not have read access to the registry.  
- -or-  
- There is no event log service on the computer.</exception>
+      <exception cref="T:System.InvalidOperationException">You do not have read access to the registry.
+-or-
+There is no event log service on the computer.</exception>
     </member>
     <member name="P:System.Diagnostics.EventLog.Log">
       <summary>Gets or sets the name of the log to read from or write to.</summary>
@@ -1415,9 +1415,9 @@
       <summary>Gets or sets the maximum event log size in kilobytes.</summary>
       <returns>The maximum event log size in kilobytes. The default is 512, indicating a maximum file size of 512 kilobytes.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">The specified value is less than 64, or greater than 4194240, or not an even multiple of 64.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.EventLog.Log" /> value is not a valid log name.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.EventLog.Log" /> value is not a valid log name.
 -or-
- The registry key for the event log could not be opened on the target computer.</exception>
+The registry key for the event log could not be opened on the target computer.</exception>
     </member>
     <member name="P:System.Diagnostics.EventLog.MinimumRetentionDays">
       <summary>Gets the number of days to retain entries in the event log.</summary>
@@ -1431,9 +1431,9 @@
         <paramref name="action" /> is not a valid <see cref="P:System.Diagnostics.EventLog.OverflowAction" /> value.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="retentionDays" /> is less than one, or larger than 365.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.EventLog.Log" /> value is not a valid log name.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.EventLog.Log" /> value is not a valid log name.
 -or-
- The registry key for the event log could not be opened on the target computer.</exception>
+The registry key for the event log could not be opened on the target computer.</exception>
     </member>
     <member name="P:System.Diagnostics.EventLog.OverflowAction">
       <summary>Gets the configured behavior for storing new entries when the event log reaches its maximum log file size.</summary>
@@ -1443,9 +1443,9 @@
       <summary>Specifies the localized name of the event log, which is displayed in the server Event Viewer.</summary>
       <param name="resourceFile">The fully specified path to a localized resource file.</param>
       <param name="resourceId">The resource identifier that indexes a localized string within the resource file.</param>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.EventLog.Log" /> value is not a valid log name.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.EventLog.Log" /> value is not a valid log name.
 -or-
- The registry key for the event log could not be opened on the target computer.</exception>
+The registry key for the event log could not be opened on the target computer.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="resourceFile" /> is <see langword="null" />.</exception>
     </member>
@@ -1480,15 +1480,15 @@
     <member name="M:System.Diagnostics.EventLog.WriteEntry(System.String)">
       <summary>Writes an information type entry, with the given message text, to the event log.</summary>
       <param name="message">The string to write to the event log.</param>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.  
- -or-  
- The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.  
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.
 -or-
- The source is already registered for a different event log.  
+The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+The source is already registered for a different event log.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
+-or-
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">The operating system reported an error when writing the event entry to the event log. A Windows error code is not available.</exception>
     </member>
@@ -1496,15 +1496,15 @@
       <summary>Writes an error, warning, information, success audit, or failure audit entry with the given message text to the event log.</summary>
       <param name="message">The string to write to the event log.</param>
       <param name="type">One of the <see cref="T:System.Diagnostics.EventLogEntryType" /> values.</param>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.  
- -or-  
- The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.  
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.
 -or-
- The source is already registered for a different event log.  
+The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+The source is already registered for a different event log.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
+-or-
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="type" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" />.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
@@ -1515,17 +1515,17 @@
       <param name="message">The string to write to the event log.</param>
       <param name="type">One of the <see cref="T:System.Diagnostics.EventLogEntryType" /> values.</param>
       <param name="eventID">The application-specific identifier for the event.</param>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.  
- -or-  
- The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.  
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.
 -or-
- The source is already registered for a different event log.  
+The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.
 -or-
- <paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+The source is already registered for a different event log.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+<paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
+-or-
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="type" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" />.</exception>
@@ -1537,17 +1537,17 @@
       <param name="type">One of the <see cref="T:System.Diagnostics.EventLogEntryType" /> values.</param>
       <param name="eventID">The application-specific identifier for the event.</param>
       <param name="category">The application-specific subcategory associated with the message.</param>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.  
- -or-  
- The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.  
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.
 -or-
- The source is already registered for a different event log.  
+The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.
 -or-
- <paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+The source is already registered for a different event log.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+<paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
+-or-
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="type" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" />.</exception>
@@ -1560,17 +1560,17 @@
       <param name="eventID">The application-specific identifier for the event.</param>
       <param name="category">The application-specific subcategory associated with the message.</param>
       <param name="rawData">An array of bytes that holds the binary data associated with the entry.</param>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.  
- -or-  
- The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.  
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.
 -or-
- The source is already registered for a different event log.  
+The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.
 -or-
- <paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+The source is already registered for a different event log.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+<paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
+-or-
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="type" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" />.</exception>
@@ -1580,13 +1580,13 @@
       <summary>Writes an information type entry with the given message text to the event log, using the specified registered event source.</summary>
       <param name="source">The source by which the application is registered on the specified computer.</param>
       <param name="message">The string to write to the event log.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").  
+      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").
 -or-
- The <paramref name="source" /> value is <see langword="null" />.  
+The <paramref name="source" /> value is <see langword="null" />.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">The operating system reported an error when writing the event entry to the event log. A Windows error code is not available.</exception>
     </member>
@@ -1595,13 +1595,13 @@
       <param name="source">The source by which the application is registered on the specified computer.</param>
       <param name="message">The string to write to the event log.</param>
       <param name="type">One of the <see cref="T:System.Diagnostics.EventLogEntryType" /> values.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").  
+      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").
 -or-
- The <paramref name="source" /> value is <see langword="null" />.  
+The <paramref name="source" /> value is <see langword="null" />.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="type" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" />.</exception>
@@ -1613,15 +1613,15 @@
       <param name="message">The string to write to the event log.</param>
       <param name="type">One of the <see cref="T:System.Diagnostics.EventLogEntryType" /> values.</param>
       <param name="eventID">The application-specific identifier for the event.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").  
+      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").
 -or-
- The <paramref name="source" /> value is <see langword="null" />.  
+The <paramref name="source" /> value is <see langword="null" />.
 -or-
- <paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+<paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="type" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" />.</exception>
@@ -1634,15 +1634,15 @@
       <param name="type">One of the <see cref="T:System.Diagnostics.EventLogEntryType" /> values.</param>
       <param name="eventID">The application-specific identifier for the event.</param>
       <param name="category">The application-specific subcategory associated with the message.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").  
+      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").
 -or-
- The <paramref name="source" /> value is <see langword="null" />.  
+The <paramref name="source" /> value is <see langword="null" />.
 -or-
- <paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+<paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="type" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" />.</exception>
@@ -1656,15 +1656,15 @@
       <param name="eventID">The application-specific identifier for the event.</param>
       <param name="category">The application-specific subcategory associated with the message.</param>
       <param name="rawData">An array of bytes that holds the binary data associated with the entry.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").  
+      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").
 -or-
- The <paramref name="source" /> value is <see langword="null" />.  
+The <paramref name="source" /> value is <see langword="null" />.
 -or-
- <paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+<paramref name="eventID" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).  
+The message string is longer than 31,839 bytes (32,766 bytes on Windows operating systems before Windows Vista).
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">
         <paramref name="type" /> is not a valid <see cref="T:System.Diagnostics.EventLogEntryType" />.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
@@ -1675,19 +1675,19 @@
       <param name="instance">An <see cref="T:System.Diagnostics.EventInstance" /> instance that represents a localized event log entry.</param>
       <param name="data">An array of bytes that holds the binary data associated with the entry.</param>
       <param name="values">An array of strings to merge into the message text of the event log entry.</param>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.  
- -or-  
- The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.  
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.
 -or-
- The source is already registered for a different event log.  
+The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.
 -or-
- <paramref name="instance.InstanceId" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+The source is already registered for a different event log.
 -or-
- <paramref name="values" /> has more than 256 elements.  
+<paramref name="instance.InstanceId" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- One of the <paramref name="values" /> elements is longer than 32766 bytes.  
+<paramref name="values" /> has more than 256 elements.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+One of the <paramref name="values" /> elements is longer than 32766 bytes.
+-or-
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="instance" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
@@ -1697,19 +1697,19 @@
       <summary>Writes a localized entry to the event log.</summary>
       <param name="instance">An <see cref="T:System.Diagnostics.EventInstance" /> instance that represents a localized event log entry.</param>
       <param name="values">An array of strings to merge into the message text of the event log entry.</param>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.  
- -or-  
- The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.  
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.EventLog.Source" /> property of the <see cref="T:System.Diagnostics.EventLog" /> has not been set.
 -or-
- The source is already registered for a different event log.  
+The method attempted to register a new event source, but the computer name in <see cref="P:System.Diagnostics.EventLog.MachineName" /> is not valid.
 -or-
- <paramref name="instance.InstanceId" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+The source is already registered for a different event log.
 -or-
- <paramref name="values" /> has more than 256 elements.  
+<paramref name="instance.InstanceId" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- One of the <paramref name="values" /> elements is longer than 32766 bytes.  
+<paramref name="values" /> has more than 256 elements.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+One of the <paramref name="values" /> elements is longer than 32766 bytes.
+-or-
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="instance" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
@@ -1721,17 +1721,17 @@
       <param name="instance">An <see cref="T:System.Diagnostics.EventInstance" /> instance that represents a localized event log entry.</param>
       <param name="data">An array of bytes that holds the binary data associated with the entry.</param>
       <param name="values">An array of strings to merge into the message text of the event log entry.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").  
+      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").
 -or-
- The <paramref name="source" /> value is <see langword="null" />.  
+The <paramref name="source" /> value is <see langword="null" />.
 -or-
- <paramref name="instance.InstanceId" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+<paramref name="instance.InstanceId" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- <paramref name="values" /> has more than 256 elements.  
+<paramref name="values" /> has more than 256 elements.
 -or-
- One of the <paramref name="values" /> elements is longer than 32766 bytes.  
+One of the <paramref name="values" /> elements is longer than 32766 bytes.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="instance" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
@@ -1742,17 +1742,17 @@
       <param name="source">The name of the event source registered for the application on the specified computer.</param>
       <param name="instance">An <see cref="T:System.Diagnostics.EventInstance" /> instance that represents a localized event log entry.</param>
       <param name="values">An array of strings to merge into the message text of the event log entry.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").  
+      <exception cref="T:System.ArgumentException">The <paramref name="source" /> value is an empty string ("").
 -or-
- The <paramref name="source" /> value is <see langword="null" />.  
+The <paramref name="source" /> value is <see langword="null" />.
 -or-
- <paramref name="instance.InstanceId" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.  
+<paramref name="instance.InstanceId" /> is less than zero or greater than <see cref="F:System.UInt16.MaxValue" />.
 -or-
- <paramref name="values" /> has more than 256 elements.  
+<paramref name="values" /> has more than 256 elements.
 -or-
- One of the <paramref name="values" /> elements is longer than 32766 bytes.  
+One of the <paramref name="values" /> elements is longer than 32766 bytes.
 -or-
- The source name results in a registry key path longer than 254 characters.</exception>
+The source name results in a registry key path longer than 254 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="instance" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The registry key for the event log could not be opened.</exception>
@@ -1917,8 +1917,8 @@
       <param name="id">A numeric identifier for the event. The combination of <paramref name="source" /> and <paramref name="id" /> uniquely identifies an event.</param>
       <param name="data">A data object to write to the output file or stream.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="source" /> is not specified.  
--or-  
+        <paramref name="source" /> is not specified.
+-or-
 The log entry string exceeds 32,766 characters.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLogTraceListener.TraceData(System.Diagnostics.TraceEventCache,System.String,System.Diagnostics.TraceEventType,System.Int32,System.Object[])">
@@ -1929,8 +1929,8 @@ The log entry string exceeds 32,766 characters.</exception>
       <param name="id">A numeric identifier for the event. The combination of <paramref name="source" /> and <paramref name="id" /> uniquely identifies an event.</param>
       <param name="data">An array of data objects.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="source" /> is not specified.  
--or-  
+        <paramref name="source" /> is not specified.
+-or-
 The log entry string exceeds 32,766 characters.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLogTraceListener.TraceEvent(System.Diagnostics.TraceEventCache,System.String,System.Diagnostics.TraceEventType,System.Int32,System.String)">
@@ -1941,8 +1941,8 @@ The log entry string exceeds 32,766 characters.</exception>
       <param name="id">A numeric identifier for the event. The combination of <paramref name="source" /> and <paramref name="id" /> uniquely identifies an event.</param>
       <param name="message">The trace message.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="source" /> is not specified.  
--or-  
+        <paramref name="source" /> is not specified.
+-or-
 The log entry string exceeds 32,766 characters.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLogTraceListener.TraceEvent(System.Diagnostics.TraceEventCache,System.String,System.Diagnostics.TraceEventType,System.Int32,System.String,System.Object[])">
@@ -1954,8 +1954,8 @@ The log entry string exceeds 32,766 characters.</exception>
       <param name="format">A format string that contains zero or more format items that correspond to objects in the <paramref name="args" /> array.</param>
       <param name="args">An <see langword="object" /> array containing zero or more objects to format.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="source" /> is not specified.  
--or-  
+        <paramref name="source" /> is not specified.
+-or-
 The log entry string exceeds 32,766 characters.</exception>
     </member>
     <member name="M:System.Diagnostics.EventLogTraceListener.Write(System.String)">

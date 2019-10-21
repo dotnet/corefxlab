@@ -147,7 +147,7 @@
       <summary>(1001) Indicates an endpoint is being removed. Either the server or client will become unavailable.</summary>
     </member>
     <member name="F:System.Net.WebSockets.WebSocketCloseStatus.InternalServerError">
-      <summary>The connection will be closed by the server because of an error on the server.</summary>
+      <summary>(1011) The connection will be closed by the server because of an error on the server.</summary>
     </member>
     <member name="F:System.Net.WebSockets.WebSocketCloseStatus.InvalidMessageType">
       <summary>(1003) The client or server is terminating the connection because it cannot accept the data type it received.</summary>
@@ -159,7 +159,7 @@
       <summary>(1010) The client is terminating the connection because it expected the server to negotiate an extension.</summary>
     </member>
     <member name="F:System.Net.WebSockets.WebSocketCloseStatus.MessageTooBig">
-      <summary>(1004) Reserved for future use.</summary>
+      <summary>(1009) The client or server is terminating the connection because it has received a message that is too big for it to process.</summary>
     </member>
     <member name="F:System.Net.WebSockets.WebSocketCloseStatus.NormalClosure">
       <summary>(1000) The connection has closed after the request was fulfilled.</summary>

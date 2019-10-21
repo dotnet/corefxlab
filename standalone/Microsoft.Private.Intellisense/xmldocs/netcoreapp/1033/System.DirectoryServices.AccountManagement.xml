@@ -619,9 +619,9 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.Principal.Delete">
       <summary>Deletes the principal object from the store.</summary>
-      <exception cref="T:System.InvalidOperationException">The object that is not persisted in the store.  
- The object has already been deleted.  
- The target context type must match the context type of the current principal.</exception>
+      <exception cref="T:System.InvalidOperationException">The object that is not persisted in the store.
+The object has already been deleted.
+The target context type must match the context type of the current principal.</exception>
     </member>
     <member name="P:System.DirectoryServices.AccountManagement.Principal.Description">
       <summary>Gets or sets the description of the principal.</summary>
@@ -691,8 +691,8 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.Principal.GetGroups(System.DirectoryServices.AccountManagement.PrincipalContext)">
       <summary>Returns a collection of group objects that the principal is a member of and that exist in the store provided by the specified context parameter.</summary>
-      <param name="contextToQuery">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> object that specifies the context against which the query is performed.  
- When the context is located in another domain, the query is performed against the principal objects' representation in the specified context.</param>
+      <param name="contextToQuery">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> object that specifies the context against which the query is performed.
+When the context is located in another domain, the query is performed against the principal objects' representation in the specified context.</param>
       <returns>A collection of <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal" /> objects that specify the groups of which the current principal is a member.</returns>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.Principal.GetHashCode">
@@ -744,8 +744,8 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.Principal.Save">
       <summary>Saves the changes that were made on the principal object to the store. If this is a new principal object, this method inserts it into the store.</summary>
-      <exception cref="T:System.InvalidOperationException">The principal has not yet been associated with a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> object.  
- This type of principal cannot be inserted in the store.</exception>
+      <exception cref="T:System.InvalidOperationException">The principal has not yet been associated with a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> object.
+This type of principal cannot be inserted in the store.</exception>
       <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">An exception occurred when saving changes to the store, or updating the group membership in the store.</exception>
       <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException">The principal already occurs in the store.</exception>
       <exception cref="T:System.DirectoryServices.AccountManagement.PasswordException">The password does not meet complexity requirements.</exception>
@@ -753,8 +753,8 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
     <member name="M:System.DirectoryServices.AccountManagement.Principal.Save(System.DirectoryServices.AccountManagement.PrincipalContext)">
       <summary>Saves the changes that were made on the principal object to the store. If this is a new principal object, this method inserts it into the specified context. If the principal has already been persisted, it is moved from the original context to the specified context.</summary>
       <param name="context">The <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> that specifies the server or domain against which operations are performed.</param>
-      <exception cref="T:System.InvalidOperationException">The principal has not yet been associated with a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> object.  
- This type of principal cannot be inserted in the store.</exception>
+      <exception cref="T:System.InvalidOperationException">The principal has not yet been associated with a <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> object.
+This type of principal cannot be inserted in the store.</exception>
       <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalOperationException">An exception occurred when saving changes to the store, or updating the group membership in the store.</exception>
       <exception cref="T:System.DirectoryServices.AccountManagement.PrincipalExistsException">The principal already occurs in the store.</exception>
       <exception cref="T:System.DirectoryServices.AccountManagement.PasswordException">The password does not meet complexity requirements.</exception>
@@ -780,15 +780,15 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
       <summary>A mutable collection of objects derived from the <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> class. This class is designed to be used for multi-valued properties that contain <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> objects. Manipulating the contents of this collection changes the contents of the corresponding store property, which is made permanent when <see cref="M:System.DirectoryServices.AccountManagement.Principal.Save" /> is called on the corresponding principal object.</summary>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.ComputerPrincipal)">
-      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal" /> object to the end of the collection</summary>
+      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal" /> object to the end of the collection.</summary>
       <param name="computer">A <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal" /> object.</param>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.GroupPrincipal)">
-      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal" /> object to the end of the collection</summary>
+      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.GroupPrincipal" /> object to the end of the collection.</summary>
       <param name="group">A <see cref="T:System.DirectoryServices.AccountManagement.ComputerPrincipal" /> object.</param>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.Principal)">
-      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> object to the end of the collection</summary>
+      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> object to the end of the collection.</summary>
       <param name="principal">A <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> object.</param>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.PrincipalContext,System.DirectoryServices.AccountManagement.IdentityType,System.String)">
@@ -798,7 +798,7 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
       <param name="identityValue">A string that identifies the principal, in the format specified by <paramref name="identityType" /></param>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Add(System.DirectoryServices.AccountManagement.UserPrincipal)">
-      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal" /> object to the end of the collection</summary>
+      <summary>Adds the specified <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal" /> object to the end of the collection.</summary>
       <param name="user">A <see cref="T:System.DirectoryServices.AccountManagement.UserPrincipal" /> object</param>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalCollection.Clear">
@@ -925,78 +925,78 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> class with the specified context type and name.</summary>
       <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value specifying the type of store for the principal context.</param>
-      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.  
- If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.
+If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
       <exception cref="T:System.ArgumentException">A name must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType" /> parameter does not contain a valid <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value.</exception>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> class with the specified context type, name, and container.</summary>
       <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value specifying the type of store for the principal context.</param>
-      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.  
- If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
-      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.  
- For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types, this parameter is the distinguished name of a container object.  
- For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, this parameter must be set to <see langword="null" />.</param>
-      <exception cref="T:System.ArgumentException">A container cannot be specified when the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type is specified in the <paramref name="contextType" /> parameter.  
- A name or container must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.
+If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
+      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.
+For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types, this parameter is the distinguished name of a container object.
+For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, this parameter must be set to <see langword="null" />.</param>
+      <exception cref="T:System.ArgumentException">A container cannot be specified when the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type is specified in the <paramref name="contextType" /> parameter.
+A name or container must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType" /> parameter does not contain a valid <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value.</exception>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.DirectoryServices.AccountManagement.ContextOptions)">
       <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> class with the specified context type, name, container, and context options.</summary>
       <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value specifying the type of store for the principal context.</param>
-      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.  
- If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
-      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.  
- For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types, this parameter is the distinguished name of a container object.  
- For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, this parameter must be set to <see langword="null" />.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.
+If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
+      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.
+For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types, this parameter is the distinguished name of a container object.
+For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, this parameter must be set to <see langword="null" />.</param>
       <param name="options">A combination of one or more <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions" /> enumeration values specifying the options used to bind to the server. If this parameter is <see langword="null" />, the default options are ContextOptions.Negotiate | ContextOptions.Signing | ContextOptions.Sealing.</param>
-      <exception cref="T:System.ArgumentException">A container cannot be specified when the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type is specified in the <paramref name="contextType" /> parameter.  
- A name or container must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
-      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType" /> parameter does not contain a valid <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value.  
- The <paramref name="options" /> parameter does not contain a combination of valid <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions" /> enumeration values.</exception>
+      <exception cref="T:System.ArgumentException">A container cannot be specified when the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type is specified in the <paramref name="contextType" /> parameter.
+A name or container must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType" /> parameter does not contain a valid <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value.
+The <paramref name="options" /> parameter does not contain a combination of valid <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions" /> enumeration values.</exception>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.DirectoryServices.AccountManagement.ContextOptions,System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> class with the specified context type, name, container, context options, username, and password.</summary>
       <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value specifying the type of store for the principal context.</param>
-      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.  
- If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
-      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.  
- For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types, this parameter is the distinguished name of a container object.  
- For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, this parameter must be set to <see langword="null" />.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.
+If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
+      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.
+For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types, this parameter is the distinguished name of a container object.
+For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, this parameter must be set to <see langword="null" />.</param>
       <param name="options">A combination of one or more <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions" /> enumeration values the options used to bind to the server. If this parameter is <see langword="null" />, the default options are ContextOptions.Negotiate | ContextOptions.Signing | ContextOptions.Sealing.</param>
       <param name="userName">The username used to connect to the store. If the <paramref name="userName" /> and <paramref name="password" /> parameters are both <see langword="null" />, the default credentials of the current principal are used. Otherwise, both <paramref name="userName" /> and <paramref name="password" /> must be non-null, and the credentials they specify are used to connect to the store.</param>
       <param name="password">The password used to connect to the store. If the <paramref name="userName" /> and <paramref name="password" /> parameters are both <see langword="null" />, the default credentials of the current principal are used. Otherwise, both <paramref name="userName" /> and <paramref name="password" /> must be non-null, and the credentials they specify are used to connect to the store.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="username" /> and <paramref name="password" /> parameters must either be <see langword="null" /> or contain a value.  
- A container cannot be specified when the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type is specified in the <paramref name="contextType" /> parameter.  
- A name or container must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
-      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType" /> parameter does not contain a valid <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value.  
- The <paramref name="options" /> parameter does not contain a combination of valid <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions" /> enumeration values.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="username" /> and <paramref name="password" /> parameters must either be <see langword="null" /> or contain a value.
+A container cannot be specified when the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type is specified in the <paramref name="contextType" /> parameter.
+A name or container must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType" /> parameter does not contain a valid <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value.
+The <paramref name="options" /> parameter does not contain a combination of valid <see cref="T:System.DirectoryServices.AccountManagement.ContextOptions" /> enumeration values.</exception>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> class with the specified context type, name, username, and password.</summary>
       <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value specifying the type of store for the principal context.</param>
-      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.  
- If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.
+If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
       <param name="userName">The username used to connect to the store. If the <paramref name="userName" /> and <paramref name="password" /> parameters are both <see langword="null" />, the credentials of the current process are used. Otherwise, both <paramref name="userName" /> and <paramref name="password" /> must be non-null, and the credentials they specify are used to connect to the store.</param>
       <param name="password">The password used to connect to the store. If the <paramref name="userName" /> and <paramref name="password" /> parameters are both <see langword="null" />, the credentials of the current process are used. Otherwise, both <paramref name="userName" /> and <paramref name="password" /> must be non-null, and the credentials they specify are used to connect to the store.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="username" /> and <paramref name="password" /> parameters must either be <see langword="null" /> or contain a value.  
- A name must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="username" /> and <paramref name="password" /> parameters must either be <see langword="null" /> or contain a value.
+A name must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType" /> parameter does not contain a valid <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value.</exception>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalContext.#ctor(System.DirectoryServices.AccountManagement.ContextType,System.String,System.String,System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalContext" /> class with the specified context type, name, container, username, and password.</summary>
       <param name="contextType">A <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value specifying the type of store for the principal context.</param>
-      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.  
- If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
-      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.  
- For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types, this parameter is the distinguished name of a container object.  
- For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, this parameter must be set to <see langword="null" />.</param>
+      <param name="name">The name of the domain or server for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context types, the machine name for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, or the name of the server and port hosting the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> instance.
+If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> context type this context is a domain controller for the domain of the user principal under which the thread is running. If the name is <see langword="null" /> for a <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type, this is the local machine name. This parameter cannot be <see langword="null" /> for <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types.</param>
+      <param name="container">The container on the store to use as the root of the context. All queries are performed under this root, and all inserts are performed into this container.
+For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Domain" /> and <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> context types, this parameter is the distinguished name of a container object.
+For <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context types, this parameter must be set to <see langword="null" />.</param>
       <param name="userName">The username used to connect to the store. If the <paramref name="userName" /> and <paramref name="password" /> parameters are both <see langword="null" />, the default credentials of the current principal are used. Otherwise, both <paramref name="userName" /> and <paramref name="password" /> must be non-null, and the credentials they specify are used to connect to the store.</param>
       <param name="password">The password used to connect to the store. If the <paramref name="userName" /> and <paramref name="password" /> parameters are both <see langword="null" />, the default credentials of the current principal are used. Otherwise, both <paramref name="userName" /> and <paramref name="password" /> must be non-null, and the credentials they specify are used to connect to the store.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="username" /> and <paramref name="password" /> parameters must either be <see langword="null" /> or contain a value.  
- A container cannot be specified when the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type is specified in the <paramref name="contextType" /> parameter.  
- A <paramref name="name" /> or <paramref name="container" /> must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="username" /> and <paramref name="password" /> parameters must either be <see langword="null" /> or contain a value.
+A container cannot be specified when the <see cref="F:System.DirectoryServices.AccountManagement.ContextType.Machine" /> context type is specified in the <paramref name="contextType" /> parameter.
+A <paramref name="name" /> or <paramref name="container" /> must be specified when <see cref="F:System.DirectoryServices.AccountManagement.ContextType.ApplicationDirectory" /> is specified in the <paramref name="contextType" /> parameter.</exception>
       <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">The <paramref name="contextType" /> parameter does not contain a valid <see cref="T:System.DirectoryServices.AccountManagement.ContextType" /> enumeration value.</exception>
     </member>
     <member name="P:System.DirectoryServices.AccountManagement.PrincipalContext.ConnectedServer">
@@ -1046,8 +1046,9 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
       <summary>The base class of exceptions thrown by <see cref="N:System.DirectoryServices.AccountManagement" /> objects.</summary>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-      <param name="info" />
-      <param name="context" />
+      <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalException" /> class using the provided serialization information and streaming context.</summary>
+      <param name="info">The error information.</param>
+      <param name="context">The streaming context.</param>
     </member>
     <member name="T:System.DirectoryServices.AccountManagement.PrincipalExistsException">
       <summary>Thrown by <see cref="Overload:System.DirectoryServices.AccountManagement.PrincipalCollection.Add" /> method when an attempt is made to insert a principal that already exists in the collection, or by <see cref="M:System.DirectoryServices.AccountManagement.Principal.Save" /> when an attempt is made to save a new principal that already exists in the store.</summary>
@@ -1118,8 +1119,8 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.#ctor(System.DirectoryServices.AccountManagement.Principal)">
       <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearcher" /> class with the specified query filter.</summary>
       <param name="queryFilter">The <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> object that specifies the filter to use for the search. The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> property is initialized to this value.</param>
-      <exception cref="T:System.ArgumentException">Persisted principal objects can not be used as the <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" />.  
- The <paramref name="queryFilter" /> parameter cannot be <see langword="null" /> or empty.</exception>
+      <exception cref="T:System.ArgumentException">Persisted principal objects can not be used as the <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" />.
+The <paramref name="queryFilter" /> parameter cannot be <see langword="null" /> or empty.</exception>
     </member>
     <member name="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.Context">
       <summary>Gets that principal context that is used to perform the query. The context specifies the server or domain against which search operations are performed.</summary>
@@ -1131,23 +1132,23 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.FindAll">
       <summary>Returns a principal search result that contains a collection of all the principal objects that match the principal specified in the query filter property.</summary>
       <returns>A <see cref="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1" /> object that matches the query filter or an empty collection if no results are found.</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> contains referential properties. For more information, see the Query by Example overview topic.  
- The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> is a persisted principal.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> contains referential properties. For more information, see the Query by Example overview topic.
+The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> is a persisted principal.</exception>
       <exception cref="T:System.ArgumentException">A <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> must first be assigned to the principal searcher before the query can be performed.</exception>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.FindOne">
       <summary>Returns a principal search result that contains the first principal object found that matches the principal specified in the <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> property.</summary>
       <returns>A  <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> object that contains the principal object that matches the query filter or <see langword="null" /> if no results are found.</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> contains referential properties. For more information, see the Query by Example overview topic.  
- The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> is a persisted principal.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> contains referential properties. For more information, see the Query by Example overview topic.
+The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> is a persisted principal.</exception>
       <exception cref="T:System.ArgumentException">A <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> must first be assigned to the principal searcher before the query can be performed.</exception>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.GetUnderlyingSearcher">
       <summary>Returns the underlying search object that is used by the Account Management API to perform the search.</summary>
       <returns>A <see cref="T:System.DirectoryServices.DirectorySearcher" /> object.</returns>
-      <exception cref="T:System.InvalidOperationException">A <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> must first be assigned to the principal searcher before the query can be performed.  
- The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> contains referential properties. For more information, see the Query by Example overview topic.  
- The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> is a persisted principal.</exception>
+      <exception cref="T:System.InvalidOperationException">A <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> must first be assigned to the principal searcher before the query can be performed.
+The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> contains referential properties. For more information, see the Query by Example overview topic.
+The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> is a persisted principal.</exception>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.GetUnderlyingSearcherType">
       <summary>Returns the type of the object returned from the <see cref="M:System.DirectoryServices.AccountManagement.PrincipalSearcher.GetUnderlyingSearcher" /> method.</summary>
@@ -1157,8 +1158,8 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
     <member name="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter">
       <summary>Gets or sets the query filter that is used to locate matching principals.</summary>
       <returns>The <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> object that is used for the query or <see langword="null" /> if no filter is set.</returns>
-      <exception cref="T:System.ArgumentException">Persisted Principal objects can not be used as the <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" />.  
- The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> cannot be <see langword="null" /> or empty.</exception>
+      <exception cref="T:System.ArgumentException">Persisted Principal objects can not be used as the <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" />.
+The <see cref="P:System.DirectoryServices.AccountManagement.PrincipalSearcher.QueryFilter" /> cannot be <see langword="null" /> or empty.</exception>
     </member>
     <member name="T:System.DirectoryServices.AccountManagement.PrincipalSearchResult`1">
       <summary>Returns a collection of <see cref="T:System.DirectoryServices.AccountManagement.Principal" /> objects that are returned by a search.</summary>
@@ -1311,7 +1312,7 @@ Caution: Communications may be sent over the Internet in clear text if the Secur
       <param name="value">An object.</param>
       <returns>
         <see langword="boolean" />
-      </returns>
+.</returns>
     </member>
     <member name="M:System.DirectoryServices.AccountManagement.PrincipalValueCollection`1.System#Collections#IList#IndexOf(System.Object)">
       <summary>Returns the index of the specified object in the collection, or -1 if it is not in the collection.</summary>

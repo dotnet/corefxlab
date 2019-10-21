@@ -1449,9 +1449,9 @@ The requested row coordinate is larger than the <see cref="P:System.Windows.Auto
       <param name="endpoint">The <see cref="F:System.Windows.Automation.Text.TextPatternRangeEndpoint.Start" /> or <see cref="F:System.Windows.Automation.Text.TextPatternRangeEndpoint.End" /> endpoint of the caller.</param>
       <param name="targetRange">The target range for comparison.</param>
       <param name="targetEndpoint">The <see cref="F:System.Windows.Automation.Text.TextPatternRangeEndpoint.Start" /> or <see cref="F:System.Windows.Automation.Text.TextPatternRangeEndpoint.End" /> endpoint of the target.</param>
-      <returns>Returns a negative value if the caller's endpoint occurs earlier in the text than the target endpoint.  
- Returns zero if the caller's endpoint is at the same location as the target endpoint.  
- Returns a positive value if the caller's endpoint occurs later in the text than the target endpoint.</returns>
+      <returns>Returns a negative value if the caller's endpoint occurs earlier in the text than the target endpoint.
+Returns zero if the caller's endpoint is at the same location as the target endpoint.
+Returns a positive value if the caller's endpoint occurs later in the text than the target endpoint.</returns>
       <exception cref="T:System.ArgumentNullException">If range is a null reference (<see langword="Nothing" /> in Visual Basic).</exception>
       <exception cref="T:System.ArgumentException">If range is from another container.</exception>
     </member>
@@ -1479,21 +1479,21 @@ The requested row coordinate is larger than the <see cref="P:System.Windows.Auto
     <member name="M:System.Windows.Automation.Text.TextPatternRange.GetAttributeValue(System.Windows.Automation.AutomationTextAttribute)">
       <summary>Returns the value of the specified attribute across the entire text range.</summary>
       <param name="attribute">The text attribute.</param>
-      <returns>Returns the value of the specified attribute. For example, GetAttributeValue(TextPattern.FontNameAttribute) would return a string that represents the font name, if unique, of the text range while GetAttributeValue(TextPattern.IsItalicAttribute) would return a boolean.  
- Returns <see cref="F:System.Windows.Automation.TextPattern.MixedAttributeValue" /> if the value of the specified attribute varies over the text range.  
- Returns <see cref="F:System.Windows.Automation.AutomationElement.NotSupported" /> if the specified attribute is not supported by the provider or the control.</returns>
+      <returns>Returns the value of the specified attribute. For example, GetAttributeValue(TextPattern.FontNameAttribute) would return a string that represents the font name, if unique, of the text range while GetAttributeValue(TextPattern.IsItalicAttribute) would return a boolean.
+Returns <see cref="F:System.Windows.Automation.TextPattern.MixedAttributeValue" /> if the value of the specified attribute varies over the text range.
+Returns <see cref="F:System.Windows.Automation.AutomationElement.NotSupported" /> if the specified attribute is not supported by the provider or the control.</returns>
       <exception cref="T:System.ArgumentException">If the specified attribute is not valid.</exception>
     </member>
     <member name="M:System.Windows.Automation.Text.TextPatternRange.GetBoundingRectangles">
       <summary>Retrieves a collection of bounding rectangles for each fully or partially visible line of text in a text range.</summary>
-      <returns>An array of bounding rectangles for each full or partial line of text in a text range.  
- An empty array for a degenerate text range.  
- An empty array for a text range that has screen coordinates placing it completely off-screen, scrolled out of view, or obscured by an overlapping window.</returns>
+      <returns>An array of bounding rectangles for each full or partial line of text in a text range.
+An empty array for a degenerate text range.
+An empty array for a text range that has screen coordinates placing it completely off-screen, scrolled out of view, or obscured by an overlapping window.</returns>
     </member>
     <member name="M:System.Windows.Automation.Text.TextPatternRange.GetChildren">
       <summary>Retrieves a collection of all embedded objects that fall within the text range.</summary>
-      <returns>A collection of all child objects that fall within the range. Children that overlap with the range but are not entirely enclosed by it will also be included in the collection.  
- Returns an empty collection if there are no child objects.</returns>
+      <returns>A collection of all child objects that fall within the range. Children that overlap with the range but are not entirely enclosed by it will also be included in the collection.
+Returns an empty collection if there are no child objects.</returns>
     </member>
     <member name="M:System.Windows.Automation.Text.TextPatternRange.GetEnclosingElement">
       <summary>Returns the innermost <see cref="T:System.Windows.Automation.AutomationElement" /> that encloses the text range.</summary>

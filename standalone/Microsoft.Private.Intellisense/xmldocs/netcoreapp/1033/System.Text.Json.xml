@@ -543,7 +543,7 @@ The current <paramref name="reader" /> token does not start or represent a value
       <param name="utf8Text">The UTF-8 encoded text to compare against.</param>
       <returns>
         <see langword="true" /> if the string value of this element has the same UTF-8 encoding as
-    <paramref name="utf8Text" />; otherwise, <see langword="false" />.</returns>
+<paramref name="utf8Text" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">This value's <see cref="P:System.Text.Json.JsonElement.ValueKind" /> is not <see cref="F:System.Text.Json.JsonValueKind.String" />.</exception>
     </member>
     <member name="M:System.Text.Json.JsonElement.ValueEquals(System.ReadOnlySpan{System.Char})">
@@ -933,7 +933,7 @@ There is remaining data in the stream.</exception>
       <returns>A task that represents the asynchronous write operation.</returns>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.SerializeAsync``1(System.IO.Stream,``0,System.Text.Json.JsonSerializerOptions,System.Threading.CancellationToken)">
-      <summary>Asynchronously converts a value of a type specified by a generic type parametaer to UTF-8 encoded JSON text and writes it to a stream.</summary>
+      <summary>Asynchronously converts a value of a type specified by a generic type parameter to UTF-8 encoded JSON text and writes it to a stream.</summary>
       <param name="utf8Json">The UTF-8 stream to write to.</param>
       <param name="value">The value to convert.</param>
       <param name="options">Options to control serialization behavior.</param>
@@ -949,7 +949,7 @@ There is remaining data in the stream.</exception>
       <returns>A JSON string representation of the value, encoded as UTF-8 bytes.</returns>
     </member>
     <member name="M:System.Text.Json.JsonSerializer.SerializeToUtf8Bytes``1(``0,System.Text.Json.JsonSerializerOptions)">
-      <summary>Converts the value of a type specifed by a generic type parameter into a JSON string, encoded as UTF-8 bytes.</summary>
+      <summary>Converts the value of a type specified by a generic type parameter into a JSON string, encoded as UTF-8 bytes.</summary>
       <param name="value">The value to convert.</param>
       <param name="options">Options to control the conversion behavior.</param>
       <typeparam name="TValue">The type of the value.</typeparam>
@@ -1014,8 +1014,8 @@ There is remaining data in the stream.</exception>
         <see langword="true" /> to compare property names using case-insensitive comparison; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Text.Json.JsonSerializerOptions.PropertyNamingPolicy">
-      <summary>Gets or sets a value that specifies the policy used to convert a property's name on an object to another format, such as camel-casing.</summary>
-      <returns>One of the enum values from <see cref="T:System.Text.Json.JsonNamingPolicy" />.</returns>
+      <summary>Gets or sets a value that specifies the policy used to convert a property's name on an object to another format, such as camel-casing, or <see langword="null" /> to leave property names unchanged.</summary>
+      <returns>A property naming policy, or <see langword="null" /> to leave property names unchanged.</returns>
     </member>
     <member name="P:System.Text.Json.JsonSerializerOptions.ReadCommentHandling">
       <summary>Gets or sets a value that defines how comments are handled during deserialization.</summary>
@@ -1239,7 +1239,7 @@ There is remaining data in the stream.</exception>
       <param name="jsonData">The UTF-8 encoded JSON text to process.</param>
       <param name="isFinalBlock">
         <see langword="true" /> to indicate that the input sequence contains the entire data to process; <see langword="false" /> to indicate that the input span contains partial data with more data to follow.</param>
-      <param name="state">An object that contains the reader state. If this is the first call to the constructor, pass in a default state. Otherwise, capture the state from the previous instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> by getting the value of the <see cref="P:System.Text.Json.Utf8JsonReader.CurrentState" /> property and pass that back.</param>
+      <param name="state">An object that contains the reader state. If this is the first call to the constructor, pass the default state; otherwise, pass the value of the <see cref="P:System.Text.Json.Utf8JsonReader.CurrentState" /> property from the previous instance of the <see cref="T:System.Text.Json.Utf8JsonReader" />.</param>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte},System.Text.Json.JsonReaderOptions)">
       <summary>Initializes a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> structure that processes a read-only sequence of UTF-8 encoded text using the specified options.</summary>
@@ -1251,7 +1251,7 @@ There is remaining data in the stream.</exception>
       <param name="jsonData">The UTF-8 encoded JSON text to process.</param>
       <param name="isFinalBlock">
         <see langword="true" /> to indicate that the input sequence contains the entire data to process; <see langword="false" /> to indicate that the input span contains partial data with more data to follow.</param>
-      <param name="state">An object that contains the reader state. If it's the first call to the constructor, pass in the default state. Otherwise, capture the state from the previous instance instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> by getting the value of the <see cref="P:System.Text.Json.Utf8JsonReader.CurrentState" /> property and pass that back.</param>
+      <param name="state">An object that contains the reader state. If this is the first call to the constructor, pass the default state; otherwise, pass the value of the <see cref="P:System.Text.Json.Utf8JsonReader.CurrentState" /> property from the previous instance of the <see cref="T:System.Text.Json.Utf8JsonReader" />.</param>
     </member>
     <member name="M:System.Text.Json.Utf8JsonReader.#ctor(System.ReadOnlySpan{System.Byte},System.Text.Json.JsonReaderOptions)">
       <summary>Initializes a new instance of the <see cref="T:System.Text.Json.Utf8JsonReader" /> structure that processes a read-only span of UTF-8 encoded text using the specified options.</summary>
@@ -2031,7 +2031,7 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartArray">
       <summary>Writes the beginning of a JSON array.</summary>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 -or-
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
@@ -2039,7 +2039,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON array with a property name specified as a read-only span of bytes as the key.</summary>
       <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON array to be written.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 -or-
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
@@ -2047,7 +2047,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON array with a property name specified as a read-only character span as the key.</summary>
       <param name="propertyName">The UTF-16 encoded property name of the JSON array to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 -or-
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
@@ -2055,7 +2055,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON array with a property name specified as a string as the key.</summary>
       <param name="propertyName">The UTF-16 encoded property name of the JSON array to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 -or-
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="propertyName" /> parameter is <see langword="null" />.</exception>
@@ -2063,13 +2063,13 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartArray(System.Text.Json.JsonEncodedText)">
       <summary>Writes the beginning of a JSON array with a pre-encoded property name as the key.</summary>
       <param name="propertyName">The JSON encoded property name of the JSON array to be transcoded and written as UTF-8.</param>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON has exceeded the maximum depth of 1000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON has exceeded the maximum depth of 1,000.
 -or-
 Validation is enabled, and this method would result in writing invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject">
       <summary>Writes the beginning of a JSON object.</summary>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 -or-
 Validation is enabled, and the operation would result in writing invalid JSON.</exception>
     </member>
@@ -2077,7 +2077,7 @@ Validation is enabled, and the operation would result in writing invalid JSON.</
       <summary>Writes the beginning of a JSON object with a property name specified as a read-only span of bytes as the key.</summary>
       <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1000. 
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 -or-
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
@@ -2085,7 +2085,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON object with a property name specififed as a read-only character span as the key.</summary>
       <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1000. 
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 -or-
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
@@ -2093,7 +2093,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON object with a property name specified as a string as the key.</summary>
       <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1000. 
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 -or-
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="propertyName" /> parameter is <see langword="null" />.</exception>
@@ -2101,7 +2101,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject(System.Text.Json.JsonEncodedText)">
       <summary>Writes the beginning of a JSON object with a pre-encoded property name as the key.</summary>
       <param name="propertyName">The JSON encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON has exceeded the maximum depth of 1000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON has exceeded the maximum depth of 1,000.
 -or-
 Validation is enabled, and this method would result in writing invalid JSON.</exception>
     </member>

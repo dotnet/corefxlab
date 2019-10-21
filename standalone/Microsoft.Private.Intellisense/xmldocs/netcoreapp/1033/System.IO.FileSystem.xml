@@ -11,13 +11,13 @@
       <summary>Creates all directories and subdirectories in the specified path unless they already exist.</summary>
       <param name="path">The directory to create.</param>
       <returns>An object that represents the directory at the specified path. This object is returned regardless of whether a directory at the specified path already exists.</returns>
-      <exception cref="T:System.IO.IOException">The directory specified by <paramref name="path" /> is a file.  
- -or-  
- The network name is not known.</exception>
+      <exception cref="T:System.IO.IOException">The directory specified by <paramref name="path" /> is a file.
+-or-
+The network name is not known.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
+-or-
 <paramref name="path" /> is prefixed with, or contains, only a colon character (:).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
@@ -29,15 +29,15 @@
     <member name="M:System.IO.Directory.Delete(System.String)">
       <summary>Deletes an empty directory from a specified path.</summary>
       <param name="path">The name of the empty directory to remove. This directory must be writable and empty.</param>
-      <exception cref="T:System.IO.IOException">A file with the same name and location specified by <paramref name="path" /> exists.  
- -or-  
- The directory is the application's current working directory.  
- -or-  
- The directory specified by <paramref name="path" /> is not empty.  
- -or-  
- The directory is read-only or contains a read-only file.  
- -or-  
- The directory is being used by another process.</exception>
+      <exception cref="T:System.IO.IOException">A file with the same name and location specified by <paramref name="path" /> exists.
+-or-
+The directory is the application's current working directory.
+-or-
+The directory specified by <paramref name="path" /> is not empty.
+-or-
+The directory is read-only or contains a read-only file.
+-or-
+The directory is being used by another process.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.</exception>
@@ -45,8 +45,8 @@
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
-        <paramref name="path" /> does not exist or could not be found.  
--or-  
+        <paramref name="path" /> does not exist or could not be found.
+-or-
 The specified path is invalid (for example, it is on an unmapped drive).</exception>
     </member>
     <member name="M:System.IO.Directory.Delete(System.String,System.Boolean)">
@@ -54,15 +54,15 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <param name="path">The name of the directory to remove.</param>
       <param name="recursive">
         <see langword="true" /> to remove directories, subdirectories, and files in <paramref name="path" />; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.IO.IOException">A file with the same name and location specified by <paramref name="path" /> exists.  
- -or-  
- The directory specified by <paramref name="path" /> is read-only, or <paramref name="recursive" /> is <see langword="false" /> and <paramref name="path" /> is not an empty directory.  
- -or-  
- The directory is the application's current working directory.  
- -or-  
- The directory contains a read-only file.  
- -or-  
- The directory is being used by another process.</exception>
+      <exception cref="T:System.IO.IOException">A file with the same name and location specified by <paramref name="path" /> exists.
+-or-
+The directory specified by <paramref name="path" /> is read-only, or <paramref name="recursive" /> is <see langword="false" /> and <paramref name="path" /> is not an empty directory.
+-or-
+The directory is the application's current working directory.
+-or-
+The directory contains a read-only file.
+-or-
+The directory is being used by another process.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.</exception>
@@ -70,8 +70,8 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
-        <paramref name="path" /> does not exist or could not be found.  
--or-  
+        <paramref name="path" /> does not exist or could not be found.
+-or-
 The specified path is invalid (for example, it is on an unmapped drive).</exception>
     </member>
     <member name="M:System.IO.Directory.EnumerateDirectories(System.String)">
@@ -96,12 +96,12 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <param name="searchPattern">The search string to match against the names of directories in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
       <returns>An enumerable collection of the full names (including paths) for the directories in the directory specified by <paramref name="path" /> and that match the specified search pattern.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters with the  <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters with the  <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
 -or-
- <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
+<paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="path" /> is <see langword="null" />.  
--or-  
+        <paramref name="path" /> is <see langword="null" />.
+-or-
 <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
         <paramref name="path" /> is invalid, such as referring to an unmapped drive.</exception>
@@ -120,16 +120,16 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <summary>Returns an enumerable collection of directory names that match a search pattern in a specified path, and optionally searches subdirectories.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <param name="searchPattern">The search string to match against the names of directories in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
-      <param name="searchOption">One of the enumeration values that specifies whether the search operation should include only the current directory or should include all subdirectories.  
- The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</param>
+      <param name="searchOption">One of the enumeration values that specifies whether the search operation should include only the current directory or should include all subdirectories.
+The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</param>
       <returns>An enumerable collection of the full names (including paths) for the directories in the directory specified by <paramref name="path" /> and that match the specified search pattern and option.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the  <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the  <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
 -or-
- <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
+<paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="path" /> is <see langword="null" />.  
--or-  
+        <paramref name="path" /> is <see langword="null" />.
+-or-
 <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="searchOption" /> is not a valid <see cref="T:System.IO.SearchOption" /> value.</exception>
@@ -163,12 +163,12 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <param name="searchPattern">The search string to match against the names of files in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
       <returns>An enumerable collection of the full names (including paths) for the files in the directory specified by <paramref name="path" /> and that match the specified search pattern.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
 -or-
- <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
+<paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="path" /> is <see langword="null" />.  
--or-  
+        <paramref name="path" /> is <see langword="null" />.
+-or-
 <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
         <paramref name="path" /> is invalid, such as referring to an unmapped drive.</exception>
@@ -187,16 +187,16 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <summary>Returns an enumerable collection of file names that match a search pattern in a specified path, and optionally searches subdirectories.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <param name="searchPattern">The search string to match against the names of files in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
-      <param name="searchOption">One of the enumeration values that specifies whether the search operation should include only the current directory or should include all subdirectories.  
- The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</param>
+      <param name="searchOption">One of the enumeration values that specifies whether the search operation should include only the current directory or should include all subdirectories.
+The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</param>
       <returns>An enumerable collection of the full names (including paths) for the files in the directory specified by <paramref name="path" /> and that match the specified search pattern and option.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
 -or-
- <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
+<paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="path" /> is <see langword="null" />.  
--or-  
+        <paramref name="path" /> is <see langword="null" />.
+-or-
 <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="searchOption" /> is not a valid <see cref="T:System.IO.SearchOption" /> value.</exception>
@@ -230,12 +230,12 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <param name="searchPattern">The search string to match against the names of file-system entries in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
       <returns>An enumerable collection of file-system entries in the directory specified by <paramref name="path" /> and that match the specified search pattern.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
 -or-
- <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
+<paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="path" /> is <see langword="null" />.  
--or-  
+        <paramref name="path" /> is <see langword="null" />.
+-or-
 <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
         <paramref name="path" /> is invalid, such as referring to an unmapped drive.</exception>
@@ -254,16 +254,16 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <summary>Returns an enumerable collection of file names and directory names that match a search pattern in a specified path, and optionally searches subdirectories.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <param name="searchPattern">The search string to match against file-system entries in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
-      <param name="searchOption">One of the enumeration values  that specifies whether the search operation should include only the current directory or should include all subdirectories.  
- The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</param>
+      <param name="searchOption">One of the enumeration values  that specifies whether the search operation should include only the current directory or should include all subdirectories.
+The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</param>
       <returns>An enumerable collection of file-system entries in the directory specified by <paramref name="path" /> and that match the specified search pattern and option.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
 -or-
- <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
+<paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="path" /> is <see langword="null" />.  
--or-  
+        <paramref name="path" /> is <see langword="null" />.
+-or-
 <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="searchOption" /> is not a valid <see cref="T:System.IO.SearchOption" /> value.</exception>
@@ -307,8 +307,8 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <summary>Gets the current working directory of the application.</summary>
       <returns>A string that contains the absolute path of the current working directory, and does not end with a backslash (\).</returns>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
-      <exception cref="T:System.NotSupportedException">The operating system is Windows CE, which does not have current directory functionality.  
- This method is available in the .NET Compact Framework, but is not currently supported.</exception>
+      <exception cref="T:System.NotSupportedException">The operating system is Windows CE, which does not have current directory functionality.
+This method is available in the .NET Compact Framework, but is not currently supported.</exception>
     </member>
     <member name="M:System.IO.Directory.GetDirectories(System.String)">
       <summary>Returns the names of subdirectories (including their paths) in the specified directory.</summary>
@@ -331,8 +331,8 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <returns>An array of the full names (including paths) of the subdirectories that match the search pattern in the specified directory, or an empty array if no directories are found.</returns>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using <see cref="M:System.IO.Path.GetInvalidPathChars" />.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using <see cref="M:System.IO.Path.GetInvalidPathChars" />.
+-or-
 <paramref name="searchPattern" /> doesn't contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> or <paramref name="searchPattern" /> is <see langword="null" />.</exception>
@@ -353,8 +353,8 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <param name="searchOption">One of the enumeration values that specifies whether the search operation should include all subdirectories or only the current directory.</param>
       <returns>An array of the full names (including paths) of the subdirectories that match the specified criteria, or an empty array if no directories are found.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
+-or-
 <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> or <paramref name="searchPattern" /> is <see langword="null" />.</exception>
@@ -382,8 +382,8 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <returns>An array of the full names (including paths) for the files in the specified directory, or an empty array if no files are found.</returns>
       <exception cref="T:System.IO.IOException">
-        <paramref name="path" /> is a file name.  
--or-  
+        <paramref name="path" /> is a file name.
+-or-
 A network error has occurred.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
@@ -399,13 +399,13 @@ A network error has occurred.</exception>
       <param name="searchPattern">The search string to match against the names of files in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
       <returns>An array of the full names (including paths) for the files in the specified directory that match the specified search pattern, or an empty array if no files are found.</returns>
       <exception cref="T:System.IO.IOException">
-        <paramref name="path" /> is a file name.  
--or-  
+        <paramref name="path" /> is a file name.
+-or-
 A network error has occurred.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using <see cref="M:System.IO.Path.GetInvalidPathChars" />.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters by using <see cref="M:System.IO.Path.GetInvalidPathChars" />.
+-or-
 <paramref name="searchPattern" /> doesn't contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> or <paramref name="searchPattern" /> is <see langword="null" />.</exception>
@@ -424,8 +424,8 @@ A network error has occurred.</exception>
       <param name="searchOption">One of the enumeration values that specifies whether the search operation should include all subdirectories or only the current directory.</param>
       <returns>An array of the full names (including paths) for the files in the specified directory that match the specified search pattern and option, or an empty array if no files are found.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters with the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters with the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
+-or-
 <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> or <paramref name="searchpattern" /> is <see langword="null" />.</exception>
@@ -435,8 +435,8 @@ A network error has occurred.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is not found or is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.IO.IOException">
-        <paramref name="path" /> is a file name.  
--or-  
+        <paramref name="path" /> is a file name.
+-or-
 A network error has occurred.</exception>
     </member>
     <member name="M:System.IO.Directory.GetFileSystemEntries(System.String)">
@@ -460,8 +460,8 @@ A network error has occurred.</exception>
       <returns>An array of file names and directory names that match the specified search criteria, or an empty array if no files or directories are found.</returns>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters with the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters with the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
+-or-
 <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> or <paramref name="searchPattern" /> is <see langword="null" />.</exception>
@@ -479,16 +479,16 @@ A network error has occurred.</exception>
       <summary>Returns an array of all the file names and directory names that match a search pattern in a specified path, and optionally searches subdirectories.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <param name="searchPattern">The search string to match against the names of files and directories in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
-      <param name="searchOption">One of the enumeration values that specifies whether the search operation should include only the current directory or should include all subdirectories.  
- The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</param>
+      <param name="searchOption">One of the enumeration values that specifies whether the search operation should include only the current directory or should include all subdirectories.
+The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</param>
       <returns>An array of file the file names and directory names that match the specified search criteria, or an empty array if no files or directories are found.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains invalid characters. You can query for invalid characters by using the <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.
 -or-
- <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
+<paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="path" /> is <see langword="null" />.  
--or-  
+        <paramref name="path" /> is <see langword="null" />.
+-or-
 <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="searchOption" /> is not a valid <see cref="T:System.IO.SearchOption" /> value.</exception>
@@ -573,12 +573,12 @@ A network error has occurred.</exception>
       <param name="sourceDirName">The path of the file or directory to move.</param>
       <param name="destDirName">The path to the new location for <paramref name="sourceDirName" />. If <paramref name="sourceDirName" /> is a file, then <paramref name="destDirName" /> must also be a file name.</param>
       <exception cref="T:System.IO.IOException">An attempt was made to move a directory to a different volume.
- -or-  
- <paramref name="destDirName" /> already exists. See the Note in the Remarks section.
- -or-  
- The <paramref name="sourceDirName" /> and <paramref name="destDirName" /> parameters refer to the same file or directory.  
- -or-  
- The directory or a file within it is being used by another process.</exception>
+-or-
+<paramref name="destDirName" /> already exists. See the Note in the Remarks section.
+-or-
+The <paramref name="sourceDirName" /> and <paramref name="destDirName" /> parameters refer to the same file or directory.
+-or-
+The directory or a file within it is being used by another process.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="sourceDirName" /> or <paramref name="destDirName" /> is a zero-length string, contains only white space, or contains one or more invalid characters. You can query for invalid characters with the  <see cref="M:System.IO.Path.GetInvalidPathChars" /> method.</exception>
@@ -722,13 +722,13 @@ A network error has occurred.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, such as being on an unmapped drive.</exception>
-      <exception cref="T:System.IO.IOException">The subdirectory cannot be created.  
- -or-  
- A file or directory already has the name specified by <paramref name="path" />.</exception>
+      <exception cref="T:System.IO.IOException">The subdirectory cannot be created.
+-or-
+A file or directory already has the name specified by <paramref name="path" />.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
-      <exception cref="T:System.Security.SecurityException">The caller does not have code access permission to create the directory.  
- -or-  
- The caller does not have code access permission to read the directory described by the returned <see cref="T:System.IO.DirectoryInfo" /> object.  This can occur when the <paramref name="path" /> parameter describes an existing directory.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have code access permission to create the directory.
+-or-
+The caller does not have code access permission to read the directory described by the returned <see cref="T:System.IO.DirectoryInfo" /> object.  This can occur when the <paramref name="path" /> parameter describes an existing directory.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> contains a colon character (:) that is not part of a drive label ("C:\").</exception>
     </member>
@@ -736,11 +736,11 @@ A network error has occurred.</exception>
       <summary>Deletes this <see cref="T:System.IO.DirectoryInfo" /> if it is empty.</summary>
       <exception cref="T:System.UnauthorizedAccessException">The directory contains a read-only file.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The directory described by this <see cref="T:System.IO.DirectoryInfo" /> object does not exist or could not be found.</exception>
-      <exception cref="T:System.IO.IOException">The directory is not empty.  
- -or-  
- The directory is the application's current working directory.  
- -or-  
- There is an open handle on the directory, and the operating system is Windows XP or earlier. This open handle can result from enumerating directories. For more information, see How to: Enumerate Directories and Files.</exception>
+      <exception cref="T:System.IO.IOException">The directory is not empty.
+-or-
+The directory is the application's current working directory.
+-or-
+There is an open handle on the directory, and the operating system is Windows XP or earlier. This open handle can result from enumerating directories. For more information, see How to: Enumerate Directories and Files.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.DirectoryInfo.Delete(System.Boolean)">
@@ -749,13 +749,13 @@ A network error has occurred.</exception>
         <see langword="true" /> to delete this directory, its subdirectories, and all files; otherwise, <see langword="false" />.</param>
       <exception cref="T:System.UnauthorizedAccessException">The directory contains a read-only file.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The directory described by this <see cref="T:System.IO.DirectoryInfo" /> object does not exist or could not be found.</exception>
-      <exception cref="T:System.IO.IOException">The directory is read-only.  
- -or-  
- The directory contains one or more files or subdirectories and <paramref name="recursive" /> is <see langword="false" />.  
- -or-  
- The directory is the application's current working directory.  
- -or-  
- There is an open handle on the directory or on one of its files, and the operating system is Windows XP or earlier. This open handle can result from enumerating directories and files. For more information, see How to: Enumerate Directories and Files.</exception>
+      <exception cref="T:System.IO.IOException">The directory is read-only.
+-or-
+The directory contains one or more files or subdirectories and <paramref name="recursive" /> is <see langword="false" />.
+-or-
+The directory is the application's current working directory.
+-or-
+There is an open handle on the directory or on one of its files, and the operating system is Windows XP or earlier. This open handle can result from enumerating directories and files. For more information, see How to: Enumerate Directories and Files.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.DirectoryInfo.EnumerateDirectories">
@@ -967,13 +967,13 @@ A network error has occurred.</exception>
         <paramref name="destDirName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="destDirName" /> is an empty string (''").</exception>
-      <exception cref="T:System.IO.IOException">An attempt was made to move a directory to a different volume.  
- -or-  
- <paramref name="destDirName" /> already exists.  
- -or-  
- You are not authorized to access this path.  
- -or-  
- The directory being moved and the destination directory have the same name.</exception>
+      <exception cref="T:System.IO.IOException">An attempt was made to move a directory to a different volume.
+-or-
+<paramref name="destDirName" /> already exists.
+-or-
+You are not authorized to access this path.
+-or-
+The directory being moved and the destination directory have the same name.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The destination directory cannot be found.</exception>
     </member>
@@ -1234,10 +1234,10 @@ A network error has occurred.</exception>
         <paramref name="path" /> is in an invalid format.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have permission to write to the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specifies a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
+        <paramref name="path" /> specifies a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
 <paramref name="path" /> is a directory.</exception>
     </member>
     <member name="M:System.IO.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
@@ -1258,12 +1258,12 @@ This operation is not supported on the current platform.
         <paramref name="path" /> is in an invalid format.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specifies a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> is a directory.  
--or-  
+        <paramref name="path" /> specifies a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> is a directory.
+-or-
 The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
@@ -1293,12 +1293,12 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, the directory doesn't exist or it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
@@ -1317,12 +1317,12 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, the directory doesn't exist or it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
@@ -1363,8 +1363,8 @@ The caller does not have the required permission.</exception>
       <param name="destFileName">The name of the destination file. This cannot be a directory or an existing file.</param>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.  
--or-  
+        <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.
+-or-
 <paramref name="sourceFileName" /> or <paramref name="destFileName" /> specifies a directory.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is <see langword="null" />.</exception>
@@ -1373,8 +1373,8 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">
         <paramref name="sourceFileName" /> was not found.</exception>
       <exception cref="T:System.IO.IOException">
-        <paramref name="destFileName" /> exists.  
--or-  
+        <paramref name="destFileName" /> exists.
+-or-
 An I/O error has occurred.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is in an invalid format.</exception>
@@ -1385,14 +1385,14 @@ An I/O error has occurred.</exception>
       <param name="destFileName">The name of the destination file. This cannot be a directory.</param>
       <param name="overwrite">
         <see langword="true" /> if the destination file can be overwritten; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
- -or-  
- <paramref name="destFileName" /> is read-only.
- -or-  
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.
+-or-
+<paramref name="destFileName" /> is read-only.
+-or-
 <paramref name="overwrite" /> is <see langword="true" />, <paramref name="destFileName" /> exists and is hidden, but <paramref name="sourceFileName" /> is not hidden.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.  
--or-  
+        <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.
+-or-
 <paramref name="sourceFileName" /> or <paramref name="destFileName" /> specifies a directory.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is <see langword="null" />.</exception>
@@ -1401,8 +1401,8 @@ An I/O error has occurred.</exception>
       <exception cref="T:System.IO.FileNotFoundException">
         <paramref name="sourceFileName" /> was not found.</exception>
       <exception cref="T:System.IO.IOException">
-        <paramref name="destFileName" /> exists and <paramref name="overwrite" /> is <see langword="false" />.  
--or-  
+        <paramref name="destFileName" /> exists and <paramref name="overwrite" /> is <see langword="false" />.
+-or-
 An I/O error has occurred.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is in an invalid format.</exception>
@@ -1411,11 +1411,11 @@ An I/O error has occurred.</exception>
       <summary>Creates or overwrites a file in the specified path.</summary>
       <param name="path">The path and name of the file to create.</param>
       <returns>A <see cref="T:System.IO.FileStream" /> that provides read/write access to the file specified in <paramref name="path" />.</returns>
-      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
- -or-  
- <paramref name="path" /> specified a file that is read-only.
- -or-  
- <paramref name="path" /> specified a file that is hidden.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.
+-or-
+<paramref name="path" /> specified a file that is read-only.
+-or-
+<paramref name="path" /> specified a file that is hidden.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1431,11 +1431,11 @@ An I/O error has occurred.</exception>
       <param name="path">The path and name of the file to create.</param>
       <param name="bufferSize">The number of bytes buffered for reads and writes to the file.</param>
       <returns>A <see cref="T:System.IO.FileStream" /> with the specified buffer size that provides read/write access to the file specified in <paramref name="path" />.</returns>
-      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
- -or-  
- <paramref name="path" /> specified a file that is read-only.
- -or-  
- <paramref name="path" /> specified a file that is hidden.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.
+-or-
+<paramref name="path" /> specified a file that is read-only.
+-or-
+<paramref name="path" /> specified a file that is hidden.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1452,11 +1452,11 @@ An I/O error has occurred.</exception>
       <param name="bufferSize">The number of bytes buffered for reads and writes to the file.</param>
       <param name="options">One of the <see cref="T:System.IO.FileOptions" /> values that describes how to create or overwrite the file.</param>
       <returns>A new file with the specified buffer size.</returns>
-      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
- -or-  
- <paramref name="path" /> specified a file that is read-only.
- -or-  
- <paramref name="path" /> specified a file that is hidden.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.
+-or-
+<paramref name="path" /> specified a file that is read-only.
+-or-
+<paramref name="path" /> specified a file that is hidden.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1471,11 +1471,11 @@ An I/O error has occurred.</exception>
       <summary>Creates or opens a file for writing UTF-8 encoded text. If the file already exists, its contents are overwritten.</summary>
       <param name="path">The file to be opened for writing.</param>
       <returns>A <see cref="T:System.IO.StreamWriter" /> that writes to the specified file using UTF-8 encoding.</returns>
-      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
- -or-  
- <paramref name="path" /> specified a file that is read-only.
- -or-  
- <paramref name="path" /> specified a file that is hidden.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.
+-or-
+<paramref name="path" /> specified a file that is read-only.
+-or-
+<paramref name="path" /> specified a file that is hidden.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1492,19 +1492,19 @@ An I/O error has occurred.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="path" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DriveNotFoundException">An invalid drive was specified.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file described by the <paramref name="path" /> parameter could not be found.</exception>
-      <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file. For example, the encrypted file is already open.  
- -or-  
- This operation is not supported on the current platform.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file. For example, the encrypted file is already open.
+-or-
+This operation is not supported on the current platform.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Windows NT or later.</exception>
       <exception cref="T:System.NotSupportedException">The file system is not NTFS.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The <paramref name="path" /> parameter specified a file that is read-only.  
- -or-  
- This operation is not supported on the current platform.  
- -or-  
- The <paramref name="path" /> parameter specified a directory.  
- -or-  
- The caller does not have the required permission.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The <paramref name="path" /> parameter specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+The <paramref name="path" /> parameter specified a directory.
+-or-
+The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.Delete(System.String)">
       <summary>Deletes the specified file.</summary>
@@ -1514,19 +1514,19 @@ An I/O error has occurred.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
-      <exception cref="T:System.IO.IOException">The specified file is in use.  
- -or-  
- There is an open handle on the file, and the operating system is Windows XP or earlier. This open handle can result from enumerating directories and files. For more information, see How to: Enumerate Directories and Files.</exception>
+      <exception cref="T:System.IO.IOException">The specified file is in use.
+-or-
+There is an open handle on the file, and the operating system is Windows XP or earlier. This open handle can result from enumerating directories and files. For more information, see How to: Enumerate Directories and Files.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
- -or-  
- The file is an executable file that is in use.  
- -or-  
- <paramref name="path" /> is a directory.  
- -or-  
- <paramref name="path" /> specified a read-only file.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.
+-or-
+The file is an executable file that is in use.
+-or-
+<paramref name="path" /> is a directory.
+-or-
+<paramref name="path" /> specified a read-only file.</exception>
     </member>
     <member name="M:System.IO.File.Encrypt(System.String)">
       <summary>Encrypts a file so that only the account used to encrypt the file can decrypt it.</summary>
@@ -1535,19 +1535,19 @@ An I/O error has occurred.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="path" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DriveNotFoundException">An invalid drive was specified.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file described by the <paramref name="path" /> parameter could not be found.</exception>
-      <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.  
- -or-  
- This operation is not supported on the current platform.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.
+-or-
+This operation is not supported on the current platform.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Windows NT or later.</exception>
       <exception cref="T:System.NotSupportedException">The file system is not NTFS.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The <paramref name="path" /> parameter specified a file that is read-only.  
- -or-  
- This operation is not supported on the current platform.  
- -or-  
- The <paramref name="path" /> parameter specified a directory.  
- -or-  
- The caller does not have the required permission.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The <paramref name="path" /> parameter specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+The <paramref name="path" /> parameter specified a directory.
+-or-
+The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.Exists(System.String)">
       <summary>Determines whether the specified file exists.</summary>
@@ -1653,9 +1653,9 @@ An I/O error has occurred.</exception>
       <summary>Moves a specified file to a new location, providing the option to specify a new file name.</summary>
       <param name="sourceFileName">The name of the file to move. Can include a relative or absolute path.</param>
       <param name="destFileName">The new path and name for the file.</param>
-      <exception cref="T:System.IO.IOException">The destination file already exists.  
- -or-  
- <paramref name="sourceFileName" /> was not found.</exception>
+      <exception cref="T:System.IO.IOException">The destination file already exists.
+-or-
+<paramref name="sourceFileName" /> was not found.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="sourceFileName" /> or <paramref name="destFileName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
@@ -1697,14 +1697,14 @@ An I/O error has occurred.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
-The caller does not have the required permission.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
+The caller does not have the required permission.
+-or-
 <paramref name="mode" /> is <see cref="F:System.IO.FileMode.Create" /> and the specified file is a hidden file.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="mode" /> specified an invalid value.</exception>
@@ -1719,8 +1719,8 @@ The caller does not have the required permission.
       <param name="access">A <see cref="T:System.IO.FileAccess" /> value that specifies the operations that can be performed on the file.</param>
       <returns>An unshared <see cref="T:System.IO.FileStream" /> that provides access to the specified file, with the specified mode and access.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.
+-or-
 <paramref name="access" /> specified <see langword="Read" /> and <paramref name="mode" /> specified <see langword="Create" />, <see langword="CreateNew" />, <see langword="Truncate" />, or <see langword="Append" />.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
@@ -1728,12 +1728,12 @@ The caller does not have the required permission.
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only and <paramref name="access" /> is not <see langword="Read" />.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
-The caller does not have the required permission.  
--or-  
+        <paramref name="path" /> specified a file that is read-only and <paramref name="access" /> is not <see langword="Read" />.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
+The caller does not have the required permission.
+-or-
 <paramref name="mode" /> is <see cref="F:System.IO.FileMode.Create" /> and the specified file is a hidden file.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="mode" /> or <paramref name="access" /> specified an invalid value.</exception>
@@ -1749,8 +1749,8 @@ The caller does not have the required permission.
       <param name="share">A <see cref="T:System.IO.FileShare" /> value specifying the type of access other threads have to the file.</param>
       <returns>A <see cref="T:System.IO.FileStream" /> on the specified path, having the specified mode with read, write, or read/write access and the specified sharing option.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.
+-or-
 <paramref name="access" /> specified <see langword="Read" /> and <paramref name="mode" /> specified <see langword="Create" />, <see langword="CreateNew" />, <see langword="Truncate" />, or <see langword="Append" />.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
@@ -1758,12 +1758,12 @@ The caller does not have the required permission.
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only and <paramref name="access" /> is not <see langword="Read" />.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
-The caller does not have the required permission.  
--or-  
+        <paramref name="path" /> specified a file that is read-only and <paramref name="access" /> is not <see langword="Read" />.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
+The caller does not have the required permission.
+-or-
 <paramref name="mode" /> is <see cref="F:System.IO.FileMode.Create" /> and the specified file is a hidden file.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="mode" />, <paramref name="access" />, or <paramref name="share" /> specified an invalid value.</exception>
@@ -1782,8 +1782,8 @@ The caller does not have the required permission.
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path" /> was not found.</exception>
       <exception cref="T:System.NotSupportedException">
@@ -1809,9 +1809,9 @@ The caller does not have the required permission.</exception>
       <summary>Opens an existing file or creates a new file for writing.</summary>
       <param name="path">The file to be opened for writing.</param>
       <returns>An unshared <see cref="T:System.IO.FileStream" /> object on the specified path with <see cref="F:System.IO.FileAccess.Write" /> access.</returns>
-      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
- -or-  
- <paramref name="path" /> specified a read-only file or directory.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.
+-or-
+<paramref name="path" /> specified a read-only file or directory.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="F:System.IO.Path.InvalidPathChars" />.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1832,11 +1832,11 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">This operation is not supported on the current platform.  
- -or-  
- <paramref name="path" /> specified a directory.  
- -or-  
- The caller does not have the required permission.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
+The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path" /> was not found.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
@@ -1860,12 +1860,12 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path" /> was not found.</exception>
       <exception cref="T:System.NotSupportedException">
@@ -1885,12 +1885,12 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path" /> was not found.</exception>
       <exception cref="T:System.NotSupportedException">
@@ -1922,12 +1922,12 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path" /> was not found.</exception>
       <exception cref="T:System.NotSupportedException">
@@ -1947,12 +1947,12 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path" /> was not found.</exception>
       <exception cref="T:System.NotSupportedException">
@@ -1988,12 +1988,12 @@ The caller does not have the required permission.</exception>
         <paramref name="path" /> exceeds the system-defined maximum length.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specifies a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> is a directory.  
--or-  
+        <paramref name="path" /> specifies a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> is a directory.
+-or-
 The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.ReadLines(System.String,System.Text.Encoding)">
@@ -2013,12 +2013,12 @@ The caller does not have the required permission.</exception>
         <paramref name="path" /> exceeds the system-defined maximum length.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specifies a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> is a directory.  
--or-  
+        <paramref name="path" /> specifies a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> is a directory.
+-or-
 The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.Replace(System.String,System.String,System.String)">
@@ -2026,26 +2026,26 @@ The caller does not have the required permission.</exception>
       <param name="sourceFileName">The name of a file that replaces the file specified by <paramref name="destinationFileName" />.</param>
       <param name="destinationFileName">The name of the file being replaced.</param>
       <param name="destinationBackupFileName">The name of the backup file.</param>
-      <exception cref="T:System.ArgumentException">The path described by the <paramref name="destinationFileName" /> parameter was not of a legal form.  
- -or-  
- The path described by the <paramref name="destinationBackupFileName" /> parameter was not of a legal form.</exception>
+      <exception cref="T:System.ArgumentException">The path described by the <paramref name="destinationFileName" /> parameter was not of a legal form.
+-or-
+The path described by the <paramref name="destinationBackupFileName" /> parameter was not of a legal form.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="destinationFileName" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DriveNotFoundException">An invalid drive was specified.</exception>
-      <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.  
- -or-  
- The file described by the <paramref name="destinationBackupFileName" /> parameter could not be found.</exception>
-      <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.  
+      <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.
 -or-
- The <paramref name="sourceFileName" /> and <paramref name="destinationFileName" /> parameters specify the same file.</exception>
+The file described by the <paramref name="destinationBackupFileName" /> parameter could not be found.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.
+-or-
+The <paramref name="sourceFileName" /> and <paramref name="destinationFileName" /> parameters specify the same file.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The operating system is Windows 98 Second Edition or earlier and the files system is not NTFS.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The <paramref name="sourceFileName" /> or <paramref name="destinationFileName" /> parameter specifies a file that is read-only.  
- -or-  
- This operation is not supported on the current platform.  
- -or-  
- Source or destination parameters specify a directory instead of a file.  
- -or-  
- The caller does not have the required permission.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The <paramref name="sourceFileName" /> or <paramref name="destinationFileName" /> parameter specifies a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+Source or destination parameters specify a directory instead of a file.
+-or-
+The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.Replace(System.String,System.String,System.String,System.Boolean)">
       <summary>Replaces the contents of a specified file with the contents of another file, deleting the original file, and creating a backup of the replaced file and optionally ignores merge errors.</summary>
@@ -2054,26 +2054,26 @@ The caller does not have the required permission.</exception>
       <param name="destinationBackupFileName">The name of the backup file.</param>
       <param name="ignoreMetadataErrors">
         <see langword="true" /> to ignore merge errors (such as attributes and access control lists (ACLs)) from the replaced file to the replacement file; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.ArgumentException">The path described by the <paramref name="destinationFileName" /> parameter was not of a legal form.  
- -or-  
- The path described by the <paramref name="destinationBackupFileName" /> parameter was not of a legal form.</exception>
+      <exception cref="T:System.ArgumentException">The path described by the <paramref name="destinationFileName" /> parameter was not of a legal form.
+-or-
+The path described by the <paramref name="destinationBackupFileName" /> parameter was not of a legal form.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="destinationFileName" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.IO.DriveNotFoundException">An invalid drive was specified.</exception>
-      <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.  
- -or-  
- The file described by the <paramref name="destinationBackupFileName" /> parameter could not be found.</exception>
-      <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.  
+      <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.
 -or-
- The <paramref name="sourceFileName" /> and <paramref name="destinationFileName" /> parameters specify the same file.</exception>
+The file described by the <paramref name="destinationBackupFileName" /> parameter could not be found.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.
+-or-
+The <paramref name="sourceFileName" /> and <paramref name="destinationFileName" /> parameters specify the same file.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The operating system is Windows 98 Second Edition or earlier and the files system is not NTFS.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The <paramref name="sourceFileName" /> or <paramref name="destinationFileName" /> parameter specifies a file that is read-only.  
- -or-  
- This operation is not supported on the current platform.  
- -or-  
- Source or destination parameters specify a directory instead of a file.  
- -or-  
- The caller does not have the required permission.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The <paramref name="sourceFileName" /> or <paramref name="destinationFileName" /> parameter specifies a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+Source or destination parameters specify a directory instead of a file.
+-or-
+The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.SetAttributes(System.String,System.IO.FileAttributes)">
       <summary>Sets the specified <see cref="T:System.IO.FileAttributes" /> of the file on the specified path.</summary>
@@ -2087,12 +2087,12 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file cannot be found.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.SetCreationTime(System.String,System.DateTime)">
@@ -2206,13 +2206,13 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="path" /> specified a file that is read-only.
--or-  
+-or-
 <paramref name="path" /> specified a file that is hidden.
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
@@ -2242,13 +2242,13 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="path" /> specified a file that is read-only.
--or-  
+-or-
 <paramref name="path" /> specified a file that is hidden.
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> is a directory.  
--or-  
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> is a directory.
+-or-
 The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
@@ -2269,13 +2269,13 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="path" /> specified a file that is read-only.
--or-  
-<paramref name="path" /> specified a file that is hidden.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> is a directory.  
--or-  
+-or-
+<paramref name="path" /> specified a file that is hidden.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> is a directory.
+-or-
 The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.File.WriteAllLines(System.String,System.String[])">
@@ -2290,13 +2290,13 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="path" /> specified a file that is read-only.
--or-  
-<paramref name="path" /> specified a file that is hidden.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+-or-
+<paramref name="path" /> specified a file that is hidden.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
@@ -2315,13 +2315,13 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="path" /> specified a file that is read-only.
--or-  
-<paramref name="path" /> specified a file that is hidden.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+-or-
+<paramref name="path" /> specified a file that is hidden.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
@@ -2355,13 +2355,13 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="path" /> specified a file that is read-only.
--or-  
-<paramref name="path" /> specified a file that is hidden.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+-or-
+<paramref name="path" /> specified a file that is hidden.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
@@ -2381,13 +2381,13 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="path" /> specified a file that is read-only.
--or-  
-<paramref name="path" /> specified a file that is hidden.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+-or-
+<paramref name="path" /> specified a file that is hidden.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="path" /> is in an invalid format.</exception>
@@ -2479,17 +2479,17 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.NotSupportedException">The file system is not NTFS.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Microsoft Windows NT or later.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The file described by the current <see cref="T:System.IO.FileInfo" /> object is read-only.  
- -or-  
- This operation is not supported on the current platform.  
- -or-  
- The caller does not have the required permission.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The file described by the current <see cref="T:System.IO.FileInfo" /> object is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.FileInfo.Delete">
       <summary>Permanently deletes a file.</summary>
-      <exception cref="T:System.IO.IOException">The target file is open or memory-mapped on a computer running Microsoft Windows NT.  
- -or-  
- There is an open handle on the file, and the operating system is Windows XP or earlier. This open handle can result from enumerating directories and files. For more information, see How to: Enumerate Directories and Files.</exception>
+      <exception cref="T:System.IO.IOException">The target file is open or memory-mapped on a computer running Microsoft Windows NT.
+-or-
+There is an open handle on the file, and the operating system is Windows XP or earlier. This open handle can result from enumerating directories and files. For more information, see How to: Enumerate Directories and Files.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The path is a directory.</exception>
     </member>
@@ -2514,11 +2514,11 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
       <exception cref="T:System.NotSupportedException">The file system is not NTFS.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Microsoft Windows NT or later.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The file described by the current <see cref="T:System.IO.FileInfo" /> object is read-only.  
- -or-  
- This operation is not supported on the current platform.  
- -or-  
- The caller does not have the required permission.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The file described by the current <see cref="T:System.IO.FileInfo" /> object is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+The caller does not have the required permission.</exception>
     </member>
     <member name="P:System.IO.FileInfo.Exists">
       <summary>Gets a value indicating whether a file exists.</summary>
@@ -2531,9 +2531,9 @@ The caller does not have the required permission.</exception>
         <see langword="true" /> if the current file is read only; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">This operation is not supported on the current platform.  
- -or-  
- The caller does not have the required permission.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">This operation is not supported on the current platform.
+-or-
+The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">The user does not have write permission, but attempted to set this property to <see langword="false" />.</exception>
     </member>
     <member name="P:System.IO.FileInfo.Length">
@@ -2541,9 +2541,9 @@ The caller does not have the required permission.</exception>
       <returns>The size of the current file in bytes.</returns>
       <exception cref="T:System.IO.IOException">
         <see cref="M:System.IO.FileSystemInfo.Refresh" /> cannot update the state of the file or directory.</exception>
-      <exception cref="T:System.IO.FileNotFoundException">The file does not exist.  
- -or-  
- The <see langword="Length" /> property is called for a directory.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file does not exist.
+-or-
+The <see langword="Length" /> property is called for a directory.</exception>
     </member>
     <member name="M:System.IO.FileInfo.MoveTo(System.String)">
       <summary>Moves a specified file to a new location, providing the option to specify a new file name.</summary>
@@ -2653,13 +2653,13 @@ The caller does not have the required permission.</exception>
       <param name="destinationFileName">The name of a file to replace with the current file.</param>
       <param name="destinationBackupFileName">The name of a file with which to create a backup of the file described by the <paramref name="destFileName" /> parameter.</param>
       <returns>A <see cref="T:System.IO.FileInfo" /> object that encapsulates information about the file described by the <paramref name="destFileName" /> parameter.</returns>
-      <exception cref="T:System.ArgumentException">The path described by the <paramref name="destFileName" /> parameter was not of a legal form.  
- -or-  
- The path described by the <paramref name="destBackupFileName" /> parameter was not of a legal form.</exception>
+      <exception cref="T:System.ArgumentException">The path described by the <paramref name="destFileName" /> parameter was not of a legal form.
+-or-
+The path described by the <paramref name="destBackupFileName" /> parameter was not of a legal form.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="destFileName" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.  
- -or-  
- The file described by the <paramref name="destinationFileName" /> parameter could not be found.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.
+-or-
+The file described by the <paramref name="destinationFileName" /> parameter could not be found.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Microsoft Windows NT or later.</exception>
     </member>
     <member name="M:System.IO.FileInfo.Replace(System.String,System.String,System.Boolean)">
@@ -2669,13 +2669,13 @@ The caller does not have the required permission.</exception>
       <param name="ignoreMetadataErrors">
         <see langword="true" /> to ignore merge errors (such as attributes and ACLs) from the replaced file to the replacement file; otherwise <see langword="false" />.</param>
       <returns>A <see cref="T:System.IO.FileInfo" /> object that encapsulates information about the file described by the <paramref name="destFileName" /> parameter.</returns>
-      <exception cref="T:System.ArgumentException">The path described by the <paramref name="destFileName" /> parameter was not of a legal form.  
- -or-  
- The path described by the <paramref name="destBackupFileName" /> parameter was not of a legal form.</exception>
+      <exception cref="T:System.ArgumentException">The path described by the <paramref name="destFileName" /> parameter was not of a legal form.
+-or-
+The path described by the <paramref name="destBackupFileName" /> parameter was not of a legal form.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="destFileName" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.  
- -or-  
- The file described by the <paramref name="destinationFileName" /> parameter could not be found.</exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file described by the current <see cref="T:System.IO.FileInfo" /> object could not be found.
+-or-
+The file described by the <paramref name="destinationFileName" /> parameter could not be found.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Microsoft Windows NT or later.</exception>
     </member>
     <member name="M:System.IO.FileInfo.ToString">
@@ -2701,9 +2701,9 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The specified file doesn't exist. Only thrown when setting the property value.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid. For example, it's on an unmapped drive. Only thrown when setting the property value.</exception>
       <exception cref="T:System.Security.SecurityException">The caller doesn't have the required permission.</exception>
-      <exception cref="T:System.ArgumentException">The caller attempts to set an invalid file attribute.  
- -or-  
- The user attempts to set an attribute value but doesn't have write permission.</exception>
+      <exception cref="T:System.ArgumentException">The caller attempts to set an invalid file attribute.
+-or-
+The user attempts to set an attribute value but doesn't have write permission.</exception>
       <exception cref="T:System.IO.IOException">
         <see cref="M:System.IO.FileSystemInfo.Refresh" /> cannot initialize the data.</exception>
     </member>

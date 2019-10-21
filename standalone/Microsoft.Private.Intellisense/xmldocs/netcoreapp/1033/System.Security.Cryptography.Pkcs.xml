@@ -212,8 +212,8 @@ The <paramref name="recipientIdentifierType" /> value is not supported.</excepti
     <member name="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Add(System.Security.Cryptography.Pkcs.CmsRecipient)">
       <summary>The <see cref="M:System.Security.Cryptography.Pkcs.CmsRecipientCollection.Add(System.Security.Cryptography.Pkcs.CmsRecipient)" /> method adds a recipient to the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection" /> collection.</summary>
       <param name="recipient">A <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient" /> object that represents the recipient to add to the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection" /> collection.</param>
-      <returns>If the method succeeds, the method returns an <see cref="T:System.Int32" /> value that represents the zero-based position where the recipient is to be inserted.  
- If the method fails, it throws an exception.</returns>
+      <returns>If the method succeeds, the method returns an <see cref="T:System.Int32" /> value that represents the zero-based position where the recipient is to be inserted.
+If the method fails, it throws an exception.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="recipient" /> is <see langword="null" />.</exception>
     </member>
@@ -222,9 +222,9 @@ The <paramref name="recipientIdentifierType" /> value is not supported.</excepti
       <param name="array">An <see cref="T:System.Array" /> object to which the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection" /> collection is to be copied.</param>
       <param name="index">The zero-based index in <paramref name="array" /> where the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection" /> collection is copied.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is not large enough to hold the specified elements.  
+        <paramref name="array" /> is not large enough to hold the specified elements.
 
--or-  
+-or-
 
 <paramref name="array" /> does not contain the proper number of dimensions.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -237,9 +237,9 @@ The <paramref name="recipientIdentifierType" /> value is not supported.</excepti
       <param name="array">An array of <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient" /> objects where the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection" /> collection is to be copied.</param>
       <param name="index">The zero-based index for the array of <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient" /> objects in <paramref name="array" /> to which the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection" /> collection is copied.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is not large enough to hold the specified elements.  
+        <paramref name="array" /> is not large enough to hold the specified elements.
 
--or-  
+-or-
 
 <paramref name="array" /> does not contain the proper number of dimensions.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -387,8 +387,8 @@ The <paramref name="recipientIdentifierType" /> value is not supported.</excepti
     <member name="M:System.Security.Cryptography.Pkcs.ContentInfo.GetContentType(System.Byte[])">
       <summary>The <see cref="M:System.Security.Cryptography.Pkcs.ContentInfo.GetContentType(System.Byte[])" /> static method  retrieves the outer content type of the encoded <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo" /> message represented by an array of byte values.</summary>
       <param name="encodedMessage">An array of byte values that represents the encoded <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo" /> message from which to retrieve the outer content type.</param>
-      <returns>If the method succeeds, the method returns an <see cref="T:System.Security.Cryptography.Oid" /> object that contains the outer content type of the specified encoded <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo" /> message.  
- If the method fails, it throws an exception.</returns>
+      <returns>If the method succeeds, the method returns an <see cref="T:System.Security.Cryptography.Oid" /> object that contains the outer content type of the specified encoded <see cref="T:System.Security.Cryptography.Pkcs.ContentInfo" /> message.
+If the method fails, it throws an exception.</returns>
       <exception cref="T:System.ArgumentNullException">A null reference  was passed to a method that does not accept it as a valid argument.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">An error occurred during a cryptographic operation.</exception>
     </member>
@@ -1057,9 +1057,9 @@ The contents of <paramref name="source" /> do not represent an ASN.1-BER-encoded
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject" /> class using a specified <see cref="T:System.Security.Cryptography.AsnEncodedData" /> object as its attribute type and value.</summary>
       <param name="asnEncodedData">An object that contains the PKCS #9 attribute type and value to use.</param>
       <exception cref="T:System.ArgumentException">The length of the <paramref name="Value" /> member of the <paramref name="Oid" /> member of <paramref name="asnEncodedData" /> is zero.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="Oid" /> member of <paramref name="asnEncodedData" /> is <see langword="null" />.  
- -or-  
- The <paramref name="Value" /> member of the <paramref name="Oid" /> member of <paramref name="asnEncodedData" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="Oid" /> member of <paramref name="asnEncodedData" /> is <see langword="null" />.
+-or-
+The <paramref name="Value" /> member of the <paramref name="Oid" /> member of <paramref name="asnEncodedData" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject.#ctor(System.Security.Cryptography.Oid,System.Byte[])">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.Pkcs.Pkcs9AttributeObject" /> class using a specified <see cref="T:System.Security.Cryptography.Oid" /> object as the attribute type and a specified ASN.1 encoded data as the attribute value.</summary>
@@ -1481,8 +1481,8 @@ The contents of <paramref name="source" /> do not represent an ASN.1-BER-encoded
     </member>
     <member name="M:System.Security.Cryptography.Pkcs.SignedCms.CheckSignature(System.Boolean)">
       <summary>The <see cref="M:System.Security.Cryptography.Pkcs.SignedCms.CheckSignature(System.Boolean)" /> method verifies the digital signatures on the signed CMS/PKCS #7 message and, optionally, validates the signers' certificates.</summary>
-      <param name="verifySignatureOnly">A <see cref="T:System.Boolean" /> value that specifies whether only the digital signatures are verified without the signers' certificates being validated.  
- If <paramref name="verifySignatureOnly" /> is <see langword="true" />, only the digital signatures are verified. If it is <see langword="false" />, the digital signatures are verified, the signers' certificates are validated, and the purposes of the certificates are validated. The purposes of a certificate are considered valid if the certificate has no key usage or if the key usage supports digital signatures or nonrepudiation.</param>
+      <param name="verifySignatureOnly">A <see cref="T:System.Boolean" /> value that specifies whether only the digital signatures are verified without the signers' certificates being validated.
+If <paramref name="verifySignatureOnly" /> is <see langword="true" />, only the digital signatures are verified. If it is <see langword="false" />, the digital signatures are verified, the signers' certificates are validated, and the purposes of the certificates are validated. The purposes of a certificate are considered valid if the certificate has no key usage or if the key usage supports digital signatures or nonrepudiation.</param>
       <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
       <exception cref="T:System.InvalidOperationException">A method call was invalid for the object's current state.</exception>
@@ -1490,8 +1490,8 @@ The contents of <paramref name="source" /> do not represent an ASN.1-BER-encoded
     <member name="M:System.Security.Cryptography.Pkcs.SignedCms.CheckSignature(System.Security.Cryptography.X509Certificates.X509Certificate2Collection,System.Boolean)">
       <summary>The <see cref="M:System.Security.Cryptography.Pkcs.SignedCms.CheckSignature(System.Security.Cryptography.X509Certificates.X509Certificate2Collection,System.Boolean)" /> method verifies the digital signatures on the signed CMS/PKCS #7 message by using the specified collection of certificates and, optionally, validates the signers' certificates.</summary>
       <param name="extraStore">An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> object that can be used to validate the certificate chain. If no additional certificates are to be used to validate the certificate chain, use <see cref="M:System.Security.Cryptography.Pkcs.SignedCms.CheckSignature(System.Boolean)" /> instead of <see cref="M:System.Security.Cryptography.Pkcs.SignedCms.CheckSignature(System.Security.Cryptography.X509Certificates.X509Certificate2Collection,System.Boolean)" />.</param>
-      <param name="verifySignatureOnly">A <see cref="T:System.Boolean" /> value that specifies whether only the digital signatures are verified without the signers' certificates being validated.  
- If <paramref name="verifySignatureOnly" /> is <see langword="true" />, only the digital signatures are verified. If it is <see langword="false" />, the digital signatures are verified, the signers' certificates are validated, and the purposes of the certificates are validated. The purposes of a certificate are considered valid if the certificate has no key usage or if the key usage supports digital signatures or nonrepudiation.</param>
+      <param name="verifySignatureOnly">A <see cref="T:System.Boolean" /> value that specifies whether only the digital signatures are verified without the signers' certificates being validated.
+If <paramref name="verifySignatureOnly" /> is <see langword="true" />, only the digital signatures are verified. If it is <see langword="false" />, the digital signatures are verified, the signers' certificates are validated, and the purposes of the certificates are validated. The purposes of a certificate are considered valid if the certificate has no key usage or if the key usage supports digital signatures or nonrepudiation.</param>
       <exception cref="T:System.ArgumentNullException">A null reference was passed to a method that does not accept it as a valid argument.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">A cryptographic operation could not be completed.</exception>
       <exception cref="T:System.InvalidOperationException">A method call was invalid for the object's current state.</exception>
@@ -1547,12 +1547,12 @@ The contents of <paramref name="source" /> do not represent an ASN.1-BER-encoded
       <param name="index">The zero-based index of the signature to remove.</param>
       <exception cref="T:System.InvalidOperationException">A CMS/PKCS #7 message is not signed, and <paramref name="index" /> is invalid.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than the signature count minus 1.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The signature could not be removed.  
- -or-  
- An internal cryptographic error occurred.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The signature could not be removed.
+-or-
+An internal cryptographic error occurred.</exception>
     </member>
     <member name="M:System.Security.Cryptography.Pkcs.SignedCms.RemoveSignature(System.Security.Cryptography.Pkcs.SignerInfo)">
       <summary>The <see cref="M:System.Security.Cryptography.Pkcs.SignedCms.RemoveSignature(System.Security.Cryptography.Pkcs.SignerInfo)" /> method removes the signature for the specified <see cref="T:System.Security.Cryptography.Pkcs.SignerInfo" /> object.</summary>
@@ -1576,7 +1576,7 @@ The contents of <paramref name="source" /> do not represent an ASN.1-BER-encoded
       <summary>Adds the specified attribute to the current document.</summary>
       <param name="asnEncodedData">The ASN.1 encoded attribute to add to the document.</param>
       <exception cref="T:System.Security.Cryptography.CryptographicException">Cannot find the original signer.
- -or-
+-or-
 ASN1 corrupted data.</exception>
     </member>
     <member name="P:System.Security.Cryptography.Pkcs.SignerInfo.Certificate">
@@ -1641,9 +1641,9 @@ ASN1 corrupted data.</exception>
       <summary>Removes the specified attribute from the current document.</summary>
       <param name="asnEncodedData">The ASN.1 encoded attribute to remove from the document.</param>
       <exception cref="T:System.Security.Cryptography.CryptographicException">Cannot find the original signer.
- -or-
+-or-
 Attribute not found.
- -or-
+-or-
 ASN1 corrupted data.</exception>
     </member>
     <member name="P:System.Security.Cryptography.Pkcs.SignerInfo.SignatureAlgorithm">
@@ -1745,15 +1745,15 @@ ASN1 corrupted data.</exception>
     </member>
     <member name="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Value">
       <summary>The <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Value" /> property retrieves the value of the subject identifier. Use the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Type" /> property to determine the type of subject identifier, and use the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Value" /> property to retrieve the corresponding value.</summary>
-      <returns>An <see cref="T:System.Object" /> object that represents the value of the subject identifier. This <see cref="T:System.Object" /> can be one of the following objects as determined by the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Type" /> property.  
+      <returns>An <see cref="T:System.Object" /> object that represents the value of the subject identifier. This <see cref="T:System.Object" /> can be one of the following objects as determined by the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Type" /> property.
  <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifier.Type" /> property  
-
+  
   Object  
-
+  
   IssuerAndSerialNumber  
-
+  
  <see cref="T:System.Security.Cryptography.Xml.X509IssuerSerial" /> SubjectKeyIdentifier  
-
+  
  <see cref="T:System.String" /></returns>
     </member>
     <member name="T:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey">
@@ -1765,17 +1765,17 @@ ASN1 corrupted data.</exception>
     </member>
     <member name="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Value">
       <summary>The <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Value" /> property retrieves the value of the subject identifier or  key. Use the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type" /> property to determine the type of subject identifier or key, and use the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Value" /> property to retrieve the corresponding value.</summary>
-      <returns>An <see cref="T:System.Object" /> object that represents the value of the subject identifier or key. This <see cref="T:System.Object" /> can be one of the following objects as determined by the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type" /> property.  
+      <returns>An <see cref="T:System.Object" /> object that represents the value of the subject identifier or key. This <see cref="T:System.Object" /> can be one of the following objects as determined by the <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type" /> property.
  <see cref="P:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKey.Type" /> property  
-
+  
   Object  
-
+  
   IssuerAndSerialNumber  
-
+  
  <see cref="T:System.Security.Cryptography.Xml.X509IssuerSerial" /> SubjectKeyIdentifier  
-
+  
  <see cref="T:System.String" /> PublicKeyInfo  
-
+  
  <see cref="T:System.Security.Cryptography.Pkcs.PublicKeyInfo" /></returns>
     </member>
     <member name="T:System.Security.Cryptography.Pkcs.SubjectIdentifierOrKeyType">

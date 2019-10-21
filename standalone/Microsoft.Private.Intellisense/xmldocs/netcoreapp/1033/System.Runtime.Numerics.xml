@@ -65,81 +65,81 @@
       <summary>Compares two <see cref="T:System.Numerics.BigInteger" /> values and returns an integer that indicates whether the first value is less than, equal to, or greater than the second value.</summary>
       <param name="left">The first value to compare.</param>
       <param name="right">The second value to compare.</param>
-      <returns>A signed integer that indicates the relative values of <paramref name="left" /> and <paramref name="right" />, as shown in the following table.  
+      <returns>A signed integer that indicates the relative values of <paramref name="left" /> and <paramref name="right" />, as shown in the following table.
   Value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
  <paramref name="left" /> is less than <paramref name="right" />.  
-
+  
   Zero  
-
+  
  <paramref name="left" /> equals <paramref name="right" />.  
-
+  
   Greater than zero  
-
+  
  <paramref name="left" /> is greater than <paramref name="right" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.CompareTo(System.Int64)">
       <summary>Compares this instance to a signed 64-bit integer and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the signed 64-bit integer.</summary>
       <param name="other">The signed 64-bit integer to compare.</param>
-      <returns>A signed integer value that indicates the relationship of this instance to <paramref name="other" />, as shown in the following table.  
+      <returns>A signed integer value that indicates the relationship of this instance to <paramref name="other" />, as shown in the following table.
   Return value  
-
+  
   Description  
-
+  
   Less than zero  
-
+  
   The current instance is less than <paramref name="other" />.  
-
+  
   Zero  
-
+  
   The current instance equals <paramref name="other" />.  
-
+  
   Greater than zero  
-
+  
   The current instance is greater than <paramref name="other" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.CompareTo(System.Numerics.BigInteger)">
       <summary>Compares this instance to a second <see cref="T:System.Numerics.BigInteger" /> and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the specified object.</summary>
       <param name="other">The object to compare.</param>
-      <returns>A signed integer value that indicates the relationship of this instance to <paramref name="other" />, as shown in the following table.  
+      <returns>A signed integer value that indicates the relationship of this instance to <paramref name="other" />, as shown in the following table.
   Return value  
-
+  
   Description  
-
+  
   Less than zero  
-
+  
   The current instance is less than <paramref name="other" />.  
-
+  
   Zero  
-
+  
   The current instance equals <paramref name="other" />.  
-
+  
   Greater than zero  
-
+  
   The current instance is greater than <paramref name="other" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.CompareTo(System.Object)">
       <summary>Compares this instance to a specified object and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the specified object.</summary>
       <param name="obj">The object to compare.</param>
-      <returns>A signed integer that indicates the relationship of the current instance to the <paramref name="obj" /> parameter, as shown in the following table.  
+      <returns>A signed integer that indicates the relationship of the current instance to the <paramref name="obj" /> parameter, as shown in the following table.
   Return value  
-
+  
   Description  
-
+  
   Less than zero  
-
+  
   The current instance is less than <paramref name="obj" />.  
-
+  
   Zero  
-
+  
   The current instance equals <paramref name="obj" />.  
-
+  
   Greater than zero  
-
+  
   The current instance is greater than <paramref name="obj" />, or the <paramref name="obj" /> parameter is <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentException">
         <paramref name="obj" /> is not a <see cref="T:System.Numerics.BigInteger" />.</exception>
@@ -147,21 +147,21 @@
     <member name="M:System.Numerics.BigInteger.CompareTo(System.UInt64)">
       <summary>Compares this instance to an unsigned 64-bit integer and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the unsigned 64-bit integer.</summary>
       <param name="other">The unsigned 64-bit integer to compare.</param>
-      <returns>A signed integer that indicates the relative value of this instance and <paramref name="other" />, as shown in the following table.  
+      <returns>A signed integer that indicates the relative value of this instance and <paramref name="other" />, as shown in the following table.
   Return value  
-
+  
   Description  
-
+  
   Less than zero  
-
+  
   The current instance is less than <paramref name="other" />.  
-
+  
   Zero  
-
+  
   The current instance equals <paramref name="other" />.  
-
+  
   Greater than zero  
-
+  
   The current instance is greater than <paramref name="other" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Divide(System.Numerics.BigInteger,System.Numerics.BigInteger)">
@@ -427,8 +427,8 @@
         <paramref name="value" /> is less than <see cref="F:System.Int64.MinValue" /> or is greater than <see cref="F:System.Int64.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.SByte">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a signed 8-bit value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int16" />.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to a signed 8-bit value.
+This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int16" />.</summary>
       <param name="value">The value to convert to a signed 8-bit value.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
       <exception cref="T:System.OverflowException">
@@ -440,24 +440,24 @@
       <returns>An object that contains the closest possible representation of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt16">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 16-bit integer value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int32" />.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 16-bit integer value.
+This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int32" />.</summary>
       <param name="value">The value to convert to an unsigned 16-bit integer.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
       <exception cref="T:System.OverflowException">
         <paramref name="value" /> is less than <see cref="F:System.UInt16.MinValue" /> or is greater than <see cref="F:System.UInt16.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt32">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 32-bit integer value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int64" />.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 32-bit integer value.
+This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Int64" />.</summary>
       <param name="value">The value to convert to an unsigned 32-bit integer.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
       <exception cref="T:System.OverflowException">
         <paramref name="value" /> is less than <see cref="F:System.UInt32.MinValue" /> or is greater than <see cref="F:System.UInt32.MaxValue" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Explicit(System.Numerics.BigInteger)~System.UInt64">
-      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 64-bit integer value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Double" />.</summary>
+      <summary>Defines an explicit conversion of a <see cref="T:System.Numerics.BigInteger" /> object to an unsigned 64-bit integer value.
+This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Double" />.</summary>
       <param name="value">The value to convert to an unsigned 64-bit integer.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
       <exception cref="T:System.OverflowException">
@@ -561,26 +561,26 @@
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Implicit(System.SByte)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of an 8-bit signed integer to a <see cref="T:System.Numerics.BigInteger" /> value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.#ctor(System.Int32)" />.</summary>
+      <summary>Defines an implicit conversion of an 8-bit signed integer to a <see cref="T:System.Numerics.BigInteger" /> value.
+This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.#ctor(System.Int32)" />.</summary>
       <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt16)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a 16-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger" />.</summary>
+      <summary>Defines an implicit conversion of a 16-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.
+This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.op_Implicit(System.Int32)~System.Numerics.BigInteger" />.</summary>
       <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt32)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a 32-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger" />.</summary>
+      <summary>Defines an implicit conversion of a 32-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.
+This API is not CLS-compliant. The compliant alternative is <see cref="M:System.Numerics.BigInteger.op_Implicit(System.Int64)~System.Numerics.BigInteger" />.</summary>
       <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.op_Implicit(System.UInt64)~System.Numerics.BigInteger">
-      <summary>Defines an implicit conversion of a 64-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.  
- This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Double" />.</summary>
+      <summary>Defines an implicit conversion of a 64-bit unsigned integer to a <see cref="T:System.Numerics.BigInteger" /> value.
+This API is not CLS-compliant. The compliant alternative is <see cref="T:System.Double" />.</summary>
       <param name="value">The value to convert to a <see cref="T:System.Numerics.BigInteger" />.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter.</returns>
     </member>
@@ -761,8 +761,8 @@
       <param name="style">A bitwise combination of the enumeration values that specify the permitted format of <paramref name="value" />.</param>
       <returns>A value that is equivalent to the number specified in the <paramref name="value" /> parameter.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.  
--or-  
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.
+-or-
 <paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="value" /> is <see langword="null" />.</exception>
@@ -776,8 +776,8 @@
       <param name="provider">An object that provides culture-specific formatting information about <paramref name="value" />.</param>
       <returns>A value that is equivalent to the number specified in the <paramref name="value" /> parameter.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.  
--or-  
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.
+-or-
 <paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="value" /> is <see langword="null" />.</exception>
@@ -812,21 +812,21 @@
     </member>
     <member name="P:System.Numerics.BigInteger.Sign">
       <summary>Gets a number that indicates the sign (negative, positive, or zero) of the current <see cref="T:System.Numerics.BigInteger" /> object.</summary>
-      <returns>A number that indicates the sign of the <see cref="T:System.Numerics.BigInteger" /> object, as shown in the following table.  
+      <returns>A number that indicates the sign of the <see cref="T:System.Numerics.BigInteger" /> object, as shown in the following table.
   Number  
-
+  
   Description  
-
+  
   -1  
-
+  
   The value of this object is negative.  
-
+  
   0  
-
+  
   The value of this object is 0 (zero).  
-
+  
   1  
-
+  
   The value of this object is positive.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Subtract(System.Numerics.BigInteger,System.Numerics.BigInteger)">
@@ -897,8 +897,8 @@
       <returns>
         <see langword="true" /> if the <paramref name="value" /> parameter was converted successfully; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.  
--or-  
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.
+-or-
 <paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Numerics.BigInteger@)">
@@ -1189,7 +1189,7 @@
       <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
     </member>
     <member name="M:System.Numerics.Complex.op_Implicit(System.SByte)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a signed byte to a complex number.   
+      <summary>Defines an implicit conversion of a signed byte to a complex number.
 This API is not CLS-compliant.</summary>
       <param name="value">The value to convert to a complex number.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
@@ -1200,19 +1200,19 @@ This API is not CLS-compliant.</summary>
       <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
     </member>
     <member name="M:System.Numerics.Complex.op_Implicit(System.UInt16)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 16-bit unsigned integer to a complex number.   
+      <summary>Defines an implicit conversion of a 16-bit unsigned integer to a complex number.
 This API is not CLS-compliant.</summary>
       <param name="value">The value to convert to a complex number.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
     </member>
     <member name="M:System.Numerics.Complex.op_Implicit(System.UInt32)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 32-bit unsigned integer to a complex number.   
+      <summary>Defines an implicit conversion of a 32-bit unsigned integer to a complex number.
 This API is not CLS-compliant.</summary>
       <param name="value">The value to convert to a complex number.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>
     </member>
     <member name="M:System.Numerics.Complex.op_Implicit(System.UInt64)~System.Numerics.Complex">
-      <summary>Defines an implicit conversion of a 64-bit unsigned integer to a complex number.   
+      <summary>Defines an implicit conversion of a 64-bit unsigned integer to a complex number.
 This API is not CLS-compliant.</summary>
       <param name="value">The value to convert to a complex number.</param>
       <returns>An object that contains the value of the <paramref name="value" /> parameter as its real part and zero as its imaginary part.</returns>

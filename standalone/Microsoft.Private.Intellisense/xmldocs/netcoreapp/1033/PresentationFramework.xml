@@ -520,8 +520,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="service" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="service" /> is not enabled.  
--or-  
+        <paramref name="service" /> is not enabled.
+-or-
 <paramref name="highlightBrush" /> in not a <see cref="T:System.Windows.Media.SolidColorBrush" />.</exception>
       <exception cref="T:System.InvalidOperationException">The viewer control contains no content selection.</exception>
     </member>
@@ -1004,9 +1004,9 @@
         <paramref name="stream" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Xml.XmlException">
         <paramref name="stream" /> contains invalid XML.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="knownNamespaces" /> dictionary contains a duplicate namespace.  
- -or-  
- The <paramref name="knownNamespaces" /> dictionary contains an element that has a <see langword="null" /> key.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="knownNamespaces" /> dictionary contains a duplicate namespace.
+-or-
+The <paramref name="knownNamespaces" /> dictionary contains an element that has a <see langword="null" /> key.</exception>
     </member>
     <member name="M:System.Windows.Annotations.Storage.XmlStreamStore.AddAnnotation(System.Windows.Annotations.Annotation)">
       <summary>Adds a new <see cref="T:System.Windows.Annotations.Annotation" /> to the store.</summary>
@@ -3356,7 +3356,7 @@
     </member>
     <member name="M:System.Windows.Automation.Peers.SelectorAutomationPeer.System#Windows#Automation#Provider#ISelectionProvider#GetSelection">
       <summary>This type or member supports the Windows Presentation Foundation (WPF) infrastructure and is not intended to be used directly from your code.</summary>
-      <returns>A collection of UI Automation providers. true if multiple selection is allowed; otherwise false.</returns>
+      <returns>A collection of UI Automation providers. true if multiple selection is allowed; otherwise <see langword="false" />.</returns>
     </member>
     <member name="P:System.Windows.Automation.Peers.SelectorAutomationPeer.System#Windows#Automation#Provider#ISelectionProvider#IsSelectionRequired">
       <summary>This type or member supports the Windows Presentation Foundation (WPF) infrastructure and is not intended to be used directly from your code.</summary>
@@ -4218,7 +4218,7 @@
       <returns>A <see cref="T:System.Windows.DependencyProperty" /> that specifies the property of the condition. The default value is null.</returns>
     </member>
     <member name="M:System.Windows.Condition.ReceiveMarkupExtension(System.Object,System.Windows.Markup.XamlSetMarkupExtensionEventArgs)">
-      <summary>Handles cases where a markup extension provides a value for a property of a <see cref="T:System.Windows.Condition" /> object</summary>
+      <summary>Handles cases where a markup extension provides a value for a property of a <see cref="T:System.Windows.Condition" /> object.</summary>
       <param name="targetObject">The object where the markup extension sets the value.</param>
       <param name="eventArgs">Data that is relevant for markup extension processing.</param>
     </member>
@@ -4240,8 +4240,8 @@
     </member>
     <member name="P:System.Windows.Condition.Value">
       <summary>Gets or sets the value of the condition.</summary>
-      <returns>The <see cref="P:System.Windows.Condition.Value" /> property cannot be null for a given <see cref="T:System.Windows.Condition" />.  
- See also the Exceptions section. The default value is null.</returns>
+      <returns>The <see cref="P:System.Windows.Condition.Value" /> property cannot be null for a given <see cref="T:System.Windows.Condition" />.
+See also the Exceptions section. The default value is null.</returns>
       <exception cref="T:System.ArgumentException">Expressions are not supported.</exception>
     </member>
     <member name="T:System.Windows.ConditionCollection">
@@ -4748,9 +4748,9 @@
     <member name="P:System.Windows.Controls.Calendar.SelectedDate">
       <summary>Gets or sets the currently selected date.</summary>
       <returns>The date currently selected. The default is <see langword="null" />.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The specified date is outside the range specified by <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" /> and <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />  
- -or-  
- The specified date is in the <see cref="P:System.Windows.Controls.Calendar.BlackoutDates" /> collection.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The specified date is outside the range specified by <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" /> and <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />
+-or-
+The specified date is in the <see cref="P:System.Windows.Controls.Calendar.BlackoutDates" /> collection.</exception>
       <exception cref="T:System.InvalidOperationException">If set to anything other than <see langword="null" /> when <see cref="P:System.Windows.Controls.Calendar.SelectionMode" /> is set to <see cref="F:System.Windows.Controls.CalendarSelectionMode.None" />.</exception>
     </member>
     <member name="F:System.Windows.Controls.Calendar.SelectedDateProperty">
@@ -5100,8 +5100,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination array.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
@@ -5368,7 +5368,7 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <summary>Implements a selectable item inside a <see cref="T:System.Windows.Controls.ComboBox" />.</summary>
     </member>
     <member name="M:System.Windows.Controls.ComboBoxItem.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.ComboBoxItem" /> class</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.ComboBoxItem" /> class.</summary>
     </member>
     <member name="P:System.Windows.Controls.ComboBoxItem.IsHighlighted">
       <summary>Gets a value that indicates whether the item is highlighted.</summary>
@@ -5557,7 +5557,7 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="newContentTemplateSelector">The new value of the <see cref="P:System.Windows.Controls.ContentPresenter.ContentTemplateSelector" /> property.</param>
     </member>
     <member name="M:System.Windows.Controls.ContentPresenter.OnTemplateChanged(System.Windows.DataTemplate,System.Windows.DataTemplate)">
-      <summary>Invoked when the <see cref="P:System.Windows.Controls.ContentPresenter.ContentTemplate" /> changes</summary>
+      <summary>Invoked when the <see cref="P:System.Windows.Controls.ContentPresenter.ContentTemplate" /> changes.</summary>
       <param name="oldTemplate">The old <see cref="T:System.Windows.DataTemplate" /> object value.</param>
       <param name="newTemplate">The new <see cref="T:System.Windows.DataTemplate" /> object value.</param>
     </member>
@@ -6476,8 +6476,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
     </member>
     <member name="P:System.Windows.Controls.DataGrid.NewItemMargin">
       <summary>Gets or sets the margin for the new item row.</summary>
-      <returns>The margin for the new item row.  
- The registered default is 0. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
+      <returns>The margin for the new item row.
+The registered default is 0. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.DataGrid.NewItemMarginProperty">
       <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.NewItemMargin" /> dependency property.</summary>
@@ -7806,8 +7806,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="value">The requested size of the element.</param>
       <param name="type">The type that is used to determine how the size of the element is calculated.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="value" /> is <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />, or <see cref="F:System.Double.PositiveInfinity" />.  
--or-  
+        <paramref name="value" /> is <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />, or <see cref="F:System.Double.PositiveInfinity" />.
+-or-
 <paramref name="type" /> is not <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Auto" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Pixel" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Star" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.SizeToCells" />, or <see cref="F:System.Windows.Controls.DataGridLengthUnitType.SizeToHeader" />.</exception>
     </member>
     <member name="M:System.Windows.Controls.DataGridLength.#ctor(System.Double,System.Windows.Controls.DataGridLengthUnitType,System.Double,System.Double)">
@@ -7817,12 +7817,12 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="desiredValue">The calculated size needed for the element.</param>
       <param name="displayValue">The allocated size for the element.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="value" /> is <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />, or <see cref="F:System.Double.PositiveInfinity" />.  
--or-  
-<paramref name="type" /> is not <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Auto" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Pixel" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Star" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.SizeToCells" />, or <see cref="F:System.Windows.Controls.DataGridLengthUnitType.SizeToHeader" />.  
--or-  
-<paramref name="desiredValue" /> is <see cref="F:System.Double.NegativeInfinity" /> or <see cref="F:System.Double.PositiveInfinity" />.  
--or-  
+        <paramref name="value" /> is <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />, or <see cref="F:System.Double.PositiveInfinity" />.
+-or-
+<paramref name="type" /> is not <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Auto" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Pixel" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.Star" />, <see cref="F:System.Windows.Controls.DataGridLengthUnitType.SizeToCells" />, or <see cref="F:System.Windows.Controls.DataGridLengthUnitType.SizeToHeader" />.
+-or-
+<paramref name="desiredValue" /> is <see cref="F:System.Double.NegativeInfinity" /> or <see cref="F:System.Double.PositiveInfinity" />.
+-or-
 <paramref name="displayValue" /> is <see cref="F:System.Double.NegativeInfinity" /> or <see cref="F:System.Double.PositiveInfinity" />.</exception>
     </member>
     <member name="P:System.Windows.Controls.DataGridLength.Auto">
@@ -8091,7 +8091,7 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
     <member name="P:System.Windows.Controls.DataGridRow.IsNewItem">
       <summary>Gets or sets a value that indicates whether the <see cref="T:System.Windows.Controls.DataGridRow" /> is a placeholder for a new item or for an item that has not been committed.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.DataGridRow" /> is a placeholder for a new item or for an item that has not been committed; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.DataGridRow" /> is a placeholder for a new item or for an item that has not been committed; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.DataGridRow.IsNewItemProperty">
@@ -9134,7 +9134,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.FlowDocumentPageViewer.IsInactiveSelectionHighlightEnabled">
       <summary>Gets or sets a value that indicates whether <see cref="T:System.Windows.Controls.FlowDocumentPageViewer" /> displays selected text when the control does not have focus.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentPageViewer" /> displays selected text when the <see cref="T:System.Windows.Controls.FlowDocumentPageViewer" /> does not have focus; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentPageViewer" /> displays selected text when the <see cref="T:System.Windows.Controls.FlowDocumentPageViewer" /> does not have focus; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.FlowDocumentPageViewer.IsInactiveSelectionHighlightEnabledProperty">
@@ -9143,7 +9143,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.FlowDocumentPageViewer.IsSelectionActive">
       <summary>Gets a value that indicates whether the <see cref="T:System.Windows.Controls.FlowDocumentPageViewer" /> has focus and selected text.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentPageViewer" /> displays selected text when the text box does not have focus; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentPageViewer" /> displays selected text when the text box does not have focus; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.FlowDocumentPageViewer.IsSelectionActiveProperty">
@@ -9328,7 +9328,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.FlowDocumentReader.IsInactiveSelectionHighlightEnabled">
       <summary>Gets or sets a value that indicates whether <see cref="T:System.Windows.Controls.FlowDocumentReader" /> displays selected text when the control does not have focus.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentReader" /> displays selected text when the <see cref="T:System.Windows.Controls.FlowDocumentReader" /> does not have focus; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentReader" /> displays selected text when the <see cref="T:System.Windows.Controls.FlowDocumentReader" /> does not have focus; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.FlowDocumentReader.IsInactiveSelectionHighlightEnabledProperty">
@@ -9363,7 +9363,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.FlowDocumentReader.IsSelectionActive">
       <summary>Gets a value that indicates whether the <see cref="T:System.Windows.Controls.FlowDocumentReader" /> has focus and selected text.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentReader" /> displays selected text when the text box does not have focus; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentReader" /> displays selected text when the text box does not have focus; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.FlowDocumentReader.IsSelectionActiveProperty">
@@ -9580,7 +9580,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.FlowDocumentScrollViewer.IsInactiveSelectionHighlightEnabled">
       <summary>Gets or sets a value that indicates whether <see cref="T:System.Windows.Controls.FlowDocumentScrollViewer" /> displays selected text when the control does not have focus.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentScrollViewer" /> displays selected text when the <see cref="T:System.Windows.Controls.FlowDocumentScrollViewer" /> does not have focus; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentScrollViewer" /> displays selected text when the <see cref="T:System.Windows.Controls.FlowDocumentScrollViewer" /> does not have focus; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.FlowDocumentScrollViewer.IsInactiveSelectionHighlightEnabledProperty">
@@ -9589,7 +9589,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.FlowDocumentScrollViewer.IsSelectionActive">
       <summary>Gets a value that indicates whether the <see cref="T:System.Windows.Controls.FlowDocumentScrollViewer" /> has focus and selected text.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentScrollViewer" /> displays selected text when the text box does not have focus; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.FlowDocumentScrollViewer" /> displays selected text when the text box does not have focus; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.FlowDocumentScrollViewer.IsSelectionActiveProperty">
@@ -10027,11 +10027,13 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="M:System.Windows.Controls.Grid.ShouldSerializeColumnDefinitions">
       <summary>Returns true if <see cref="T:System.Windows.Controls.ColumnDefinitionCollection" /> associated with this instance of <see cref="T:System.Windows.Controls.Grid" /> is not empty.</summary>
-      <returns>true if <see cref="T:System.Windows.Controls.ColumnDefinitionCollection" /> associated with this instance of <see cref="T:System.Windows.Controls.Grid" /> is not empty; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if <see cref="T:System.Windows.Controls.ColumnDefinitionCollection" /> associated with this instance of <see cref="T:System.Windows.Controls.Grid" /> is not empty; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Windows.Controls.Grid.ShouldSerializeRowDefinitions">
       <summary>Returns true if <see cref="T:System.Windows.Controls.RowDefinitionCollection" /> associated with this instance of <see cref="T:System.Windows.Controls.Grid" /> is not empty.</summary>
-      <returns>true if <see cref="T:System.Windows.Controls.RowDefinitionCollection" /> associated with this instance of <see cref="T:System.Windows.Controls.Grid" /> is not empty; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if <see cref="T:System.Windows.Controls.RowDefinitionCollection" /> associated with this instance of <see cref="T:System.Windows.Controls.Grid" /> is not empty; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Windows.Controls.Grid.ShowGridLines">
       <summary>Gets or sets a value that indicates whether grid lines are visible within this <see cref="T:System.Windows.Controls.Grid" />.</summary>
@@ -11825,8 +11827,8 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.ItemCollection.CurrentItem">
       <summary>Gets the current item in the view.</summary>
-      <returns>The current object in the view or <see langword="null" /> if the collection is uninitialized or if there is no collection in the <see cref="P:System.Windows.Controls.ItemsControl.ItemsSource" /> mode.  
- By default, the first item of the collection starts as the current item.</returns>
+      <returns>The current object in the view or <see langword="null" /> if the collection is uninitialized or if there is no collection in the <see cref="P:System.Windows.Controls.ItemsControl.ItemsSource" /> mode.
+By default, the first item of the collection starts as the current item.</returns>
     </member>
     <member name="P:System.Windows.Controls.ItemCollection.CurrentPosition">
       <summary>Gets the ordinal position of the current item within the view.</summary>
@@ -13334,7 +13336,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.MenuItem.UsesItemContainerTemplate">
       <summary>Gets or sets a value that indicates whether the menu selects different item containers, depending on the type of the item in the underlying collection or some other heuristic.</summary>
       <returns>
-        <see langword="true" /> the menu selects different item containers; otherwise, <see langword="false" />.  
+        <see langword="true" /> the menu selects different item containers; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.MenuItem.UsesItemContainerTemplateProperty">
@@ -13377,7 +13379,7 @@ The registered default is <see langword="false" />. For more information about w
       <param name="culture">This parameter is not used.</param>
       <returns>
         <see cref="F:System.Windows.Data.Binding.DoNothing" />
-      </returns>
+.</returns>
     </member>
     <member name="T:System.Windows.Controls.NotifyDataErrorValidationRule">
       <summary>Represents a rule that checks for errors that are raised by a data source that implements <see cref="T:System.ComponentModel.INotifyDataErrorInfo" />.</summary>
@@ -13773,7 +13775,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.PasswordBox.IsInactiveSelectionHighlightEnabled">
       <summary>Gets or sets a value that indicates whether the <see cref="T:System.Windows.Controls.PasswordBox" /> displays selected text when the <see cref="T:System.Windows.Controls.PasswordBox" /> does not have focus.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.PasswordBox" /> displays selected text when the <see cref="T:System.Windows.Controls.PasswordBox" /> does not have focus; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.PasswordBox" /> displays selected text when the <see cref="T:System.Windows.Controls.PasswordBox" /> does not have focus; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.PasswordBox.IsInactiveSelectionHighlightEnabledProperty">
@@ -13782,7 +13784,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.PasswordBox.IsSelectionActive">
       <summary>Gets a value that indicates whether the <see cref="T:System.Windows.Controls.PasswordBox" /> has focus and selected text.</summary>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Windows.Controls.PasswordBox" /> has focus and selected text; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.PasswordBox" /> has focus and selected text; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.PasswordBox.IsSelectionActiveProperty">
@@ -13790,9 +13792,9 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.PasswordBox.MaxLength">
       <summary>Gets or sets the maximum length for passwords to be handled by this <see cref="T:System.Windows.Controls.PasswordBox" />.</summary>
-      <returns>An integer specifying the maximum length, in characters, for passwords to be handled by this <see cref="T:System.Windows.Controls.PasswordBox" />.  
- A value of zero (0) means no limit.  
- The default value is 0 (no length limit).</returns>
+      <returns>An integer specifying the maximum length, in characters, for passwords to be handled by this <see cref="T:System.Windows.Controls.PasswordBox" />.
+A value of zero (0) means no limit.
+The default value is 0 (no length limit).</returns>
     </member>
     <member name="F:System.Windows.Controls.PasswordBox.MaxLengthProperty">
       <summary>Identifies the <see cref="P:System.Windows.Controls.PasswordBox.MaxLength" /> dependency property.</summary>
@@ -13802,8 +13804,8 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.PasswordBox.Password">
       <summary>Gets or sets the password currently held by the <see cref="T:System.Windows.Controls.PasswordBox" />.</summary>
-      <returns>A string representing the password currently held by the <see cref="T:System.Windows.Controls.PasswordBox" />.  
- The default value is <see cref="F:System.String.Empty" />.</returns>
+      <returns>A string representing the password currently held by the <see cref="T:System.Windows.Controls.PasswordBox" />.
+The default value is <see cref="F:System.String.Empty" />.</returns>
     </member>
     <member name="E:System.Windows.Controls.PasswordBox.PasswordChanged">
       <summary>Occurs when the value of the <see cref="P:System.Windows.Controls.PasswordBox.Password" /> property changes.</summary>
@@ -13813,8 +13815,8 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.PasswordBox.PasswordChar">
       <summary>Gets or sets the masking character for the <see cref="T:System.Windows.Controls.PasswordBox" />.</summary>
-      <returns>A masking character to echo when the user enters text into the <see cref="T:System.Windows.Controls.PasswordBox" />.  
- The default value is a bullet character (●).</returns>
+      <returns>A masking character to echo when the user enters text into the <see cref="T:System.Windows.Controls.PasswordBox" />.
+The default value is a bullet character (●).</returns>
     </member>
     <member name="F:System.Windows.Controls.PasswordBox.PasswordCharProperty">
       <summary>Identifies the <see cref="P:System.Windows.Controls.PasswordBox.PasswordChar" /> dependency property.</summary>
@@ -13889,8 +13891,8 @@ The registered default is <see langword="false" />. For more information about w
       <param name="index">The specified index for the child element.</param>
       <returns>The <see cref="T:System.Windows.Media.Visual" /> child element that is at the specified index.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is greater than or equal to <see cref="P:System.Windows.Controls.Primitives.BulletDecorator.VisualChildrenCount" />.</exception>
     </member>
     <member name="P:System.Windows.Controls.Primitives.BulletDecorator.LogicalChildren">
@@ -14553,7 +14555,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.Primitives.DocumentViewerBase.CanGoToNextPage">
       <summary>Gets a value that indicates whether or not the viewer can jump to the next page in the current <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.Document" />.</summary>
       <returns>
-        <see langword="true" /> if the viewer can jump to the next page; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the viewer can jump to the next page; otherwise, <see langword="false" />.
 This property has no default value.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.DocumentViewerBase.CanGoToNextPageProperty">
@@ -14570,7 +14572,7 @@ This property has no default value.</returns>
     <member name="P:System.Windows.Controls.Primitives.DocumentViewerBase.CanGoToPreviousPage">
       <summary>Gets a value that indicates whether or not the viewer can jump to the previous page in the current <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.Document" />.</summary>
       <returns>
-        <see langword="true" /> if the viewer can jump to the previous page; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the viewer can jump to the previous page; otherwise, <see langword="false" />.
 This property has no default value.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.DocumentViewerBase.CanGoToPreviousPageProperty">
@@ -14581,8 +14583,8 @@ This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.DocumentViewerBase.Document">
       <summary>Gets or sets a <see cref="T:System.Windows.Documents.IDocumentPaginatorSource" /> to be paginated and displayed by the viewer.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.IDocumentPaginatorSource" /> to be paginated and displayed by the viewer.  
- The default property is null.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.IDocumentPaginatorSource" /> to be paginated and displayed by the viewer.
+The default property is null.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.DocumentViewerBase.DocumentProperty">
       <summary>Identifies the <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.Document" /> dependency property.</summary>
@@ -14616,20 +14618,20 @@ This property has no default value.</returns>
       <summary>Gets a value that indicates whether or not a child element in the viewer should be used as a master page.</summary>
     </member>
     <member name="F:System.Windows.Controls.Primitives.DocumentViewerBase.IsMasterPageProperty">
-      <summary>Identifies the <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.IsMasterPage" /> attached property</summary>
+      <summary>Identifies the <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.IsMasterPage" /> attached property.</summary>
     </member>
     <member name="M:System.Windows.Controls.Primitives.DocumentViewerBase.LastPage">
       <summary>Causes the viewer to jump to the last page in the current document (represented by the <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.Document" /> property).</summary>
     </member>
     <member name="P:System.Windows.Controls.Primitives.DocumentViewerBase.LogicalChildren">
       <summary>Gets an enumerator for the children in the logical tree of the viewer.</summary>
-      <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to enumerate the logical children of the viewer.  
- This property has no default value.</returns>
+      <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to enumerate the logical children of the viewer.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.DocumentViewerBase.MasterPageNumber">
       <summary>Gets the page number for the current master page.</summary>
-      <returns>The page number for the current master page, or 0 if no Document is currently loaded.  
- This property has no default value.</returns>
+      <returns>The page number for the current master page, or 0 if no Document is currently loaded.
+This property has no default value.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.DocumentViewerBase.MasterPageNumberProperty">
       <summary>Identifies the <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.MasterPageNumber" /> dependency property.</summary>
@@ -14692,8 +14694,8 @@ This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.DocumentViewerBase.PageCount">
       <summary>Gets the total number of pages in the current <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.Document" />.</summary>
-      <returns>The number of pages in the current document, or 0 if no document is currently loaded.  
- This property has no default value.</returns>
+      <returns>The number of pages in the current document, or 0 if no document is currently loaded.
+This property has no default value.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.DocumentViewerBase.PageCountProperty">
       <summary>Identifies the <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.PageCount" /> dependency property.</summary>
@@ -14703,8 +14705,8 @@ This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.DocumentViewerBase.PageViews">
       <summary>Gets a read-only collection of the active <see cref="T:System.Windows.Controls.Primitives.DocumentPageView" /> objects contained within the viewer.</summary>
-      <returns>A read-only collection of the active <see cref="T:System.Windows.Controls.Primitives.DocumentPageView" /> objects contained within the viewer.  
- This property has no default value.</returns>
+      <returns>A read-only collection of the active <see cref="T:System.Windows.Controls.Primitives.DocumentPageView" /> objects contained within the viewer.
+This property has no default value.</returns>
     </member>
     <member name="E:System.Windows.Controls.Primitives.DocumentViewerBase.PageViewsChanged">
       <summary>Occurs when the collection of <see cref="T:System.Windows.Controls.Primitives.DocumentPageView" /> items associated with this viewer (represented by the <see cref="P:System.Windows.Controls.Primitives.DocumentViewerBase.PageViews" /> property) changes.</summary>
@@ -15005,8 +15007,8 @@ This property has no default value.</returns>
     </member>
     <member name="M:System.Windows.Controls.Primitives.IItemContainerGenerator.IndexFromGeneratorPosition(System.Windows.Controls.Primitives.GeneratorPosition)">
       <summary>Returns the index that maps to the specified <see cref="T:System.Windows.Controls.Primitives.GeneratorPosition" />.</summary>
-      <param name="position">The index of desired item.  
- The <see cref="T:System.Windows.Controls.Primitives.GeneratorPosition" /> for the desired index.</param>
+      <param name="position">The index of desired item.
+The <see cref="T:System.Windows.Controls.Primitives.GeneratorPosition" /> for the desired index.</param>
       <returns>An <see cref="T:System.Int32" /> that is the index which maps to the specified <see cref="T:System.Windows.Controls.Primitives.GeneratorPosition" />.</returns>
     </member>
     <member name="M:System.Windows.Controls.Primitives.IItemContainerGenerator.PrepareItemContainer(System.Windows.DependencyObject)">
@@ -15057,8 +15059,8 @@ This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.IScrollInfo.ExtentHeight">
       <summary>Gets the vertical size of the extent.</summary>
-      <returns>A <see cref="T:System.Double" /> that represents, in device independent pixels, the vertical size of the extent.  
- This property has no default value.</returns>
+      <returns>A <see cref="T:System.Double" /> that represents, in device independent pixels, the vertical size of the extent.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.IScrollInfo.ExtentWidth">
       <summary>Gets the horizontal size of the extent.</summary>
@@ -15223,7 +15225,7 @@ This property has no default value.</returns>
     <member name="P:System.Windows.Controls.Primitives.MenuBase.UsesItemContainerTemplate">
       <summary>Gets or sets a value that indicates whether the menu selects different item containers, depending on the type of the item in the underlying collection or some other heuristic.</summary>
       <returns>
-        <see langword="true" /> the menu selects different item containers; otherwise, <see langword="false" />.  
+        <see langword="true" /> the menu selects different item containers; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.MenuBase.UsesItemContainerTemplateProperty">
@@ -15866,7 +15868,7 @@ The registered default is <see langword="false" />. For more information about w
       <param name="e">The event data.</param>
     </member>
     <member name="M:System.Windows.Controls.Primitives.Selector.OnItemsChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
-      <summary>Updates the current selection when an item in the <see cref="T:System.Windows.Controls.Primitives.Selector" /> has changed</summary>
+      <summary>Updates the current selection when an item in the <see cref="T:System.Windows.Controls.Primitives.Selector" /> has changed.</summary>
       <param name="e">The event data.</param>
     </member>
     <member name="M:System.Windows.Controls.Primitives.Selector.OnItemsSourceChanged(System.Collections.IEnumerable,System.Collections.IEnumerable)">
@@ -15907,7 +15909,7 @@ The registered default is <see langword="false" />. For more information about w
       <summary>Identifies the <see cref="P:System.Windows.Controls.Primitives.Selector.SelectedIndex" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Controls.Primitives.Selector.SelectedItem">
-      <summary>Gets or sets the first item in the current selection or returns null if the selection is empty</summary>
+      <summary>Gets or sets the first item in the current selection or returns null if the selection is empty.</summary>
       <returns>The first item in the current selection or <see langword="null" /> if the selection is empty.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.Selector.SelectedItemProperty">
@@ -15989,7 +15991,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.Primitives.StatusBar.UsesItemContainerTemplate">
       <summary>Gets or sets a value that indicates whether the menu selects different item containers, depending on the type of the item in the underlying collection or some other heuristic.</summary>
       <returns>
-        <see langword="true" /> the menu selects different item containers; otherwise, <see langword="false" />.  
+        <see langword="true" /> the menu selects different item containers; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.StatusBar.UsesItemContainerTemplateProperty">
@@ -16040,7 +16042,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.AcceptsTab">
       <summary>Gets or sets a value that indicates how the text editing control responds when the user presses the TAB key.</summary>
       <returns>
-        <see langword="true" /> if pressing the TAB key inserts a tab character at the current cursor position; <see langword="false" /> if pressing the TAB key moves the focus to the next control that is marked as a tab stop and does not insert a tab character.  
+        <see langword="true" /> if pressing the TAB key inserts a tab character at the current cursor position; <see langword="false" /> if pressing the TAB key moves the focus to the next control that is marked as a tab stop and does not insert a tab character.
 The default value is <see langword="false" />.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.TextBoxBase.AcceptsTabProperty">
@@ -16053,7 +16055,7 @@ The default value is <see langword="false" />.</returns>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.AutoWordSelection">
       <summary>Gets or sets a value that determines whether when a user selects part of a word by dragging across it with the mouse, the rest of the word is selected.</summary>
       <returns>
-        <see langword="true" /> if automatic word selection is enabled; otherwise, <see langword="false" />.  
+        <see langword="true" /> if automatic word selection is enabled; otherwise, <see langword="false" />.
 The default value is <see langword="false" />.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.TextBoxBase.AutoWordSelectionProperty">
@@ -16065,13 +16067,13 @@ The default value is <see langword="false" />.</returns>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.CanRedo">
       <summary>Gets a value that indicates whether the most recent undo action can be redone.</summary>
       <returns>
-        <see langword="true" /> if the most recent undo action can be redone; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the most recent undo action can be redone; otherwise, <see langword="false" />.
 This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.CanUndo">
       <summary>Gets a value that indicates whether the most recent action can be undone.</summary>
       <returns>
-        <see langword="true" /> if the most recent action can be undone; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the most recent action can be undone; otherwise, <see langword="false" />.
 This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.CaretBrush">
@@ -16096,28 +16098,28 @@ This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.ExtentHeight">
       <summary>Gets the vertical size of the visible content area.</summary>
-      <returns>A floating-point value that specifies the vertical size of the visible content area, in device-independent units (1/96th inch per unit).  
- The value of this property is 0.0 if the text-editing control is not configured to support scrolling.  
- This property has no default value.</returns>
+      <returns>A floating-point value that specifies the vertical size of the visible content area, in device-independent units (1/96th inch per unit).
+The value of this property is 0.0 if the text-editing control is not configured to support scrolling.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.ExtentWidth">
       <summary>Gets the horizontal size of the visible content area.</summary>
-      <returns>A floating-point value that specifies the horizontal size of the visible content area, in device-independent units (1/96th inch per unit).  
- The value of this property is 0.0 if the text editing control is not configured to support scrolling.  
- This property has no default value.</returns>
+      <returns>A floating-point value that specifies the horizontal size of the visible content area, in device-independent units (1/96th inch per unit).
+The value of this property is 0.0 if the text editing control is not configured to support scrolling.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.HorizontalOffset">
       <summary>Gets or sets the horizontal scroll position.</summary>
-      <returns>A floating-point value that specifies the horizontal scroll position, in device-independent units (1/96th inch per unit).  
- Setting this property causes the text editing control to scroll to the specified horizontal offset. Reading this property returns the current horizontal offset.  
- The value of this property is 0.0 if the text editing control is not configured to support scrolling.  
- This property has no default value.</returns>
+      <returns>A floating-point value that specifies the horizontal scroll position, in device-independent units (1/96th inch per unit).
+Setting this property causes the text editing control to scroll to the specified horizontal offset. Reading this property returns the current horizontal offset.
+The value of this property is 0.0 if the text editing control is not configured to support scrolling.
+This property has no default value.</returns>
       <exception cref="T:System.ArgumentException">An attempt is made to set this property to a negative value.</exception>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.HorizontalScrollBarVisibility">
       <summary>Gets or sets a value that indicates whether a horizontal scroll bar is shown.</summary>
-      <returns>A value that is defined by the <see cref="T:System.Windows.Controls.ScrollBarVisibility" /> enumeration.  
- The default value is <see cref="F:System.Windows.Visibility.Hidden" />.</returns>
+      <returns>A value that is defined by the <see cref="T:System.Windows.Controls.ScrollBarVisibility" /> enumeration.
+The default value is <see cref="F:System.Windows.Visibility.Hidden" />.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.TextBoxBase.HorizontalScrollBarVisibilityProperty">
       <summary>Identifies the <see cref="P:System.Windows.Controls.Primitives.TextBoxBase.HorizontalScrollBarVisibility" /> dependency property.</summary>
@@ -16125,7 +16127,7 @@ This property has no default value.</returns>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.IsInactiveSelectionHighlightEnabled">
       <summary>Gets or sets a value that indicates whether the text box displays selected text when the text box does not have focus.</summary>
       <returns>
-        <see langword="true" /> if the text box displays selected text when the text box does not have focus; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the text box displays selected text when the text box does not have focus; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.TextBoxBase.IsInactiveSelectionHighlightEnabledProperty">
@@ -16150,7 +16152,7 @@ The registered default is <see langword="false" />. For more information about w
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.IsSelectionActive">
       <summary>Gets a value that indicates whether the text box has focus and selected text.</summary>
       <returns>
-        <see langword="true" /> if the text box has focus and selected text; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the text box has focus and selected text; otherwise, <see langword="false" />.
 The registered default is <see langword="false" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.TextBoxBase.IsSelectionActiveProperty">
@@ -16337,8 +16339,8 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.SpellCheck">
       <summary>Gets a <see cref="T:System.Windows.Controls.SpellCheck" /> object that provides access to spelling errors in the text contents of a <see cref="T:System.Windows.Controls.Primitives.TextBoxBase" /> or <see cref="T:System.Windows.Controls.RichTextBox" />.</summary>
-      <returns>A <see cref="T:System.Windows.Controls.SpellCheck" /> object that provides access to spelling errors in the text contents of a <see cref="T:System.Windows.Controls.Primitives.TextBoxBase" /> or <see cref="T:System.Windows.Controls.RichTextBox" />.  
- This property has no default value.</returns>
+      <returns>A <see cref="T:System.Windows.Controls.SpellCheck" /> object that provides access to spelling errors in the text contents of a <see cref="T:System.Windows.Controls.Primitives.TextBoxBase" /> or <see cref="T:System.Windows.Controls.RichTextBox" />.
+This property has no default value.</returns>
     </member>
     <member name="E:System.Windows.Controls.Primitives.TextBoxBase.TextChanged">
       <summary>Occurs when content changes in the text element.</summary>
@@ -16362,31 +16364,31 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.VerticalOffset">
       <summary>Gets or sets the vertical scroll position.</summary>
-      <returns>A floating-point value that specifies the vertical scroll position, in device-independent units (1/96th inch per unit).  
- Setting this property causes the text editing control to scroll to the specified vertical offset. Reading this property returns the current vertical offset.  
- The value of this property is 0.0 if the text editing control is not configured to support scrolling.  
- This property has no default value.</returns>
+      <returns>A floating-point value that specifies the vertical scroll position, in device-independent units (1/96th inch per unit).
+Setting this property causes the text editing control to scroll to the specified vertical offset. Reading this property returns the current vertical offset.
+The value of this property is 0.0 if the text editing control is not configured to support scrolling.
+This property has no default value.</returns>
       <exception cref="T:System.ArgumentException">An attempt is made to set this property to a negative value.</exception>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.VerticalScrollBarVisibility">
       <summary>Gets or sets a value that indicates whether a vertical scroll bar is shown.</summary>
-      <returns>A value that is defined by the <see cref="T:System.Windows.Controls.ScrollBarVisibility" /> enumeration.  
- The default value is <see cref="F:System.Windows.Visibility.Hidden" />.</returns>
+      <returns>A value that is defined by the <see cref="T:System.Windows.Controls.ScrollBarVisibility" /> enumeration.
+The default value is <see cref="F:System.Windows.Visibility.Hidden" />.</returns>
     </member>
     <member name="F:System.Windows.Controls.Primitives.TextBoxBase.VerticalScrollBarVisibilityProperty">
       <summary>Identifies the <see cref="P:System.Windows.Controls.Primitives.TextBoxBase.VerticalScrollBarVisibility" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.ViewportHeight">
       <summary>Gets the vertical size of the scrollable content area.</summary>
-      <returns>A floating-point value that specifies the vertical size of the scrollable content area, in device-independent units (1/96th inch per unit).  
- The value of this property is 0.0 if the text editing control is not configured to support scrolling.  
- This property has no default value.</returns>
+      <returns>A floating-point value that specifies the vertical size of the scrollable content area, in device-independent units (1/96th inch per unit).
+The value of this property is 0.0 if the text editing control is not configured to support scrolling.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Controls.Primitives.TextBoxBase.ViewportWidth">
       <summary>Gets the horizontal size of the scrollable content area.</summary>
-      <returns>A floating-point value that specifies the horizontal size of the scrollable content area, in device-independent units (1/96th inch per unit).  
- The value of this property is 0.0 if the text editing control is not configured to support scrolling.  
- This property has no default value.</returns>
+      <returns>A floating-point value that specifies the horizontal size of the scrollable content area, in device-independent units (1/96th inch per unit).
+The value of this property is 0.0 if the text editing control is not configured to support scrolling.
+This property has no default value.</returns>
     </member>
     <member name="T:System.Windows.Controls.Primitives.Thumb">
       <summary>Represents a control that can be dragged by the user.</summary>
@@ -16852,8 +16854,8 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.PrintDialog.PrintTicket">
       <summary>Gets or sets the <see cref="T:System.Printing.PrintTicket" /> that is used by the <see cref="T:System.Windows.Controls.PrintDialog" /> when the user clicks Print for the current print job.</summary>
-      <returns>A <see cref="T:System.Printing.PrintTicket" /> that is used the next time the Print button in the dialog box is clicked.  
- Setting this <see cref="P:System.Windows.Controls.PrintDialog.PrintTicket" /> property does not validate or modify the specified <see cref="T:System.Printing.PrintTicket" /> for a particular <see cref="T:System.Printing.PrintQueue" />.  If needed, use the <see cref="M:System.Printing.PrintQueue.MergeAndValidatePrintTicket(System.Printing.PrintTicket,System.Printing.PrintTicket)" /> method to create a <see cref="T:System.Printing.PrintQueue" />-specific <see cref="T:System.Printing.PrintTicket" /> that is valid for a given printer.</returns>
+      <returns>A <see cref="T:System.Printing.PrintTicket" /> that is used the next time the Print button in the dialog box is clicked.
+Setting this <see cref="P:System.Windows.Controls.PrintDialog.PrintTicket" /> property does not validate or modify the specified <see cref="T:System.Printing.PrintTicket" /> for a particular <see cref="T:System.Printing.PrintQueue" />.  If needed, use the <see cref="M:System.Printing.PrintQueue.MergeAndValidatePrintTicket(System.Printing.PrintTicket,System.Printing.PrintTicket)" /> method to create a <see cref="T:System.Printing.PrintQueue" />-specific <see cref="T:System.Printing.PrintTicket" /> that is valid for a given printer.</returns>
     </member>
     <member name="M:System.Windows.Controls.PrintDialog.PrintVisual(System.Windows.Media.Visual,System.String)">
       <summary>Prints a visual (non-text) object, which is derived from the <see cref="T:System.Windows.Media.Visual" /> class, to the <see cref="T:System.Printing.PrintQueue" /> that is currently selected.</summary>
@@ -16980,15 +16982,15 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.RichTextBox.CaretPosition">
       <summary>Gets or sets the position of the input caret.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.TextPointer" /> object specifying the position of the input caret.  
- By default, the caret is at the first insertion position at the beginning of the content hosted by the <see cref="T:System.Windows.Controls.RichTextBox" />. See <see cref="T:System.Windows.Documents.TextPointer" /> for more information on text position terminology like "insertion position".</returns>
+      <returns>A <see cref="T:System.Windows.Documents.TextPointer" /> object specifying the position of the input caret.
+By default, the caret is at the first insertion position at the beginning of the content hosted by the <see cref="T:System.Windows.Controls.RichTextBox" />. See <see cref="T:System.Windows.Documents.TextPointer" /> for more information on text position terminology like "insertion position".</returns>
       <exception cref="T:System.ArgumentNullException">An attempt is made to set this property to <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">An attempt is made to set this property to a <see cref="T:System.Windows.Documents.TextPointer" /> that references a position outside of the current document.</exception>
     </member>
     <member name="P:System.Windows.Controls.RichTextBox.Document">
       <summary>Gets or sets the <see cref="T:System.Windows.Documents.FlowDocument" /> that represents the contents of the <see cref="T:System.Windows.Controls.RichTextBox" />.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.FlowDocument" /> object that represents the contents of the <see cref="T:System.Windows.Controls.RichTextBox" />.  
- By default, this property is set to an empty <see cref="T:System.Windows.Documents.FlowDocument" />.  Specifically, the empty <see cref="T:System.Windows.Documents.FlowDocument" /> contains a single <see cref="T:System.Windows.Documents.Paragraph" />, which contains a single <see cref="T:System.Windows.Documents.Run" /> which contains no text.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.FlowDocument" /> object that represents the contents of the <see cref="T:System.Windows.Controls.RichTextBox" />.
+By default, this property is set to an empty <see cref="T:System.Windows.Documents.FlowDocument" />.  Specifically, the empty <see cref="T:System.Windows.Documents.FlowDocument" /> contains a single <see cref="T:System.Windows.Documents.Paragraph" />, which contains a single <see cref="T:System.Windows.Documents.Run" /> which contains no text.</returns>
       <exception cref="T:System.ArgumentNullException">An attempt is made to set this property to <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">An attempt is made to set this property to a <see cref="T:System.Windows.Documents.FlowDocument" /> that represents the contents of another <see cref="T:System.Windows.Controls.RichTextBox" />.</exception>
       <exception cref="T:System.InvalidOperationException">This property is set while a change block has been activated.</exception>
@@ -17002,8 +17004,8 @@ The registered default is <see langword="false" />. For more information about w
     <member name="M:System.Windows.Controls.RichTextBox.GetPositionFromPoint(System.Windows.Point,System.Boolean)">
       <summary>Returns a <see cref="T:System.Windows.Documents.TextPointer" /> that points to the insertion point closest to the specified position.</summary>
       <param name="point">A <see cref="T:System.Windows.Point" /> object specifying the position to retrieve a <see cref="T:System.Windows.Documents.TextPointer" /> for.</param>
-      <param name="snapToText">If <see langword="true" />, this method always returns a <see cref="T:System.Windows.Documents.TextPointer" /> specifying the closest insertion position for the <see cref="T:System.Windows.Point" /> specified, regardless or whether or not the supplied <see cref="T:System.Windows.Point" /> is inside a character's bounding box.  
- If <see langword="false" />, this method returns <see langword="null" /> if the specified <see cref="T:System.Windows.Point" /> does not fall within any character bounding box.</param>
+      <param name="snapToText">If <see langword="true" />, this method always returns a <see cref="T:System.Windows.Documents.TextPointer" /> specifying the closest insertion position for the <see cref="T:System.Windows.Point" /> specified, regardless or whether or not the supplied <see cref="T:System.Windows.Point" /> is inside a character's bounding box.
+If <see langword="false" />, this method returns <see langword="null" /> if the specified <see cref="T:System.Windows.Point" /> does not fall within any character bounding box.</param>
       <returns>A <see cref="T:System.Windows.Documents.TextPointer" /> specifying the closest insertion position for the supplied point, or <see langword="null" /> if <paramref name="snapToText" /> is <see langword="false" /> and the supplied <see cref="T:System.Windows.Point" /> is not within any character's bounding box. Note that the <see cref="T:System.Windows.Documents.TextPointer" /> returned is usually the position between two characters. Use the <see cref="P:System.Windows.Documents.TextPointer.LogicalDirection" /> property of the returned <see cref="T:System.Windows.Documents.TextPointer" /> to determine which of the two characters the <see cref="T:System.Windows.Documents.TextPointer" /> corresponds to.</returns>
       <exception cref="T:System.InvalidOperationException">Raised if layout information for the <see cref="T:System.Windows.Controls.RichTextBox" /> is not current.</exception>
     </member>
@@ -17045,8 +17047,8 @@ The registered default is <see langword="false" />. For more information about w
     </member>
     <member name="P:System.Windows.Controls.RichTextBox.Selection">
       <summary>Gets a <see cref="T:System.Windows.Documents.TextSelection" /> object containing the current selection in the <see cref="T:System.Windows.Controls.RichTextBox" />.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.TextSelection" /> object containing the current selection in the <see cref="T:System.Windows.Controls.RichTextBox" />.  
- The default returned <see cref="T:System.Windows.Documents.TextSelection" /> has an <see cref="P:System.Windows.Documents.TextRange.IsEmpty" /> property value of <see langword="true" />. An empty <see cref="T:System.Windows.Documents.TextSelection" /> renders as a caret in the text area with no selection.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.TextSelection" /> object containing the current selection in the <see cref="T:System.Windows.Controls.RichTextBox" />.
+The default returned <see cref="T:System.Windows.Documents.TextSelection" /> has an <see cref="P:System.Windows.Documents.TextRange.IsEmpty" /> property value of <see langword="true" />. An empty <see cref="T:System.Windows.Documents.TextSelection" /> renders as a caret in the text area with no selection.</returns>
     </member>
     <member name="M:System.Windows.Controls.RichTextBox.ShouldSerializeDocument">
       <summary>Returns a value that indicates whether or not the effective value of the <see cref="P:System.Windows.Controls.RichTextBox.Document" /> property should be serialized during serialization of a <see cref="T:System.Windows.Controls.RichTextBox" /> object.</summary>
@@ -17119,8 +17121,8 @@ The registered default is <see langword="false" />. For more information about w
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from index to the end of the destination array.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
@@ -17270,7 +17272,7 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <returns>A <see cref="T:System.Double" /> that represents the updated value of the horizontal offset for a <see cref="T:System.Windows.Controls.ScrollViewer" />.</returns>
     </member>
     <member name="M:System.Windows.Controls.ScrollChangedEventArgs.InvokeEventHandler(System.Delegate,System.Object)">
-      <summary>Performs proper type casting before invoking the type-safe <see cref="T:System.Windows.Controls.ScrollChangedEventHandler" /> delegate</summary>
+      <summary>Performs proper type casting before invoking the type-safe <see cref="T:System.Windows.Controls.ScrollChangedEventHandler" /> delegate.</summary>
       <param name="genericHandler">The event handler to invoke, in this case the <see cref="T:System.Windows.Controls.ScrollChangedEventHandler" /> delegate.</param>
       <param name="genericTarget">The target upon which the <paramref name="genericHandler" /> is invoked.</param>
     </member>
@@ -19243,7 +19245,7 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="genericTarget">The current object along the event's route.</param>
     </member>
     <member name="P:System.Windows.Controls.TextChangedEventArgs.UndoAction">
-      <summary>Gets how the undo stack is caused or affected by this text change</summary>
+      <summary>Gets how the undo stack is caused or affected by this text change.</summary>
       <returns>The <see cref="T:System.Windows.Controls.UndoAction" /> appropriate for this text change.</returns>
     </member>
     <member name="T:System.Windows.Controls.TextChangedEventHandler">
@@ -20196,16 +20198,16 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <summary>How the undo stack caused or is affected by a text change.</summary>
     </member>
     <member name="F:System.Windows.Controls.UndoAction.Clear">
-      <summary>This change will clear the undo stack</summary>
+      <summary>This change will clear the undo stack.</summary>
     </member>
     <member name="F:System.Windows.Controls.UndoAction.Create">
-      <summary>This change will create a new undo unit</summary>
+      <summary>This change will create a new undo unit.</summary>
     </member>
     <member name="F:System.Windows.Controls.UndoAction.Merge">
-      <summary>This change will merge into the previous undo unit</summary>
+      <summary>This change will merge into the previous undo unit.</summary>
     </member>
     <member name="F:System.Windows.Controls.UndoAction.None">
-      <summary>This change will not affect the undo stack at all</summary>
+      <summary>This change will not affect the undo stack at all.</summary>
     </member>
     <member name="F:System.Windows.Controls.UndoAction.Redo">
       <summary>This change is the result of a call to Redo()</summary>
@@ -20670,7 +20672,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <summary>Determines whether the <see cref="T:System.Windows.Controls.VirtualizationCacheLengthConverter" /> can convert an object of the specified type to a <see cref="T:System.Windows.Controls.VirtualizationCacheLength" />, using the specified context.</summary>
       <param name="typeDescriptorContext">An object that provides a format context.</param>
       <param name="sourceType">The type to convert from.</param>
-      <returns>true if the <see cref="T:System.Windows.Controls.VirtualizationCacheLengthConverter" /> can convert the specified type to a <see cref="T:System.Windows.Controls.VirtualizationCacheLength" />; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Windows.Controls.VirtualizationCacheLengthConverter" /> can convert the specified type to a <see cref="T:System.Windows.Controls.VirtualizationCacheLength" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Windows.Controls.VirtualizationCacheLengthConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
       <summary>Determines whether the <see cref="T:System.Windows.Controls.VirtualizationCacheLengthConverter" /> can convert a <see cref="T:System.Windows.Controls.VirtualizationCacheLength" /> to the specified type.</summary>
@@ -20686,8 +20689,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="source">The object to convert to a <see cref="T:System.Windows.Controls.VirtualizationCacheLength" />.</param>
       <returns>The converted object.</returns>
       <exception cref="T:System.NotSupportedException">
-        <paramref name="source" /> is <see langword="null" />.  
--or-  
+        <paramref name="source" /> is <see langword="null" />.
+-or-
 <paramref name="source" /> cannot be converted to a <see cref="T:System.Windows.Controls.VirtualizationCacheLength" />.</exception>
     </member>
     <member name="M:System.Windows.Controls.VirtualizationCacheLengthConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
@@ -20700,8 +20703,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <exception cref="T:System.ArgumentNullException">
         <paramref name="destinationType" /> is <paramref name="null" />.</exception>
       <exception cref="T:System.NotSupportedException">
-        <paramref name="value" /> is <see langword="null" />.  
--or-  
+        <paramref name="value" /> is <see langword="null" />.
+-or-
 <paramref name="value" /> is not a <see cref="T:System.Windows.Controls.VirtualizationCacheLength" />.</exception>
     </member>
     <member name="T:System.Windows.Controls.VirtualizationCacheLengthUnit">
@@ -21183,9 +21186,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="additionalHeaders">HTTP headers to send to the server when the source is requested.</param>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Windows.Controls.WebBrowser" /> instance is no longer valid.</exception>
       <exception cref="T:System.InvalidOperationException">A reference to the underlying native <c>WebBrowser</c> could not be retrieved.</exception>
-      <exception cref="T:System.Security.SecurityException">Navigation from an application that is running in partial trust:  
+      <exception cref="T:System.Security.SecurityException">Navigation from an application that is running in partial trust:
 
-To a <see cref="T:System.Uri" /> that is not located at the site of origin, or  
+To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
 
 <paramref name="targetFrameName" /> name is not <see langword="null" /> or empty.</exception>
     </member>
@@ -21421,8 +21424,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Data.Binding.ElementName">
       <summary>Gets or sets the name of the element to use as the binding source object.</summary>
-      <returns>The value of the <see langword="Name" /> property or x:Name Directive of the element of interest. You can refer to elements in code only if they are registered to the appropriate <see cref="T:System.Windows.NameScope" /> through <see langword="RegisterName" />. For more information, see WPF XAML Namescopes.  
- The default is <see langword="null" />.</returns>
+      <returns>The value of the <see langword="Name" /> property or x:Name Directive of the element of interest. You can refer to elements in code only if they are registered to the appropriate <see cref="T:System.Windows.NameScope" /> through <see langword="RegisterName" />. For more information, see WPF XAML Namescopes.
+The default is <see langword="null" />.</returns>
     </member>
     <member name="M:System.Windows.Data.Binding.GetXmlNamespaceManager(System.Windows.DependencyObject)">
       <summary>Returns an XML namespace manager object used by the binding attached to the specified object.</summary>
@@ -21439,8 +21442,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Data.Binding.Mode">
       <summary>Gets or sets a value that indicates the direction of the data flow in the binding.</summary>
-      <returns>One of the <see cref="T:System.Windows.Data.BindingMode" /> values. The default is <see cref="F:System.Windows.Data.BindingMode.Default" />, which returns the default binding mode value of the target dependency property. However, the default value varies for each dependency property. In general, user-editable control properties, such as those of text boxes and check boxes, default to two-way bindings, whereas most other properties default to one-way bindings.  
- A programmatic way to determine whether a dependency property binds one-way or two-way by default is to get the property metadata of the property using <see cref="M:System.Windows.DependencyProperty.GetMetadata(System.Type)" /> and then check the Boolean value of the <see cref="P:System.Windows.FrameworkPropertyMetadata.BindsTwoWayByDefault" /> property.</returns>
+      <returns>One of the <see cref="T:System.Windows.Data.BindingMode" /> values. The default is <see cref="F:System.Windows.Data.BindingMode.Default" />, which returns the default binding mode value of the target dependency property. However, the default value varies for each dependency property. In general, user-editable control properties, such as those of text boxes and check boxes, default to two-way bindings, whereas most other properties default to one-way bindings.
+A programmatic way to determine whether a dependency property binds one-way or two-way by default is to get the property metadata of the property using <see cref="M:System.Windows.DependencyProperty.GetMetadata(System.Type)" /> and then check the Boolean value of the <see cref="P:System.Windows.FrameworkPropertyMetadata.BindsTwoWayByDefault" /> property.</returns>
     </member>
     <member name="P:System.Windows.Data.Binding.NotifyOnSourceUpdated">
       <summary>Gets or sets a value that indicates whether to raise the <see cref="E:System.Windows.Data.Binding.SourceUpdated" /> event when a value is transferred from the binding target to the binding source.</summary>
@@ -21519,8 +21522,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Data.Binding.UpdateSourceTrigger">
       <summary>Gets or sets a value that determines the timing of binding source updates.</summary>
-      <returns>One of the <see cref="T:System.Windows.Data.UpdateSourceTrigger" /> values. The default is <see cref="F:System.Windows.Data.UpdateSourceTrigger.Default" />, which returns the default <see cref="T:System.Windows.Data.UpdateSourceTrigger" /> value of the target dependency property. However, the default value for most dependency properties is <see cref="F:System.Windows.Data.UpdateSourceTrigger.PropertyChanged" />, while the <see cref="P:System.Windows.Controls.TextBox.Text" /> property has a default value of <see cref="F:System.Windows.Data.UpdateSourceTrigger.LostFocus" />.  
- A programmatic way to determine the default <see cref="P:System.Windows.Data.Binding.UpdateSourceTrigger" /> value of a dependency property is to get the property metadata of the property using <see cref="M:System.Windows.DependencyProperty.GetMetadata(System.Type)" /> and then check the value of the <see cref="P:System.Windows.FrameworkPropertyMetadata.DefaultUpdateSourceTrigger" /> property.</returns>
+      <returns>One of the <see cref="T:System.Windows.Data.UpdateSourceTrigger" /> values. The default is <see cref="F:System.Windows.Data.UpdateSourceTrigger.Default" />, which returns the default <see cref="T:System.Windows.Data.UpdateSourceTrigger" /> value of the target dependency property. However, the default value for most dependency properties is <see cref="F:System.Windows.Data.UpdateSourceTrigger.PropertyChanged" />, while the <see cref="P:System.Windows.Controls.TextBox.Text" /> property has a default value of <see cref="F:System.Windows.Data.UpdateSourceTrigger.LostFocus" />.
+A programmatic way to determine the default <see cref="P:System.Windows.Data.Binding.UpdateSourceTrigger" /> value of a dependency property is to get the property metadata of the property using <see cref="M:System.Windows.DependencyProperty.GetMetadata(System.Type)" /> and then check the value of the <see cref="P:System.Windows.FrameworkPropertyMetadata.DefaultUpdateSourceTrigger" /> property.</returns>
     </member>
     <member name="P:System.Windows.Data.Binding.ValidatesOnDataErrors">
       <summary>Gets or sets a value that indicates whether to include the <see cref="T:System.Windows.Controls.DataErrorValidationRule" />.</summary>
@@ -21864,17 +21867,17 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Data.BindingListCollectionView.Count">
       <summary>Gets the estimated number of records in the collection.</summary>
-      <returns>One of the following:  
+      <returns>One of the following:
   Value  
-
+  
   Meaning  
-
+  
   -1  
-
+  
   Could not determine the count of the collection. This might be returned by a "virtualizing" view, where the view deliberately does not account for all items in the underlying collection because the view is attempting to increase efficiency and minimize dependence on always having the entire collection available.  
-
+  
   any other integer  
-
+  
   The count of the collection.</returns>
     </member>
     <member name="P:System.Windows.Data.BindingListCollectionView.CurrentAddItem">
@@ -22943,10 +22946,10 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="targetType">The type of the binding target property.</param>
       <param name="parameter">The converter parameter to use.</param>
       <param name="culture">The culture to use in the converter.</param>
-      <returns>A converted value.  
- If the method returns <see langword="null" />, the valid <see langword="null" /> value is used.  
- A return value of <see cref="T:System.Windows.DependencyProperty" />.<see cref="F:System.Windows.DependencyProperty.UnsetValue" /> indicates that the converter did not produce a value, and that the binding will use the <see cref="P:System.Windows.Data.BindingBase.FallbackValue" /> if it is available, or else will use the default value.  
- A return value of <see cref="T:System.Windows.Data.Binding" />.<see cref="F:System.Windows.Data.Binding.DoNothing" /> indicates that the binding does not transfer the value or use the <see cref="P:System.Windows.Data.BindingBase.FallbackValue" /> or the default value.</returns>
+      <returns>A converted value.
+If the method returns <see langword="null" />, the valid <see langword="null" /> value is used.
+A return value of <see cref="T:System.Windows.DependencyProperty" />.<see cref="F:System.Windows.DependencyProperty.UnsetValue" /> indicates that the converter did not produce a value, and that the binding will use the <see cref="P:System.Windows.Data.BindingBase.FallbackValue" /> if it is available, or else will use the default value.
+A return value of <see cref="T:System.Windows.Data.Binding" />.<see cref="F:System.Windows.Data.Binding.DoNothing" /> indicates that the binding does not transfer the value or use the <see cref="P:System.Windows.Data.BindingBase.FallbackValue" /> or the default value.</returns>
     </member>
     <member name="M:System.Windows.Data.IMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)">
       <summary>Converts a binding target value to the source binding values.</summary>
@@ -23074,17 +23077,17 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Data.ListCollectionView.Count">
       <summary>Gets the estimated number of records.</summary>
-      <returns>One of the following:  
+      <returns>One of the following:
   Value  
-
+  
   Meaning  
-
+  
   -1  
-
+  
   Could not determine the count of the collection. This might be returned by a "virtualizing" view, where the view deliberately does not account for all items in the underlying collection because the view is trying to increase efficiency and minimize dependence on always having the whole collection available.  
-
+  
   any other integer  
-
+  
   The count of the collection.</returns>
     </member>
     <member name="P:System.Windows.Data.ListCollectionView.CurrentAddItem">
@@ -23306,8 +23309,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Data.MultiBinding.Mode">
       <summary>Gets or sets a value that indicates the direction of the data flow of this binding.</summary>
-      <returns>One of the <see cref="T:System.Windows.Data.BindingMode" /> values. The default value is <see cref="F:System.Windows.Data.BindingMode.Default" />, which returns the default binding mode value of the target dependency property. However, the default value varies for each dependency property. In general, user-editable control properties, such as <see cref="P:System.Windows.Controls.TextBox.Text" />, default to two-way bindings, whereas most other properties default to one-way bindings.  
- A programmatic way to determine whether a dependency property binds one-way or two-way by default is to get the property metadata of the property using <see cref="M:System.Windows.DependencyProperty.GetMetadata(System.Type)" /> and then check the Boolean value of the <see cref="P:System.Windows.FrameworkPropertyMetadata.BindsTwoWayByDefault" /> property.</returns>
+      <returns>One of the <see cref="T:System.Windows.Data.BindingMode" /> values. The default value is <see cref="F:System.Windows.Data.BindingMode.Default" />, which returns the default binding mode value of the target dependency property. However, the default value varies for each dependency property. In general, user-editable control properties, such as <see cref="P:System.Windows.Controls.TextBox.Text" />, default to two-way bindings, whereas most other properties default to one-way bindings.
+A programmatic way to determine whether a dependency property binds one-way or two-way by default is to get the property metadata of the property using <see cref="M:System.Windows.DependencyProperty.GetMetadata(System.Type)" /> and then check the Boolean value of the <see cref="P:System.Windows.FrameworkPropertyMetadata.BindsTwoWayByDefault" /> property.</returns>
     </member>
     <member name="P:System.Windows.Data.MultiBinding.NotifyOnSourceUpdated">
       <summary>Gets or sets a value that indicates whether to raise the <see cref="E:System.Windows.FrameworkElement.SourceUpdated" /> event when a value is transferred from the binding target to the binding source.</summary>
@@ -23348,8 +23351,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Data.MultiBinding.UpdateSourceTrigger">
       <summary>Gets or sets a value that determines the timing of binding source updates.</summary>
-      <returns>One of the <see cref="T:System.Windows.Data.UpdateSourceTrigger" /> values. The default value is <see cref="F:System.Windows.Data.UpdateSourceTrigger.Default" />, which returns the default <see cref="T:System.Windows.Data.UpdateSourceTrigger" /> value of the target dependency property. However, the default value for most dependency properties is <see cref="F:System.Windows.Data.UpdateSourceTrigger.PropertyChanged" />, while the <see cref="P:System.Windows.Controls.TextBox.Text" /> property has a default value of <see cref="F:System.Windows.Data.UpdateSourceTrigger.LostFocus" />.  
- A programmatic way to determine the default <see cref="P:System.Windows.Data.Binding.UpdateSourceTrigger" /> value of a dependency property is to get the property metadata of the property using <see cref="M:System.Windows.DependencyProperty.GetMetadata(System.Type)" /> and then check the value of the <see cref="P:System.Windows.FrameworkPropertyMetadata.DefaultUpdateSourceTrigger" /> property.</returns>
+      <returns>One of the <see cref="T:System.Windows.Data.UpdateSourceTrigger" /> values. The default value is <see cref="F:System.Windows.Data.UpdateSourceTrigger.Default" />, which returns the default <see cref="T:System.Windows.Data.UpdateSourceTrigger" /> value of the target dependency property. However, the default value for most dependency properties is <see cref="F:System.Windows.Data.UpdateSourceTrigger.PropertyChanged" />, while the <see cref="P:System.Windows.Controls.TextBox.Text" /> property has a default value of <see cref="F:System.Windows.Data.UpdateSourceTrigger.LostFocus" />.
+A programmatic way to determine the default <see cref="P:System.Windows.Data.Binding.UpdateSourceTrigger" /> value of a dependency property is to get the property metadata of the property using <see cref="M:System.Windows.DependencyProperty.GetMetadata(System.Type)" /> and then check the value of the <see cref="P:System.Windows.FrameworkPropertyMetadata.DefaultUpdateSourceTrigger" /> property.</returns>
     </member>
     <member name="P:System.Windows.Data.MultiBinding.ValidatesOnDataErrors">
       <summary>Gets or sets a value that indicates whether to include the <see cref="T:System.Windows.Controls.DataErrorValidationRule" />.</summary>
@@ -23645,21 +23648,21 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <summary>Represents the method that handles exceptions that are thrown during the update of the binding source value. This must be used with the <see cref="T:System.Windows.Controls.ExceptionValidationRule" />.</summary>
       <param name="bindExpression">The object with the exception.</param>
       <param name="exception">The exception encountered.</param>
-      <returns>An object that is typically one of the following:  
+      <returns>An object that is typically one of the following:
   Value  
-
+  
   Description  
-
+  
  <see langword="null" /> To ignore any exceptions. The default behavior (if there is no <see cref="T:System.Windows.Data.UpdateSourceExceptionFilterCallback" />) is to create a <see cref="T:System.Windows.Controls.ValidationError" /> with the exception and adds it to the <see cref="P:System.Windows.Controls.Validation.Errors" /> collection of the bound element.  
-
+  
   Any object  
-
+  
   To create a <see cref="T:System.Windows.Controls.ValidationError" /> object with the <see cref="P:System.Windows.Controls.ValidationError.ErrorContent" /> set to that object.  
-
+  
  The <see cref="T:System.Windows.Controls.ValidationError" /> object is added to <see cref="P:System.Windows.Controls.Validation.Errors" /> collection of the bound element.  
-
+  
   A <see cref="T:System.Windows.Controls.ValidationError" /> object  
-
+  
   To set the <see cref="T:System.Windows.Data.BindingExpression" /> or <see cref="T:System.Windows.Data.MultiBindingExpression" /> object as the <see cref="P:System.Windows.Controls.ValidationError.BindingInError" />. The <see cref="T:System.Windows.Controls.ValidationError" /> object is added to <see cref="P:System.Windows.Controls.Validation.Errors" /> collection of the bound element.</returns>
     </member>
     <member name="T:System.Windows.Data.UpdateSourceTrigger">
@@ -24004,10 +24007,10 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <exception cref="T:System.ArgumentNullException">
         <paramref name="context" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="context" /> is not able to provide the necessary XAML schema context for BAML.  
--or-  
-<see cref="T:System.Windows.Markup.IProvideValueTarget" /> service interpretation of <paramref name="context" /> determines that the target object is not a <see cref="T:System.Windows.ResourceDictionary" />.  
--or-  
+        <paramref name="context" /> is not able to provide the necessary XAML schema context for BAML.
+-or-
+<see cref="T:System.Windows.Markup.IProvideValueTarget" /> service interpretation of <paramref name="context" /> determines that the target object is not a <see cref="T:System.Windows.ResourceDictionary" />.
+-or-
 <paramref name="value" /> is not a valid byte stream.</exception>
     </member>
     <member name="T:System.Windows.DependencyPropertyHelper">
@@ -24185,10 +24188,10 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Adorner.IsClipEnabled">
       <summary>Gets or sets a value that indicates whether clipping of the adorner is enabled.</summary>
-      <returns>A <see langword="Boolean" /> value indicating whether clipping of the adorner is enabled.  
- If this property is <see langword="false" />, the adorner is not clipped.  
- If this property is <see langword="true" />, the adorner is clipped using the same clipping geometry as the adorned element.  
- The default value is <see langword="false" />.</returns>
+      <returns>A <see langword="Boolean" /> value indicating whether clipping of the adorner is enabled.
+If this property is <see langword="false" />, the adorner is not clipped.
+If this property is <see langword="true" />, the adorner is clipped using the same clipping geometry as the adorned element.
+The default value is <see langword="false" />.</returns>
     </member>
     <member name="M:System.Windows.Documents.Adorner.MeasureOverride(System.Windows.Size)">
       <summary>Implements any custom measuring behavior for the adorner.</summary>
@@ -24299,8 +24302,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.AnchoredBlock.Blocks">
       <summary>Gets a <see cref="T:System.Windows.Documents.BlockCollection" /> containing the top-level <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the element.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.BlockCollection" /> containing the <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the element.  
- This property has no default value.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.BlockCollection" /> containing the <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the element.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Documents.AnchoredBlock.BorderBrush">
       <summary>Gets or sets a <see cref="T:System.Windows.Media.Brush" /> to use when painting the element's border.</summary>
@@ -24311,17 +24314,17 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.AnchoredBlock.BorderThickness">
       <summary>Gets or sets the border thickness for the element.</summary>
-      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of border to apply, in device independent pixels.  
- The default value is a uniform thickness of zero (0.0).</returns>
+      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of border to apply, in device independent pixels.
+The default value is a uniform thickness of zero (0.0).</returns>
     </member>
     <member name="F:System.Windows.Documents.AnchoredBlock.BorderThicknessProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.AnchoredBlock.BorderThickness" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.AnchoredBlock.LineHeight">
       <summary>Gets or sets the height of each line of content.</summary>
-      <returns>A double value specifying the height of line in device independent pixels.  <see cref="P:System.Windows.Documents.AnchoredBlock.LineHeight" /> must be equal to or greater than <c>0.0034</c> and equal to or less then <c>160000</c>.  
- A value of <see cref="F:System.Double.NaN" /> (equivalent to an attribute value of "<c>Auto</c>") causes the line height is determined automatically from the current font characteristics.  
- The default value is <see cref="F:System.Double.NaN" />.</returns>
+      <returns>A double value specifying the height of line in device independent pixels.  <see cref="P:System.Windows.Documents.AnchoredBlock.LineHeight" /> must be equal to or greater than <c>0.0034</c> and equal to or less then <c>160000</c>.
+A value of <see cref="F:System.Double.NaN" /> (equivalent to an attribute value of "<c>Auto</c>") causes the line height is determined automatically from the current font characteristics.
+The default value is <see cref="F:System.Double.NaN" />.</returns>
       <exception cref="T:System.ArgumentException">Raised if an attempt is made to set <see cref="P:System.Windows.Controls.TextBlock.LineHeight" /> to a non-positive value.</exception>
     </member>
     <member name="F:System.Windows.Documents.AnchoredBlock.LineHeightProperty">
@@ -24336,16 +24339,16 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.AnchoredBlock.Margin">
       <summary>Gets or sets the margin thickness for the element.</summary>
-      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of margin to apply, in device independent pixels.  
- The default value is a uniform thickness of zero (0.0).</returns>
+      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of margin to apply, in device independent pixels.
+The default value is a uniform thickness of zero (0.0).</returns>
     </member>
     <member name="F:System.Windows.Documents.AnchoredBlock.MarginProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.AnchoredBlock.Margin" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.AnchoredBlock.Padding">
       <summary>Gets or sets the padding thickness for the element.</summary>
-      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of padding to apply, in device independent pixels.  
- The default value is a uniform thickness of zero (0.0).</returns>
+      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of padding to apply, in device independent pixels.
+The default value is a uniform thickness of zero (0.0).</returns>
     </member>
     <member name="F:System.Windows.Documents.AnchoredBlock.PaddingProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.AnchoredBlock.Padding" /> dependency property.</summary>
@@ -24359,8 +24362,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.AnchoredBlock.TextAlignment">
       <summary>Gets or sets a value that indicates the horizontal alignment of text content.</summary>
-      <returns>A member of the <see cref="T:System.Windows.TextAlignment" /> enumerations specifying the desired alignment.  
- The default value is <see cref="F:System.Windows.TextAlignment.Left" />.</returns>
+      <returns>A member of the <see cref="T:System.Windows.TextAlignment" /> enumerations specifying the desired alignment.
+The default value is <see cref="F:System.Windows.TextAlignment.Left" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.AnchoredBlock.TextAlignmentProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.AnchoredBlock.TextAlignment" /> dependency property.</summary>
@@ -24787,7 +24790,7 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <summary>This method has not been implemented.</summary>
       <returns>
         <see cref="T:System.Collections.Generic.IEnumerator`1" />
-      </returns>
+.</returns>
     </member>
     <member name="M:System.Windows.Documents.DocumentStructures.SectionStructure.System#Collections#IEnumerable#GetEnumerator">
       <summary>This method has not been implemented.</summary>
@@ -25248,56 +25251,56 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Figure.Height">
       <summary>Gets or sets a value that indicates the height of a <see cref="T:System.Windows.Documents.Figure" /> element.</summary>
-      <returns>A <see cref="T:System.Windows.FigureLength" /> structure specifying the height characteristics for the <see cref="T:System.Windows.Documents.Figure" />.  
- The default value is <see cref="T:System.Windows.FigureLength" />.<see cref="P:System.Windows.FigureLength.Value" /> = 1.0 and <see cref="T:System.Windows.FigureLength" />.<see cref="P:System.Windows.FigureLength.FigureUnitType" /> = <see cref="F:System.Windows.FigureUnitType.Auto" />.</returns>
+      <returns>A <see cref="T:System.Windows.FigureLength" /> structure specifying the height characteristics for the <see cref="T:System.Windows.Documents.Figure" />.
+The default value is <see cref="T:System.Windows.FigureLength" />.<see cref="P:System.Windows.FigureLength.Value" /> = 1.0 and <see cref="T:System.Windows.FigureLength" />.<see cref="P:System.Windows.FigureLength.FigureUnitType" /> = <see cref="F:System.Windows.FigureUnitType.Auto" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.Figure.HeightProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Figure.Height" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Figure.HorizontalAnchor">
       <summary>Gets or sets a value that indicates the position that content is anchored to in the horizontal direction.</summary>
-      <returns>A member of the <see cref="T:System.Windows.FigureHorizontalAnchor" /> enumeration specifying a horizontal anchor location for the <see cref="T:System.Windows.Documents.Figure" />.  
- The default value is <see cref="F:System.Windows.FigureHorizontalAnchor.ColumnRight" />.</returns>
+      <returns>A member of the <see cref="T:System.Windows.FigureHorizontalAnchor" /> enumeration specifying a horizontal anchor location for the <see cref="T:System.Windows.Documents.Figure" />.
+The default value is <see cref="F:System.Windows.FigureHorizontalAnchor.ColumnRight" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.Figure.HorizontalAnchorProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Figure.HorizontalAnchor" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Figure.HorizontalOffset">
       <summary>Gets or sets a value that indicates the distance that a <see cref="T:System.Windows.Documents.Figure" /> is offset from its baseline in the horizontal direction.</summary>
-      <returns>The distance that a <see cref="T:System.Windows.Documents.Figure" /> is offset from its baseline in the horizontal direction, in device independent pixels.  
- The default value is 0.0.</returns>
+      <returns>The distance that a <see cref="T:System.Windows.Documents.Figure" /> is offset from its baseline in the horizontal direction, in device independent pixels.
+The default value is 0.0.</returns>
     </member>
     <member name="F:System.Windows.Documents.Figure.HorizontalOffsetProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Figure.HorizontalOffset" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Figure.VerticalAnchor">
       <summary>Gets or sets a value that indicates the position that content is anchored to in the vertical direction.</summary>
-      <returns>A member of the <see cref="T:System.Windows.FigureVerticalAnchor" /> enumeration specifying a vertical anchor location for the <see cref="T:System.Windows.Documents.Figure" />.  
- The default value is <see cref="F:System.Windows.FigureVerticalAnchor.ParagraphTop" />.</returns>
+      <returns>A member of the <see cref="T:System.Windows.FigureVerticalAnchor" /> enumeration specifying a vertical anchor location for the <see cref="T:System.Windows.Documents.Figure" />.
+The default value is <see cref="F:System.Windows.FigureVerticalAnchor.ParagraphTop" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.Figure.VerticalAnchorProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Figure.VerticalAnchor" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Figure.VerticalOffset">
       <summary>Gets or sets a value that indicates the distance that a <see cref="T:System.Windows.Documents.Figure" /> is offset from its baseline in the vertical direction.</summary>
-      <returns>The distance that a <see cref="T:System.Windows.Documents.Figure" /> is offset from its baseline in the vertical direction, in device independent pixels.  
- The default value is 0.0.</returns>
+      <returns>The distance that a <see cref="T:System.Windows.Documents.Figure" /> is offset from its baseline in the vertical direction, in device independent pixels.
+The default value is 0.0.</returns>
     </member>
     <member name="F:System.Windows.Documents.Figure.VerticalOffsetProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Figure.VerticalOffset" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Figure.Width">
       <summary>Gets or sets a value that indicates the width of a <see cref="T:System.Windows.Documents.Figure" /> element.</summary>
-      <returns>A <see cref="T:System.Windows.FigureLength" /> structure specifying the width characteristics for the <see cref="T:System.Windows.Documents.Figure" />.  
- The default value is <see cref="T:System.Windows.FigureLength" />.<see cref="P:System.Windows.FigureLength.Value" /> = 1.0 and <see cref="T:System.Windows.FigureLength" />.<see cref="P:System.Windows.FigureLength.FigureUnitType" /> = <see cref="F:System.Windows.FigureUnitType.Auto" />.</returns>
+      <returns>A <see cref="T:System.Windows.FigureLength" /> structure specifying the width characteristics for the <see cref="T:System.Windows.Documents.Figure" />.
+The default value is <see cref="T:System.Windows.FigureLength" />.<see cref="P:System.Windows.FigureLength.Value" /> = 1.0 and <see cref="T:System.Windows.FigureLength" />.<see cref="P:System.Windows.FigureLength.FigureUnitType" /> = <see cref="F:System.Windows.FigureUnitType.Auto" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.Figure.WidthProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Figure.Width" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Figure.WrapDirection">
       <summary>Gets or sets a value that indicates the allowable ways in which content can flow around a <see cref="T:System.Windows.Documents.Figure" />.</summary>
-      <returns>A member of the <see cref="T:System.Windows.WrapDirection" /> enumeration specifying the allowable ways in which content can flow around a <see cref="T:System.Windows.Documents.Figure" />.  
- The default value is <see cref="F:System.Windows.WrapDirection.Both" />.</returns>
+      <returns>A member of the <see cref="T:System.Windows.WrapDirection" /> enumeration specifying the allowable ways in which content can flow around a <see cref="T:System.Windows.Documents.Figure" />.
+The default value is <see cref="F:System.Windows.WrapDirection.Both" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.Figure.WrapDirectionProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Figure.WrapDirection" /> dependency property.</summary>
@@ -25334,9 +25337,9 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     <member name="M:System.Windows.Documents.FixedDocument.System#IServiceProvider#GetService(System.Type)">
       <summary>Gets the service object of the specified type.</summary>
       <param name="serviceType">An object that specifies the type of service object to get.</param>
-      <returns>A service object of type <paramref name="serviceType" />.  
- -or-  
- <see langword="null" /> if there is no service object of type <paramref name="serviceType" />.</returns>
+      <returns>A service object of type <paramref name="serviceType" />.
+-or-
+<see langword="null" /> if there is no service object of type <paramref name="serviceType" />.</returns>
     </member>
     <member name="M:System.Windows.Documents.FixedDocument.System#Windows#Markup#IAddChild#AddChild(System.Object)">
       <summary>Adds a child object.</summary>
@@ -25382,9 +25385,9 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     <member name="M:System.Windows.Documents.FixedDocumentSequence.System#IServiceProvider#GetService(System.Type)">
       <summary>Gets the service object of the specified type.</summary>
       <param name="serviceType">An object that specifies the type of service object to get.</param>
-      <returns>A service object of type <paramref name="serviceType" />.  
- -or-  
- <see langword="null" /> if there is no service object of type <paramref name="serviceType" />.</returns>
+      <returns>A service object of type <paramref name="serviceType" />.
+-or-
+<see langword="null" /> if there is no service object of type <paramref name="serviceType" />.</returns>
     </member>
     <member name="M:System.Windows.Documents.FixedDocumentSequence.System#Windows#Markup#IAddChild#AddChild(System.Object)">
       <summary>Adds a child object.</summary>
@@ -25777,9 +25780,9 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     <member name="M:System.Windows.Documents.FlowDocument.System#IServiceProvider#GetService(System.Type)">
       <summary>Gets the service object of the specified type.</summary>
       <param name="serviceType">An object that specifies the type of service object to get.</param>
-      <returns>A service object of type <paramref name="serviceType." />  
- -or-  
- <see langword="null" /> if there is no service object of type <paramref name="serviceType" />.</returns>
+      <returns>A service object of type <paramref name="serviceType." />
+-or-
+<see langword="null" /> if there is no service object of type <paramref name="serviceType" />.</returns>
     </member>
     <member name="P:System.Windows.Documents.FlowDocument.System#Windows#Documents#IDocumentPaginatorSource#DocumentPaginator">
       <summary>Defines the source object that performs actual content pagination.</summary>
@@ -26028,8 +26031,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Hyperlink.NavigateUri">
       <summary>Gets or sets a URI to navigate to when the <see cref="T:System.Windows.Documents.Hyperlink" /> is activated.</summary>
-      <returns>The URI to navigate to when the <see cref="T:System.Windows.Documents.Hyperlink" /> is activated. The default is <see langword="null" />.  
- <see cref="T:System.Windows.Documents.Hyperlink" /> can navigate to the value of the <see cref="P:System.Windows.Documents.Hyperlink.NavigateUri" /> property only if either the direct or indirect parent of a <see cref="T:System.Windows.Documents.Hyperlink" /> is a navigation host, including <see cref="T:System.Windows.Navigation.NavigationWindow" />, <see cref="T:System.Windows.Controls.Frame" />, or any browser that can host XBAPs (which includes Internet Explorer 6 and later versions, and Firefox 2.0+). For more information, see the Navigation Hosts section in Navigation Overview.</returns>
+      <returns>The URI to navigate to when the <see cref="T:System.Windows.Documents.Hyperlink" /> is activated. The default is <see langword="null" />.
+<see cref="T:System.Windows.Documents.Hyperlink" /> can navigate to the value of the <see cref="P:System.Windows.Documents.Hyperlink.NavigateUri" /> property only if either the direct or indirect parent of a <see cref="T:System.Windows.Documents.Hyperlink" /> is a navigation host, including <see cref="T:System.Windows.Navigation.NavigationWindow" />, <see cref="T:System.Windows.Controls.Frame" />, or any browser that can host XBAPs (which includes Internet Explorer 6 and later versions, and Firefox 2.0+). For more information, see the Navigation Hosts section in Navigation Overview.</returns>
     </member>
     <member name="F:System.Windows.Documents.Hyperlink.NavigateUriProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Hyperlink.NavigateUri" /> dependency property.</summary>
@@ -26078,39 +26081,39 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Inline.BaselineAlignment">
       <summary>Gets or sets the baseline alignment for the <see cref="T:System.Windows.Documents.Inline" /> element.</summary>
-      <returns>A member or the <see cref="T:System.Windows.BaselineAlignment" /> enumeration specifying the baseline alignment for the <see cref="T:System.Windows.Documents.Inline" /> element.  
- The default value is <see cref="T:System.Windows.BaselineAlignment" />.Baseline.</returns>
+      <returns>A member or the <see cref="T:System.Windows.BaselineAlignment" /> enumeration specifying the baseline alignment for the <see cref="T:System.Windows.Documents.Inline" /> element.
+The default value is <see cref="T:System.Windows.BaselineAlignment" />.Baseline.</returns>
     </member>
     <member name="F:System.Windows.Documents.Inline.BaselineAlignmentProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Inline.BaselineAlignment" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Inline.FlowDirection">
       <summary>Gets or sets a value that specifies the relative direction for flow of content within a <see cref="T:System.Windows.Documents.Inline" /> element.</summary>
-      <returns>A member of the <see cref="T:System.Windows.FlowDirection" /> enumeration specifying the relative flow direction.  Getting this property returns the currently effective flow direction.  Setting this property causes the contents of the <see cref="T:System.Windows.Documents.Inline" /> element to re-flow in the indicated direction.  
- The default value is <see cref="F:System.Windows.FlowDirection.LeftToRight" />.</returns>
+      <returns>A member of the <see cref="T:System.Windows.FlowDirection" /> enumeration specifying the relative flow direction.  Getting this property returns the currently effective flow direction.  Setting this property causes the contents of the <see cref="T:System.Windows.Documents.Inline" /> element to re-flow in the indicated direction.
+The default value is <see cref="F:System.Windows.FlowDirection.LeftToRight" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.Inline.FlowDirectionProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Inline.FlowDirection" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Inline.NextInline">
       <summary>Gets the next <see cref="T:System.Windows.Documents.Inline" /> element that is a peer to this element.</summary>
-      <returns>An <see cref="T:System.Windows.Documents.Inline" /> object representing the next <see cref="T:System.Windows.Documents.Inline" /> element that is a peer to this element, or null if there is no next <see cref="T:System.Windows.Documents.Inline" /> element.  
- This property has no default value.</returns>
+      <returns>An <see cref="T:System.Windows.Documents.Inline" /> object representing the next <see cref="T:System.Windows.Documents.Inline" /> element that is a peer to this element, or null if there is no next <see cref="T:System.Windows.Documents.Inline" /> element.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Documents.Inline.PreviousInline">
       <summary>Gets the previous <see cref="T:System.Windows.Documents.Inline" /> element that is a peer to this element.</summary>
-      <returns>An <see cref="T:System.Windows.Documents.Inline" /> object representing the previous <see cref="T:System.Windows.Documents.Inline" /> element that is a peer to this element, or null if there is no previous <see cref="T:System.Windows.Documents.Inline" /> element.  
- This property has no default value.</returns>
+      <returns>An <see cref="T:System.Windows.Documents.Inline" /> object representing the previous <see cref="T:System.Windows.Documents.Inline" /> element that is a peer to this element, or null if there is no previous <see cref="T:System.Windows.Documents.Inline" /> element.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Documents.Inline.SiblingInlines">
       <summary>Gets an <see cref="T:System.Windows.Documents.InlineCollection" /> that contains the <see cref="T:System.Windows.Documents.Inline" /> elements that are siblings (peers) to this element.</summary>
-      <returns>An <see cref="T:System.Windows.Documents.InlineCollection" /> object that contains the <see cref="T:System.Windows.Documents.Inline" /> elements that are siblings to this element.  
- This property has no default value.</returns>
+      <returns>An <see cref="T:System.Windows.Documents.InlineCollection" /> object that contains the <see cref="T:System.Windows.Documents.Inline" /> elements that are siblings to this element.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Documents.Inline.TextDecorations">
       <summary>Gets a <see cref="T:System.Windows.TextDecorationCollection" /> that contains text decorations to apply to this element.</summary>
-      <returns>A <see cref="T:System.Windows.TextDecorationCollection" /> collection that contains text decorations to apply to this element.  
- The default value is null (no text decorations applied).</returns>
+      <returns>A <see cref="T:System.Windows.TextDecorationCollection" /> collection that contains text decorations to apply to this element.
+The default value is null (no text decorations applied).</returns>
     </member>
     <member name="F:System.Windows.Documents.Inline.TextDecorationsProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Inline.TextDecorations" /> dependency property.</summary>
@@ -26251,30 +26254,30 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.List.ListItems">
       <summary>Gets a <see cref="T:System.Windows.Documents.ListItemCollection" /> containing the <see cref="T:System.Windows.Documents.ListItem" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.List" />.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.ListItemCollection" /> containing the <see cref="T:System.Windows.Documents.ListItem" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.List" />.  
- This property has no default value.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.ListItemCollection" /> containing the <see cref="T:System.Windows.Documents.ListItem" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.List" />.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Documents.List.MarkerOffset">
       <summary>Gets or sets the desired distance between the contents of each <see cref="T:System.Windows.Documents.ListItem" /> element, and the near edge of the list marker.</summary>
-      <returns>A double value specifying the desired distance between list content and the near edge of list markers, in device independent pixels.  
- A value of <see cref="F:System.Double.NaN" /> (equivalent to an attribute value of "<c>Auto</c>") causes the marker offset to be determined automatically.  
- The default value is <see cref="F:System.Double.NaN" />.</returns>
+      <returns>A double value specifying the desired distance between list content and the near edge of list markers, in device independent pixels.
+A value of <see cref="F:System.Double.NaN" /> (equivalent to an attribute value of "<c>Auto</c>") causes the marker offset to be determined automatically.
+The default value is <see cref="F:System.Double.NaN" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.List.MarkerOffsetProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.List.MarkerOffset" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.List.MarkerStyle">
       <summary>Gets or sets the marker style for the <see cref="T:System.Windows.Documents.List" />.</summary>
-      <returns>A member of the <see cref="T:System.Windows.TextMarkerStyle" /> enumeration specifying the marker style to use.  
- The default value is <see cref="F:System.Windows.TextMarkerStyle.Disc" />.</returns>
+      <returns>A member of the <see cref="T:System.Windows.TextMarkerStyle" /> enumeration specifying the marker style to use.
+The default value is <see cref="F:System.Windows.TextMarkerStyle.Disc" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.List.MarkerStyleProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.List.MarkerStyle" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.List.StartIndex">
       <summary>Gets or sets the starting index for labeling the items in an ordered list.</summary>
-      <returns>The starting index for labeling items in an ordered list.  
- The default value is 1.</returns>
+      <returns>The starting index for labeling items in an ordered list.
+The default value is 1.</returns>
     </member>
     <member name="F:System.Windows.Documents.List.StartIndexProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.List.StartIndex" /> dependency property.</summary>
@@ -26489,8 +26492,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Paragraph.Inlines">
       <summary>Gets an <see cref="T:System.Windows.Documents.InlineCollection" /> containing the top-level <see cref="T:System.Windows.Documents.Inline" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Paragraph" />.</summary>
-      <returns>An <see cref="T:System.Windows.Documents.InlineCollection" /> containing the <see cref="T:System.Windows.Documents.Inline" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Paragraph" />.  
- This property has no default value.</returns>
+      <returns>An <see cref="T:System.Windows.Documents.InlineCollection" /> containing the <see cref="T:System.Windows.Documents.Inline" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Paragraph" />.
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Documents.Paragraph.KeepTogether">
       <summary>Gets or sets a value that indicates whether the text of the paragraph may be broken by a page break or column break.</summary>
@@ -26510,16 +26513,16 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Paragraph.MinOrphanLines">
       <summary>Gets or sets a value that specifies the minimum number of lines that can be left before the break when a <see cref="T:System.Windows.Documents.Paragraph" /> is broken by a page break or column break.</summary>
-      <returns>An integer specifying the minimum number of lines that can be left before the break when a <see cref="T:System.Windows.Documents.Paragraph" /> is broken by a page break or column break. A value of 0 indicates no minimum.  
- The default value is 0.</returns>
+      <returns>An integer specifying the minimum number of lines that can be left before the break when a <see cref="T:System.Windows.Documents.Paragraph" /> is broken by a page break or column break. A value of 0 indicates no minimum.
+The default value is 0.</returns>
     </member>
     <member name="F:System.Windows.Documents.Paragraph.MinOrphanLinesProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Paragraph.MinOrphanLines" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Paragraph.MinWidowLines">
       <summary>Gets or sets a value that specifies the minimum number of lines that can be placed after the break when a <see cref="T:System.Windows.Documents.Paragraph" /> is broken by a page break or column break.</summary>
-      <returns>An integer specifying the minimum number of lines that can be placed after the break when a <see cref="T:System.Windows.Documents.Paragraph" /> is broken by a page break or column break.  A value of 0 indicates no minimum.  
- The default value is 0.</returns>
+      <returns>An integer specifying the minimum number of lines that can be placed after the break when a <see cref="T:System.Windows.Documents.Paragraph" /> is broken by a page break or column break.  A value of 0 indicates no minimum.
+The default value is 0.</returns>
     </member>
     <member name="F:System.Windows.Documents.Paragraph.MinWidowLinesProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Paragraph.MinWidowLines" /> dependency property.</summary>
@@ -26588,8 +26591,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Section.Blocks">
       <summary>Gets a <see cref="T:System.Windows.Documents.BlockCollection" /> containing the top-level <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Section" />.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.BlockCollection" /> containing the <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Section" />  
- This property has no default value.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.BlockCollection" /> containing the <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Section" />
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Documents.Section.HasTrailingParagraphBreakOnPaste">
       <summary>Gets or sets a value that indicates whether or not a trailing paragraph break should be inserted after the last paragraph when placing the contents of a root <see cref="T:System.Windows.Documents.Section" /> element on the clipboard.</summary>
@@ -26701,13 +26704,13 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="stream">The <see cref="T:System.IO.Stream" /> to which the returned object writes.</param>
       <returns>An object of a class derived from <see cref="T:System.Windows.Documents.Serialization.SerializerWriter" />.</returns>
       <exception cref="T:System.ArgumentNullException">One of the parameters is null.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="serializerDescriptor" /> is specifying the wrong version.  
- -or-  
- It is not registered.  
- -or-  
- The assembly file cannot be found.  
- -or-  
- The assembly cannot be loaded.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="serializerDescriptor" /> is specifying the wrong version.
+-or-
+It is not registered.
+-or-
+The assembly file cannot be found.
+-or-
+The assembly cannot be loaded.</exception>
     </member>
     <member name="P:System.Windows.Documents.Serialization.SerializerProvider.InstalledSerializers">
       <summary>Gets a collection of the installed plug-in serializers.</summary>
@@ -27071,8 +27074,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Span.Inlines">
       <summary>Gets an <see cref="T:System.Windows.Documents.InlineCollection" /> containing the top-level <see cref="T:System.Windows.Documents.Inline" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Span" />.</summary>
-      <returns>An <see cref="T:System.Windows.Documents.InlineCollection" /> containing the <see cref="T:System.Windows.Documents.Inline" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Span" />.  
- This property has no default value.</returns>
+      <returns>An <see cref="T:System.Windows.Documents.InlineCollection" /> containing the <see cref="T:System.Windows.Documents.Inline" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.Span" />.
+This property has no default value.</returns>
     </member>
     <member name="M:System.Windows.Documents.Span.ShouldSerializeInlines(System.Windows.Markup.XamlDesignerSerializationManager)">
       <summary>Returns a value that indicates whether the content of a <see cref="T:System.Windows.Documents.Span" /> element should be serialized during serialization of a <see cref="T:System.Windows.Documents.Run" /> object.</summary>
@@ -27093,16 +27096,16 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Table.CellSpacing">
       <summary>Gets or sets the amount of spacing between cells in a table.</summary>
-      <returns>The amount of spacing between cells in a table, in device independent pixels.  
- The default value is 2.0.</returns>
+      <returns>The amount of spacing between cells in a table, in device independent pixels.
+The default value is 2.0.</returns>
     </member>
     <member name="F:System.Windows.Documents.Table.CellSpacingProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.Table.CellSpacing" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.Table.Columns">
       <summary>Gets a <see cref="T:System.Windows.Documents.TableColumnCollection" /> object that contains the columns hosted by the table.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.TableColumnCollection" /> object that contains the columns (represented by <see cref="T:System.Windows.Documents.TableColumn" /> objects) hosted by the table. Note that this number might not be the actual number of columns rendered in the table. It is the <see cref="T:System.Windows.Documents.TableCell" /> objects in a table that determine how many columns are actually rendered.  
- This property has no default value.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.TableColumnCollection" /> object that contains the columns (represented by <see cref="T:System.Windows.Documents.TableColumn" /> objects) hosted by the table. Note that this number might not be the actual number of columns rendered in the table. It is the <see cref="T:System.Windows.Documents.TableCell" /> objects in a table that determine how many columns are actually rendered.
+This property has no default value.</returns>
     </member>
     <member name="M:System.Windows.Documents.Table.EndInit">
       <summary>Called immediately after an element is initialized.</summary>
@@ -27117,8 +27120,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.Table.RowGroups">
       <summary>Gets a <see cref="T:System.Windows.Documents.TableRowGroupCollection" /> collection object that contains the row groups hosted by the table.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.TableRowGroupCollection" /> collection object that contains the row groups (represented by <see cref="T:System.Windows.Documents.TableRowGroup" /> objects) hosted by the table.  
- This property has no default value.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.TableRowGroupCollection" /> collection object that contains the row groups (represented by <see cref="T:System.Windows.Documents.TableRowGroup" /> objects) hosted by the table.
+This property has no default value.</returns>
     </member>
     <member name="M:System.Windows.Documents.Table.ShouldSerializeColumns">
       <summary>Gets a value that indicates whether or not the effective value of the <see cref="P:System.Windows.Documents.Table.Columns" /> property should be serialized during serialization of a <see cref="T:System.Windows.Documents.Table" /> object.</summary>
@@ -27145,46 +27148,46 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.TableCell.Blocks">
       <summary>Gets a <see cref="T:System.Windows.Documents.BlockCollection" /> containing the top-level <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.TableCell" />.</summary>
-      <returns>A <see cref="T:System.Windows.Documents.BlockCollection" /> containing the <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.TableCell" />  
- This property has no default value.</returns>
+      <returns>A <see cref="T:System.Windows.Documents.BlockCollection" /> containing the <see cref="T:System.Windows.Documents.Block" /> elements that comprise the contents of the <see cref="T:System.Windows.Documents.TableCell" />
+This property has no default value.</returns>
     </member>
     <member name="P:System.Windows.Documents.TableCell.BorderBrush">
       <summary>Gets or sets a <see cref="T:System.Windows.Media.Brush" /> to use when painting the element's border.</summary>
-      <returns>The brush used to apply to the element's border.  
- The default value is a null brush.</returns>
+      <returns>The brush used to apply to the element's border.
+The default value is a null brush.</returns>
     </member>
     <member name="F:System.Windows.Documents.TableCell.BorderBrushProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.TableCell.BorderBrush" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.TableCell.BorderThickness">
       <summary>Gets or sets the border thickness for the element.</summary>
-      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of border to apply, in device independent pixels.  
- The default value is a uniform thickness of zero (0.0).</returns>
+      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of border to apply, in device independent pixels.
+The default value is a uniform thickness of zero (0.0).</returns>
     </member>
     <member name="F:System.Windows.Documents.TableCell.BorderThicknessProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.TableCell.BorderThickness" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.TableCell.ColumnSpan">
       <summary>Gets or sets the number of columns that the <see cref="T:System.Windows.Documents.TableCell" /> should span.</summary>
-      <returns>The number of columns the <see cref="T:System.Windows.Documents.TableCell" /> should span.  
- The default value is 1 (no spanning).</returns>
+      <returns>The number of columns the <see cref="T:System.Windows.Documents.TableCell" /> should span.
+The default value is 1 (no spanning).</returns>
     </member>
     <member name="F:System.Windows.Documents.TableCell.ColumnSpanProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.TableCell.ColumnSpan" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.TableCell.FlowDirection">
       <summary>Gets or sets a value that specifies the relative direction for flow of content within a <see cref="T:System.Windows.Documents.TableCell" /> element.</summary>
-      <returns>A member of the <see cref="T:System.Windows.FlowDirection" /> enumeration specifying the relative flow direction.  Getting this property returns the currently effective flow direction.  Setting this property causes the contents of the <see cref="T:System.Windows.Documents.TableCell" /> element to re-flow in the indicated direction.  
- The default value is <see cref="F:System.Windows.FlowDirection.LeftToRight" />.</returns>
+      <returns>A member of the <see cref="T:System.Windows.FlowDirection" /> enumeration specifying the relative flow direction.  Getting this property returns the currently effective flow direction.  Setting this property causes the contents of the <see cref="T:System.Windows.Documents.TableCell" /> element to re-flow in the indicated direction.
+The default value is <see cref="F:System.Windows.FlowDirection.LeftToRight" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.TableCell.FlowDirectionProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.TableCell.FlowDirection" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.TableCell.LineHeight">
       <summary>Gets or sets the height of each line of content.</summary>
-      <returns>A double value specifying the height of line in device independent pixels.  <see cref="P:System.Windows.Documents.TableCell.LineHeight" /> must be equal to or greater than <c>0.0034</c> and equal to or less then <c>160000</c>.  
- A value of <see cref="F:System.Double.NaN" /> (equivalent to an attribute value of "<c>Auto</c>") causes the line height to be determined automatically from the current font characteristics.  
- The default value is <see cref="F:System.Double.NaN" />.</returns>
+      <returns>A double value specifying the height of line in device independent pixels.  <see cref="P:System.Windows.Documents.TableCell.LineHeight" /> must be equal to or greater than <c>0.0034</c> and equal to or less then <c>160000</c>.
+A value of <see cref="F:System.Double.NaN" /> (equivalent to an attribute value of "<c>Auto</c>") causes the line height to be determined automatically from the current font characteristics.
+The default value is <see cref="F:System.Double.NaN" />.</returns>
       <exception cref="T:System.ArgumentException">Raised if an attempt is made to set <see cref="P:System.Windows.Controls.TextBlock.LineHeight" /> to a non-positive value.</exception>
     </member>
     <member name="F:System.Windows.Documents.TableCell.LineHeightProperty">
@@ -27203,24 +27206,24 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
     </member>
     <member name="P:System.Windows.Documents.TableCell.Padding">
       <summary>Gets or sets the padding thickness for the element.</summary>
-      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of padding to apply, in device independent pixels.  
- The default value is a uniform thickness of zero (0.0).</returns>
+      <returns>A <see cref="T:System.Windows.Thickness" /> structure specifying the amount of padding to apply, in device independent pixels.
+The default value is a uniform thickness of zero (0.0).</returns>
     </member>
     <member name="F:System.Windows.Documents.TableCell.PaddingProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.TableCell.Padding" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.TableCell.RowSpan">
       <summary>Gets or sets the number of rows that the <see cref="T:System.Windows.Documents.TableCell" /> should span.</summary>
-      <returns>The number of rows the <see cref="T:System.Windows.Documents.TableCell" /> should span.  
- The default value is 1 (no spanning).</returns>
+      <returns>The number of rows the <see cref="T:System.Windows.Documents.TableCell" /> should span.
+The default value is 1 (no spanning).</returns>
     </member>
     <member name="F:System.Windows.Documents.TableCell.RowSpanProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.TableCell.RowSpan" /> dependency property.</summary>
     </member>
     <member name="P:System.Windows.Documents.TableCell.TextAlignment">
       <summary>Gets or sets a value that indicates the horizontal alignment of text content.</summary>
-      <returns>A member of the <see cref="T:System.Windows.TextAlignment" /> enumerations specifying the desired alignment.  
- The default value is <see cref="F:System.Windows.TextAlignment.Left" />.</returns>
+      <returns>A member of the <see cref="T:System.Windows.TextAlignment" /> enumerations specifying the desired alignment.
+The default value is <see cref="F:System.Windows.TextAlignment.Left" />.</returns>
     </member>
     <member name="F:System.Windows.Documents.TableCell.TextAlignmentProperty">
       <summary>Identifies the <see cref="P:System.Windows.Documents.TableCell.TextAlignment" /> dependency property.</summary>
@@ -27897,7 +27900,7 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <summary>Optimizes memory consumption for the collection by setting the underlying collection <see cref="P:System.Windows.Documents.TableRowGroupCollection.Capacity" /> equal to the <see cref="P:System.Windows.Documents.TableRowGroupCollection.Count" /> of items currently in the collection.</summary>
     </member>
     <member name="T:System.Windows.Documents.TextEffectResolver">
-      <summary>A helper class that sets text effects in a text container</summary>
+      <summary>A helper class that sets text effects in a text container.</summary>
     </member>
     <member name="M:System.Windows.Documents.TextEffectResolver.Resolve(System.Windows.Documents.TextPointer,System.Windows.Documents.TextPointer,System.Windows.Media.TextEffect)">
       <summary>Resolves text effect on a text range to a list of text effect targets.</summary>
@@ -27920,7 +27923,7 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <summary>Enables the <see cref="T:System.Windows.Media.TextEffect" /> on the target text.</summary>
     </member>
     <member name="P:System.Windows.Documents.TextEffectTarget.IsEnabled">
-      <summary>Gets a value that determines whether the text effect is enabled on the target element</summary>
+      <summary>Gets a value that determines whether the text effect is enabled on the target element.</summary>
       <returns>
         <see langword="true" /> if the <see cref="T:System.Windows.Media.TextEffect" /> is enabled on the target; otherwise, <see langword="false" />.</returns>
     </member>
@@ -28358,8 +28361,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="count">The maximum number of characters to copy.</param>
       <returns>The number of characters actually copied into <paramref name="textBuffer" />.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="startIndex" /> is less than 0 or greater than the <see cref="P:System.Array.Length" /> property of <paramref name="textBuffer" />.  
--or-  
+        <paramref name="startIndex" /> is less than 0 or greater than the <see cref="P:System.Array.Length" /> property of <paramref name="textBuffer" />.
+-or-
 <paramref name="count" /> is less than 0 or greater than the remaining space in <paramref name="textBuffer" /> (<paramref name="textBuffer" />.<see cref="P:System.Array.Length" /> minus <paramref name="startIndex" />).</exception>
     </member>
     <member name="M:System.Windows.Documents.TextPointer.GetTextRunLength(System.Windows.Documents.LogicalDirection)">
@@ -28511,9 +28514,9 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="dataFormat">A data format to save the current selection as.  Currently supported data formats are <see cref="F:System.Windows.DataFormats.Rtf" />, <see cref="F:System.Windows.DataFormats.Text" />, <see cref="F:System.Windows.DataFormats.Xaml" />, and <see cref="F:System.Windows.DataFormats.XamlPackage" />.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="stream" /> or <paramref name="dataFormat" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The specified data format is unsupported.  
- -or  
- Content loaded from <paramref name="stream" /> does not match the specified data format.</exception>
+      <exception cref="T:System.ArgumentException">The specified data format is unsupported.
+-or
+Content loaded from <paramref name="stream" /> does not match the specified data format.</exception>
     </member>
     <member name="M:System.Windows.Documents.TextRange.Save(System.IO.Stream,System.String,System.Boolean)">
       <summary>Saves the current selection to a specified stream in a specified data format, with the option of preserving custom <see cref="T:System.Windows.Documents.TextElement" /> objects.</summary>
@@ -29389,9 +29392,9 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
         <see langword="null" />.</param>
       <param name="culture">The language and culture assumed during the conversion.</param>
       <returns>
-        <see cref="F:System.Windows.DependencyProperty.UnsetValue" /> when the converter cannot produce a value; for example, when <paramref name="value" /> is <see langword="null" /> or when <paramref name="targetType" /> is not <see cref="T:System.Double" /> or <see cref="T:System.String" />.  
+        <see cref="F:System.Windows.DependencyProperty.UnsetValue" /> when the converter cannot produce a value; for example, when <paramref name="value" /> is <see langword="null" /> or when <paramref name="targetType" /> is not <see cref="T:System.Double" /> or <see cref="T:System.String" />.
 -or-
- The new <see cref="T:System.Object" /> of the designated type. As implemented in this class, this must be either a <see cref="T:System.Double" /> or a <see cref="T:System.String" />. If it is a string, it will be formatted appropriately for the <paramref name="culture" />.</returns>
+The new <see cref="T:System.Object" /> of the designated type. As implemented in this class, this must be either a <see cref="T:System.Double" /> or a <see cref="T:System.String" />. If it is a string, it will be formatted appropriately for the <paramref name="culture" />.</returns>
     </member>
     <member name="M:System.Windows.Documents.ZoomPercentageConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
       <summary>Returns a previously converted value of <see cref="P:System.Windows.Controls.DocumentViewer.Zoom" /> back to a <see cref="T:System.Double" /> that can be assigned to <see cref="P:System.Windows.Controls.DocumentViewer.Zoom" />.</summary>
@@ -29401,9 +29404,9 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
         <see langword="null" />.</param>
       <param name="culture">The language and culture assumed during the conversion.</param>
       <returns>
-        <see cref="F:System.Windows.DependencyProperty.UnsetValue" /> when the converter cannot produce a value; for example, when <paramref name="value" /> is not a valid percentage when <paramref name="targetType" /> is not <see cref="T:System.Double" /> or <see cref="T:System.String" />.  
+        <see cref="F:System.Windows.DependencyProperty.UnsetValue" /> when the converter cannot produce a value; for example, when <paramref name="value" /> is not a valid percentage when <paramref name="targetType" /> is not <see cref="T:System.Double" /> or <see cref="T:System.String" />.
 -or-
- A <see cref="T:System.Double" /> representing the zoom percentage of a <see cref="T:System.Windows.Controls.DocumentViewer" />.</returns>
+A <see cref="T:System.Double" /> representing the zoom percentage of a <see cref="T:System.Windows.Controls.DocumentViewer" />.</returns>
     </member>
     <member name="T:System.Windows.DynamicResourceExtension">
       <summary>Implements a markup extension that supports dynamic resource references made from XAML.</summary>
@@ -29527,12 +29530,12 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <returns>The exception that details the specific error condition.</returns>
       <exception cref="T:System.Security.SecurityException">The attempt to access the media file is denied.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The media file is not found.</exception>
-      <exception cref="T:System.IO.FileFormatException">The media file format is not supported by any installed codec.  
- -or-  
- The file format is not recognized.</exception>
-      <exception cref="T:System.NotSupportedException">Windows Media Player version 10 or later is not detected.  
- -or-  
- Video resources are insufficient for media playback.</exception>
+      <exception cref="T:System.IO.FileFormatException">The media file format is not supported by any installed codec.
+-or-
+The file format is not recognized.</exception>
+      <exception cref="T:System.NotSupportedException">Windows Media Player version 10 or later is not detected.
+-or-
+Video resources are insufficient for media playback.</exception>
       <exception cref="T:System.Runtime.InteropServices.COMException">A COM error code appears.</exception>
     </member>
     <member name="T:System.Windows.ExitEventArgs">
@@ -29776,7 +29779,7 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
         <see langword="true" /> if the application should use the <see cref="P:System.Windows.SystemColors.InactiveSelectionHighlightBrush" /> and <see cref="P:System.Windows.SystemColors.InactiveSelectionHighlightTextBrush" /> properties for the colors of inactive selected items; otherwise, <see langword="false" /></returns>
     </member>
     <member name="P:System.Windows.FrameworkCompatibilityPreferences.KeepTextBoxDisplaySynchronizedWithTextProperty">
-      <summary>Gets or sets a value that indicates whether a data-bound <see cref="T:System.Windows.Controls.TextBox" /> should display a string that is identical to the value of the source its <see cref="P:System.Windows.Controls.TextBox.Text" /> property</summary>
+      <summary>Gets or sets a value that indicates whether a data-bound <see cref="T:System.Windows.Controls.TextBox" /> should display a string that is identical to the value of the source its <see cref="P:System.Windows.Controls.TextBox.Text" /> property.</summary>
       <returns>
         <see langword="true" /> if a data-bound <see cref="T:System.Windows.Controls.TextBox" /> should display a string that is identical to the value of the source its <see cref="P:System.Windows.Controls.TextBox.Text" /> property; otherwise, <see langword="false" />.</returns>
     </member>
@@ -30242,8 +30245,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="resourceKey">The key identifier for the requested resource.</param>
       <returns>The requested resource. If no resource with the provided key was found, an exception is thrown. An <see cref="F:System.Windows.DependencyProperty.UnsetValue" /> value might also be returned in the exception case.</returns>
       <exception cref="T:System.Windows.ResourceReferenceKeyNotFoundException">
-        <paramref name="resourceKey" /> was not found and an event handler does not exist for the <see cref="E:System.Windows.Threading.Dispatcher.UnhandledException" /> event.  
--or-  
+        <paramref name="resourceKey" /> was not found and an event handler does not exist for the <see cref="E:System.Windows.Threading.Dispatcher.UnhandledException" /> event.
+-or-
 <paramref name="resourceKey" /> was not found and the <see cref="P:System.Windows.Threading.DispatcherUnhandledExceptionEventArgs.Handled" /> property is <see langword="false" /> in the <see cref="E:System.Windows.Threading.Dispatcher.UnhandledException" /> event.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="resourceKey" /> is <see langword="null" />.</exception>
@@ -31226,7 +31229,7 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <summary>Property value inheritance lookup will not query the current element or any further. A resource lookup will not query the current element but will skip over to the application and then the theme dictionaries, rather than walking up the element tree toward the page root. A RelativeSource FindAncestor lookup will not query the current element or any further.</summary>
     </member>
     <member name="F:System.Windows.InheritanceBehavior.SkipToThemeNext">
-      <summary>Property value inheritance lookup will query the current element but not any further. A resource lookup will query the current element and will then skip over to the theme dictionaries, rather than walking up the element tree toward the page root, or checking application dictionaries</summary>
+      <summary>Property value inheritance lookup will query the current element but not any further. A resource lookup will query the current element and will then skip over to the theme dictionaries, rather than walking up the element tree toward the page root, or checking application dictionaries.</summary>
     </member>
     <member name="F:System.Windows.InheritanceBehavior.SkipToThemeNow">
       <summary>Property value inheritance lookup will not query the current element or any further. A resource lookup will not query the current element but will skip over to the theme dictionaries, rather than walking up the element tree toward the page root, or checking application dictionaries. A RelativeSource FindAncestor lookup will not query the current element or any further.</summary>
@@ -31414,7 +31417,7 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <summary>No keyboard navigation is allowed inside this container.</summary>
     </member>
     <member name="F:System.Windows.Input.KeyboardNavigationMode.Once">
-      <summary>The container and all of its child elements as a whole receive focus only once. Either the first tree child or the or the last focused element in the group receives focus</summary>
+      <summary>The container and all of its child elements as a whole receive focus only once. Either the first tree child or the or the last focused element in the group receives focus.</summary>
     </member>
     <member name="T:System.Windows.Interop.ActiveXHost">
       <summary>Hosts an ActiveX control as an element within Windows Presentation Foundation (WPF) content.</summary>
@@ -31489,8 +31492,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="result">The method result.</param>
       <returns>Always returns <see langword="true" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="binder" /> is <see langword="null" />.  
--or-  
+        <paramref name="binder" /> is <see langword="null" />.
+-or-
 <paramref name="indexes" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The length of <paramref name="indexes" /> is not equal to 1.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The first <paramref name="indexes" /> value is <see langword="null" />.</exception>
@@ -31532,8 +31535,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="value">The method result</param>
       <returns>Always returns <see langword="true" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="binder" /> is <see langword="null" />.  
--or-  
+        <paramref name="binder" /> is <see langword="null" />.
+-or-
 <paramref name="indexes" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The length of <paramref name="indexes" /> is not equal to 1.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The first <paramref name="indexes" /> value is <see langword="null" />.</exception>
@@ -31545,8 +31548,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="value">The value to set for the member.</param>
       <returns>Always returns <see langword="true" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="binder" /> is <see langword="null" />.  
--or-  
+        <paramref name="binder" /> is <see langword="null" />.
+-or-
 <paramref name="indexes" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The length of <paramref name="indexes" /> is not equal to 1.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The first <paramref name="indexes" /> value is <see langword="null" />.</exception>
@@ -32044,9 +32047,9 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <param name="cultureInfo">The <see cref="T:System.Globalization.CultureInfo" /> to use as the current culture.</param>
       <param name="source">The source string to convert.</param>
       <returns>A new <see cref="T:System.Delegate" /> that represents the referenced event handler.</returns>
-      <exception cref="T:System.NotSupportedException">The necessary services are not available.  
- -or-  
- Could not perform the specific conversion.</exception>
+      <exception cref="T:System.NotSupportedException">The necessary services are not available.
+-or-
+Could not perform the specific conversion.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="typeDescriptorContext" /> or <paramref name="source" /> are <see langword="null" />.</exception>
     </member>
@@ -32216,8 +32219,8 @@ To a <see cref="T:System.Uri" /> that is not located at the site of origin, or
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="arrayIndex" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="arrayIndex" /> exceeds the destination array length.  
--or-  
+        <paramref name="arrayIndex" /> exceeds the destination array length.
+-or-
 Copy cannot fit in the remaining array space between <paramref name="arrayIndex" /> and the destination array length.</exception>
     </member>
     <member name="P:System.Windows.Markup.Localizer.BamlLocalizationDictionary.Count">
@@ -32468,10 +32471,10 @@ Copy cannot fit in the remaining array space between <paramref name="arrayIndex"
       <param name="assemblyName">The assembly that contains the CLR namespace and types to map to the XML namespace.</param>
       <param name="clrNamespace">The CLR  namespace in the assembly that contains the relevant types.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="xmlNamespace" /> is <see langword="null" />  
--or-  
-<paramref name="assemblyName" /> is <see langword="null" />  
--or-  
+        <paramref name="xmlNamespace" /> is <see langword="null" />
+-or-
+<paramref name="assemblyName" /> is <see langword="null" />
+-or-
 <paramref name="clrNamespace" /> is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Windows.Markup.NamespaceMapEntry.AssemblyName">
@@ -32822,8 +32825,8 @@ Copy cannot fit in the remaining array space between <paramref name="arrayIndex"
       <param name="parserContext">Context information used by the parser.</param>
       <returns>The object that is the root of the created object tree.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="stream" /> is <see langword="null" />.  
--or-  
+        <paramref name="stream" /> is <see langword="null" />.
+-or-
 <paramref name="parserContext" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Windows.Markup.XamlReader.Load(System.Xaml.XamlReader)">
@@ -32901,10 +32904,10 @@ Copy cannot fit in the remaining array space between <paramref name="arrayIndex"
       <param name="clrNamespace">The CLR  namespace that contains the types to map.</param>
       <param name="assemblyName">The assembly that contains the CLR  namespace.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="xmlNamespace" /> is <see langword="null" />  
--or-  
-<paramref name="clrNamespace" /> is <see langword="null" />  
--or-  
+        <paramref name="xmlNamespace" /> is <see langword="null" />
+-or-
+<paramref name="clrNamespace" /> is <see langword="null" />
+-or-
 <paramref name="assemblyName" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Windows.Markup.XamlTypeMapper.AllowInternalType(System.Type)">
@@ -32923,8 +32926,8 @@ Copy cannot fit in the remaining array space between <paramref name="arrayIndex"
       <param name="localName">The "local" name of the XAML element to obtain the mapped <see cref="T:System.Type" /> for. Local in this context means as mapped versus the provided <paramref name="xmlNamespace" />.</param>
       <returns>The <see cref="T:System.Type" /> for the object, or <see langword="null" /> if no mapping could be resolved.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="xmlNamespace" /> is <see langword="null" />  
--or-  
+        <paramref name="xmlNamespace" /> is <see langword="null" />
+-or-
 <paramref name="localName" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Windows.Markup.XamlTypeMapper.SetAssemblyPath(System.String,System.String)">
@@ -32932,14 +32935,14 @@ Copy cannot fit in the remaining array space between <paramref name="arrayIndex"
       <param name="assemblyName">The short name of the assembly without an extension or path specified (equivalent to <see cref="P:System.Reflection.AssemblyName.Name" />).</param>
       <param name="assemblyPath">The file path of the assembly. The assembly path must be a full file path containing a file extension.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="assemblyName" /> is <see langword="null" />  
--or-  
+        <paramref name="assemblyName" /> is <see langword="null" />
+-or-
 <paramref name="assemblyPath" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Windows.Markup.XamlParseException">
-        <paramref name="assemblyName" /> is <see cref="F:System.String.Empty" />  
--or-  
-<paramref name="assemblyPath" /> is <see cref="F:System.String.Empty" />  
--or-  
+        <paramref name="assemblyName" /> is <see cref="F:System.String.Empty" />
+-or-
+<paramref name="assemblyPath" /> is <see cref="F:System.String.Empty" />
+-or-
 <paramref name="assemblyPath" /> is not a full file path containing a file extension.</exception>
     </member>
     <member name="T:System.Windows.Markup.XamlWriter">
@@ -33181,12 +33184,12 @@ Copy cannot fit in the remaining array space between <paramref name="arrayIndex"
       <param name="prefix">The prefix from which to get or set the associated XML namespace URI.</param>
       <returns>The corresponding XAML namespace URI.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="prefix" /> is not a string  
--or-  
+        <paramref name="prefix" /> is not a string
+-or-
 The value to set is not a string.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="prefix" /> is <see langword="null" />  
--or-  
+        <paramref name="prefix" /> is <see langword="null" />
+-or-
 The value to set is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Windows.Markup.XmlnsDictionary.Item(System.String)">
@@ -33194,8 +33197,8 @@ The value to set is <see langword="null" />.</exception>
       <param name="prefix">The prefix from which to get or set the associated namespace.</param>
       <returns>The corresponding XML namespace URI.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="prefix" /> is <see langword="null" />  
--or-  
+        <paramref name="prefix" /> is <see langword="null" />
+-or-
 The value to set is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Windows.Markup.XmlnsDictionary.Keys">
@@ -33272,7 +33275,7 @@ The value to set is <see langword="null" />.</exception>
       <summary>Creates a new instance of the <see cref="T:System.Windows.Media.Animation.BeginStoryboard" /> class.</summary>
     </member>
     <member name="P:System.Windows.Media.Animation.BeginStoryboard.HandoffBehavior">
-      <summary>Gets or sets the proper hand-off behavior to start an animation clock in this storyboard</summary>
+      <summary>Gets or sets the proper hand-off behavior to start an animation clock in this storyboard.</summary>
       <returns>One of the <see cref="T:System.Windows.Media.Animation.HandoffBehavior" /> enumeration values. The default value is <see cref="F:System.Windows.Media.Animation.HandoffBehavior.SnapshotAndReplace" />.</returns>
     </member>
     <member name="P:System.Windows.Media.Animation.BeginStoryboard.Name">
@@ -34171,8 +34174,8 @@ The value to set is <see langword="null" />.</exception>
       <returns>The <see cref="T:System.Windows.Media.Animation.ThicknessKeyFrame" /> at the specified index.</returns>
       <exception cref="T:System.InvalidOperationException">The attempt to modify the collection is invalid because the collection is frozen (its <see cref="P:System.Windows.Freezable.IsFrozen" /> property is <see langword="true" />).</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Windows.Media.Animation.ThicknessKeyFrameCollection.Count" />.</exception>
     </member>
     <member name="M:System.Windows.Media.Animation.ThicknessKeyFrameCollection.Remove(System.Windows.Media.Animation.ThicknessKeyFrame)">
@@ -34769,7 +34772,7 @@ The value to set is <see langword="null" />.</exception>
         <see langword="true" /> if the navigation was initiated inside the current frame; <see langword="false" /> if the parent navigator is also navigating.</returns>
     </member>
     <member name="P:System.Windows.Navigation.NavigationEventArgs.Navigator">
-      <summary>Gets the navigator that raised the event</summary>
+      <summary>Gets the navigator that raised the event.</summary>
       <returns>The navigator that raised the event.</returns>
     </member>
     <member name="P:System.Windows.Navigation.NavigationEventArgs.Uri">
@@ -34844,7 +34847,7 @@ The value to set is <see langword="null" />.</exception>
       <returns>The maximum number of bytes.</returns>
     </member>
     <member name="P:System.Windows.Navigation.NavigationProgressEventArgs.Navigator">
-      <summary>Gets the navigator that raised the event</summary>
+      <summary>Gets the navigator that raised the event.</summary>
       <returns>The navigator that raised the event</returns>
     </member>
     <member name="P:System.Windows.Navigation.NavigationProgressEventArgs.Uri">
@@ -35167,7 +35170,7 @@ The value to set is <see langword="null" />.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Windows.Navigation.PageFunction`1" /> class.</summary>
     </member>
     <member name="M:System.Windows.Navigation.PageFunction`1.OnReturn(System.Windows.Navigation.ReturnEventArgs{`0})">
-      <summary>A <see cref="T:System.Windows.Navigation.PageFunction`1" /> calls <see cref="M:System.Windows.Navigation.PageFunction`1.OnReturn(System.Windows.Navigation.ReturnEventArgs{`0})" /> to return to the caller, passing a return value via a <see cref="T:System.Windows.Navigation.ReturnEventArgs`1" /> object</summary>
+      <summary>A <see cref="T:System.Windows.Navigation.PageFunction`1" /> calls <see cref="M:System.Windows.Navigation.PageFunction`1.OnReturn(System.Windows.Navigation.ReturnEventArgs{`0})" /> to return to the caller, passing a return value via a <see cref="T:System.Windows.Navigation.ReturnEventArgs`1" /> object.</summary>
       <param name="e">A <see cref="T:System.Windows.Navigation.ReturnEventArgs`1" /> object that contains the <see cref="T:System.Windows.Navigation.PageFunction`1" /> return value (<see cref="P:System.Windows.Navigation.ReturnEventArgs`1.Result" />).</param>
     </member>
     <member name="E:System.Windows.Navigation.PageFunction`1.Return">
@@ -35326,9 +35329,9 @@ The value to set is <see langword="null" />.</exception>
       <param name="destinationType">The destination type. This is expected to be the <see cref="T:System.String" /> type.</param>
       <returns>The converted destination <see cref="T:System.String" />.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="value" /> was provided as <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="value" /> was not <see langword="null" />, but was not of the expected <see cref="T:System.Windows.PropertyPath" /> type.  
+      <exception cref="T:System.ArgumentException">The <paramref name="value" /> was not <see langword="null" />, but was not of the expected <see cref="T:System.Windows.PropertyPath" /> type.
 -or-
- The <paramref name="destinationType" /> was not the <see cref="T:System.String" /> type.</exception>
+The <paramref name="destinationType" /> was not the <see cref="T:System.String" /> type.</exception>
     </member>
     <member name="T:System.Windows.ReasonSessionEnding">
       <summary>Specifies the reason for which the user's session is ending. Used by the <see cref="P:System.Windows.SessionEndingCancelEventArgs.ReasonSessionEnding" /> property.</summary>
@@ -35427,7 +35430,7 @@ The value to set is <see langword="null" />.</exception>
       <returns>A specialized enumerator for the <see cref="T:System.Windows.ResourceDictionary" />.</returns>
     </member>
     <member name="P:System.Windows.ResourceDictionary.InvalidatesImplicitDataTemplateResources">
-      <summary>Gets or sets a value that indicates whether the invalidations fired by the <see cref="T:System.Windows.ResourceDictionary" /> object cause <see cref="T:System.Windows.Controls.ContentPresenter" /> objects to reevaluate their choice of template. 
+      <summary>Gets or sets a value that indicates whether the invalidations fired by the <see cref="T:System.Windows.ResourceDictionary" /> object cause <see cref="T:System.Windows.Controls.ContentPresenter" /> objects to reevaluate their choice of template.
 The invalidations happen when an implicit data template resource changes.</summary>
       <returns>
         <see langword="true" /> if the invalidations cause <see cref="T:System.Windows.Controls.ContentPresenter" /> objects to reevaluate their choice of template; otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
@@ -36380,8 +36383,8 @@ The invalidations happen when an implicit data template resource changes.</summa
     </member>
     <member name="P:System.Windows.Shell.WindowChrome.NonClientFrameEdges">
       <summary>Gets or sets a value that indicates which edges of the window frame are not owned by the client.</summary>
-      <returns>A bitwise combination of the enumeration values that specify which edges of the frame are not owned by the client.  
- The registered default is <see cref="F:System.Windows.Shell.NonClientFrameEdges.None" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
+      <returns>A bitwise combination of the enumeration values that specify which edges of the frame are not owned by the client.
+The registered default is <see cref="F:System.Windows.Shell.NonClientFrameEdges.None" />. For more information about what can influence the value, see Dependency Property Value Precedence.</returns>
       <exception cref="T:System.ArgumentException">'Left, Right, Top, Bottom' is not a valid value. At least one edge must belong to the client.</exception>
     </member>
     <member name="F:System.Windows.Shell.WindowChrome.NonClientFrameEdgesProperty">
@@ -37131,7 +37134,7 @@ The invalidations happen when an implicit data template resource changes.</summa
       <returns>A command that maximizes a window.</returns>
     </member>
     <member name="M:System.Windows.SystemCommands.RestoreWindow(System.Windows.Window)">
-      <summary>Restores the specified widow.</summary>
+      <summary>Restores the specified window.</summary>
       <param name="window">The window to restore.</param>
     </member>
     <member name="P:System.Windows.SystemCommands.RestoreWindowCommand">
@@ -38633,11 +38636,11 @@ The invalidations happen when an implicit data template resource changes.</summa
       <summary>Returns an object that should be set on the property where this extension is applied. For <see cref="T:System.Windows.ThemeDictionaryExtension" />, this is the URI value for a particular theme dictionary extension.</summary>
       <param name="serviceProvider">An object that can provide services for the markup extension. This service is expected to provide results for <see cref="T:System.Windows.Markup.IXamlTypeResolver" />.</param>
       <returns>The object value to set on the property where the extension is applied.</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Windows.ThemeDictionaryExtension.AssemblyName" /> property is <see langword="null" />. You must set this value during construction or before using the <see cref="M:System.Windows.ThemeDictionaryExtension.ProvideValue(System.IServiceProvider)" /> method.  
- -or-  
- <paramref name="serviceProvider" /> is <see langword="null" /> or does not provide a service for <see cref="T:System.Windows.Markup.IXamlTypeResolver" />.  
- -or-  
- <paramref name="serviceProvider" /> specifies a target type that does not match <see cref="P:System.Windows.ResourceDictionary.Source" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Windows.ThemeDictionaryExtension.AssemblyName" /> property is <see langword="null" />. You must set this value during construction or before using the <see cref="M:System.Windows.ThemeDictionaryExtension.ProvideValue(System.IServiceProvider)" /> method.
+-or-
+<paramref name="serviceProvider" /> is <see langword="null" /> or does not provide a service for <see cref="T:System.Windows.Markup.IXamlTypeResolver" />.
+-or-
+<paramref name="serviceProvider" /> specifies a target type that does not match <see cref="P:System.Windows.ResourceDictionary.Source" />.</exception>
     </member>
     <member name="T:System.Windows.ThemeInfoAttribute">
       <summary>Specifies the location in which theme dictionaries are stored for an assembly.</summary>
@@ -38899,7 +38902,8 @@ The invalidations happen when an implicit data template resource changes.</summa
     <member name="M:System.Windows.TriggerActionCollection.System#Collections#IList#Contains(System.Object)">
       <summary>This member supports the Windows Presentation Foundation (WPF) infrastructure and is not intended to be used directly from your code.</summary>
       <param name="value">The <see cref="T:System.Object" /> to locate in the <see cref="T:System.Collections.IList" />.</param>
-      <returns>true if the <see cref="T:System.Object" /> is found in the <see cref="T:System.Collections.IList" />; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Object" /> is found in the <see cref="T:System.Collections.IList" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Windows.TriggerActionCollection.System#Collections#IList#IndexOf(System.Object)">
       <summary>This member supports the Windows Presentation Foundation (WPF) infrastructure and is not intended to be used directly from your code.</summary>
@@ -39102,8 +39106,8 @@ The invalidations happen when an implicit data template resource changes.</summa
       <returns>
         <see langword="true" /> if the control successfully transitioned to the new state; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="stateGroupsRoot" /> is <see langword="null" />.  
--or-  
+        <paramref name="stateGroupsRoot" /> is <see langword="null" />.
+-or-
 <paramref name="stateName" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Windows.VisualStateManager.GoToState(System.Windows.FrameworkElement,System.String,System.Boolean)">
@@ -39115,8 +39119,8 @@ The invalidations happen when an implicit data template resource changes.</summa
       <returns>
         <see langword="true" /> if the control successfully transitioned to the new state; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="control" /> is <see langword="null" />.  
--or-  
+        <paramref name="control" /> is <see langword="null" />.
+-or-
 <paramref name="stateName" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Windows.VisualStateManager.GoToStateCore(System.Windows.FrameworkElement,System.Windows.FrameworkElement,System.String,System.Windows.VisualStateGroup,System.Windows.VisualState,System.Boolean)">
@@ -39139,8 +39143,8 @@ The invalidations happen when an implicit data template resource changes.</summa
       <param name="control">The control that is transitioning states.</param>
       <param name="stateGroupsRoot">The root element that contains the <see cref="T:System.Windows.VisualStateManager" />.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="stateGroupsRoot" /> is <see langword="null" />.  
--or-  
+        <paramref name="stateGroupsRoot" /> is <see langword="null" />.
+-or-
 <paramref name="newState" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Windows.VisualStateManager.RaiseCurrentStateChanging(System.Windows.VisualStateGroup,System.Windows.VisualState,System.Windows.VisualState,System.Windows.FrameworkElement,System.Windows.FrameworkElement)">
@@ -39151,8 +39155,8 @@ The invalidations happen when an implicit data template resource changes.</summa
       <param name="control">The control that is transitioning states.</param>
       <param name="stateGroupsRoot">The root element that contains the <see cref="T:System.Windows.VisualStateManager" />.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="stateGroupsRoot" /> is <see langword="null" />.  
--or-  
+        <paramref name="stateGroupsRoot" /> is <see langword="null" />.
+-or-
 <paramref name="newState" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Windows.VisualStateManager.SetCustomVisualStateManager(System.Windows.FrameworkElement,System.Windows.VisualStateManager)">
@@ -39243,8 +39247,8 @@ The invalidations happen when an implicit data template resource changes.</summa
       <summary>Gets or sets the dialog result value, which is the value that is returned from the <see cref="M:System.Windows.Window.ShowDialog" /> method.</summary>
       <returns>A <see cref="T:System.Nullable`1" /> value of type <see cref="T:System.Boolean" />. The default is <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">
-        <see cref="P:System.Windows.Window.DialogResult" /> is set before a window is opened by calling <see cref="M:System.Windows.Window.ShowDialog" />.  
--or-  
+        <see cref="P:System.Windows.Window.DialogResult" /> is set before a window is opened by calling <see cref="M:System.Windows.Window.ShowDialog" />.
+-or-
 <see cref="P:System.Windows.Window.DialogResult" /> is set on a window that is opened by calling <see cref="M:System.Windows.Window.Show" />.</exception>
     </member>
     <member name="E:System.Windows.Window.DpiChanged">
@@ -39369,12 +39373,12 @@ The invalidations happen when an implicit data template resource changes.</summa
     <member name="P:System.Windows.Window.Owner">
       <summary>Gets or sets the <see cref="T:System.Windows.Window" /> that owns this <see cref="T:System.Windows.Window" />.</summary>
       <returns>A <see cref="T:System.Windows.Window" /> object that represents the owner of this <see cref="T:System.Windows.Window" />.</returns>
-      <exception cref="T:System.ArgumentException">A window tries to own itself  
- -or-  
- Two windows try to own each other.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Windows.Window.Owner" /> property is set on a visible window shown using <see cref="M:System.Windows.Window.ShowDialog" />  
- -or-  
- The <see cref="P:System.Windows.Window.Owner" /> property is set with a window that has not been previously shown.</exception>
+      <exception cref="T:System.ArgumentException">A window tries to own itself
+-or-
+Two windows try to own each other.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Windows.Window.Owner" /> property is set on a visible window shown using <see cref="M:System.Windows.Window.ShowDialog" />
+-or-
+The <see cref="P:System.Windows.Window.Owner" /> property is set with a window that has not been previously shown.</exception>
     </member>
     <member name="P:System.Windows.Window.ResizeMode">
       <summary>Gets or sets the resize mode.</summary>

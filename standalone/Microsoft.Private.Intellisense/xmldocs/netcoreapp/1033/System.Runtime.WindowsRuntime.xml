@@ -25,7 +25,7 @@
       <returns>A safe file handle instance if the operation succeeds; <see langword="null" /> if the conversion of the <paramref name="rootDirectory" /> to an IStorageFolderHandleAccess returns <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rootDirectory" /> is <see langword="null" />.
- -or-
+-or-
 <paramref name="relativePath" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.WindowsRuntimeStorageExtensions.CreateSafeFileHandle(Windows.Storage.IStorageFolder,System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.IO.FileOptions)">
@@ -39,7 +39,7 @@
       <returns>A safe file handle instance if the operation succeeds; <see langword="null" /> if the conversion of the <paramref name="rootDirectory" /> to an IStorageFolderHandleAccess returns <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rootDirectory" /> is <see langword="null" />.
- -or-
+-or-
 <paramref name="relativePath" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.WindowsRuntimeStorageExtensions.OpenStreamForReadAsync(Windows.Storage.IStorageFile)">
@@ -369,7 +369,8 @@
       <summary>Returns a value that indicates whether two buffers (Windows.Storage.Streams.IBuffer objects) represent the same underlying memory region.</summary>
       <param name="buffer">The first buffer.</param>
       <param name="otherBuffer">The second buffer.</param>
-      <returns>true if the memory regions that are represented by the two buffers have the same starting point; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the memory regions that are represented by the two buffers have the same starting point; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBufferExtensions.ToArray(Windows.Storage.Streams.IBuffer)">
       <summary>Returns a new array that is created from the contents of the specified buffer (Windows.Storage.Streams.IBuffer). The size of the array is the value of the Length property of the IBuffer.</summary>
@@ -575,7 +576,7 @@
         <see langword="true" /> if both the <see cref="P:Windows.Foundation.Point.X" /> and <see cref="P:Windows.Foundation.Point.Y" /> values of <paramref name="point1" /> and <paramref name="point2" /> are equal; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:Windows.Foundation.Point.op_Inequality(Windows.Foundation.Point,Windows.Foundation.Point)">
-      <summary>Compares two <see cref="T:Windows.Foundation.Point" /> structs for inequality</summary>
+      <summary>Compares two <see cref="T:Windows.Foundation.Point" /> structs for inequality.</summary>
       <param name="point1">The first point to compare.</param>
       <param name="point2">The second point to compare.</param>
       <returns>

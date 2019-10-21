@@ -84,9 +84,9 @@
       <summary>Waits for an incoming request and returns when one is received.</summary>
       <returns>An <see cref="T:System.Net.HttpListenerContext" /> object that represents a client request.</returns>
       <exception cref="T:System.Net.HttpListenerException">A Win32 function call failed. Check the exception's <see cref="P:System.Net.HttpListenerException.ErrorCode" /> property to determine the cause of the exception.</exception>
-      <exception cref="T:System.InvalidOperationException">This object has not been started or is currently stopped.  
- -or-  
- The <see cref="T:System.Net.HttpListener" /> does not have any Uniform Resource Identifier (URI) prefixes to respond to.</exception>
+      <exception cref="T:System.InvalidOperationException">This object has not been started or is currently stopped.
+-or-
+The <see cref="T:System.Net.HttpListener" /> does not have any Uniform Resource Identifier (URI) prefixes to respond to.</exception>
       <exception cref="T:System.ObjectDisposedException">This object is closed.</exception>
     </member>
     <member name="M:System.Net.HttpListener.GetContextAsync">
@@ -161,8 +161,8 @@
       <param name="subProtocol">The supported WebSocket sub-protocol.</param>
       <returns>The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result" /> property on the task object returns an <see cref="T:System.Net.WebSockets.HttpListenerWebSocketContext" /> object.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="subProtocol" /> is an empty string  
--or-  
+        <paramref name="subProtocol" /> is an empty string
+-or-
 <paramref name="subProtocol" /> contains illegal characters.</exception>
       <exception cref="T:System.Net.WebSockets.WebSocketException">An error occurred when sending the response to complete the WebSocket handshake.</exception>
     </member>
@@ -173,14 +173,14 @@
       <param name="keepAliveInterval">The WebSocket protocol keep-alive interval in milliseconds.</param>
       <returns>The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result" /> property on the task object returns an <see cref="T:System.Net.WebSockets.HttpListenerWebSocketContext" /> object.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="subProtocol" /> is an empty string  
--or-  
+        <paramref name="subProtocol" /> is an empty string
+-or-
 <paramref name="subProtocol" /> contains illegal characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="keepAliveInterval" /> is too small.  
--or-  
-<paramref name="receiveBufferSize" /> is less than 16 bytes  
--or-  
+        <paramref name="keepAliveInterval" /> is too small.
+-or-
+<paramref name="receiveBufferSize" /> is less than 16 bytes
+-or-
 <paramref name="receiveBufferSize" /> is greater than 64K bytes.</exception>
       <exception cref="T:System.Net.WebSockets.WebSocketException">An error occurred when sending the response to complete the WebSocket handshake.</exception>
     </member>
@@ -192,14 +192,14 @@
       <param name="internalBuffer">An internal buffer to use for this operation.</param>
       <returns>The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result" /> property on the task object returns an <see cref="T:System.Net.WebSockets.HttpListenerWebSocketContext" /> object.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="subProtocol" /> is an empty string  
--or-  
+        <paramref name="subProtocol" /> is an empty string
+-or-
 <paramref name="subProtocol" /> contains illegal characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="keepAliveInterval" /> is too small.  
--or-  
-<paramref name="receiveBufferSize" /> is less than 16 bytes  
--or-  
+        <paramref name="keepAliveInterval" /> is too small.
+-or-
+<paramref name="receiveBufferSize" /> is less than 16 bytes
+-or-
 <paramref name="receiveBufferSize" /> is greater than 64K bytes.</exception>
       <exception cref="T:System.Net.WebSockets.WebSocketException">An error occurred when sending the response to complete the WebSocket handshake.</exception>
     </member>
@@ -209,8 +209,8 @@
       <param name="keepAliveInterval">The WebSocket protocol keep-alive interval in milliseconds.</param>
       <returns>The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result" /> property on the task object returns an <see cref="T:System.Net.WebSockets.HttpListenerWebSocketContext" /> object.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="subProtocol" /> is an empty string  
--or-  
+        <paramref name="subProtocol" /> is an empty string
+-or-
 <paramref name="subProtocol" /> contains illegal characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="keepAliveInterval" /> is too small.</exception>
@@ -261,8 +261,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="uriPrefix" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="uriPrefix" /> does not use the http:// or https:// scheme. These are the only schemes supported for <see cref="T:System.Net.HttpListener" /> objects.  
--or-  
+        <paramref name="uriPrefix" /> does not use the http:// or https:// scheme. These are the only schemes supported for <see cref="T:System.Net.HttpListener" /> objects.
+-or-
 <paramref name="uriPrefix" /> is not a correctly formatted URI prefix. Make sure the string is terminated with a "/".</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.HttpListener" /> associated with this collection is closed.</exception>
       <exception cref="T:System.Net.HttpListenerException">A Windows function call failed. Check the exception's <see cref="P:System.Net.HttpListenerException.ErrorCode" /> property to determine the cause of the exception. This exception is thrown if another <see cref="T:System.Net.HttpListener" /> has already added the prefix <paramref name="uriPrefix" />.</exception>
@@ -346,12 +346,12 @@
     <member name="P:System.Net.HttpListenerRequest.ClientCertificateError">
       <summary>Gets an error code that identifies a problem with the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> provided by the client.</summary>
       <returns>An <see cref="T:System.Int32" /> value that contains a Windows error code.</returns>
-      <exception cref="T:System.InvalidOperationException">The client certificate has not been initialized yet by a call to the <see cref="M:System.Net.HttpListenerRequest.BeginGetClientCertificate(System.AsyncCallback,System.Object)" /> or <see cref="M:System.Net.HttpListenerRequest.GetClientCertificate" /> methods  
- -or -  
- The operation is still in progress.</exception>
+      <exception cref="T:System.InvalidOperationException">The client certificate has not been initialized yet by a call to the <see cref="M:System.Net.HttpListenerRequest.BeginGetClientCertificate(System.AsyncCallback,System.Object)" /> or <see cref="M:System.Net.HttpListenerRequest.GetClientCertificate" /> methods
+-or -
+The operation is still in progress.</exception>
     </member>
     <member name="P:System.Net.HttpListenerRequest.ContentEncoding">
-      <summary>Gets the content encoding that can be used with data sent with the request</summary>
+      <summary>Gets the content encoding that can be used with data sent with the request.</summary>
       <returns>An <see cref="T:System.Text.Encoding" /> object suitable for use with the data in the <see cref="P:System.Net.HttpListenerRequest.InputStream" /> property.</returns>
     </member>
     <member name="P:System.Net.HttpListenerRequest.ContentLength64">
@@ -419,8 +419,8 @@
     </member>
     <member name="P:System.Net.HttpListenerRequest.IsWebSocketRequest">
       <summary>Gets a <see cref="T:System.Boolean" /> value that indicates whether the TCP connection was  a WebSocket request.</summary>
-      <returns>Returns <see cref="T:System.Boolean" />.  
- <see langword="true" /> if the TCP connection is a WebSocket request; otherwise, <see langword="false" />.</returns>
+      <returns>Returns <see cref="T:System.Boolean" />.
+<see langword="true" /> if the TCP connection is a WebSocket request; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Net.HttpListenerRequest.KeepAlive">
       <summary>Gets a <see cref="T:System.Boolean" /> value that indicates whether the client requests a persistent connection.</summary>
@@ -495,9 +495,9 @@
       <param name="value">The value for the <paramref name="name" /> header.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" /> or an empty string ("").</exception>
-      <exception cref="T:System.ArgumentException">You are not allowed to specify a value for the specified header.  
- -or-  
- <paramref name="name" /> or <paramref name="value" /> contains invalid characters.</exception>
+      <exception cref="T:System.ArgumentException">You are not allowed to specify a value for the specified header.
+-or-
+<paramref name="name" /> or <paramref name="value" /> contains invalid characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The length of <paramref name="value" /> is greater than 65,535 characters.</exception>
     </member>
     <member name="M:System.Net.HttpListenerResponse.AppendCookie(System.Net.Cookie)">
@@ -511,10 +511,10 @@
       <param name="name">The name of the HTTP header to append <paramref name="value" /> to.</param>
       <param name="value">The value to append to the <paramref name="name" /> header.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is <see langword="null" /> or an empty string ("").  
--or-  
-You are not allowed to specify a value for the specified header.  
--or-  
+        <paramref name="name" /> is <see langword="null" /> or an empty string ("").
+-or-
+You are not allowed to specify a value for the specified header.
+-or-
 <paramref name="name" /> or <paramref name="value" /> contains invalid characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The length of <paramref name="value" /> is greater than 65,535 characters.</exception>
     </member>

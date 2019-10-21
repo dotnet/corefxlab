@@ -55,9 +55,9 @@
     </member>
     <member name="M:System.Threading.AsyncFlowControl.Dispose">
       <summary>Releases all resources used by the current instance of the <see cref="T:System.Threading.AsyncFlowControl" /> class.</summary>
-      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Threading.AsyncFlowControl" /> structure is not used on the thread where it was created.  
- -or-  
- The <see cref="T:System.Threading.AsyncFlowControl" /> structure has already been used to call <see cref="M:System.Threading.AsyncFlowControl.Dispose" /> or <see cref="M:System.Threading.AsyncFlowControl.Undo" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Threading.AsyncFlowControl" /> structure is not used on the thread where it was created.
+-or-
+The <see cref="T:System.Threading.AsyncFlowControl" /> structure has already been used to call <see cref="M:System.Threading.AsyncFlowControl.Dispose" /> or <see cref="M:System.Threading.AsyncFlowControl.Undo" />.</exception>
     </member>
     <member name="M:System.Threading.AsyncFlowControl.Equals(System.Object)">
       <summary>Determines whether the specified object is equal to the current <see cref="T:System.Threading.AsyncFlowControl" /> structure.</summary>
@@ -91,9 +91,9 @@
     </member>
     <member name="M:System.Threading.AsyncFlowControl.Undo">
       <summary>Restores the flow of the execution context between threads.</summary>
-      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Threading.AsyncFlowControl" /> structure is not used on the thread where it was created.  
- -or-  
- The <see cref="T:System.Threading.AsyncFlowControl" /> structure has already been used to call <see cref="M:System.Threading.AsyncFlowControl.Dispose" /> or <see cref="M:System.Threading.AsyncFlowControl.Undo" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Threading.AsyncFlowControl" /> structure is not used on the thread where it was created.
+-or-
+The <see cref="T:System.Threading.AsyncFlowControl" /> structure has already been used to call <see cref="M:System.Threading.AsyncFlowControl.Dispose" /> or <see cref="M:System.Threading.AsyncFlowControl.Undo" />.</exception>
     </member>
     <member name="T:System.Threading.AsyncLocal`1">
       <summary>Represents ambient data that is local to a given asynchronous control flow, such as an asynchronous method.</summary>
@@ -155,9 +155,9 @@
       <summary>Notifies the <see cref="T:System.Threading.Barrier" /> that there will be an additional participant.</summary>
       <returns>The phase number of the barrier in which the new participants will first participate.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
-      <exception cref="T:System.InvalidOperationException">Adding a participant would cause the barrier's participant count to exceed 32,767.  
- -or-  
- The method was invoked from within a post-phase action.</exception>
+      <exception cref="T:System.InvalidOperationException">Adding a participant would cause the barrier's participant count to exceed 32,767.
+-or-
+The method was invoked from within a post-phase action.</exception>
     </member>
     <member name="M:System.Threading.Barrier.AddParticipants(System.Int32)">
       <summary>Notifies the <see cref="T:System.Threading.Barrier" /> that there will be additional participants.</summary>
@@ -165,8 +165,8 @@
       <returns>The phase number of the barrier in which the new participants will first participate.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="participantCount" /> is less than 0.  
--or-  
+        <paramref name="participantCount" /> is less than 0.
+-or-
 Adding <paramref name="participantCount" /> participants would cause the barrier's participant count to exceed 32,767.</exception>
       <exception cref="T:System.InvalidOperationException">The method was invoked from within a post-phase action.</exception>
     </member>
@@ -193,20 +193,20 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     <member name="M:System.Threading.Barrier.RemoveParticipant">
       <summary>Notifies the <see cref="T:System.Threading.Barrier" /> that there will be one less participant.</summary>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
-      <exception cref="T:System.InvalidOperationException">The barrier already has 0 participants.  
- -or-  
- The method was invoked from within a post-phase action.</exception>
+      <exception cref="T:System.InvalidOperationException">The barrier already has 0 participants.
+-or-
+The method was invoked from within a post-phase action.</exception>
     </member>
     <member name="M:System.Threading.Barrier.RemoveParticipants(System.Int32)">
       <summary>Notifies the <see cref="T:System.Threading.Barrier" /> that there will be fewer participants.</summary>
       <param name="participantCount">The number of additional participants to remove from the barrier.</param>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The total participant count is less than the specified <paramref name="participantCount" /></exception>
-      <exception cref="T:System.InvalidOperationException">The barrier already has 0 participants.  
- -or-  
- The method was invoked from within a post-phase action.  
- -or-  
- current participant count is less than the specified participantCount</exception>
+      <exception cref="T:System.InvalidOperationException">The barrier already has 0 participants.
+-or-
+The method was invoked from within a post-phase action.
+-or-
+current participant count is less than the specified participantCount</exception>
     </member>
     <member name="M:System.Threading.Barrier.SignalAndWait">
       <summary>Signals that a participant has reached the barrier and waits for all other participants to reach the barrier as well.</summary>
@@ -217,7 +217,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     <member name="M:System.Threading.Barrier.SignalAndWait(System.Int32)">
       <summary>Signals that a participant has reached the barrier and waits for all other participants to reach the barrier as well, using a 32-bit signed integer to measure the timeout.</summary>
       <param name="millisecondsTimeout">The number of milliseconds to wait, or <see cref="F:System.Threading.Timeout.Infinite" />(-1) to wait indefinitely.</param>
-      <returns>if all participants reached the barrier within the specified time; otherwise false.</returns>
+      <returns>
+        <see langword="true" /> if all participants reached the barrier within the specified time; otherwise <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
@@ -247,7 +248,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     <member name="M:System.Threading.Barrier.SignalAndWait(System.TimeSpan)">
       <summary>Signals that a participant has reached the barrier and waits for all other participants to reach the barrier as well, using a <see cref="T:System.TimeSpan" /> object to measure the time interval.</summary>
       <param name="timeout">A <see cref="T:System.TimeSpan" /> that represents the number of milliseconds to wait, or a <see cref="T:System.TimeSpan" /> that represents -1 milliseconds to wait indefinitely.</param>
-      <returns>true if all other participants reached the barrier; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if all other participants reached the barrier; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out, or it is greater than 32,767.</exception>
@@ -257,7 +259,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <summary>Signals that a participant has reached the barrier and waits for all other participants to reach the barrier as well, using a <see cref="T:System.TimeSpan" /> object to measure the time interval, while observing a cancellation token.</summary>
       <param name="timeout">A <see cref="T:System.TimeSpan" /> that represents the number of milliseconds to wait, or a <see cref="T:System.TimeSpan" /> that represents -1 milliseconds to wait indefinitely.</param>
       <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken" /> to observe.</param>
-      <returns>true if all other participants reached the barrier; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if all other participants reached the barrier; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> has been canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
@@ -266,7 +269,7 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <exception cref="T:System.InvalidOperationException">The method was invoked from within a post-phase action, the barrier currently has 0 participants, or the barrier is signaled by more threads than are registered as participants.</exception>
     </member>
     <member name="T:System.Threading.BarrierPostPhaseException">
-      <summary>The exception that is thrown when the post-phase action of a <see cref="T:System.Threading.Barrier" /> fails</summary>
+      <summary>The exception that is thrown when the post-phase action of a <see cref="T:System.Threading.Barrier" /> fails.</summary>
     </member>
     <member name="M:System.Threading.BarrierPostPhaseException.#ctor">
       <summary>Initializes a new instance of the <see cref="T:System.Threading.BarrierPostPhaseException" /> class with a system-supplied message that describes the error.</summary>
@@ -305,9 +308,9 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     <member name="M:System.Threading.CountdownEvent.AddCount">
       <summary>Increments the <see cref="T:System.Threading.CountdownEvent" />'s current count by one.</summary>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
-      <exception cref="T:System.InvalidOperationException">The current instance is already set.  
- -or-  
- <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is equal to or greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The current instance is already set.
+-or-
+<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is equal to or greater than <see cref="F:System.Int32.MaxValue" />.</exception>
     </member>
     <member name="M:System.Threading.CountdownEvent.AddCount(System.Int32)">
       <summary>Increments the <see cref="T:System.Threading.CountdownEvent" />'s current count by a specified value.</summary>
@@ -315,9 +318,9 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="signalCount" /> is less than or equal to 0.</exception>
-      <exception cref="T:System.InvalidOperationException">The current instance is already set.  
- -or-  
- <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is equal to or greater than <see cref="F:System.Int32.MaxValue" /> after count is incremented by <paramref name="signalCount." /></exception>
+      <exception cref="T:System.InvalidOperationException">The current instance is already set.
+-or-
+<see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is equal to or greater than <see cref="F:System.Int32.MaxValue" /> after count is incremented by <paramref name="signalCount." /></exception>
     </member>
     <member name="P:System.Threading.CountdownEvent.CurrentCount">
       <summary>Gets the number of remaining signals required to set the event.</summary>
@@ -352,14 +355,16 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     </member>
     <member name="M:System.Threading.CountdownEvent.Signal">
       <summary>Registers a signal with the <see cref="T:System.Threading.CountdownEvent" />, decrementing the value of <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</summary>
-      <returns>true if the signal caused the count to reach zero and the event was set; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the signal caused the count to reach zero and the event was set; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.InvalidOperationException">The current instance is already set.</exception>
     </member>
     <member name="M:System.Threading.CountdownEvent.Signal(System.Int32)">
       <summary>Registers multiple signals with the <see cref="T:System.Threading.CountdownEvent" />, decrementing the value of <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> by the specified amount.</summary>
       <param name="signalCount">The number of signals to register.</param>
-      <returns>true if the signals caused the count to reach zero and the event was set; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the signals caused the count to reach zero and the event was set; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="signalCount" /> is less than 1.</exception>
@@ -367,7 +372,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     </member>
     <member name="M:System.Threading.CountdownEvent.TryAddCount">
       <summary>Attempts to increment <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> by one.</summary>
-      <returns>true if the increment succeeded; otherwise, false. If <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is already at zero, this method will return false.</returns>
+      <returns>
+        <see langword="true" /> if the increment succeeded; otherwise, false. If <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is already at zero, this method will return <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.InvalidOperationException">
         <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is equal to <see cref="F:System.Int32.MaxValue" />.</exception>
@@ -375,7 +381,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     <member name="M:System.Threading.CountdownEvent.TryAddCount(System.Int32)">
       <summary>Attempts to increment <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> by a specified value.</summary>
       <param name="signalCount">The value by which to increase <see cref="P:System.Threading.CountdownEvent.CurrentCount" />.</param>
-      <returns>true if the increment succeeded; otherwise, false. If <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is already at zero this will return false.</returns>
+      <returns>
+        <see langword="true" /> if the increment succeeded; otherwise, false. If <see cref="P:System.Threading.CountdownEvent.CurrentCount" /> is already at zero this will return <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="signalCount" /> is less than or equal to 0.</exception>
@@ -389,7 +396,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     <member name="M:System.Threading.CountdownEvent.Wait(System.Int32)">
       <summary>Blocks the current thread until the <see cref="T:System.Threading.CountdownEvent" /> is set, using a 32-bit signed integer to measure the timeout.</summary>
       <param name="millisecondsTimeout">The number of milliseconds to wait, or <see cref="F:System.Threading.Timeout.Infinite" />(-1) to wait indefinitely.</param>
-      <returns>true if the <see cref="T:System.Threading.CountdownEvent" /> was set; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Threading.CountdownEvent" /> was set; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
@@ -398,7 +406,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <summary>Blocks the current thread until the <see cref="T:System.Threading.CountdownEvent" /> is set, using a 32-bit signed integer to measure the timeout, while observing a <see cref="T:System.Threading.CancellationToken" />.</summary>
       <param name="millisecondsTimeout">The number of milliseconds to wait, or <see cref="F:System.Threading.Timeout.Infinite" />(-1) to wait indefinitely.</param>
       <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken" /> to observe.</param>
-      <returns>true if the <see cref="T:System.Threading.CountdownEvent" /> was set; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Threading.CountdownEvent" /> was set; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> has been canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed. -or- The <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has already been disposed.</exception>
@@ -415,7 +424,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
     <member name="M:System.Threading.CountdownEvent.Wait(System.TimeSpan)">
       <summary>Blocks the current thread until the <see cref="T:System.Threading.CountdownEvent" /> is set, using a <see cref="T:System.TimeSpan" /> to measure the timeout.</summary>
       <param name="timeout">A <see cref="T:System.TimeSpan" /> that represents the number of milliseconds to wait, or a <see cref="T:System.TimeSpan" /> that represents -1 milliseconds to wait indefinitely.</param>
-      <returns>true if the <see cref="T:System.Threading.CountdownEvent" /> was set; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Threading.CountdownEvent" /> was set; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
@@ -424,7 +434,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <summary>Blocks the current thread until the <see cref="T:System.Threading.CountdownEvent" /> is set, using a <see cref="T:System.TimeSpan" /> to measure the timeout, while observing a <see cref="T:System.Threading.CancellationToken" />.</summary>
       <param name="timeout">A <see cref="T:System.TimeSpan" /> that represents the number of milliseconds to wait, or a <see cref="T:System.TimeSpan" /> that represents -1 milliseconds to wait indefinitely.</param>
       <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken" /> to observe.</param>
-      <returns>true if the <see cref="T:System.Threading.CountdownEvent" /> was set; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Threading.CountdownEvent" /> was set; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> has been canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed. -or- The <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has already been disposed.</exception>
@@ -484,8 +495,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <param name="name">The name of the system synchronization event to open.</param>
       <returns>An  object that represents the named system event.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string.  
--or-  
+        <paramref name="name" /> is an empty string.
+-or-
 <paramref name="name" /> is longer than 260 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
@@ -512,8 +523,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <returns>
         <see langword="true" /> if the named synchronization event was opened successfully; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string.  
--or-  
+        <paramref name="name" /> is an empty string.
+-or-
 <paramref name="name" /> is longer than 260 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
@@ -557,10 +568,10 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <param name="callback">A <see cref="T:System.Threading.ContextCallback" /> delegate that represents the method to be run in the provided execution context.</param>
       <param name="state">The object to pass to the callback method.</param>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="executionContext" /> is <see langword="null" />.  
--or-  
-<paramref name="executionContext" /> was not acquired through a capture operation.  
--or-  
+        <paramref name="executionContext" /> is <see langword="null" />.
+-or-
+<paramref name="executionContext" /> was not acquired through a capture operation.
+-or-
 <paramref name="executionContext" /> has already been used as the argument to a <see cref="M:System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext,System.Threading.ContextCallback,System.Object)" /> call.</exception>
     </member>
     <member name="M:System.Threading.ExecutionContext.SuppressFlow">
@@ -608,10 +619,10 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <summary>Restores the host execution context to its prior state.</summary>
       <param name="previousState">The previous context state to revert to.</param>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="previousState" /> is <see langword="null" />.  
--or-  
-<paramref name="previousState" /> was not created on the current thread.  
--or-  
+        <paramref name="previousState" /> is <see langword="null" />.
+-or-
+<paramref name="previousState" /> was not created on the current thread.
+-or-
 <paramref name="previousState" /> is not the last state for the <see cref="T:System.Threading.HostExecutionContext" />.</exception>
     </member>
     <member name="M:System.Threading.HostExecutionContextManager.SetHostExecutionContext(System.Threading.HostExecutionContext)">
@@ -619,8 +630,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <param name="hostExecutionContext">The <see cref="T:System.Threading.HostExecutionContext" /> to be set.</param>
       <returns>An object for restoring the <see cref="T:System.Threading.HostExecutionContext" /> to its previous state.</returns>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="hostExecutionContext" /> was not acquired through a capture operation.  
--or-  
+        <paramref name="hostExecutionContext" /> was not acquired through a capture operation.
+-or-
 <paramref name="hostExecutionContext" /> has been the argument to a previous <see cref="M:System.Threading.HostExecutionContextManager.SetHostExecutionContext(System.Threading.HostExecutionContext)" /> method call.</exception>
     </member>
     <member name="T:System.Threading.Interlocked">
@@ -828,7 +839,7 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <summary>Initializes a target reference type with a specified function if it has not already been initialized.</summary>
       <param name="target">A reference to initialize if it has not already been initialized.</param>
       <param name="syncLock">A reference to an object used as the mutually exclusive lock for initializing
-            <paramref name="target" />. If <paramref name="syncLock" /> is <see langword="null" />, a new object will be instantiated.</param>
+<paramref name="target" />. If <paramref name="syncLock" /> is <see langword="null" />, a new object will be instantiated.</param>
       <param name="valueFactory">The method to invoke to initialize <paramref name="target" />.</param>
       <typeparam name="T">The type of the reference to be initialized.</typeparam>
       <returns>The initialized object.</returns>
@@ -981,7 +992,7 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
       <exception cref="">
         <paramref name="cancellationToken" /> was
-  canceled.</exception>
+canceled.</exception>
     </member>
     <member name="M:System.Threading.ManualResetEventSlim.Wait(System.TimeSpan)">
       <summary>Blocks the current thread until the current <see cref="T:System.Threading.ManualResetEventSlim" /> is set, using a <see cref="T:System.TimeSpan" /> to measure the time interval.</summary>
@@ -989,8 +1000,8 @@ Adding <paramref name="participantCount" /> participants would cause the barrier
       <returns>
         <see langword="true" /> if the <see cref="T:System.Threading.ManualResetEventSlim" /> was set; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out.  
--or-  
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out.
+-or-
 The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
       <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
       <exception cref="T:System.ObjectDisposedException">The object has already been disposed.</exception>
@@ -1004,8 +1015,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out.  
--or-  
+        <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out.
+-or-
 The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
       <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
       <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
@@ -1027,8 +1038,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
     <member name="M:System.Threading.Monitor.Enter(System.Object,System.Boolean@)">
       <summary>Acquires an exclusive lock on the specified object, and atomically sets a value that indicates whether the lock was taken.</summary>
       <param name="obj">The object on which to wait.</param>
-      <param name="lockTaken">The result of the attempt to acquire the lock, passed by reference. The input must be <see langword="false" />. The output is <see langword="true" /> if the lock is acquired; otherwise, the output is <see langword="false" />. The output is set even if an exception occurs during the attempt to acquire the lock.  
- Note   If no exception occurs, the output of this method is always <see langword="true" />.</param>
+      <param name="lockTaken">The result of the attempt to acquire the lock, passed by reference. The input must be <see langword="false" />. The output is <see langword="true" /> if the lock is acquired; otherwise, the output is <see langword="false" />. The output is set even if an exception occurs during the attempt to acquire the lock.
+Note   If no exception occurs, the output of this method is always <see langword="true" />.</param>
       <exception cref="T:System.ArgumentException">The input to <paramref name="lockTaken" /> is <see langword="true" />.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="obj" /> parameter is <see langword="null" />.</exception>
     </member>
@@ -1212,8 +1223,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="name">The name of the system mutex to open.</param>
       <returns>An object that represents the named system mutex.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string.  
--or-  
+        <paramref name="name" /> is an empty string.
+-or-
 <paramref name="name" /> is longer than 260 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
@@ -1233,8 +1244,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <returns>
         <see langword="true" /> if the named mutex was opened successfully; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string.  
--or-  
+        <paramref name="name" /> is an empty string.
+-or-
 <paramref name="name" /> is longer than 260 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
@@ -1351,37 +1362,37 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
     <member name="M:System.Threading.ReaderWriterLockSlim.Dispose">
       <summary>Releases all resources used by the current instance of the <see cref="T:System.Threading.ReaderWriterLockSlim" /> class.</summary>
       <exception cref="T:System.Threading.SynchronizationLockException">
-        <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount" /> is greater than zero.  
--or-  
-<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount" /> is greater than zero.  
--or-  
+        <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount" /> is greater than zero.
+-or-
+<see cref="P:System.Threading.ReaderWriterLockSlim.WaitingUpgradeCount" /> is greater than zero.
+-or-
 <see cref="P:System.Threading.ReaderWriterLockSlim.WaitingWriteCount" /> is greater than zero.</exception>
     </member>
     <member name="M:System.Threading.ReaderWriterLockSlim.EnterReadLock">
       <summary>Tries to enter the lock in read mode.</summary>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" />, and the current thread has attempted to acquire the read lock when it already holds the read lock.  
- -or-  
- The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" />, and the current thread has attempted to acquire the read lock when it already holds the write lock.  
- -or-  
- The recursion number would exceed the capacity of the counter. This limit is so large that applications should never encounter this exception.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" />, and the current thread has attempted to acquire the read lock when it already holds the read lock.
+-or-
+The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" />, and the current thread has attempted to acquire the read lock when it already holds the write lock.
+-or-
+The recursion number would exceed the capacity of the counter. This limit is so large that applications should never encounter this exception.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
     <member name="M:System.Threading.ReaderWriterLockSlim.EnterUpgradeableReadLock">
       <summary>Tries to enter the lock in upgradeable mode.</summary>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode.  
- -or-  
- The current thread has entered read mode, so trying to enter upgradeable mode would create the possibility of a deadlock.  
- -or-  
- The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode.
+-or-
+The current thread has entered read mode, so trying to enter upgradeable mode would create the possibility of a deadlock.
+-or-
+The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
     <member name="M:System.Threading.ReaderWriterLockSlim.EnterWriteLock">
       <summary>Tries to enter the lock in write mode.</summary>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode.  
- -or-  
- The current thread has entered read mode and doesn't already own a write lock, so trying to enter the lock in write mode would create the possibility of a deadlock.  
- -or-  
- The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock in any mode.
+-or-
+The current thread has entered read mode and doesn't already own a write lock, so trying to enter the lock in write mode would create the possibility of a deadlock.
+-or-
+The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
     <member name="M:System.Threading.ReaderWriterLockSlim.ExitReadLock">
@@ -1432,9 +1443,9 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="millisecondsTimeout">The number of milliseconds to wait, or -1 (<see cref="F:System.Threading.Timeout.Infinite" />) to wait indefinitely.</param>
       <returns>
         <see langword="true" /> if the calling thread entered read mode, otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.  
- -or-  
- The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.
+-or-
+The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
@@ -1443,12 +1454,12 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="timeout">The interval to wait, or -1 milliseconds to wait indefinitely.</param>
       <returns>
         <see langword="true" /> if the calling thread entered read mode, otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.  
- -or-  
- The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.  
- -or-  
- The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.
+-or-
+The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.
+-or-
+The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
     <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterUpgradeableReadLock(System.Int32)">
@@ -1456,11 +1467,11 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="millisecondsTimeout">The number of milliseconds to wait, or -1 (<see cref="F:System.Threading.Timeout.Infinite" />) to wait indefinitely.</param>
       <returns>
         <see langword="true" /> if the calling thread entered upgradeable mode, otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.  
- -or-  
- The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock.  
- -or-  
- The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.
+-or-
+The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock.
+-or-
+The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
@@ -1469,14 +1480,14 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="timeout">The interval to wait, or -1 milliseconds to wait indefinitely.</param>
       <returns>
         <see langword="true" /> if the calling thread entered upgradeable mode, otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.  
- -or-  
- The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock.  
- -or-  
- The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.  
- -or-  
- The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.
+-or-
+The current thread initially entered the lock in read mode, and therefore trying to enter upgradeable mode would create the possibility of a deadlock.
+-or-
+The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.
+-or-
+The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
     <member name="M:System.Threading.ReaderWriterLockSlim.TryEnterWriteLock(System.Int32)">
@@ -1484,11 +1495,11 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="millisecondsTimeout">The number of milliseconds to wait, or -1 (<see cref="F:System.Threading.Timeout.Infinite" />) to wait indefinitely.</param>
       <returns>
         <see langword="true" /> if the calling thread entered write mode, otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.  
- -or-  
- The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock.  
- -or-  
- The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.
+-or-
+The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock.
+-or-
+The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative, but it is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> (-1), which is the only negative value allowed.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
@@ -1497,14 +1508,14 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="timeout">The interval to wait, or -1 milliseconds to wait indefinitely.</param>
       <returns>
         <see langword="true" /> if the calling thread entered write mode, otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.  
- -or-  
- The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock.  
- -or-  
- The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.  
- -or-  
- The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds.</exception>
+      <exception cref="T:System.Threading.LockRecursionException">The <see cref="P:System.Threading.ReaderWriterLockSlim.RecursionPolicy" /> property is <see cref="F:System.Threading.LockRecursionPolicy.NoRecursion" /> and the current thread has already entered the lock.
+-or-
+The current thread initially entered the lock in read mode, and therefore trying to enter write mode would create the possibility of a deadlock.
+-or-
+The recursion number would exceed the capacity of the counter. The limit is so large that applications should never encounter it.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative, but it is not equal to -1 milliseconds, which is the only negative value allowed.
+-or-
+The value of <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.ReaderWriterLockSlim" /> object has been disposed.</exception>
     </member>
     <member name="P:System.Threading.ReaderWriterLockSlim.WaitingReadCount">
@@ -1529,8 +1540,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <exception cref="T:System.ArgumentException">
         <paramref name="initialCount" /> is greater than <paramref name="maximumCount" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="maximumCount" /> is less than 1.  
--or-  
+        <paramref name="maximumCount" /> is less than 1.
+-or-
 <paramref name="initialCount" /> is less than 0.</exception>
     </member>
     <member name="M:System.Threading.Semaphore.#ctor(System.Int32,System.Int32,System.String)">
@@ -1539,12 +1550,12 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="maximumCount">The maximum number of requests for the semaphore that can be granted concurrently.</param>
       <param name="name">The name of a named system semaphore object.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="initialCount" /> is greater than <paramref name="maximumCount" />.  
--or-  
+        <paramref name="initialCount" /> is greater than <paramref name="maximumCount" />.
+-or-
 <paramref name="name" /> is longer than 260 characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="maximumCount" /> is less than 1.  
--or-  
+        <paramref name="maximumCount" /> is less than 1.
+-or-
 <paramref name="initialCount" /> is less than 0.</exception>
       <exception cref="T:System.IO.IOException">A Win32 error occurred.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The named semaphore exists and has access control security, and the user does not have <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />.</exception>
@@ -1557,12 +1568,12 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="name">The name of a named system semaphore object.</param>
       <param name="createdNew">When this method returns, contains <see langword="true" /> if a local semaphore was created (that is, if <paramref name="name" /> is <see langword="null" /> or an empty string) or if the specified named system semaphore was created; <see langword="false" /> if the specified named system semaphore already existed. This parameter is passed uninitialized.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="initialCount" /> is greater than <paramref name="maximumCount" />.  
--or-  
+        <paramref name="initialCount" /> is greater than <paramref name="maximumCount" />.
+-or-
 <paramref name="name" /> is longer than 260 characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="maximumCount" /> is less than 1.  
--or-  
+        <paramref name="maximumCount" /> is less than 1.
+-or-
 <paramref name="initialCount" /> is less than 0.</exception>
       <exception cref="T:System.IO.IOException">A Win32 error occurred.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The named semaphore exists and has access control security, and the user does not have <see cref="F:System.Security.AccessControl.SemaphoreRights.FullControl" />.</exception>
@@ -1573,8 +1584,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="name">The name of the system semaphore to open.</param>
       <returns>An object that represents the named system semaphore.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string.  
--or-  
+        <paramref name="name" /> is an empty string.
+-or-
 <paramref name="name" /> is longer than 260 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
@@ -1587,9 +1598,9 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <returns>The count on the semaphore before the <see cref="Overload:System.Threading.Semaphore.Release" /> method was called.</returns>
       <exception cref="T:System.Threading.SemaphoreFullException">The semaphore count is already at the maximum value.</exception>
       <exception cref="T:System.IO.IOException">A Win32 error occurred with a named semaphore.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The current semaphore represents a named system semaphore, but the user does not have <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.  
- -or-  
- The current semaphore represents a named system semaphore, but it was not opened with <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The current semaphore represents a named system semaphore, but the user does not have <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.
+-or-
+The current semaphore represents a named system semaphore, but it was not opened with <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" />.</exception>
     </member>
     <member name="M:System.Threading.Semaphore.Release(System.Int32)">
       <summary>Exits the semaphore a specified number of times and returns the previous count.</summary>
@@ -1599,9 +1610,9 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
         <paramref name="releaseCount" /> is less than 1.</exception>
       <exception cref="T:System.Threading.SemaphoreFullException">The semaphore count is already at the maximum value.</exception>
       <exception cref="T:System.IO.IOException">A Win32 error occurred with a named semaphore.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The current semaphore represents a named system semaphore, but the user does not have <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> rights.  
- -or-  
- The current semaphore represents a named system semaphore, but it was not opened with <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> rights.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The current semaphore represents a named system semaphore, but the user does not have <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> rights.
+-or-
+The current semaphore represents a named system semaphore, but it was not opened with <see cref="F:System.Security.AccessControl.SemaphoreRights.Modify" /> rights.</exception>
     </member>
     <member name="M:System.Threading.Semaphore.TryOpenExisting(System.String,System.Threading.Semaphore@)">
       <summary>Opens the specified named semaphore, if it already exists, and returns a value that indicates whether the operation succeeded.</summary>
@@ -1610,8 +1621,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <returns>
         <see langword="true" /> if the named semaphore was opened successfully; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string.  
--or-  
+        <paramref name="name" /> is an empty string.
+-or-
 <paramref name="name" /> is longer than 260 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
@@ -1716,9 +1727,9 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken" /> token to observe.</param>
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
-      <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.  
- -or-  
- The <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has already been disposed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.
+-or-
+The <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has already been disposed.</exception>
     </member>
     <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan)">
       <summary>Blocks the current thread until it can enter the <see cref="T:System.Threading.SemaphoreSlim" />, using a <see cref="T:System.TimeSpan" /> to specify the timeout.</summary>
@@ -1739,8 +1750,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
         <paramref name="cancellationToken" /> was canceled.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is a negative number other than -1, which represents an infinite timeout -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
-      <exception cref="T:System.ObjectDisposedException">The semaphoreSlim instance has been disposed <paramref name="." /><paramref name="-or-" />  
- The <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has already been disposed.</exception>
+      <exception cref="T:System.ObjectDisposedException">The semaphoreSlim instance has been disposed <paramref name="." /><paramref name="-or-" />
+The <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has already been disposed.</exception>
     </member>
     <member name="M:System.Threading.SemaphoreSlim.WaitAsync">
       <summary>Asynchronously waits to enter the <see cref="T:System.Threading.SemaphoreSlim" />.</summary>
@@ -1888,7 +1899,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <summary>Spins until the specified condition is satisfied or until the specified timeout is expired.</summary>
       <param name="condition">A delegate to be executed over and over until it returns true.</param>
       <param name="millisecondsTimeout">The number of milliseconds to wait, or <see cref="F:System.Threading.Timeout.Infinite" /> (-1) to wait indefinitely.</param>
-      <returns>True if the condition is satisfied within the timeout; otherwise, false</returns>
+      <returns>
+        <see langword="true" /> if the condition is satisfied within the timeout; otherwise, false</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="condition" /> argument is null.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
@@ -1897,7 +1909,8 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
       <summary>Spins until the specified condition is satisfied or until the specified timeout is expired.</summary>
       <param name="condition">A delegate to be executed over and over until it returns true.</param>
       <param name="timeout">A <see cref="T:System.TimeSpan" /> that represents the number of milliseconds to wait, or a TimeSpan that represents -1 milliseconds to wait indefinitely.</param>
-      <returns>True if the condition is satisfied within the timeout; otherwise, false</returns>
+      <returns>
+        <see langword="true" /> if the condition is satisfied within the timeout; otherwise, false</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="condition" /> argument is null.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is a negative number other than -1 milliseconds, which represents an infinite time-out -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>

@@ -452,9 +452,9 @@
       <param name="endpoint">The <see cref="F:System.Windows.Automation.Text.TextPatternRangeEndpoint.Start" /> or <see cref="F:System.Windows.Automation.Text.TextPatternRangeEndpoint.End" /> endpoint of the caller.</param>
       <param name="targetRange">The target range for comparison.</param>
       <param name="targetEndpoint">The <see cref="F:System.Windows.Automation.Text.TextPatternRangeEndpoint.Start" /> or <see cref="F:System.Windows.Automation.Text.TextPatternRangeEndpoint.End" /> endpoint of the target.</param>
-      <returns>Returns a negative value if the caller's endpoint occurs earlier in the text than the target endpoint.  
- Returns zero if the caller's endpoint is at the same location as the target endpoint.  
- Returns a positive value if the caller's endpoint occurs later in the text than the target endpoint.</returns>
+      <returns>Returns a negative value if the caller's endpoint occurs earlier in the text than the target endpoint.
+Returns zero if the caller's endpoint is at the same location as the target endpoint.
+Returns a positive value if the caller's endpoint occurs later in the text than the target endpoint.</returns>
       <exception cref="T:System.ArgumentException">If <paramref name="targetRange" /> is from a different text provider.</exception>
     </member>
     <member name="M:System.Windows.Automation.Provider.ITextRangeProvider.ExpandToEnclosingUnit(System.Windows.Automation.Text.TextUnit)">
@@ -481,21 +481,21 @@
     <member name="M:System.Windows.Automation.Provider.ITextRangeProvider.GetAttributeValue(System.Int32)">
       <summary>Retrieves the value of the specified attribute across the text range.</summary>
       <param name="attribute">The text attribute.</param>
-      <returns>Retrieves an object representing the value of the specified attribute. For example, <c>GetAttributeValue(TextPattern.FontNameAttribute)</c> would return a string that represents the font name of the text range while <c>GetAttributeValue(TextPattern.IsItalicAttribute)</c> would return a value of type <see cref="T:System.Boolean" />.  
- Returns <see cref="F:System.Windows.Automation.TextPattern.MixedAttributeValue" /> if the value of the specified attribute varies over the text range.  
- Returns <see cref="F:System.Windows.Automation.AutomationElement.NotSupported" /> if the specified attribute is not supported by the provider or the control.</returns>
+      <returns>Retrieves an object representing the value of the specified attribute. For example, <c>GetAttributeValue(TextPattern.FontNameAttribute)</c> would return a string that represents the font name of the text range while <c>GetAttributeValue(TextPattern.IsItalicAttribute)</c> would return a value of type <see cref="T:System.Boolean" />.
+Returns <see cref="F:System.Windows.Automation.TextPattern.MixedAttributeValue" /> if the value of the specified attribute varies over the text range.
+Returns <see cref="F:System.Windows.Automation.AutomationElement.NotSupported" /> if the specified attribute is not supported by the provider or the control.</returns>
       <exception cref="T:System.ArgumentException">If the specified attribute is not valid.</exception>
     </member>
     <member name="M:System.Windows.Automation.Provider.ITextRangeProvider.GetBoundingRectangles">
       <summary>Retrieves a collection of bounding rectangles for each fully or partially visible line of text in a text range.</summary>
-      <returns>An array of bounding rectangles for each full or partial line of text in a text range.  
- An empty array for a degenerate range.  
- An empty array for a text range that has screen coordinates placing it completely off-screen, scrolled out of view, or obscured by an overlapping window.</returns>
+      <returns>An array of bounding rectangles for each full or partial line of text in a text range.
+An empty array for a degenerate range.
+An empty array for a text range that has screen coordinates placing it completely off-screen, scrolled out of view, or obscured by an overlapping window.</returns>
     </member>
     <member name="M:System.Windows.Automation.Provider.ITextRangeProvider.GetChildren">
       <summary>Retrieves a collection of all embedded objects that fall within the text range.</summary>
-      <returns>A collection of child objects that fall within the range. Children that overlap with the text range but are not entirely enclosed by it will also be included in the collection.  
- Returns an empty collection if there are no child objects.</returns>
+      <returns>A collection of child objects that fall within the range. Children that overlap with the text range but are not entirely enclosed by it will also be included in the collection.
+Returns an empty collection if there are no child objects.</returns>
     </member>
     <member name="M:System.Windows.Automation.Provider.ITextRangeProvider.GetEnclosingElement">
       <summary>Returns the innermost control that encloses the text range.</summary>
@@ -510,8 +510,8 @@
     <member name="M:System.Windows.Automation.Provider.ITextRangeProvider.Move(System.Windows.Automation.Text.TextUnit,System.Int32)">
       <summary>Moves the text range the specified number of text units.</summary>
       <param name="unit">The text unit boundary.</param>
-      <param name="count">The number of text units to move.  
- A positive value moves the text range forward, a negative value moves the text range backward, and 0 has no effect.</param>
+      <param name="count">The number of text units to move.
+A positive value moves the text range forward, a negative value moves the text range backward, and 0 has no effect.</param>
       <returns>The number of units actually moved. This can be less than the number requested if either of the new text range endpoints is greater than or less than the <see cref="P:System.Windows.Automation.Provider.ITextProvider.DocumentRange" /> endpoints.</returns>
     </member>
     <member name="M:System.Windows.Automation.Provider.ITextRangeProvider.MoveEndpointByRange(System.Windows.Automation.Text.TextPatternRangeEndpoint,System.Windows.Automation.Provider.ITextRangeProvider,System.Windows.Automation.Text.TextPatternRangeEndpoint)">

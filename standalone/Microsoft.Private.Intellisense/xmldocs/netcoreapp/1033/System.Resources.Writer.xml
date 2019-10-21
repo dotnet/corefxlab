@@ -59,8 +59,8 @@
       <param name="name">The name of the resource to add.</param>
       <param name="value">The value of the resource to add. The resource must support the <see cref="P:System.IO.Stream.Length" /> property.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> (or a name that varies only by capitalization) has already been added to this <see cref="T:System.Resources.ResourceWriter" />.  
--or-  
+        <paramref name="name" /> (or a name that varies only by capitalization) has already been added to this <see cref="T:System.Resources.ResourceWriter" />.
+-or-
 The stream does not support the <see cref="P:System.IO.Stream.Length" /> property.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> or <paramref name="value" /> is <see langword="null" />.</exception>
@@ -73,8 +73,8 @@ The stream does not support the <see cref="P:System.IO.Stream.Length" /> propert
       <param name="closeAfterWrite">
         <see langword="true" /> to close the stream after the <see cref="M:System.Resources.ResourceWriter.Generate" /> method is called; otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> (or a name that varies only by capitalization) has already been added to this <see cref="T:System.Resources.ResourceWriter" />.  
--or-  
+        <paramref name="name" /> (or a name that varies only by capitalization) has already been added to this <see cref="T:System.Resources.ResourceWriter" />.
+-or-
 The stream does not support the <see cref="P:System.IO.Stream.Length" /> property.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> or <paramref name="value" /> is <see langword="null" />.</exception>

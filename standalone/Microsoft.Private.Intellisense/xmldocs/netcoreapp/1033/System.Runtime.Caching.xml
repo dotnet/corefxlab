@@ -31,8 +31,8 @@
       <param name="reason">One of the enumeration values that indicate why <paramref name="cacheItem" /> was removed.</param>
       <param name="cacheItem">An instance of the cached entry that was removed.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="source" /> is <see langword="null" />.  
--or-  
+        <paramref name="source" /> is <see langword="null" />.
+-or-
 <paramref name="cacheItem" /> is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Runtime.Caching.CacheEntryRemovedArguments.CacheItem">
@@ -274,8 +274,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="filePaths" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="filePaths" /> contains zero items.  
--or-  
+        <paramref name="filePaths" /> contains zero items.
+-or-
 A path in the <paramref name="filePaths" /> list is <see langword="null" /> or an empty string.</exception>
     </member>
     <member name="P:System.Runtime.Caching.HostFileChangeMonitor.FilePaths">
@@ -330,9 +330,9 @@ A path in the <paramref name="filePaths" /> list is <see langword="null" /> or a
     </member>
     <member name="M:System.Runtime.Caching.MemoryCache.#ctor(System.String,System.Collections.Specialized.NameValueCollection)">
       <summary>Initializes a new instance of the <see cref="T:System.Runtime.Caching.MemoryCache" /> class.</summary>
-      <param name="name">The name to use to look up configuration information.  
- <c>Note</c> It is not required for configuration information to exist for every name.  
- If a matching configuration entry exists, the configuration information is used to configure the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. If a matching configuration entry does not exist, the name can be accessed through the <see cref="P:System.Runtime.Caching.MemoryCache.Name" /> property, because the specified name is associated with the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. For information about memory cache configuration, see <see cref="T:System.Runtime.Caching.Configuration.MemoryCacheElement" />.</param>
+      <param name="name">The name to use to look up configuration information.
+<c>Note</c> It is not required for configuration information to exist for every name.
+If a matching configuration entry exists, the configuration information is used to configure the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. If a matching configuration entry does not exist, the name can be accessed through the <see cref="P:System.Runtime.Caching.MemoryCache.Name" /> property, because the specified name is associated with the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. For information about memory cache configuration, see <see cref="T:System.Runtime.Caching.Configuration.MemoryCacheElement" />.</param>
       <param name="config">A collection of name/value pairs of configuration information to use for configuring the cache.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
@@ -349,7 +349,8 @@ A path in the <paramref name="filePaths" /> list is <see langword="null" /> or a
       <summary>Inserts a cache entry into the cache as a <see cref="T:System.Runtime.Caching.CacheItem" /> instance, and adds details about how the entry should be evicted.</summary>
       <param name="item">The object to add.</param>
       <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
-      <returns>true if insertion succeeded, or false if there is an already an entry in the cache that has the same key as item.</returns>
+      <returns>
+        <see langword="true" /> if insertion succeeded, or false if there is an already an entry in the cache that has the same key as item.</returns>
     </member>
     <member name="M:System.Runtime.Caching.MemoryCache.AddOrGetExisting(System.Runtime.Caching.CacheItem,System.Runtime.Caching.CacheItemPolicy)">
       <summary>Adds a cache entry into the cache using the specified <see cref="T:System.Runtime.Caching.CacheItem" /> instance and details about how to evict the entry.</summary>
@@ -358,11 +359,11 @@ A path in the <paramref name="filePaths" /> list is <see langword="null" /> or a
       <returns>If a cache entry with the same key exists, the existing cache entry; otherwise, <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Runtime.Caching.CacheItem.Value" /> property is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">Both the absolute and sliding expiration values for the <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> fields. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on a combination of an absolute expiration and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. The other expiration setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> field or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> field.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
     </member>
     <member name="M:System.Runtime.Caching.MemoryCache.AddOrGetExisting(System.String,System.Object,System.DateTimeOffset,System.String)">
       <summary>Adds a cache entry into the cache using the specified key and a value and an absolute expiration value.</summary>
@@ -376,11 +377,11 @@ A path in the <paramref name="filePaths" /> list is <see langword="null" /> or a
       <exception cref="T:System.NotSupportedException">
         <paramref name="regionName" /> is not <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">Both the absolute and sliding expiration values for the <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> fields. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on a combination of an absolute expiration and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> instance. The other expiration setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /></exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
     </member>
     <member name="M:System.Runtime.Caching.MemoryCache.AddOrGetExisting(System.String,System.Object,System.Runtime.Caching.CacheItemPolicy,System.String)">
       <summary>Inserts a cache entry into the cache using the specified key and value and the specified details for how it is to be evicted.</summary>
@@ -391,14 +392,14 @@ A path in the <paramref name="filePaths" /> list is <see langword="null" /> or a
       <returns>If a matching cache entry already exists, a cache entry; otherwise, <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="value" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">Both the absolute and sliding expiration values of <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on a combination of both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.  
- -or-  
- Both the removal callback and the update callback have been specified for <see cref="T:System.Runtime.Caching.CacheItemPolicy" />. The <see cref="T:System.Runtime.Caching.MemoryCache" /> only supports using one type of callback per cache entry.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> has been set to a value greater than one year.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+      <exception cref="T:System.ArgumentException">Both the absolute and sliding expiration values of <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on a combination of both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.
+-or-
+Both the removal callback and the update callback have been specified for <see cref="T:System.Runtime.Caching.CacheItemPolicy" />. The <see cref="T:System.Runtime.Caching.MemoryCache" /> only supports using one type of callback per cache entry.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> has been set to a value greater than one year.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
     </member>
     <member name="P:System.Runtime.Caching.MemoryCache.CacheMemoryLimit">
       <summary>Gets the amount of memory on the computer, in bytes, that can be used by the cache.</summary>
@@ -489,8 +490,8 @@ A path in the <paramref name="filePaths" /> list is <see langword="null" /> or a
       <param name="key">A unique identifier for the cache value to get or set.</param>
       <returns>The value in the cache instance for the specified key, if the entry exists; otherwise, <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="key" /> is <see langword="null" />.  
--or-  
+        <paramref name="key" /> is <see langword="null" />.
+-or-
 The inserted value is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Runtime.Caching.MemoryCache.Name">
@@ -527,21 +528,21 @@ The inserted value is <see langword="null" />.</exception>
       <param name="item">An object that represents a cache entry to insert.</param>
       <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="item" /> is <see langword="null" />.  
--or-  
-The <see cref="P:System.Runtime.Caching.CacheItem.Key" /> property is <see langword="null" />.  
--or-  
+        <paramref name="item" /> is <see langword="null" />.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItem.Key" /> property is <see langword="null" />.
+-or-
 The <see cref="P:System.Runtime.Caching.CacheItem.Value" /> property is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry was passed. This occurs if the following expiration details are set on the policy object for the cache entry:  
+      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry was passed. This occurs if the following expiration details are set on the policy object for the cache entry:
 
-If both the absolute and sliding expiration values of the <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> fields. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on both an absolute expiration and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> property.  
+If both the absolute and sliding expiration values of the <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> fields. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class cannot set expiration policy based on both an absolute expiration and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" /> property.
 
 If both the removal callback and the update callback are specified for <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class only supports using one type of callback per cache entry.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
     </member>
     <member name="M:System.Runtime.Caching.MemoryCache.Set(System.String,System.Object,System.DateTimeOffset,System.String)">
       <summary>Inserts a cache entry into the cache by using a key and a value and specifies time-based expiration details.</summary>
@@ -552,18 +553,18 @@ If both the removal callback and the update callback are specified for <see cref
       <exception cref="T:System.NotSupportedException">
         <paramref name="regionName" /> is not <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="key" /> is <see langword="null" />.  
--or-  
+        <paramref name="key" /> is <see langword="null" />.
+-or-
 <paramref name="Value" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry was passed. This occurs if the following expiration details are set on the policy object for the cache entry:  
+      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry was passed. This occurs if the following expiration details are set on the policy object for the cache entry:
 
-If both the absolute and sliding expiration values on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. This occurs because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not support expiring entries based on both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.  
+If both the absolute and sliding expiration values on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. This occurs because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not support expiring entries based on both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.
 
 If both the removal callback and the update callback are specified on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class only supports using one type of callback per cache entry.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
- -or-  
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.
+-or-
 
 The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
     </member>
@@ -574,21 +575,21 @@ The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is
       <param name="policy">An object that contains eviction details for the cache entry. This object provides more options for eviction than a simple absolute expiration.</param>
       <param name="regionName">A named region in the cache to which a cache entry can be added. Do not pass a value for this parameter. This parameter is <see langword="null" /> by default, because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not implement regions.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="key" /> is <see langword="null" />.  
--or-  
-<paramref name="value" /> is <see langword="null" />  
--or-  
+        <paramref name="key" /> is <see langword="null" />.
+-or-
+<paramref name="value" /> is <see langword="null" />
+-or-
 The callback reference that was passed to the helper method in the <see cref="P:System.Runtime.Caching.CacheItemPolicy.UpdateCallback" /> property is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry exists. This occurs if the following expiration details are set on the policy object for the cache entry:  
+      <exception cref="T:System.ArgumentException">An invalid combination of arguments for the cache entry exists. This occurs if the following expiration details are set on the policy object for the cache entry:
 
-If both the absolute and sliding expiration values on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. This is because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not support expiring entries based on both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.  
+If both the absolute and sliding expiration values on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> object are set to values other than the defaults of <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> and <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />. This is because the <see cref="T:System.Runtime.Caching.MemoryCache" /> class does not support expiring entries based on both an absolute and a sliding expiration. Only one expiration setting can be explicitly set when you use the <see cref="T:System.Runtime.Caching.MemoryCache" /> class. The other setting must be set to <see cref="F:System.Runtime.Caching.ObjectCache.InfiniteAbsoluteExpiration" /> or <see cref="F:System.Runtime.Caching.ObjectCache.NoSlidingExpiration" />.
 
 If both the removal callback and the update callback are specified on <see cref="T:System.Runtime.Caching.CacheItemPolicy" /> class. The <see cref="T:System.Runtime.Caching.MemoryCache" /> class only supports using one type of callback per cache entry.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.  
- -or-  
- The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value less than <see cref="F:System.TimeSpan.Zero" />.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.SlidingExpiration" /> property is set to a value greater than one year.
+-or-
+The <see cref="P:System.Runtime.Caching.CacheItemPolicy.Priority" /> property is not a value of the <see cref="T:System.Runtime.Caching.CacheItemPriority" /> enumeration.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="regionName" /> is not <see langword="null" />.</exception>
     </member>

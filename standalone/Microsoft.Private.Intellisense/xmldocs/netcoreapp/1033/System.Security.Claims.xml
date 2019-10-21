@@ -315,8 +315,8 @@
       <returns>
         <see langword="true" /> if a match is found; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="type" /> is null.  
--or-  
+        <paramref name="type" /> is null.
+-or-
 <paramref name="value" /> is null.</exception>
     </member>
     <member name="P:System.Security.Claims.ClaimsIdentity.IsAuthenticated">
@@ -490,8 +490,8 @@
       <returns>
         <see langword="true" /> if a matching claim exists; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="type" /> is null.  
--or-  
+        <paramref name="type" /> is null.
+-or-
 <paramref name="value" /> is null.</exception>
     </member>
     <member name="P:System.Security.Claims.ClaimsPrincipal.Identities">
@@ -529,174 +529,174 @@
       <summary>Defines constants for the well-known claim types that can be assigned to a subject. This class cannot be inherited.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Actor">
-      <summary>The URI for a claim that specifies the actor, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the actor, <c>http://schemas.xmlsoap.org/ws/2009/09/identity/claims/actor</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Anonymous">
-      <summary>The URI for a claim that specifies the anonymous user; <c></c>.</summary>
+      <summary>The URI for a claim that specifies the anonymous user; <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/anonymous</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Authentication">
-      <summary>The URI for a claim that specifies details about whether an identity is authenticated, <c></c>.</summary>
+      <summary>The URI for a claim that specifies details about whether an identity is authenticated, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authenticated</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.AuthenticationInstant">
-      <summary>The URI for a claim that specifies the instant at which an entity was authenticated; <c></c>.</summary>
+      <summary>The URI for a claim that specifies the instant at which an entity was authenticated; <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationinstant</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.AuthenticationMethod">
-      <summary>The URI for a claim that specifies the method with which an entity was authenticated; <c></c>.</summary>
+      <summary>The URI for a claim that specifies the method with which an entity was authenticated; <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationmethod</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.AuthorizationDecision">
-      <summary>The URI for a claim that specifies an authorization decision on an entity; <c></c>.</summary>
+      <summary>The URI for a claim that specifies an authorization decision on an entity; <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authorizationdecision</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.CookiePath">
-      <summary>The URI for a claim that specifies the cookie path; <c></c>.</summary>
+      <summary>The URI for a claim that specifies the cookie path; <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/cookiepath</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Country">
-      <summary>The URI for a claim that specifies the country/region in which an entity resides, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the country/region in which an entity resides, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/country</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.DateOfBirth">
-      <summary>The URI for a claim that specifies the date of birth of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the date of birth of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.DenyOnlyPrimaryGroupSid">
-      <summary>The URI for a claim that specifies the deny-only primary group SID on an entity; <c></c>. A deny-only SID denies the specified entity to a securable object.</summary>
+      <summary>The URI for a claim that specifies the deny-only primary group SID on an entity; <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/denyonlyprimarygroupsid</c>. A deny-only SID denies the specified entity to a securable object.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.DenyOnlyPrimarySid">
-      <summary>The URI for a claim that specifies the deny-only primary SID on an entity; <c></c>. A deny-only SID denies the specified entity to a securable object.</summary>
+      <summary>The URI for a claim that specifies the deny-only primary SID on an entity; <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/denyonlyprimarysid</c>. A deny-only SID denies the specified entity to a securable object.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.DenyOnlySid">
-      <summary>The URI for a claim that specifies a deny-only security identifier (SID) for an entity, <c></c>. A deny-only SID denies the specified entity to a securable object.</summary>
+      <summary>The URI for a claim that specifies a deny-only security identifier (SID) for an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/denyonlysid</c>. A deny-only SID denies the specified entity to a securable object.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.DenyOnlyWindowsDeviceGroup">
-      <summary>The URI for a claim that specifies the Windows deny-only group SID of the device, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the Windows deny-only group SID of the device, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/denyonlywindowsdevicegroup</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Dns">
-      <summary>The URI for a claim that specifies the DNS name associated with the computer name or with the alternative name of either the subject or issuer of an X.509 certificate, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the DNS name associated with the computer name or with the alternative name of either the subject or issuer of an X.509 certificate, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dns</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Dsa">
       <summary>
-        <c></c>.</summary>
+        <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/dsa</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Email">
-      <summary>The URI for a claim that specifies the email address of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the email address of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Expiration">
       <summary>
-        <c></c>.</summary>
+        <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/expiration</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Expired">
       <summary>
-        <c></c>.</summary>
+        <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/expired</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Gender">
-      <summary>The URI for a claim that specifies the gender of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the gender of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/gender</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.GivenName">
-      <summary>The URI for a claim that specifies the given name of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the given name of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.GroupSid">
-      <summary>The URI for a claim that specifies the SID for the group of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the SID for the group of an entity, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Hash">
-      <summary>The URI for a claim that specifies a hash value, <c></c>.</summary>
+      <summary>The URI for a claim that specifies a hash value, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/hash</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.HomePhone">
-      <summary>The URI for a claim that specifies the home phone number of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the home phone number of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/homephone</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.IsPersistent">
       <summary>
-        <c></c>.</summary>
+        <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/ispersistent</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Locality">
-      <summary>The URI for a claim that specifies the locale in which an entity resides, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the locale in which an entity resides, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/locality</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.MobilePhone">
-      <summary>The URI for a claim that specifies the mobile phone number of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the mobile phone number of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Name">
-      <summary>The URI for a claim that specifies the name of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the name of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.NameIdentifier">
-      <summary>The URI for a claim that specifies the name of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the name of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.OtherPhone">
-      <summary>The URI for a claim that specifies the alternative phone number of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the alternative phone number of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/otherphone</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.PostalCode">
-      <summary>The URI for a claim that specifies the postal code of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the postal code of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/postalcode</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.PrimaryGroupSid">
-      <summary>The URI for a claim that specifies the primary group SID of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the primary group SID of an entity, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/primarygroupsid</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.PrimarySid">
-      <summary>The URI for a claim that specifies the primary SID of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the primary SID of an entity, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/primarysid</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Role">
-      <summary>The URI for a claim that specifies the role of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the role of an entity, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/role</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Rsa">
-      <summary>The URI for a claim that specifies an RSA key, <c></c>.</summary>
+      <summary>The URI for a claim that specifies an RSA key, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/rsa</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.SerialNumber">
-      <summary>The URI for a claim that specifies a serial number, <c></c>.</summary>
+      <summary>The URI for a claim that specifies a serial number, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/serialnumber</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Sid">
-      <summary>The URI for a claim that specifies a security identifier (SID), <c></c>.</summary>
+      <summary>The URI for a claim that specifies a security identifier (SID), <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Spn">
-      <summary>The URI for a claim that specifies a service principal name (SPN) claim, <c></c>.</summary>
+      <summary>The URI for a claim that specifies a service principal name (SPN) claim, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/spn</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.StateOrProvince">
-      <summary>The URI for a claim that specifies the state or province in which an entity resides, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the state or province in which an entity resides, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/stateorprovince</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.StreetAddress">
-      <summary>The URI for a claim that specifies the street address of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the street address of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/streetaddress</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Surname">
-      <summary>The URI for a claim that specifies the surname of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the surname of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.System">
-      <summary>The URI for a claim that identifies the system entity, <c></c>.</summary>
+      <summary>The URI for a claim that identifies the system entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/system</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Thumbprint">
-      <summary>The URI for a claim that specifies a thumbprint, <c></c>. A thumbprint is a globally unique SHA-1 hash of an X.509 certificate.</summary>
+      <summary>The URI for a claim that specifies a thumbprint, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/thumbprint</c>. A thumbprint is a globally unique SHA-1 hash of an X.509 certificate.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Upn">
-      <summary>The URI for a claim that specifies a user principal name (UPN), <c></c>.</summary>
+      <summary>The URI for a claim that specifies a user principal name (UPN), <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Uri">
-      <summary>The URI for a claim that specifies a URI, <c></c>.</summary>
+      <summary>The URI for a claim that specifies a URI, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/uri</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.UserData">
-      <summary>The URI for a claim that specifies the user data, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the user data, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Version">
-      <summary>The URI for a claim that specifies the version, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the version, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/version</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.Webpage">
-      <summary>The URI for a claim that specifies the webpage of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the webpage of an entity, <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/webpage</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.WindowsAccountName">
-      <summary>The URI for a claim that specifies the Windows domain account name of an entity, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the Windows domain account name of an entity, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.WindowsDeviceClaim">
       <summary>
-        <c></c>.</summary>
+        <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsdeviceclaim</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.WindowsDeviceGroup">
-      <summary>The URI for a claim that specifies the Windows group SID of the device, <c></c>.</summary>
+      <summary>The URI for a claim that specifies the Windows group SID of the device, <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsdevicegroup</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.WindowsFqbnVersion">
       <summary>
-        <c></c>.</summary>
+        <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsfqbnversion</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.WindowsSubAuthority">
       <summary>
-        <c></c>.</summary>
+        <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/windowssubauthority</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.WindowsUserClaim">
       <summary>
-        <c></c>.</summary>
+        <c>http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsuserclaim</c>.</summary>
     </member>
     <member name="F:System.Security.Claims.ClaimTypes.X500DistinguishedName">
-      <summary>The URI for an X.500 distinguished name claim, such as the subject of an X.509 Public Key Certificate or an entry identifier in a directory services Directory Information Tree; <c></c>.</summary>
+      <summary>The URI for an X.500 distinguished name claim, such as the subject of an X.509 Public Key Certificate or an entry identifier in a directory services Directory Information Tree; <c>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/x500distinguishedname</c>.</summary>
     </member>
     <member name="T:System.Security.Claims.ClaimValueTypes">
       <summary>Defines claim value types according to the type URIs defined by W3C and OASIS. This class cannot be inherited.</summary>
@@ -798,9 +798,9 @@
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.GenericIdentity" /> class representing the user with the specified name and authentication type.</summary>
       <param name="name">The name of the user on whose behalf the code is running.</param>
       <param name="type">The type of authentication used to identify the user.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="type" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="type" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Security.Principal.GenericIdentity.AuthenticationType">
       <summary>Gets the type of authentication used to identify the user.</summary>

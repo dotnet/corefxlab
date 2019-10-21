@@ -5,34 +5,88 @@
   </assembly>
   <members>
     <member name="T:System.Reflection.AssemblyFlags" />
-    <member name="F:System.Reflection.AssemblyFlags.ContentTypeMask" />
-    <member name="F:System.Reflection.AssemblyFlags.DisableJitCompileOptimizer" />
-    <member name="F:System.Reflection.AssemblyFlags.EnableJitCompileTracking" />
-    <member name="F:System.Reflection.AssemblyFlags.PublicKey" />
-    <member name="F:System.Reflection.AssemblyFlags.Retargetable" />
-    <member name="F:System.Reflection.AssemblyFlags.WindowsRuntime" />
-    <member name="T:System.Reflection.AssemblyHashAlgorithm" />
-    <member name="F:System.Reflection.AssemblyHashAlgorithm.MD5" />
-    <member name="F:System.Reflection.AssemblyHashAlgorithm.None" />
-    <member name="F:System.Reflection.AssemblyHashAlgorithm.Sha1" />
-    <member name="F:System.Reflection.AssemblyHashAlgorithm.Sha256" />
-    <member name="F:System.Reflection.AssemblyHashAlgorithm.Sha384" />
-    <member name="F:System.Reflection.AssemblyHashAlgorithm.Sha512" />
-    <member name="T:System.Reflection.DeclarativeSecurityAction" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.Assert" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.Demand" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.Deny" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.InheritanceDemand" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.LinkDemand" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.None" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.PermitOnly" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.RequestMinimum" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.RequestOptional" />
-    <member name="F:System.Reflection.DeclarativeSecurityAction.RequestRefuse" />
+    <member name="F:System.Reflection.AssemblyFlags.ContentTypeMask">
+      <summary>Content type masked bits that correspond to values of <see cref="T:System.Reflection.AssemblyContentType" />.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyFlags.DisableJitCompileOptimizer">
+      <summary>Just-In-Time (JIT) compiler optimization is disabled for the assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyFlags.EnableJitCompileTracking">
+      <summary>Just-In-Time (JIT) compiler tracking is enabled for the assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyFlags.PublicKey">
+      <summary>The assembly reference holds the full (unhashed) public key. Not applicable on assembly definition.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyFlags.Retargetable">
+      <summary>The implementation of the referenced assembly used at runtime is not expected to match the version seen at compile time.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyFlags.WindowsRuntime">
+      <summary>The assembly contains Windows Runtime code.</summary>
+    </member>
+    <member name="T:System.Reflection.AssemblyHashAlgorithm">
+      <summary>Specifies the hash algorithms used for hashing assembly files and for generating the strong name.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyHashAlgorithm.MD5">
+      <summary>Retrieves the MD5 message-digest algorithm.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyHashAlgorithm.None">
+      <summary>A mask indicating that there is no hash algorithm.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyHashAlgorithm.Sha1">
+      <summary>Retrieves a revision of the Secure Hash Algorithm that corrects an unpublished flaw in SHA.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyHashAlgorithm.Sha256">
+      <summary>Retrieves a version of the Secure Hash Algorithm with a hash size of 256 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyHashAlgorithm.Sha384">
+      <summary>Retrieves a version of the Secure Hash Algorithm with a hash size of 384 bits.</summary>
+    </member>
+    <member name="F:System.Reflection.AssemblyHashAlgorithm.Sha512">
+      <summary>Retrieves a version of the Secure Hash Algorithm with a hash size of 512 bits.</summary>
+    </member>
+    <member name="T:System.Reflection.DeclarativeSecurityAction">
+      <summary>Specifies the security actions that can be performed using declarative security.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.Assert">
+      <summary>The calling code can access the resource identified by the current permission object, even if callers higher in the stack have not been granted permission to access the resource.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.Demand">
+      <summary>Check that all callers in the call chain have been granted the specified permission.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.Deny">
+      <summary>Without further checks refuse Demand for the specified permission.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.InheritanceDemand">
+      <summary>The derived class inheriting the class or overriding a method is required to have the specified permission.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.LinkDemand">
+      <summary>Check that the immediate caller has been granted the specified permission.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.None">
+      <summary>No declarative security action.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.PermitOnly">
+      <summary>Without further checks, refuse the demand for all permissions other than those specified.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.RequestMinimum">
+      <summary>Request the minimum permissions required for code to run. This action can only be used within the scope of the assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.RequestOptional">
+      <summary>Request additional permissions that are optional (not required to run). This request implicitly refuses all other permissions not specifically requested. This action can only be used within the scope of the assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.DeclarativeSecurityAction.RequestRefuse">
+      <summary>Request that permissions that might be misused not be granted to the calling code. This action can only be used within the scope of the assembly.</summary>
+    </member>
     <member name="T:System.Reflection.ManifestResourceAttributes" />
-    <member name="F:System.Reflection.ManifestResourceAttributes.Private" />
-    <member name="F:System.Reflection.ManifestResourceAttributes.Public" />
-    <member name="F:System.Reflection.ManifestResourceAttributes.VisibilityMask" />
+    <member name="F:System.Reflection.ManifestResourceAttributes.Private">
+      <summary>The resource is not exported from the assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.ManifestResourceAttributes.Public">
+      <summary>The resource is exported from the assembly.</summary>
+    </member>
+    <member name="F:System.Reflection.ManifestResourceAttributes.VisibilityMask">
+      <summary>Masks just the visibility-related attributes.</summary>
+    </member>
     <member name="T:System.Reflection.Metadata.ArrayShape">
       <summary>Represents the shape of an array type.</summary>
     </member>
@@ -137,7 +191,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.AssemblyFileHandleCollection" />
+    <member name="T:System.Reflection.Metadata.AssemblyFileHandleCollection">
+      <summary>Represents a collection of <see cref="T:System.Reflection.Metadata.AssemblyFileHandle" />.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.AssemblyFileHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.AssemblyFileHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.AssemblyFileHandleCollection.Enumerator.Current" />
@@ -186,7 +242,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.AssemblyReferenceHandleCollection" />
+    <member name="T:System.Reflection.Metadata.AssemblyReferenceHandleCollection">
+      <summary>A collection of assembly references.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.AssemblyReferenceHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.AssemblyReferenceHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.AssemblyReferenceHandleCollection.Enumerator.Current" />
@@ -1201,7 +1259,9 @@
     <member name="M:System.Reflection.Metadata.DeclarativeSecurityAttributeHandleCollection.GetEnumerator" />
     <member name="M:System.Reflection.Metadata.DeclarativeSecurityAttributeHandleCollection.System#Collections#Generic#IEnumerable{System#Reflection#Metadata#DeclarativeSecurityAttributeHandle}#GetEnumerator" />
     <member name="M:System.Reflection.Metadata.DeclarativeSecurityAttributeHandleCollection.System#Collections#IEnumerable#GetEnumerator" />
-    <member name="T:System.Reflection.Metadata.Document" />
+    <member name="T:System.Reflection.Metadata.Document">
+      <summary>The source document in the debug metadata.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.Document.Hash">
       <summary>Gets the document content hash.</summary>
     </member>
@@ -1254,7 +1314,9 @@
     <member name="M:System.Reflection.Metadata.DocumentHandleCollection.GetEnumerator" />
     <member name="M:System.Reflection.Metadata.DocumentHandleCollection.System#Collections#Generic#IEnumerable{System#Reflection#Metadata#DocumentHandle}#GetEnumerator" />
     <member name="M:System.Reflection.Metadata.DocumentHandleCollection.System#Collections#IEnumerable#GetEnumerator" />
-    <member name="T:System.Reflection.Metadata.DocumentNameBlobHandle" />
+    <member name="T:System.Reflection.Metadata.DocumentNameBlobHandle">
+      <summary>A <see cref="T:System.Reflection.Metadata.BlobHandle" /> representing a blob on #Blob heap in Portable PDB structured as Document Name.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.DocumentNameBlobHandle.Equals(System.Object)">
       <param name="obj" />
     </member>
@@ -2202,49 +2264,82 @@
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.UserStringHandle(System.Int32)">
       <param name="offset" />
     </member>
-    <member name="T:System.Reflection.Metadata.Ecma335.MethodBodyAttributes" />
-    <member name="F:System.Reflection.Metadata.Ecma335.MethodBodyAttributes.InitLocals" />
-    <member name="F:System.Reflection.Metadata.Ecma335.MethodBodyAttributes.None" />
-    <member name="T:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder" />
+    <member name="T:System.Reflection.Metadata.Ecma335.MethodBodyAttributes">
+      <summary>Defines method body attributes.</summary>
+    </member>
+    <member name="F:System.Reflection.Metadata.Ecma335.MethodBodyAttributes.InitLocals">
+      <summary>Initializes any locals the method defines to zero and dynamically allocates local memory.</summary>
+    </member>
+    <member name="F:System.Reflection.Metadata.Ecma335.MethodBodyAttributes.None">
+      <summary>Performs no local memory initialization.</summary>
+    </member>
+    <member name="T:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder">
+      <summary>Provides an encoder for a method body stream.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.#ctor(System.Reflection.Metadata.BlobBuilder)">
       <param name="builder" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.AddMethodBody(System.Int32,System.Int32,System.Int32,System.Boolean,System.Reflection.Metadata.StandaloneSignatureHandle,System.Reflection.Metadata.Ecma335.MethodBodyAttributes)">
-      <param name="codeSize" />
-      <param name="maxStack" />
-      <param name="exceptionRegionCount" />
-      <param name="hasSmallExceptionRegions" />
-      <param name="localVariablesSignature" />
-      <param name="attributes" />
+      <summary>Encodes a method body and adds it to the method body stream, using the provided code size, maximum stack size, number of exception regions, local variables' signature handle, method body attributes and allowing to indicate whether the exception regions should be encoded in small format or not.</summary>
+      <param name="codeSize">The number of bytes to be reserved for instructions.</param>
+      <param name="maxStack">The maximum stack size.</param>
+      <param name="exceptionRegionCount">The number of exception regions.</param>
+      <param name="hasSmallExceptionRegions">
+        <see langword="true" /> if the exception regions should be encoded in small format; <see langword="false" /> otherwise.</param>
+      <param name="localVariablesSignature">The local variables' signature handle.</param>
+      <param name="attributes">The method body attributes.</param>
+      <returns>The offset of the encoded body within the method body stream.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.AddMethodBody(System.Int32,System.Int32,System.Int32,System.Boolean,System.Reflection.Metadata.StandaloneSignatureHandle,System.Reflection.Metadata.Ecma335.MethodBodyAttributes,System.Boolean)">
-      <param name="codeSize" />
-      <param name="maxStack" />
-      <param name="exceptionRegionCount" />
-      <param name="hasSmallExceptionRegions" />
-      <param name="localVariablesSignature" />
-      <param name="attributes" />
-      <param name="hasDynamicStackAllocation" />
+      <summary>Encodes a method body and adds it to the method body stream, using the provided code size, maximum stack size, number of exception regions, local variables' signature handle, method body attributes, allowing to indicate whether the exception regions should be encoded in small format or not, and allowing to indicate whether the method should allocate from the dynamic local memory pool or not.</summary>
+      <param name="codeSize">The number of bytes to be reserved for instructions.</param>
+      <param name="maxStack">The maximum stack size.</param>
+      <param name="exceptionRegionCount">The number of exception regions.</param>
+      <param name="hasSmallExceptionRegions">
+        <see langword="true" /> if the exception regions should be encoded in small format; <see langword="false" /> otherwise.</param>
+      <param name="localVariablesSignature">The local variables' signature handle.</param>
+      <param name="attributes">The method body attributes.</param>
+      <param name="hasDynamicStackAllocation">
+        <see langword="true" /> if the method allocates from the dynamic local memory pool (the <see langword="localloc" /> instruction); <see langword="false" /> otherwise.</param>
+      <returns>The offset of the encoded body within the method body stream.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.AddMethodBody(System.Reflection.Metadata.Ecma335.InstructionEncoder,System.Int32,System.Reflection.Metadata.StandaloneSignatureHandle,System.Reflection.Metadata.Ecma335.MethodBodyAttributes)">
-      <param name="instructionEncoder" />
-      <param name="maxStack" />
-      <param name="localVariablesSignature" />
-      <param name="attributes" />
+      <summary>Encodes a method body and adds it to the method body stream.</summary>
+      <param name="instructionEncoder">The instruction encoder.</param>
+      <param name="maxStack">The maximum stack size.</param>
+      <param name="localVariablesSignature">The local variables' signature handle.</param>
+      <param name="attributes">The method body attributes.</param>
+      <returns>The offset of the encoded body within the method body stream.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.AddMethodBody(System.Reflection.Metadata.Ecma335.InstructionEncoder,System.Int32,System.Reflection.Metadata.StandaloneSignatureHandle,System.Reflection.Metadata.Ecma335.MethodBodyAttributes,System.Boolean)">
-      <param name="instructionEncoder" />
-      <param name="maxStack" />
-      <param name="localVariablesSignature" />
-      <param name="attributes" />
-      <param name="hasDynamicStackAllocation" />
+      <summary>Encodes a method body and adds it to the method body stream, using the provided instruction encoder, maximum stack size, local variables' signature handle, method body attributes, and allowing to indicate whether the method should allocate from the dynamic local memory pool or not.</summary>
+      <param name="instructionEncoder">The instruction encoder.</param>
+      <param name="maxStack">The maximum stack size.</param>
+      <param name="localVariablesSignature">The local variables' signature handle.</param>
+      <param name="attributes">The method body attributes.</param>
+      <param name="hasDynamicStackAllocation">
+        <see langword="true" /> if the method allocates from the dynamic local memory pool (the IL contains the <see langword="localloc" /> instruction); <see langword="false" /> otherwise.</param>
+      <returns>The offset of the encoded body within the method body stream.</returns>
     </member>
     <member name="P:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.Builder" />
-    <member name="T:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.MethodBody" />
-    <member name="P:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.MethodBody.ExceptionRegions" />
-    <member name="P:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.MethodBody.Instructions" />
-    <member name="P:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.MethodBody.Offset" />
-    <member name="T:System.Reflection.Metadata.Ecma335.MethodSignatureEncoder" />
+    <member name="T:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.MethodBody">
+      <summary>Describes a method body. This class is meant to used along with the <see cref="T:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder" /> class.</summary>
+    </member>
+    <member name="P:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.MethodBody.ExceptionRegions">
+      <summary>Gets an encoder object that can be used to encode exception regions to the method body.</summary>
+      <returns>An exception region encoder instance.</returns>
+    </member>
+    <member name="P:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.MethodBody.Instructions">
+      <summary>Gets a blob reserved for instructions.</summary>
+      <returns>A blob reserved for instructions.</returns>
+    </member>
+    <member name="P:System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder.MethodBody.Offset">
+      <summary>Gets the offset of the encoded method body in the method body stream.</summary>
+      <returns>The offset of the encoded method body in the method body stream.</returns>
+    </member>
+    <member name="T:System.Reflection.Metadata.Ecma335.MethodSignatureEncoder">
+      <summary>Provides an encoder for method signatures.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MethodSignatureEncoder.#ctor(System.Reflection.Metadata.BlobBuilder,System.Boolean)">
       <param name="builder" />
       <param name="hasVarArgs" />
@@ -2252,30 +2347,37 @@
     <member name="P:System.Reflection.Metadata.Ecma335.MethodSignatureEncoder.Builder" />
     <member name="P:System.Reflection.Metadata.Ecma335.MethodSignatureEncoder.HasVarArgs" />
     <member name="M:System.Reflection.Metadata.Ecma335.MethodSignatureEncoder.Parameters(System.Int32,System.Action{System.Reflection.Metadata.Ecma335.ReturnTypeEncoder},System.Action{System.Reflection.Metadata.Ecma335.ParametersEncoder})">
-      <param name="parameterCount" />
-      <param name="returnType" />
-      <param name="parameters" />
+      <summary>Encodes the provided return type and parameters.</summary>
+      <param name="parameterCount">The number of parameters.</param>
+      <param name="returnType">The method that is called first to encode the return type.</param>
+      <param name="parameters">The method that is called second to encode the parameters.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MethodSignatureEncoder.Parameters(System.Int32,System.Reflection.Metadata.Ecma335.ReturnTypeEncoder@,System.Reflection.Metadata.Ecma335.ParametersEncoder@)">
-      <param name="parameterCount" />
-      <param name="returnType" />
-      <param name="parameters" />
+      <summary>Encodes the provided return type and parameters, which must be used in the order they appear in the parameter list.</summary>
+      <param name="parameterCount">The number of parameters.</param>
+      <param name="returnType">The method that is called first to encode the return types.</param>
+      <param name="parameters">The method that is called second to encode the parameters.</param>
     </member>
     <member name="T:System.Reflection.Metadata.Ecma335.NamedArgumentsEncoder" />
     <member name="M:System.Reflection.Metadata.Ecma335.NamedArgumentsEncoder.#ctor(System.Reflection.Metadata.BlobBuilder)">
-      <param name="builder" />
+      <summary>Initializes a new instance of the <see cref="T:System.Reflection.Metadata.Ecma335.NamedArgumentsEncoder" /> structure.</summary>
+      <param name="builder">A builder for encoding the named argument.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.NamedArgumentsEncoder.AddArgument(System.Boolean,System.Action{System.Reflection.Metadata.Ecma335.NamedArgumentTypeEncoder},System.Action{System.Reflection.Metadata.Ecma335.NameEncoder},System.Action{System.Reflection.Metadata.Ecma335.LiteralEncoder})">
-      <param name="isField" />
-      <param name="type" />
-      <param name="name" />
-      <param name="literal" />
+      <summary>Encodes a named argument (a field or property).</summary>
+      <param name="isField">
+        <see langword="true" /> to encode a field, <see langword="false" /> to encode a property.</param>
+      <param name="type">The method to call first to encode the type of the argument.</param>
+      <param name="name">The method to call second to encode the name of the field or property.</param>
+      <param name="literal">The method to call third to encode the literal value of the argument.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.NamedArgumentsEncoder.AddArgument(System.Boolean,System.Reflection.Metadata.Ecma335.NamedArgumentTypeEncoder@,System.Reflection.Metadata.Ecma335.NameEncoder@,System.Reflection.Metadata.Ecma335.LiteralEncoder@)">
-      <param name="isField" />
-      <param name="type" />
-      <param name="name" />
-      <param name="literal" />
+      <summary>Encodes a named argument (a field or property) and returns three encoders that must be used in the order they appear in the parameter list.</summary>
+      <param name="isField">
+        <see langword="true" /> to encode a field, <see langword="false" /> to encode a property.</param>
+      <param name="type">The method to call first to encode the type of the argument.</param>
+      <param name="name">The method to call second to encode the name of the field or property.</param>
+      <param name="literal">The method to call third to encode the literal value of the argument.</param>
     </member>
     <member name="P:System.Reflection.Metadata.Ecma335.NamedArgumentsEncoder.Builder" />
     <member name="T:System.Reflection.Metadata.Ecma335.NamedArgumentTypeEncoder" />
@@ -2326,18 +2428,23 @@
       <param name="encodedArguments" />
     </member>
     <member name="P:System.Reflection.Metadata.Ecma335.PermissionSetEncoder.Builder" />
-    <member name="T:System.Reflection.Metadata.Ecma335.PortablePdbBuilder" />
+    <member name="T:System.Reflection.Metadata.Ecma335.PortablePdbBuilder">
+      <summary>Represents the builder of a Portable PDB image.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.PortablePdbBuilder.#ctor(System.Reflection.Metadata.Ecma335.MetadataBuilder,System.Collections.Immutable.ImmutableArray{System.Int32},System.Reflection.Metadata.MethodDefinitionHandle,System.Func{System.Collections.Generic.IEnumerable{System.Reflection.Metadata.Blob},System.Reflection.Metadata.BlobContentId})">
-      <param name="tablesAndHeaps" />
-      <param name="typeSystemRowCounts" />
-      <param name="entryPoint" />
-      <param name="idProvider" />
+      <summary>Creates a builder of a Portable PDB image.</summary>
+      <param name="tablesAndHeaps">A builder populated with debug metadata entities stored in tables and values stored in heaps. The entities and values are enumerated when serializing the Portable PDB image.</param>
+      <param name="typeSystemRowCounts">The row counts of all tables that the associated type system metadata contain. Each slot in the array corresponds to a table (<see cref="T:System.Reflection.Metadata.Ecma335.TableIndex" />). The length of the array must be equal <see cref="F:System.Reflection.Metadata.Ecma335.MetadataTokens.TableCount" />.</param>
+      <param name="entryPoint">An entry point method definition handle.</param>
+      <param name="idProvider">A function that calculates the ID of content represented as a sequence of blobs. If not specified, a default function that ignores the content and returns a content ID based on the current time is used (<see cref="M:System.Reflection.Metadata.BlobContentId.GetTimeBasedProvider" />). You must specify a deterministic function to produce a deterministic Portable PDB image.</param>
     </member>
     <member name="P:System.Reflection.Metadata.Ecma335.PortablePdbBuilder.FormatVersion" />
     <member name="P:System.Reflection.Metadata.Ecma335.PortablePdbBuilder.IdProvider" />
     <member name="P:System.Reflection.Metadata.Ecma335.PortablePdbBuilder.MetadataVersion" />
     <member name="M:System.Reflection.Metadata.Ecma335.PortablePdbBuilder.Serialize(System.Reflection.Metadata.BlobBuilder)">
-      <param name="builder" />
+      <summary>Serializes portable PDB content into the given <see cref="T:System.Reflection.Metadata.BlobBuilder" />.</summary>
+      <param name="builder">The builder to write to.</param>
+      <returns>The ID of the serialized content.</returns>
     </member>
     <member name="T:System.Reflection.Metadata.Ecma335.ReturnTypeEncoder" />
     <member name="M:System.Reflection.Metadata.Ecma335.ReturnTypeEncoder.#ctor(System.Reflection.Metadata.BlobBuilder)">
@@ -2356,93 +2463,130 @@
     </member>
     <member name="P:System.Reflection.Metadata.Ecma335.ScalarEncoder.Builder" />
     <member name="M:System.Reflection.Metadata.Ecma335.ScalarEncoder.Constant(System.Object)">
-      <param name="value" />
+      <summary>Encodes a constant literal.</summary>
+      <param name="value">A constant of type <see cref="T:System.Boolean" />, <see cref="T:System.Byte" />, <see cref="T:System.SByte" />, <see cref="T:System.Int16" />, <see cref="T:System.UInt16" />, <see cref="T:System.Int32" />, <see cref="T:System.UInt32" />, <see cref="T:System.Int64" />, <see cref="T:System.UInt64" />, <see cref="T:System.Single" />, <see cref="T:System.Double" />, <see cref="T:System.Char" /> (encoded as a two-byte Unicode character), <see cref="T:System.String" /> (encoded as SerString), or <see cref="T:System.Enum" /> (encoded as the underlying integer value).</param>
     </member>
-    <member name="M:System.Reflection.Metadata.Ecma335.ScalarEncoder.NullArray" />
+    <member name="M:System.Reflection.Metadata.Ecma335.ScalarEncoder.NullArray">
+      <summary>Encodes a <see langword="null" /> literal of type <see cref="T:System.Array" />.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.ScalarEncoder.SystemType(System.String)">
-      <param name="serializedTypeName" />
+      <summary>Encodes a literal of type <see cref="T:System.Type" /> (which can possibly be <see langword="null" />).</summary>
+      <param name="serializedTypeName">The name of the type, or <see langword="null" />.</param>
     </member>
     <member name="T:System.Reflection.Metadata.Ecma335.SignatureDecoder`2">
+      <summary>Decodes signature blobs.</summary>
       <typeparam name="TType" />
       <typeparam name="TGenericContext" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureDecoder`2.#ctor(System.Reflection.Metadata.ISignatureTypeProvider{`0,`1},System.Reflection.Metadata.MetadataReader,`1)">
-      <param name="provider" />
-      <param name="metadataReader" />
-      <param name="genericContext" />
+      <summary>Creates a new <see cref="T:System.Reflection.Metadata.Ecma335.SignatureDecoder`2" />.</summary>
+      <param name="provider">The provider used to obtain type symbols as the signature is decoded.</param>
+      <param name="metadataReader">The metadata reader from which the signature was obtained. It may be <see langword="null" /> if the given provider allows it.</param>
+      <param name="genericContext">Additional context needed to resolve generic parameters.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureDecoder`2.DecodeFieldSignature(System.Reflection.Metadata.BlobReader@)">
-      <param name="blobReader" />
+      <summary>Decodes a field signature blob and advances the reader past the signature.</summary>
+      <param name="blobReader">The blob reader positioned at a field signature.</param>
+      <returns>The decoded field type.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureDecoder`2.DecodeLocalSignature(System.Reflection.Metadata.BlobReader@)">
-      <param name="blobReader" />
+      <summary>Decodes a local variable signature blob and advances the reader past the signature.</summary>
+      <param name="blobReader">The blob reader positioned at a local variable signature.</param>
+      <returns>The local variable types.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureDecoder`2.DecodeMethodSignature(System.Reflection.Metadata.BlobReader@)">
-      <param name="blobReader" />
+      <summary>Decodes a method (definition, reference, or standalone) or a property signature blob.</summary>
+      <param name="blobReader">A blob reader positioned at a method signature.</param>
+      <returns>The decoded method signature.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureDecoder`2.DecodeMethodSpecificationSignature(System.Reflection.Metadata.BlobReader@)">
-      <param name="blobReader" />
+      <summary>Decodes a method specification signature blob and advances the reader past the signature.</summary>
+      <param name="blobReader">A blob reader positioned at a valid method specification signature.</param>
+      <returns>The types used to instantiate a generic method via the method specification.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureDecoder`2.DecodeType(System.Reflection.Metadata.BlobReader@,System.Boolean)">
-      <param name="blobReader" />
-      <param name="allowTypeSpecifications" />
+      <summary>Decodes a type embedded in a signature and advances the reader past the type.</summary>
+      <param name="blobReader">The blob reader positioned at the leading <see cref="T:System.Reflection.Metadata.SignatureTypeCode" />.</param>
+      <param name="allowTypeSpecifications">
+        <see langword="true" /> to allow a <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" /> to follow a (CLASS | VALUETYPE) in the signature; <see langword="false" /> otherwise.</param>
+      <returns>The decoded type.</returns>
     </member>
     <member name="T:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.#ctor(System.Reflection.Metadata.BlobBuilder)">
       <param name="builder" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Array(System.Action{System.Reflection.Metadata.Ecma335.SignatureTypeEncoder},System.Action{System.Reflection.Metadata.Ecma335.ArrayShapeEncoder})">
-      <param name="elementType" />
-      <param name="arrayShape" />
+      <summary>Encodes an array type.</summary>
+      <param name="elementType">Called first, to encode the type of the element.</param>
+      <param name="arrayShape">Called second, to encode the shape of the array.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Array(System.Reflection.Metadata.Ecma335.SignatureTypeEncoder@,System.Reflection.Metadata.Ecma335.ArrayShapeEncoder@)">
-      <param name="elementType" />
-      <param name="arrayShape" />
+      <summary>Encodes an array type. Returns a pair of encoders that must be used in the order they appear in the parameter list.</summary>
+      <param name="elementType">Use first, to encode the type of the element.</param>
+      <param name="arrayShape">Use second, to encode the shape of the array.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Boolean" />
     <member name="P:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Builder" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Byte" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Char" />
-    <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.CustomModifiers" />
+    <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.CustomModifiers">
+      <summary>Starts a signature of a type with custom modifiers.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Double" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.FunctionPointer(System.Reflection.Metadata.SignatureCallingConvention,System.Reflection.Metadata.Ecma335.FunctionPointerAttributes,System.Int32)">
-      <param name="convention" />
-      <param name="attributes" />
-      <param name="genericParameterCount" />
+      <summary>Starts a function pointer signature.</summary>
+      <param name="convention">Calling convention.</param>
+      <param name="attributes">Function pointer attributes.</param>
+      <param name="genericParameterCount">Generic parameter count.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.GenericInstantiation(System.Reflection.Metadata.EntityHandle,System.Int32,System.Boolean)">
-      <param name="genericType" />
-      <param name="genericArgumentCount" />
-      <param name="isValueType" />
+      <summary>Starts a generic instantiation signature.</summary>
+      <param name="genericType">
+        <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" /> or <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />.</param>
+      <param name="genericArgumentCount">Generic argument count.</param>
+      <param name="isValueType">
+        <see langword="true" /> to mark the type as value type, <see langword="false" /> to mark it as a reference type in the signature.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.GenericMethodTypeParameter(System.Int32)">
-      <param name="parameterIndex" />
+      <summary>Encodes a reference to type parameter of a containing generic method.</summary>
+      <param name="parameterIndex">Parameter index.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.GenericTypeParameter(System.Int32)">
-      <param name="parameterIndex" />
+      <summary>Encodes a reference to type parameter of a containing generic type.</summary>
+      <param name="parameterIndex">Parameter index.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Int16" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Int32" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Int64" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.IntPtr" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Object" />
-    <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Pointer" />
+    <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Pointer">
+      <summary>Starts pointer signature.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.PrimitiveType(System.Reflection.Metadata.PrimitiveTypeCode)">
-      <param name="type" />
+      <summary>Writes primitive type code.</summary>
+      <param name="type">Any primitive type code except for <see cref="F:System.Reflection.Metadata.PrimitiveTypeCode.TypedReference" /> and <see cref="F:System.Reflection.Metadata.PrimitiveTypeCode.Void" />.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.SByte" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Single" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.String" />
-    <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.SZArray" />
+    <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.SZArray">
+      <summary>Starts SZ array (vector) signature.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.Type(System.Reflection.Metadata.EntityHandle,System.Boolean)">
-      <param name="type" />
-      <param name="isValueType" />
+      <summary>Encodes a reference to a type.</summary>
+      <param name="type">
+        <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" /> or <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />.</param>
+      <param name="isValueType">
+        <see langword="true" /> to mark the type as value type, <see langword="false" /> to mark it as a reference type in the signature.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.UInt16" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.UInt32" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.UInt64" />
     <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.UIntPtr" />
-    <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.VoidPointer" />
+    <member name="M:System.Reflection.Metadata.Ecma335.SignatureTypeEncoder.VoidPointer">
+      <summary>Encodes a void pointer (void*).</summary>
+    </member>
     <member name="T:System.Reflection.Metadata.Ecma335.TableIndex" />
     <member name="F:System.Reflection.Metadata.Ecma335.TableIndex.Assembly" />
     <member name="F:System.Reflection.Metadata.Ecma335.TableIndex.AssemblyOS" />
@@ -2505,15 +2649,26 @@
     <member name="M:System.Reflection.Metadata.Ecma335.VectorEncoder.Count(System.Int32)">
       <param name="count" />
     </member>
-    <member name="T:System.Reflection.Metadata.EntityHandle" />
+    <member name="T:System.Reflection.Metadata.EntityHandle">
+      <summary>Represents a metadata entity (such as a type reference, type definition, type specification, method definition, or custom attribute).</summary>
+    </member>
     <member name="F:System.Reflection.Metadata.EntityHandle.AssemblyDefinition" />
     <member name="M:System.Reflection.Metadata.EntityHandle.Equals(System.Object)">
-      <param name="obj" />
+      <summary>Returns a value that indicates whether the current instance and the specified object are equal.</summary>
+      <param name="obj">The object to compare with the current instance.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="obj" /> is an <see cref="T:System.Reflection.Metadata.EntityHandle" /> and is equal to the current instance; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.EntityHandle.Equals(System.Reflection.Metadata.EntityHandle)">
-      <param name="other" />
+      <summary>Returns a value that indicates whether the current instance and the specified <see cref="T:System.Reflection.Metadata.EntityHandle" /> are equal.</summary>
+      <param name="other">The value to compare with the current instance.</param>
+      <returns>
+        <see langword="true" /> if the current instance and <paramref name="other" /> are equal; otherwise, <see langword="false" />.</returns>
     </member>
-    <member name="M:System.Reflection.Metadata.EntityHandle.GetHashCode" />
+    <member name="M:System.Reflection.Metadata.EntityHandle.GetHashCode">
+      <summary>Returns the hash code for this instance.</summary>
+      <returns>The hash code for this instance.</returns>
+    </member>
     <member name="P:System.Reflection.Metadata.EntityHandle.IsNil" />
     <member name="P:System.Reflection.Metadata.EntityHandle.Kind" />
     <member name="F:System.Reflection.Metadata.EntityHandle.ModuleDefinition" />
@@ -2657,7 +2812,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.ExportedTypeHandleCollection" />
+    <member name="T:System.Reflection.Metadata.ExportedTypeHandleCollection">
+      <summary>Represents a collection of <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" /> instances.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.ExportedTypeHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.ExportedTypeHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.ExportedTypeHandleCollection.Enumerator.Current" />
@@ -2748,9 +2905,9 @@
       <summary>Gets the constrained <see cref="T:System.Reflection.Metadata.GenericParameterHandle" />.</summary>
     </member>
     <member name="P:System.Reflection.Metadata.GenericParameterConstraint.Type">
-      <summary>Gets a handle (<see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, or <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />) 
-            specifying from which type this generic parameter is constrained to derive,
-            or which interface this generic parameter is constrained to implement.</summary>
+      <summary>Gets a handle (<see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, or <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />)
+specifying from which type this generic parameter is constrained to derive,
+or which interface this generic parameter is constrained to implement.</summary>
       <returns>An <see cref="T:System.Reflection.Metadata.EntityHandle" /> instance.</returns>
     </member>
     <member name="T:System.Reflection.Metadata.GenericParameterConstraintHandle" />
@@ -2782,7 +2939,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.GenericParameterConstraintHandleCollection" />
+    <member name="T:System.Reflection.Metadata.GenericParameterConstraintHandleCollection">
+      <summary>Represents a collection of constraints of a generic type parameter.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.GenericParameterConstraintHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.GenericParameterConstraintHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.GenericParameterConstraintHandleCollection.Enumerator.Current" />
@@ -2825,7 +2984,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.GenericParameterHandleCollection" />
+    <member name="T:System.Reflection.Metadata.GenericParameterHandleCollection">
+      <summary>Represents a collection of generic type parameters of a method or type.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.GenericParameterHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.GenericParameterHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.GenericParameterHandleCollection.Enumerator.Current" />
@@ -2862,7 +3023,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.Handle" />
+    <member name="T:System.Reflection.Metadata.Handle">
+      <summary>Represents any metadata entity (such as a type reference, a type definition, a type specification, a method definition, or a custom attribute) or value (a string, blob, guid, or user string).</summary>
+    </member>
     <member name="F:System.Reflection.Metadata.Handle.AssemblyDefinition" />
     <member name="M:System.Reflection.Metadata.Handle.Equals(System.Object)">
       <param name="obj" />
@@ -3285,7 +3448,9 @@
     <member name="F:System.Reflection.Metadata.ImportDefinitionKind.ImportNamespace" />
     <member name="F:System.Reflection.Metadata.ImportDefinitionKind.ImportType" />
     <member name="F:System.Reflection.Metadata.ImportDefinitionKind.ImportXmlNamespace" />
-    <member name="T:System.Reflection.Metadata.ImportScope" />
+    <member name="T:System.Reflection.Metadata.ImportScope">
+      <summary>Provides information about the lexical scope within which a group of imports are available. This information is stored in debug metadata.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.ImportScope.GetImports" />
     <member name="P:System.Reflection.Metadata.ImportScope.ImportsBlob" />
     <member name="P:System.Reflection.Metadata.ImportScope.Parent" />
@@ -3446,7 +3611,9 @@
       <param name="elementType" />
       <returns>A <typeparamref name="TType" /> instance.</returns>
     </member>
-    <member name="T:System.Reflection.Metadata.LocalConstant" />
+    <member name="T:System.Reflection.Metadata.LocalConstant">
+      <summary>Provides information about local constants. This information is stored in debug metadata.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.LocalConstant.Name" />
     <member name="P:System.Reflection.Metadata.LocalConstant.Signature">
       <summary>Gets the constant signature.</summary>
@@ -3492,7 +3659,9 @@
     <member name="M:System.Reflection.Metadata.LocalConstantHandleCollection.GetEnumerator" />
     <member name="M:System.Reflection.Metadata.LocalConstantHandleCollection.System#Collections#Generic#IEnumerable{System#Reflection#Metadata#LocalConstantHandle}#GetEnumerator" />
     <member name="M:System.Reflection.Metadata.LocalConstantHandleCollection.System#Collections#IEnumerable#GetEnumerator" />
-    <member name="T:System.Reflection.Metadata.LocalScope" />
+    <member name="T:System.Reflection.Metadata.LocalScope">
+      <summary>Provides information about the scope of local variables and constants. This information is stored in debug metadata.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.LocalScope.EndOffset" />
     <member name="M:System.Reflection.Metadata.LocalScope.GetChildren" />
     <member name="M:System.Reflection.Metadata.LocalScope.GetLocalConstants" />
@@ -3547,7 +3716,9 @@
     <member name="M:System.Reflection.Metadata.LocalScopeHandleCollection.GetEnumerator" />
     <member name="M:System.Reflection.Metadata.LocalScopeHandleCollection.System#Collections#Generic#IEnumerable{System#Reflection#Metadata#LocalScopeHandle}#GetEnumerator" />
     <member name="M:System.Reflection.Metadata.LocalScopeHandleCollection.System#Collections#IEnumerable#GetEnumerator" />
-    <member name="T:System.Reflection.Metadata.LocalVariable" />
+    <member name="T:System.Reflection.Metadata.LocalVariable">
+      <summary>Provides information about local variables. This information is stored in debug metadata.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.LocalVariable.Attributes" />
     <member name="P:System.Reflection.Metadata.LocalVariable.Index" />
     <member name="P:System.Reflection.Metadata.LocalVariable.Name" />
@@ -3641,7 +3812,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.ManifestResourceHandleCollection" />
+    <member name="T:System.Reflection.Metadata.ManifestResourceHandleCollection">
+      <summary>Represents a collection of <see cref="T:System.Reflection.Metadata.ManifestResourceHandle" /> instances.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.ManifestResourceHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.ManifestResourceHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.ManifestResourceHandleCollection.Enumerator.Current" />
@@ -3709,7 +3882,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.MemberReferenceHandleCollection" />
+    <member name="T:System.Reflection.Metadata.MemberReferenceHandleCollection">
+      <summary>Represents a collection of <see cref="T:System.Reflection.Metadata.MemberReferenceHandle" /> instances.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.MemberReferenceHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.MemberReferenceHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.MemberReferenceHandleCollection.Enumerator.Current" />
@@ -3739,11 +3914,13 @@
     <member name="F:System.Reflection.Metadata.MetadataKind.WindowsMetadata">
       <summary>Windows metadata.</summary>
     </member>
-    <member name="T:System.Reflection.Metadata.MetadataReader" />
+    <member name="T:System.Reflection.Metadata.MetadataReader">
+      <summary>Reads metadata as defined by the ECMA 335 CLI specification.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.MetadataReader.#ctor(System.Byte*,System.Int32)">
       <summary>Initializes a new instance of the <see cref="T:System.Reflection.Metadata.MetadataReader" /> class from the metadata stored at the given memory location.</summary>
-      <param name="metadata" />
-      <param name="length" />
+      <param name="metadata">A pointer to the first byte in a block of metadata.</param>
+      <param name="length">The number of bytes in the block.</param>
     </member>
     <member name="M:System.Reflection.Metadata.MetadataReader.#ctor(System.Byte*,System.Int32,System.Reflection.Metadata.MetadataReaderOptions)">
       <summary>Initializes a new instance of the <see cref="T:System.Reflection.Metadata.MetadataReader" /> class from the metadata stored at the given memory location.</summary>
@@ -3970,7 +4147,9 @@
     <member name="F:System.Reflection.Metadata.MetadataReaderOptions.None">
       <summary>All options are disabled.</summary>
     </member>
-    <member name="T:System.Reflection.Metadata.MetadataReaderProvider" />
+    <member name="T:System.Reflection.Metadata.MetadataReaderProvider">
+      <summary>Provides a <see cref="T:System.Reflection.Metadata.MetadataReader" /> for metadata stored in an array of bytes, a memory block, or a stream.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.MetadataReaderProvider.Dispose">
       <summary>Disposes all memory allocated by the reader.</summary>
     </member>
@@ -4051,9 +4230,12 @@
       <summary>Keeps the stream open when the <see cref="T:System.Reflection.Metadata.MetadataReaderProvider" /> is disposed.</summary>
     </member>
     <member name="F:System.Reflection.Metadata.MetadataStreamOptions.PrefetchMetadata">
-      <summary>Reads PDB metadata into memory right away.</summary>
+      <summary>Reads PDB metadata into memory right away.
+The underlying file may be closed and even deleted after the <see cref="T:System.Reflection.Metadata.MetadataReaderProvider" /> is constructed. <see cref="T:System.Reflection.Metadata.MetadataReaderProvider" /> closes the stream automatically by the time the constructor returns unless <see cref="F:System.Reflection.Metadata.MetadataStreamOptions.LeaveOpen" /> is specified.</summary>
     </member>
-    <member name="T:System.Reflection.Metadata.MetadataStringComparer" />
+    <member name="T:System.Reflection.Metadata.MetadataStringComparer">
+      <summary>Provides string comparison helpers to query strings in metadata while avoiding allocation if possible.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.MetadataStringComparer.Equals(System.Reflection.Metadata.DocumentNameBlobHandle,System.String)">
       <param name="handle" />
       <param name="value" />
@@ -4090,7 +4272,9 @@
       <param name="value" />
       <param name="ignoreCase" />
     </member>
-    <member name="T:System.Reflection.Metadata.MetadataStringDecoder" />
+    <member name="T:System.Reflection.Metadata.MetadataStringDecoder">
+      <summary>Provides the <see cref="T:System.Reflection.Metadata.MetadataReader" /> with a custom mechanism for decoding byte sequences in metadata that represent text.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.MetadataStringDecoder.#ctor(System.Text.Encoding)">
       <summary>Initializes a new instance of the <see cref="T:System.Reflection.Metadata.MetadataStringDecoder" /> class using the given encoding.</summary>
       <param name="encoding">The encoding to use.</param>
@@ -4124,7 +4308,9 @@
       <summary>Gets the size of the method body, including the header, IL, and exception regions.</summary>
       <returns>The size of the method body.</returns>
     </member>
-    <member name="T:System.Reflection.Metadata.MethodDebugInformation" />
+    <member name="T:System.Reflection.Metadata.MethodDebugInformation">
+      <summary>Provides debug information associated with a method definition. This information is stored in debug metadata.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.MethodDebugInformation.Document">
       <summary>Gets the handle of the single document containing all sequence points of the method.</summary>
       <returns>The handle of the single document containing all sequence points of the method, or a handle whose <see cref="P:System.Reflection.Metadata.DocumentHandle.IsNil" /> property is <see langword="true" /> if the method doesn't have sequence points or spans multiple documents.</returns>
@@ -4175,7 +4361,7 @@
       <param name="right" />
     </member>
     <member name="M:System.Reflection.Metadata.MethodDebugInformationHandle.ToDefinitionHandle">
-      <summary>Returns a handle to <see cref="T:System.Reflection.Metadata.MethodDefinition" /> corresponding to this handle.</summary>
+      <summary>Returns a handle to a <see cref="T:System.Reflection.Metadata.MethodDefinition" /> that corresponds to this handle.</summary>
       <returns>A method definition handle that corresponds to this handle.</returns>
     </member>
     <member name="T:System.Reflection.Metadata.MethodDebugInformationHandleCollection" />
@@ -4237,7 +4423,7 @@
       <param name="right" />
     </member>
     <member name="M:System.Reflection.Metadata.MethodDefinitionHandle.ToDebugInformationHandle">
-      <summary>Returns a handle to a <see cref="T:System.Reflection.Metadata.MethodDebugInformation" /> corresponding to this handle.</summary>
+      <summary>Returns a handle to a <see cref="T:System.Reflection.Metadata.MethodDebugInformation" /> that corresponds to this handle.</summary>
       <returns>A method debug information handle that corresponds to this handle.</returns>
     </member>
     <member name="T:System.Reflection.Metadata.MethodDefinitionHandleCollection" />
@@ -4466,7 +4652,9 @@
       <summary>Gets all type definitions that reside directly in a namespace.</summary>
       <returns>An immutable array of type definition handles.</returns>
     </member>
-    <member name="T:System.Reflection.Metadata.NamespaceDefinitionHandle" />
+    <member name="T:System.Reflection.Metadata.NamespaceDefinitionHandle">
+      <summary>Provides a handle to a namespace definition.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.NamespaceDefinitionHandle.Equals(System.Object)">
       <param name="obj" />
     </member>
@@ -4525,7 +4713,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.ParameterHandleCollection" />
+    <member name="T:System.Reflection.Metadata.ParameterHandleCollection">
+      <summary>Contains a collection of parameters of a specified method.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.ParameterHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.ParameterHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.ParameterHandleCollection.Enumerator.Current" />
@@ -4736,6 +4926,7 @@
     <member name="M:System.Reflection.Metadata.PropertyDefinitionHandleCollection.System#Collections#Generic#IEnumerable{System#Reflection#Metadata#PropertyDefinitionHandle}#GetEnumerator" />
     <member name="M:System.Reflection.Metadata.PropertyDefinitionHandleCollection.System#Collections#IEnumerable#GetEnumerator" />
     <member name="T:System.Reflection.Metadata.ReservedBlob`1">
+      <summary>Represents a handle and a corresponding blob on a metadata heap that was reserved for future content update.</summary>
       <typeparam name="THandle" />
     </member>
     <member name="P:System.Reflection.Metadata.ReservedBlob`1.Content" />
@@ -5230,7 +5421,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.TypeDefinitionHandleCollection" />
+    <member name="T:System.Reflection.Metadata.TypeDefinitionHandleCollection">
+      <summary>Contains a collection of <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" /> instances.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.TypeDefinitionHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.TypeDefinitionHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.TypeDefinitionHandleCollection.Enumerator.Current" />
@@ -5291,7 +5484,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.TypeReferenceHandleCollection" />
+    <member name="T:System.Reflection.Metadata.TypeReferenceHandleCollection">
+      <summary>Contains a collection of <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" /> instances.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.TypeReferenceHandleCollection.Count" />
     <member name="T:System.Reflection.Metadata.TypeReferenceHandleCollection.Enumerator" />
     <member name="P:System.Reflection.Metadata.TypeReferenceHandleCollection.Enumerator.Current" />
@@ -5340,7 +5535,9 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.UserStringHandle" />
+    <member name="T:System.Reflection.Metadata.UserStringHandle">
+      <summary>Represents a handle to the user string heap.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.UserStringHandle.Equals(System.Object)">
       <param name="obj" />
     </member>
@@ -5384,12 +5581,29 @@
     <member name="F:System.Reflection.MethodImportAttributes.ThrowOnUnmappableCharEnable" />
     <member name="F:System.Reflection.MethodImportAttributes.ThrowOnUnmappableCharMask" />
     <member name="T:System.Reflection.MethodSemanticsAttributes" />
-    <member name="F:System.Reflection.MethodSemanticsAttributes.Adder" />
-    <member name="F:System.Reflection.MethodSemanticsAttributes.Getter" />
-    <member name="F:System.Reflection.MethodSemanticsAttributes.Other" />
-    <member name="F:System.Reflection.MethodSemanticsAttributes.Raiser" />
-    <member name="F:System.Reflection.MethodSemanticsAttributes.Remover" />
-    <member name="F:System.Reflection.MethodSemanticsAttributes.Setter" />
+    <member name="F:System.Reflection.MethodSemanticsAttributes.Adder">
+      <summary>Used to add a handler for an event. Corresponds to the <see langword="AddOn" /> flag in the Ecma 335 CLI specification.
+CLS-compliant adders are named the with <see langword="add_" /> prefix.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodSemanticsAttributes.Getter">
+      <summary>Reads the value of the property.
+CLS-compliant getters are named with `get_` prefix.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodSemanticsAttributes.Other">
+      <summary>Other method for a property (not a getter or setter) or an event (not an adder, remover, or raiser).</summary>
+    </member>
+    <member name="F:System.Reflection.MethodSemanticsAttributes.Raiser">
+      <summary>Used to indicate that an event has occurred. Corresponds to the <see langword="Fire" /> flag in the Ecma 335 CLI specification.
+ CLS-compliant raisers are named with the <see langword="raise_" /> prefix.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodSemanticsAttributes.Remover">
+      <summary>Used to remove a handler for an event. Corresponds to the <see langword="RemoveOn" /> flag in the Ecma 335 CLI specification.
+CLS-compliant removers are named with the <see langword="remove_" /> prefix.</summary>
+    </member>
+    <member name="F:System.Reflection.MethodSemanticsAttributes.Setter">
+      <summary>Used to modify the value of the property.
+CLS-compliant setters are named with the <see langword="set_" /> prefix.</summary>
+    </member>
     <member name="T:System.Reflection.PortableExecutable.Characteristics" />
     <member name="F:System.Reflection.PortableExecutable.Characteristics.AggressiveWSTrim" />
     <member name="F:System.Reflection.PortableExecutable.Characteristics.Bit32Machine" />
@@ -5406,18 +5620,48 @@
     <member name="F:System.Reflection.PortableExecutable.Characteristics.RemovableRunFromSwap" />
     <member name="F:System.Reflection.PortableExecutable.Characteristics.System" />
     <member name="F:System.Reflection.PortableExecutable.Characteristics.UpSystemOnly" />
-    <member name="T:System.Reflection.PortableExecutable.CodeViewDebugDirectoryData" />
-    <member name="P:System.Reflection.PortableExecutable.CodeViewDebugDirectoryData.Age" />
-    <member name="P:System.Reflection.PortableExecutable.CodeViewDebugDirectoryData.Guid" />
-    <member name="P:System.Reflection.PortableExecutable.CodeViewDebugDirectoryData.Path" />
-    <member name="T:System.Reflection.PortableExecutable.CoffHeader" />
-    <member name="P:System.Reflection.PortableExecutable.CoffHeader.Characteristics" />
-    <member name="P:System.Reflection.PortableExecutable.CoffHeader.Machine" />
-    <member name="P:System.Reflection.PortableExecutable.CoffHeader.NumberOfSections" />
-    <member name="P:System.Reflection.PortableExecutable.CoffHeader.NumberOfSymbols" />
-    <member name="P:System.Reflection.PortableExecutable.CoffHeader.PointerToSymbolTable" />
-    <member name="P:System.Reflection.PortableExecutable.CoffHeader.SizeOfOptionalHeader" />
-    <member name="P:System.Reflection.PortableExecutable.CoffHeader.TimeDateStamp" />
+    <member name="T:System.Reflection.PortableExecutable.CodeViewDebugDirectoryData">
+      <summary>Provides information about a Program Debug Database (PDB) file.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CodeViewDebugDirectoryData.Age">
+      <summary>The iteration of the PDB. The first iteration is 1. The iteration is incremented each time the PDB content is augmented.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CodeViewDebugDirectoryData.Guid">
+      <summary>The Globally Unique Identifier (GUID) of the associated PDB.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CodeViewDebugDirectoryData.Path">
+      <summary>The path to the .pdb file that contains debug information for the PE/COFF file.</summary>
+    </member>
+    <member name="T:System.Reflection.PortableExecutable.CoffHeader">
+      <summary>Represents the header of a COFF file.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CoffHeader.Characteristics">
+      <summary>Gets the flags that indicate the attributes of the file.</summary>
+      <returns>The flags that indicate the attributes of the file.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CoffHeader.Machine">
+      <summary>Gets the type of the target machine.</summary>
+      <returns>The type of the target machine.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CoffHeader.NumberOfSections">
+      <summary>Gets the number of sections. This indicates the size of the section table, which immediately follows the headers.</summary>
+      <returns>The number of sections.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CoffHeader.NumberOfSymbols">
+      <summary>Gets the number of entries in the symbol table. This data can be used to locate the string table, which immediately follows the symbol table. This value should be zero for a PE image.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CoffHeader.PointerToSymbolTable">
+      <summary>Gets the file pointer to the COFF symbol table.</summary>
+      <returns>The file pointer to the COFF symbol table, or zero if no COFF symbol table is present. This value should be zero for a PE image.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CoffHeader.SizeOfOptionalHeader">
+      <summary>Gets the size of the optional header, which is required for executable files but not for object files. This value should be zero for an object file.</summary>
+      <returns>The size of the optional header.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.CoffHeader.TimeDateStamp">
+      <summary>Gets a value that indicates when the file was created.</summary>
+      <returns>The low 32 bits of the number of seconds since 00:00 January 1, 1970, which indicates when the file was created.</returns>
+    </member>
     <member name="T:System.Reflection.PortableExecutable.CorFlags" />
     <member name="F:System.Reflection.PortableExecutable.CorFlags.ILLibrary" />
     <member name="F:System.Reflection.PortableExecutable.CorFlags.ILOnly" />
@@ -5439,36 +5683,62 @@
     <member name="P:System.Reflection.PortableExecutable.CorHeader.StrongNameSignatureDirectory" />
     <member name="P:System.Reflection.PortableExecutable.CorHeader.VtableFixupsDirectory" />
     <member name="T:System.Reflection.PortableExecutable.DebugDirectoryBuilder" />
-    <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.#ctor" />
+    <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Reflection.PortableExecutable.DebugDirectoryBuilder" /> class.</summary>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.AddCodeViewEntry(System.String,System.Reflection.Metadata.BlobContentId,System.UInt16)">
-      <param name="pdbPath" />
-      <param name="pdbContentId" />
-      <param name="portablePdbVersion" />
+      <summary>Adds a CodeView entry.</summary>
+      <param name="pdbPath">The path to the PDB. It should not be empty.</param>
+      <param name="pdbContentId">The unique id of the PDB content.</param>
+      <param name="portablePdbVersion">The version of Portable PDB format (e.g. 0x0100 for 1.0), or 0 if the PDB is not portable.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="pdbPath" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="pdbPath" /> contains a NUL character.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="portablePdbVersion" /> is smaller than 0x0100.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.AddEmbeddedPortablePdbEntry(System.Reflection.Metadata.BlobBuilder,System.UInt16)">
-      <param name="debugMetadata" />
-      <param name="portablePdbVersion" />
+      <summary>Adds an Embedded Portable PDB entry.</summary>
+      <param name="debugMetadata">A Portable PDB metadata builder.</param>
+      <param name="portablePdbVersion">The version of Portable PDB format (e.g. 0x0100 for 1.0).</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="debugMetadata" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="portablePdbVersion" /> is smaller than 0x0100.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.AddEntry(System.Reflection.PortableExecutable.DebugDirectoryEntryType,System.UInt32,System.UInt32)">
-      <param name="type" />
-      <param name="version" />
-      <param name="stamp" />
+      <summary>Adds an entry of the specified type.</summary>
+      <param name="type">The entry type.</param>
+      <param name="version">The entry version.</param>
+      <param name="stamp">The entry stamp.</param>
     </member>
     <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.AddEntry``1(System.Reflection.PortableExecutable.DebugDirectoryEntryType,System.UInt32,System.UInt32,``0,System.Action{System.Reflection.Metadata.BlobBuilder,``0})">
-      <param name="type" />
-      <param name="version" />
-      <param name="stamp" />
-      <param name="data" />
-      <param name="dataSerializer" />
-      <typeparam name="TData" />
+      <summary>Adds an entry of the specified type and serializes its data.</summary>
+      <param name="type">The entry type.</param>
+      <param name="version">The entry version.</param>
+      <param name="stamp">The entry stamp.</param>
+      <param name="data">The data to pass to <paramref name="dataSerializer" />.</param>
+      <param name="dataSerializer">A serializer for serializing data to a <see cref="T:System.Reflection.Metadata.BlobBuilder" />.</param>
+      <typeparam name="TData">The type of the data passed to <paramref name="dataSerializer" />.</typeparam>
     </member>
     <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.AddPdbChecksumEntry(System.String,System.Collections.Immutable.ImmutableArray{System.Byte})">
-      <param name="algorithmName" />
-      <param name="checksum" />
+      <summary>Adds PDB checksum entry.</summary>
+      <param name="algorithmName">The hash algorithm name (for example, "SHA256").</param>
+      <param name="checksum">The checksum.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="algorithmName" /> or <paramref name="checksum" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="algorithmName" /> or <paramref name="checksum" /> is empty.</exception>
     </member>
-    <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.AddReproducibleEntry" />
-    <member name="T:System.Reflection.PortableExecutable.DebugDirectoryEntry" />
+    <member name="M:System.Reflection.PortableExecutable.DebugDirectoryBuilder.AddReproducibleEntry">
+      <summary>Adds a reproducible entry.</summary>
+    </member>
+    <member name="T:System.Reflection.PortableExecutable.DebugDirectoryEntry">
+      <summary>Identifies the location, size and format of a block of debug information.</summary>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.DebugDirectoryEntry.#ctor(System.UInt32,System.UInt16,System.UInt16,System.Reflection.PortableExecutable.DebugDirectoryEntryType,System.Int32,System.Int32,System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.Reflection.PortableExecutable.DebugDirectoryEntry" /> structure.</summary>
       <param name="stamp" />
       <param name="majorVersion" />
       <param name="minorVersion" />
@@ -5477,21 +5747,58 @@
       <param name="dataRelativeVirtualAddress" />
       <param name="dataPointer" />
     </member>
-    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.DataPointer" />
-    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.DataRelativeVirtualAddress" />
-    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.DataSize" />
-    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.IsPortableCodeView" />
-    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.MajorVersion" />
-    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.MinorVersion" />
-    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.Stamp" />
-    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.Type" />
+    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.DataPointer">
+      <summary>Gets the file pointer to the debug data.</summary>
+      <returns>The file pointer to the debug data.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.DataRelativeVirtualAddress">
+      <summary>Gets the address of the debug data when loaded, relative to the image base.</summary>
+      <returns>The address of the debug data relative to the image base.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.DataSize">
+      <summary>Gets the size of the debug data (not including the debug directory itself).</summary>
+      <returns>the size of the debug data (excluding the debug directory).</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.IsPortableCodeView">
+      <summary>Gets a value that indicates if the entry is a <see cref="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.CodeView" /> entry that points to a Portable PDB.</summary>
+      <returns>
+        <see langword="true" /> if the entry is a <see cref="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.CodeView" /> entry pointing to a Portable PDB; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.MajorVersion">
+      <summary>Gets the major version number of the debug data format.</summary>
+      <returns>The major version number of the debug data format.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.MinorVersion">
+      <summary>Gets the minor version number of the debug data format.</summary>
+      <returns>The minor version number of the debug data format.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.Stamp">
+      <summary>Get the time and date that the debug data was created if the PE/COFF file is not deterministic; otherwise, gets a value based on the hash of the content.</summary>
+      <returns>for a non-deterministic PE/COFF file, the time and date that the debug data was created; otherwise, a value based on the hash of the content.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.DebugDirectoryEntry.Type">
+      <summary>Gets the format of the debugging information.</summary>
+      <returns>The format of the debugging information.</returns>
+    </member>
     <member name="T:System.Reflection.PortableExecutable.DebugDirectoryEntryType" />
-    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.CodeView" />
-    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.Coff" />
-    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.EmbeddedPortablePdb" />
-    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.PdbChecksum" />
-    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.Reproducible" />
-    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.Unknown" />
+    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.CodeView">
+      <summary>Associated PDB file description.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.Coff">
+      <summary>The COFF debug information (line numbers, symbol table, and string table). This type of debug information is also pointed to by fields in the file headers.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.EmbeddedPortablePdb">
+      <summary>The entry points to a blob containing Embedded Portable PDB. The Embedded Portable PDB blob has the following format:- blob ::= uncompressed-size data- Data spans the remainder of the blob and contains a Deflate-compressed Portable PDB.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.PdbChecksum">
+      <summary>The entry stores a crypto hash of the content of the symbol file the PE/COFF file was built with. The hash can be used to validate that a given PDB file was built with the PE/COFF file and not altered in any way. More than one entry can be present if multiple PDBs were produced during the build of the PE/COFF file (e.g. private and public symbols).</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.Reproducible">
+      <summary>The presence of this entry indicates a deterministic PE/COFF file. See the Remarks section for more information.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.Unknown">
+      <summary>An unknown value that should be ignored by all tools.</summary>
+    </member>
     <member name="T:System.Reflection.PortableExecutable.DirectoryEntry" />
     <member name="M:System.Reflection.PortableExecutable.DirectoryEntry.#ctor(System.Int32,System.Int32)">
       <param name="relativeVirtualAddress" />
@@ -5499,46 +5806,126 @@
     </member>
     <member name="F:System.Reflection.PortableExecutable.DirectoryEntry.RelativeVirtualAddress" />
     <member name="F:System.Reflection.PortableExecutable.DirectoryEntry.Size" />
-    <member name="T:System.Reflection.PortableExecutable.DllCharacteristics" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.AppContainer" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.DynamicBase" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.HighEntropyVirtualAddressSpace" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.NoBind" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.NoIsolation" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.NoSeh" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.NxCompatible" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.ProcessInit" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.ProcessTerm" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.TerminalServerAware" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.ThreadInit" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.ThreadTerm" />
-    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.WdmDriver" />
-    <member name="T:System.Reflection.PortableExecutable.Machine" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Alpha" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Alpha64" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.AM33" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Amd64" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Arm" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Arm64" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.ArmThumb2" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Ebc" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.I386" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.IA64" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.M32R" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.MIPS16" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.MipsFpu" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.MipsFpu16" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.PowerPC" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.PowerPCFP" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.SH3" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.SH3Dsp" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.SH3E" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.SH4" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.SH5" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Thumb" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Tricore" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.Unknown" />
-    <member name="F:System.Reflection.PortableExecutable.Machine.WceMipsV2" />
+    <member name="T:System.Reflection.PortableExecutable.DllCharacteristics">
+      <summary>Describes the characteristics of a dynamic link library.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.AppContainer">
+      <summary>The image must run inside an AppContainer.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.DynamicBase">
+      <summary>The DLL can be relocated.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.HighEntropyVirtualAddressSpace">
+      <summary>The image can handle a high entropy 64-bit virtual address space.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.NoBind">
+      <summary>Do not bind this image.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.NoIsolation">
+      <summary>The image understands isolation and doesn't want it.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.NoSeh">
+      <summary>The image does not use SEH. No SE handler may reside in this image.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.NxCompatible">
+      <summary>The image is NX compatible.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.ProcessInit">
+      <summary>Reserved.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.ProcessTerm">
+      <summary>Reserved.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.TerminalServerAware">
+      <summary>The image is Terminal Server aware.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.ThreadInit">
+      <summary>Reserved.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.ThreadTerm">
+      <summary>Reserved.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.DllCharacteristics.WdmDriver">
+      <summary>The driver uses the WDM model.</summary>
+    </member>
+    <member name="T:System.Reflection.PortableExecutable.Machine">
+      <summary>Specifies the target machine's CPU architecture.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Alpha">
+      <summary>Alpha.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Alpha64">
+      <summary>ALPHA64.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.AM33">
+      <summary>Matsushita AM33.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Amd64">
+      <summary>AMD64 (K8).</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Arm">
+      <summary>ARM little endian.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Arm64">
+      <summary>ARM64.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.ArmThumb2">
+      <summary>ARM Thumb-2 little endian.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Ebc">
+      <summary>EFI Byte Code.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.I386">
+      <summary>Intel 386.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.IA64">
+      <summary>Intel 64.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.M32R">
+      <summary>M32R little-endian.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.MIPS16">
+      <summary>MIPS.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.MipsFpu">
+      <summary>MIPS with FPU.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.MipsFpu16">
+      <summary>MIPS16 with FPU.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.PowerPC">
+      <summary>IBM PowerPC little endian.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.PowerPCFP">
+      <summary>PowerPCFP.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.SH3">
+      <summary>Hitachi SH3 little endian.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.SH3Dsp">
+      <summary>Hitachi SH3 DSP.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.SH3E">
+      <summary>Hitachi SH3 little endian.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.SH4">
+      <summary>Hitachi SH4 little endian.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.SH5">
+      <summary>Hitachi SH5.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Thumb">
+      <summary>Thumb.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Tricore">
+      <summary>Infineon.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.Unknown">
+      <summary>The target CPU is unknown or not specified.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Machine.WceMipsV2">
+      <summary>MIPS little-endian WCE v2.</summary>
+    </member>
     <member name="T:System.Reflection.PortableExecutable.ManagedPEBuilder" />
     <member name="M:System.Reflection.PortableExecutable.ManagedPEBuilder.#ctor(System.Reflection.PortableExecutable.PEHeaderBuilder,System.Reflection.Metadata.Ecma335.MetadataRootBuilder,System.Func{System.Collections.Generic.IEnumerable{System.Reflection.Metadata.Blob},System.Reflection.Metadata.BlobContentId},System.Reflection.Metadata.BlobBuilder,System.Reflection.Metadata.BlobBuilder,System.Reflection.Metadata.BlobBuilder,System.Reflection.PortableExecutable.ResourceSectionBuilder,System.Reflection.PortableExecutable.DebugDirectoryBuilder,System.Int32,System.Reflection.Metadata.MethodDefinitionHandle,System.Reflection.PortableExecutable.CorFlags)">
       <param name="header" />
@@ -5565,9 +5952,17 @@
       <param name="peImage" />
       <param name="signatureProvider" />
     </member>
-    <member name="T:System.Reflection.PortableExecutable.PdbChecksumDebugDirectoryData" />
-    <member name="P:System.Reflection.PortableExecutable.PdbChecksumDebugDirectoryData.AlgorithmName" />
-    <member name="P:System.Reflection.PortableExecutable.PdbChecksumDebugDirectoryData.Checksum" />
+    <member name="T:System.Reflection.PortableExecutable.PdbChecksumDebugDirectoryData">
+      <summary>Represents a PDB Checksum debug directory entry.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PdbChecksumDebugDirectoryData.AlgorithmName">
+      <summary>The name of the crypto hash algorithm used to calculate the checksum.</summary>
+      <returns>A string representing the name of the crypto hash algorithm used to calculate the checksum.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PdbChecksumDebugDirectoryData.Checksum">
+      <summary>The checksum of the PDB content.</summary>
+      <returns>An immutable array of bytes representing the checksum of the PDB content.</returns>
+    </member>
     <member name="T:System.Reflection.PortableExecutable.PEBuilder" />
     <member name="M:System.Reflection.PortableExecutable.PEBuilder.#ctor(System.Reflection.PortableExecutable.PEHeaderBuilder,System.Func{System.Collections.Generic.IEnumerable{System.Reflection.Metadata.Blob},System.Reflection.Metadata.BlobContentId})">
       <param name="header" />
@@ -5593,31 +5988,94 @@
       <param name="name" />
       <param name="location" />
     </member>
-    <member name="T:System.Reflection.PortableExecutable.PEDirectoriesBuilder" />
-    <member name="M:System.Reflection.PortableExecutable.PEDirectoriesBuilder.#ctor" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.AddressOfEntryPoint" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.BaseRelocationTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.BoundImportTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.CopyrightTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.CorHeaderTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.DebugTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.DelayImportTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ExceptionTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ExportTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.GlobalPointerTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ImportAddressTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ImportTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.LoadConfigTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ResourceTable" />
-    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ThreadLocalStorageTable" />
+    <member name="T:System.Reflection.PortableExecutable.PEDirectoriesBuilder">
+      <summary>Builds PE directories.</summary>
+    </member>
+    <member name="M:System.Reflection.PortableExecutable.PEDirectoriesBuilder.#ctor">
+      <summary>Initializes an instance of the <see cref="T:System.Reflection.PortableExecutable.PEDirectoriesBuilder" /> class.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.AddressOfEntryPoint">
+      <summary>The address of the entry point relative to the image base when the PE file is loaded into memory.</summary>
+      <returns>For program images, this is the starting address. For device drivers, this is the address of the initialization function. An entry point is optional for DLLs. When no entry point is present, this field must be zero.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.BaseRelocationTable">
+      <summary>The base relocation table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.BoundImportTable">
+      <summary>The bound import image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.CopyrightTable">
+      <summary>The copyright/architecture image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.CorHeaderTable">
+      <summary>The COM descriptortable image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.DebugTable">
+      <summary>The debug table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.DelayImportTable">
+      <summary>The delay import table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ExceptionTable">
+      <summary>The exception table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ExportTable">
+      <summary>The export table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.GlobalPointerTable">
+      <summary>The global pointer table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ImportAddressTable">
+      <summary>The import address table (IAT) image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ImportTable">
+      <summary>The import table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.LoadConfigTable">
+      <summary>The load configuration table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ResourceTable">
+      <summary>The resource table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEDirectoriesBuilder.ThreadLocalStorageTable">
+      <summary>The thread local storage (TLS) table image directory entry.</summary>
+      <returns>A directory entry instance.</returns>
+    </member>
     <member name="T:System.Reflection.PortableExecutable.PEHeader" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.AddressOfEntryPoint" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.BaseOfCode" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.BaseOfData" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.AddressOfEntryPoint">
+      <summary>Gets the address of the entry point relative to the image base when the PE file is loaded into memory.</summary>
+      <returns>The address of the entry point relative to the image base.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.BaseOfCode">
+      <summary>Gets the address of the beginning-of-code section relative to the image base when the image is loaded into memory.</summary>
+      <returns>The address of the beginning-of-code section relative to the image base.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.BaseOfData">
+      <summary>Gets the address of the beginning-of-data section relative to the image base when the image is loaded into memory.</summary>
+      <returns>The address of the beginning-of-data section relative to the image base.</returns>
+    </member>
     <member name="P:System.Reflection.PortableExecutable.PEHeader.BaseRelocationTableDirectory" />
     <member name="P:System.Reflection.PortableExecutable.PEHeader.BoundImportTableDirectory" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.CertificateTableDirectory" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.CheckSum" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.CertificateTableDirectory">
+      <summary>Gets the Certificate Table entry, which points to a table of attribute certificates.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.CheckSum">
+      <summary>Gets the image file checksum.</summary>
+      <returns>The image file checksum.</returns>
+    </member>
     <member name="P:System.Reflection.PortableExecutable.PEHeader.CopyrightTableDirectory" />
     <member name="P:System.Reflection.PortableExecutable.PEHeader.CorHeaderTableDirectory" />
     <member name="P:System.Reflection.PortableExecutable.PEHeader.DebugTableDirectory" />
@@ -5625,192 +6083,549 @@
     <member name="P:System.Reflection.PortableExecutable.PEHeader.DllCharacteristics" />
     <member name="P:System.Reflection.PortableExecutable.PEHeader.ExceptionTableDirectory" />
     <member name="P:System.Reflection.PortableExecutable.PEHeader.ExportTableDirectory" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.FileAlignment" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.FileAlignment">
+      <summary>Gets the alignment factor (in bytes) that is used to align the raw data of sections in the image file.</summary>
+      <returns>A power of 2 between 512 and 64K, inclusive. The default is 512.</returns>
+    </member>
     <member name="P:System.Reflection.PortableExecutable.PEHeader.GlobalPointerTableDirectory" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.ImageBase" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.ImageBase">
+      <summary>Gets the preferred address of the first byte of the image when it is loaded into memory.</summary>
+      <returns>The preferred address, which is a multiple of 64K.</returns>
+    </member>
     <member name="P:System.Reflection.PortableExecutable.PEHeader.ImportAddressTableDirectory" />
     <member name="P:System.Reflection.PortableExecutable.PEHeader.ImportTableDirectory" />
     <member name="P:System.Reflection.PortableExecutable.PEHeader.LoadConfigTableDirectory" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.Magic" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.MajorImageVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.MajorLinkerVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.MajorOperatingSystemVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.MajorSubsystemVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.MinorImageVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.MinorLinkerVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.MinorOperatingSystemVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.MinorSubsystemVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.NumberOfRvaAndSizes" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.ResourceTableDirectory" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SectionAlignment" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfCode" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfHeaders" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfHeapCommit" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfHeapReserve" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfImage" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfInitializedData" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfStackCommit" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfStackReserve" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfUninitializedData" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.Subsystem" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeader.ThreadLocalStorageTableDirectory" />
-    <member name="T:System.Reflection.PortableExecutable.PEHeaderBuilder" />
-    <member name="M:System.Reflection.PortableExecutable.PEHeaderBuilder.#ctor(System.Reflection.PortableExecutable.Machine,System.Int32,System.UInt16,System.UInt16,System.Reflection.PortableExecutable.Subsystem,System.Reflection.PortableExecutable.DllCharacteristics,System.Reflection.PortableExecutable.Characteristics,System.UInt64,System.UInt64,System.UInt64,System.UInt64,System.Int32,System.UInt64,System.Byte,System.Byte,System.UInt16,System.UInt16,System.UInt16,System.UInt16)">
-      <param name="machine" />
-      <param name="sectionAlignment" />
-      <param name="majorSubsystemVersion" />
-      <param name="minorSubsystemVersion" />
-      <param name="subsystem" />
-      <param name="dllCharacteristics" />
-      <param name="imageCharacteristics" />
-      <param name="sizeOfStackReserve" />
-      <param name="sizeOfStackCommit" />
-      <param name="sizeOfHeapReserve" />
-      <param name="sizeOfHeapCommit" />
-      <param name="fileAlignment" />
-      <param name="imageBase" />
-      <param name="majorLinkerVersion" />
-      <param name="minorLinkerVersion" />
-      <param name="majorOperatingSystemVersion" />
-      <param name="minorOperatingSystemVersion" />
-      <param name="majorImageVersion" />
-      <param name="minorImageVersion" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.Magic">
+      <summary>Gets a value that identifies the format of the image file.</summary>
+      <returns>The format of the image file.</returns>
     </member>
-    <member name="M:System.Reflection.PortableExecutable.PEHeaderBuilder.CreateExecutableHeader" />
-    <member name="M:System.Reflection.PortableExecutable.PEHeaderBuilder.CreateLibraryHeader" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.DllCharacteristics" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.FileAlignment" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.ImageBase" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.ImageCharacteristics" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.Machine" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MajorImageVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MajorLinkerVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MajorOperatingSystemVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MajorSubsystemVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MinorImageVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MinorLinkerVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MinorOperatingSystemVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MinorSubsystemVersion" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SectionAlignment" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfHeapCommit" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfHeapReserve" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfStackCommit" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfStackReserve" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.Subsystem" />
-    <member name="T:System.Reflection.PortableExecutable.PEHeaders" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.MajorImageVersion">
+      <summary>Gets the major version number of the image.</summary>
+      <returns>The major version number of the image.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.MajorLinkerVersion">
+      <summary>Gets the linker major version number.</summary>
+      <returns>The linker major version number.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.MajorOperatingSystemVersion">
+      <summary>Gets the major version number of the required operating system.</summary>
+      <returns>The major version number of the required operating system.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.MajorSubsystemVersion">
+      <summary>Gets the major version number of the subsystem.</summary>
+      <returns>The major version number of the subsystem.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.MinorImageVersion">
+      <summary>Gets the minor version number of the image.</summary>
+      <returns>The minor version number of the image.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.MinorLinkerVersion">
+      <summary>Gets the linker minor version number.</summary>
+      <returns>The linker minor version number.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.MinorOperatingSystemVersion">
+      <summary>Gets the minor version number of the required operating system.</summary>
+      <returns>The minor version number of the required operating system.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.MinorSubsystemVersion">
+      <summary>Gets the minor version number of the subsystem.</summary>
+      <returns>The minor version number of the subsystem.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.NumberOfRvaAndSizes">
+      <summary>Gets the number of data-directory entries in the remainder of the <see cref="T:System.Reflection.PortableExecutable.PEHeader" />. Each describes a location and size.</summary>
+      <returns>The number of data-directory entries in the remainder of the <see cref="T:System.Reflection.PortableExecutable.PEHeader" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.ResourceTableDirectory" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SectionAlignment">
+      <summary>Gets the alignment (in bytes) of sections when they are loaded into memory.</summary>
+      <returns>A number greater than or equal to <see cref="P:System.Reflection.PortableExecutable.PEHeader.FileAlignment" />. The default is the page size for the architecture.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfCode">
+      <summary>Gets the size of the code (text) section, or the sum of all code sections if there are multiple sections.</summary>
+      <returns>the size of the code (text) section, or the sum of all code sections if there are multiple sections.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfHeaders">
+      <summary>Gets the combined size of an MS DOS stub, PE header, and section headers rounded up to a multiple of FileAlignment.</summary>
+      <returns>The combined size of an MS DOS stub, PE header, and section headers rounded up to a multiple of FileAlignment.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfHeapCommit">
+      <summary>Gets the size of the local heap space to commit.</summary>
+      <returns>the size of the local heap space to commit.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfHeapReserve">
+      <summary>Gets the size of the local heap space to reserve. Only <see cref="P:System.Reflection.PortableExecutable.PEHeader.SizeOfHeapCommit" /> is committed; the rest is made available one page at a time until the reserve size is reached.</summary>
+      <returns>The size of the local heap space to reserve.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfImage">
+      <summary>Gets the size (in bytes) of the image, including all headers, as the image is loaded in memory.</summary>
+      <returns>The size (in bytes) of the image, which is a multiple of <see cref="P:System.Reflection.PortableExecutable.PEHeader.SectionAlignment" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfInitializedData">
+      <summary>Gets the size of the initialized data section, or the sum of all such sections if there are multiple data sections.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfStackCommit">
+      <summary>Gets the size of the stack to commit.</summary>
+      <returns>The size of the stack to commit.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfStackReserve">
+      <summary>Gets the size of the stack to reserve. Only <see cref="P:System.Reflection.PortableExecutable.PEHeader.SizeOfStackCommit" /> is committed; the rest is made available one page at a time until the reserve size is reached.</summary>
+      <returns>The size of the stack to reserve.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.SizeOfUninitializedData">
+      <summary>Gets the size of the uninitialized data section (BSS), or the sum of all such sections if there are multiple BSS sections.</summary>
+      <returns>The size of the uninitialized data section (BSS) or the sum of all such sections.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.Subsystem">
+      <summary>Gets the name of the subsystem that is required to run this image.</summary>
+      <returns>the name of the subsystem that is required to run this image.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeader.ThreadLocalStorageTableDirectory" />
+    <member name="T:System.Reflection.PortableExecutable.PEHeaderBuilder">
+      <summary>Defines the header for a portable executable (PE) file.</summary>
+    </member>
+    <member name="M:System.Reflection.PortableExecutable.PEHeaderBuilder.#ctor(System.Reflection.PortableExecutable.Machine,System.Int32,System.UInt16,System.UInt16,System.Reflection.PortableExecutable.Subsystem,System.Reflection.PortableExecutable.DllCharacteristics,System.Reflection.PortableExecutable.Characteristics,System.UInt64,System.UInt64,System.UInt64,System.UInt64,System.Int32,System.UInt64,System.Byte,System.Byte,System.UInt16,System.UInt16,System.UInt16,System.UInt16)">
+      <summary>Initializes a new instance of the <see cref="T:System.Reflection.PortableExecutable.PEHeader" /> class.</summary>
+      <param name="machine">The target machine's CPU architecture.</param>
+      <param name="sectionAlignment">The alignment (in bytes) of sections when they are loaded into memory. It must be greater than or equal to <paramref name="fileAlignment" />. The default is the page size for the architecture.</param>
+      <param name="majorSubsystemVersion">The major version number of the subsystem.</param>
+      <param name="minorSubsystemVersion">The minor version number of the subsystem.</param>
+      <param name="subsystem">The subsystem required to run the image.</param>
+      <param name="dllCharacteristics">An object describing the characteristics of the dynamic link library.</param>
+      <param name="imageCharacteristics">An object describing the characteristics of the image.</param>
+      <param name="sizeOfStackReserve">The size of the stack to reserve. Only <paramref name="sizeOfStackCommit" /> is committed; the rest is made available one page at a time until the reserve size is reached.</param>
+      <param name="sizeOfStackCommit">The size of the stack to commit.</param>
+      <param name="sizeOfHeapReserve">The size of the local heap space to reserve. Only <paramref name="sizeOfHeapCommit" /> is committed; the rest is made available one page at a time until the reserve size is reached.</param>
+      <param name="sizeOfHeapCommit">The size of the local heap space to commit.</param>
+      <param name="fileAlignment">The alignment factor (in bytes) that is used to align the raw data of sections in the image file. The value should be a power of 2 between 512 and 64K, inclusive. The default is 512. If the <paramref name="sectionAlignment" /> is less than the architecture's page size, then <paramref name="fileAlignment" /> must match <paramref name="sectionAlignment" />.</param>
+      <param name="imageBase">The preferred address of the first byte of image when loaded into memory; must be a multiple of 64K.</param>
+      <param name="majorLinkerVersion">The linker major version number.</param>
+      <param name="minorLinkerVersion">The linker minor version number.</param>
+      <param name="majorOperatingSystemVersion">The major version number of the required operating system.</param>
+      <param name="minorOperatingSystemVersion">The minor version number of the required operating system.</param>
+      <param name="majorImageVersion">The major version number of the image.</param>
+      <param name="minorImageVersion">The minor version number of the image.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="fileAlignment" /> is not power of 2 between 512 and 64K.
+-or-
+<paramref name="sectionAlignment" /> not power of 2.
+-or-
+<paramref name="sectionAlignment" /> is less than <paramref name="fileAlignment" />.</exception>
+    </member>
+    <member name="M:System.Reflection.PortableExecutable.PEHeaderBuilder.CreateExecutableHeader">
+      <summary>Creates an executable header.</summary>
+      <returns>A <see cref="T:System.Reflection.PortableExecutable.PEHeaderBuilder" /> instance representing the executable header.</returns>
+    </member>
+    <member name="M:System.Reflection.PortableExecutable.PEHeaderBuilder.CreateLibraryHeader">
+      <summary>Creates a library header.</summary>
+      <returns>A <see cref="T:System.Reflection.PortableExecutable.PEHeaderBuilder" /> instance representing the library header.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.DllCharacteristics">
+      <summary>Returns the dynamic linker library characteristics.</summary>
+      <returns>An object that describes the dynamic linker library characteristics.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.FileAlignment">
+      <summary>The alignment factor (in bytes) that is used to align the raw data of sections in the image file. The value should be a power of 2 between 512 and 64K, inclusive. The default is 512. If the section alignment is less than the architecture's page size, then file alignment must match the section alignment.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.ImageBase">
+      <summary>The preferred address of the first byte of image when loaded into memory; must be a multiple of 64K.</summary>
+      <returns>A number representing the preferred address of the first byte of image when loaded into memory.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.ImageCharacteristics">
+      <summary>Returns the image characteristics.</summary>
+      <returns>An object representing the image characteristics.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.Machine">
+      <summary>The target machine's CPU architecture.</summary>
+      <returns>One of the enumeration values representing the different CPU architectures.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MajorImageVersion">
+      <summary>The major version number of the image.</summary>
+      <returns>A number the size of a <see cref="T:System.UInt16" /> representing the the major version number of the image.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MajorLinkerVersion">
+      <summary>The linker major version number.</summary>
+      <returns>A number the size of a <see cref="T:System.Byte" /> representing the linker major version number.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MajorOperatingSystemVersion">
+      <summary>The major version number of the required operating system.</summary>
+      <returns>A number the size of a <see cref="T:System.UInt16" /> representing the major version number of the required operating system.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MajorSubsystemVersion">
+      <summary>The major version number of the subsystem.</summary>
+      <returns>A number the size of a <see cref="T:System.UInt16" /> representing the major version number of the subsystem.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MinorImageVersion">
+      <summary>The minor version number of the image.</summary>
+      <returns>A number the size of a <see cref="T:System.UInt16" /> representing the minor version number of the image.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MinorLinkerVersion">
+      <summary>The linker minor version number.</summary>
+      <returns>A number the size of a <see cref="T:System.Byte" /> representing the linker minor version number.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MinorOperatingSystemVersion">
+      <summary>The minor version number of the required operating system.</summary>
+      <returns>A number the size of a <see cref="T:System.UInt16" /> representing the minor version number of the required operating system.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.MinorSubsystemVersion">
+      <summary>The minor version number of the subsystem.</summary>
+      <returns>A number the size of a <see cref="T:System.UInt16" /> representing the minor version number of the subsystem.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SectionAlignment">
+      <summary>The alignment (in bytes) of sections when they are loaded into memory.</summary>
+      <returns>A number representing the alignment (in bytes) of sections when they are loaded into memory. It must be greater than or equal to the file alignment. The default is the page size for the architecture.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfHeapCommit">
+      <summary>The size of the local heap space to commit.</summary>
+      <returns>A number representing the size of the local heap space to commit.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfHeapReserve">
+      <summary>The size of the local heap space to reserve. Only <see cref="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfHeapCommit" /> is committed; the rest is made available one page at a time until the reserve size is reached.</summary>
+      <returns>A number representing the size of the local heap space to reserve.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfStackCommit">
+      <summary>The size of the stack to commit.</summary>
+      <returns>A number representing the size of the stack to commit.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfStackReserve">
+      <summary>The size of the stack to reserve. Only <see cref="P:System.Reflection.PortableExecutable.PEHeaderBuilder.SizeOfStackCommit" /> is committed; the rest is made available one page at a time until the reserve size is reached.</summary>
+      <returns>A number representing the size of the stack to reserve.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaderBuilder.Subsystem">
+      <summary>The subsystem that is required to run this image.</summary>
+      <returns>A <see cref="T:System.Reflection.PortableExecutable.Subsystem" /> instance.</returns>
+    </member>
+    <member name="T:System.Reflection.PortableExecutable.PEHeaders">
+      <summary>Defines a type that reads PE (Portable Executable) and COFF (Common Object File Format) headers from a stream.</summary>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEHeaders.#ctor(System.IO.Stream)">
-      <param name="peStream" />
+      <summary>Instantiates a new instance of the <see cref="T:System.Reflection.PortableExecutable.PEHeaders" /> class that reads the PE headers from the current location in the specified stream.</summary>
+      <param name="peStream">A stream containing the PE image starting at the stream's current position and ending at the end of the stream.</param>
+      <exception cref="T:System.BadImageFormatException">The data read from the stream has an invalid format.</exception>
+      <exception cref="T:System.IO.IOException">Error reading from the stream.</exception>
+      <exception cref="T:System.ArgumentException">The stream does not support seek operations.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peStream" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEHeaders.#ctor(System.IO.Stream,System.Int32)">
-      <param name="peStream" />
-      <param name="size" />
+      <summary>Instantiates a new instance of the <see cref="T:System.Reflection.PortableExecutable.PEHeaders" /> class that reads the PE headers from a stream that represents a PE image of a specified size.</summary>
+      <param name="peStream">A stream containing PE image of the given size starting at its current position.</param>
+      <param name="size">The size of the PE image.</param>
+      <exception cref="T:System.BadImageFormatException">The data read from the stream has an invalid format.</exception>
+      <exception cref="T:System.IO.IOException">Error reading from the stream.</exception>
+      <exception cref="T:System.ArgumentException">The stream does not support seek operations.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peStream" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="size" /> is negative or extends past the end of the stream.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEHeaders.#ctor(System.IO.Stream,System.Int32,System.Boolean)">
-      <param name="peStream" />
-      <param name="size" />
-      <param name="isLoadedImage" />
+      <summary>Instantiates a new instance of the <see cref="T:System.Reflection.PortableExecutable.PEHeaders" /> class that reads the PE headers from a stream that represents a PE image of a specified size and indicates whether the PE image has been loaded into memory.</summary>
+      <param name="peStream">The stream containing PE image of the given size starting at its current position.</param>
+      <param name="size">The size of the PE image.</param>
+      <param name="isLoadedImage">
+        <see langword="true" /> if the PE image has been loaded into memory by the OS loader; otherwise, <see langword="false" />.</param>
+      <exception cref="T:System.BadImageFormatException">The data read from the stream has invalid format.</exception>
+      <exception cref="T:System.IO.IOException">Error reading from the stream.</exception>
+      <exception cref="T:System.ArgumentException">The stream does not support seek operations.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peStream" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="size" /> is negative or extends past the end of the stream.</exception>
     </member>
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.CoffHeader" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.CoffHeaderStartOffset" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.CorHeader" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.CorHeaderStartOffset" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.CoffHeader">
+      <summary>Gets the COFF header of the image.</summary>
+      <returns>The COFF header of the image.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.CoffHeaderStartOffset">
+      <summary>Gets the byte offset from the start of the PE image to the start of the COFF header.</summary>
+      <returns>The byte offset from the start of the PE image to the start of the COFF header.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.CorHeader">
+      <summary>Gets the COR header.</summary>
+      <returns>The COR header, or <see langword="null" /> if the image does not have one.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.CorHeaderStartOffset">
+      <summary>Gets the byte offset from the start of the image to the COR header.</summary>
+      <returns>The byte offset from the start of the image to the COR header, or -1 if the image does not have a COR header.</returns>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEHeaders.GetContainingSectionIndex(System.Int32)">
-      <param name="relativeVirtualAddress" />
+      <summary>Searches sections of the PE image for the section that contains the specified Relative Virtual Address.</summary>
+      <param name="relativeVirtualAddress">The relative virtual address to search for.</param>
+      <returns>The index of the section that contains <paramref name="relativeVirtualAddress" />, or -1 if there the search is unsuccessful.</returns>
     </member>
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.IsCoffOnly" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.IsConsoleApplication" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.IsDll" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.IsExe" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.MetadataSize" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.MetadataStartOffset" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.PEHeader" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.PEHeaderStartOffset" />
-    <member name="P:System.Reflection.PortableExecutable.PEHeaders.SectionHeaders" />
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.IsCoffOnly">
+      <summary>Gets a value that indicates whether the image is Coff only.</summary>
+      <returns>
+        <see langword="true" /> if the image is Coff only; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.IsConsoleApplication">
+      <summary>Gets a value that indicates whether the image represents a Windows console application.</summary>
+      <returns>
+        <see langword="true" /> if the image is a Windows console applications; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.IsDll">
+      <summary>Gets a value that indicates whether the image represents a dynamic link library.</summary>
+      <returns>
+        <see langword="true" /> if the image is a DLL; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.IsExe">
+      <summary>Gets a value that indicates whether the image represents an executable.</summary>
+      <returns>
+        <see langword="true" /> if the image is an executable; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.MetadataSize">
+      <summary>Gets the size of the CLI metadata.</summary>
+      <returns>the size of the CLI metadata, or 0 if the image does not contain metadata.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.MetadataStartOffset">
+      <summary>Gets the offset (in bytes) from the start of the PE image to the start of the CLI metadata.</summary>
+      <returns>The offset (in bytes) from the start of the PE image to the start of the CLI metadata, or -1 if the image does not contain metadata.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.PEHeader">
+      <summary>Gets the image's PE header.</summary>
+      <returns>The image's PE header, or <see langword="null" /> if the image is COFF only.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.PEHeaderStartOffset">
+      <summary>Gets the byte offset of the header from the start of the image.</summary>
+      <returns>The byte offset of the header from the start of the image.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEHeaders.SectionHeaders">
+      <summary>Gets the PE section headers.</summary>
+      <returns>An array containing the PE section headers.</returns>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEHeaders.TryGetDirectoryOffset(System.Reflection.PortableExecutable.DirectoryEntry,System.Int32@)">
-      <param name="directory" />
-      <param name="offset" />
+      <summary>Gets the offset (in bytes) from the start of the image to the given directory data.</summary>
+      <param name="directory">The PE directory entry.</param>
+      <param name="offset">When the method returns, contains the offset from the start of the image to the given directory data.</param>
+      <returns>
+        <see langword="true" /> if the directory data is found; <see langword="false" /> otherwise.</returns>
     </member>
     <member name="T:System.Reflection.PortableExecutable.PEMagic" />
     <member name="F:System.Reflection.PortableExecutable.PEMagic.PE32" />
     <member name="F:System.Reflection.PortableExecutable.PEMagic.PE32Plus" />
     <member name="T:System.Reflection.PortableExecutable.PEMemoryBlock" />
-    <member name="M:System.Reflection.PortableExecutable.PEMemoryBlock.GetContent" />
+    <member name="M:System.Reflection.PortableExecutable.PEMemoryBlock.GetContent">
+      <summary>Reads the contents of the entire block into an array.</summary>
+      <returns>An immutable byte array.</returns>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEMemoryBlock.GetContent(System.Int32,System.Int32)">
-      <param name="start" />
-      <param name="length" />
+      <summary>Reads the contents of a part of the block into an array.</summary>
+      <param name="start">The starting position in the block.</param>
+      <param name="length">The number of bytes to read.</param>
+      <returns>An immutable array of bytes.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The specified range is not contained within the block.</exception>
     </member>
-    <member name="M:System.Reflection.PortableExecutable.PEMemoryBlock.GetReader" />
+    <member name="M:System.Reflection.PortableExecutable.PEMemoryBlock.GetReader">
+      <summary>Creates a <see cref="T:System.Reflection.Metadata.BlobReader" /> for a blob spanning the entire block.</summary>
+      <returns>A reader for a blob spanning the entire block.</returns>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEMemoryBlock.GetReader(System.Int32,System.Int32)">
-      <param name="start" />
-      <param name="length" />
+      <summary>Creates a <see cref="T:System.Reflection.Metadata.BlobReader" /> for a blob spanning a part of the block.</summary>
+      <param name="start">The starting position in the block.</param>
+      <param name="length">The number of bytes in the portion of the block.</param>
+      <returns>A reader for a blob spanning a portion of the block.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The specified range is not contained within the block.</exception>
     </member>
-    <member name="P:System.Reflection.PortableExecutable.PEMemoryBlock.Length" />
-    <member name="P:System.Reflection.PortableExecutable.PEMemoryBlock.Pointer" />
-    <member name="T:System.Reflection.PortableExecutable.PEReader" />
+    <member name="P:System.Reflection.PortableExecutable.PEMemoryBlock.Length">
+      <summary>Gets the length of the block.</summary>
+      <returns>The length of the block.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEMemoryBlock.Pointer">
+      <summary>Gets a pointer to the first byte of the block.</summary>
+      <returns>A pointer to the first byte of the block.</returns>
+    </member>
+    <member name="T:System.Reflection.PortableExecutable.PEReader">
+      <summary>Provides a reader for Portable Executable format (PE) files.</summary>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.#ctor(System.Byte*,System.Int32)">
-      <param name="peImage" />
-      <param name="size" />
+      <summary>Creates a Portable Executable reader over a PE image stored in memory.</summary>
+      <param name="peImage">A pointer to the start of the PE image.</param>
+      <param name="size">The size of the PE image.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peImage" /> is <see cref="F:System.IntPtr.Zero" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="size" /> is negative.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.#ctor(System.Byte*,System.Int32,System.Boolean)">
-      <param name="peImage" />
-      <param name="size" />
-      <param name="isLoadedImage" />
+      <summary>Creates a Portable Executable reader over a PE image stored in memory. A flag indicates whether the image has already been loaded into memory.</summary>
+      <param name="peImage">A pointer to the start of the PE image.</param>
+      <param name="size">The size of the PE image.</param>
+      <param name="isLoadedImage">
+        <see langword="true" /> if the PE image has been loaded into memory by the OS loader; otherwise, <see langword="false" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peImage" /> is <see cref="F:System.IntPtr.Zero" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="size" /> is negative.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.#ctor(System.Collections.Immutable.ImmutableArray{System.Byte})">
-      <param name="peImage" />
+      <summary>Creates a Portable Executable reader over a PE image stored in a byte array.</summary>
+      <param name="peImage">An immutable array of bytes representing the PE image.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peImage" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.#ctor(System.IO.Stream)">
-      <param name="peStream" />
+      <summary>Creates a Portable Executable reader over a PE image stored in a stream.</summary>
+      <param name="peStream">PE image stream.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peStream" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.#ctor(System.IO.Stream,System.Reflection.PortableExecutable.PEStreamOptions)">
-      <param name="peStream" />
-      <param name="options" />
+      <summary>Creates a Portable Executable reader over a PE image stored in a stream beginning at its current position and ending at the end of the stream.</summary>
+      <param name="peStream">A PE image stream.</param>
+      <param name="options">Options specifying how sections of the PE image are read from the stream.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peStream" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="options" /> has an invalid value.</exception>
+      <exception cref="T:System.IO.IOException">Error reading from the stream (only when prefetching data).</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <see cref="F:System.Reflection.PortableExecutable.PEStreamOptions.PrefetchMetadata" /> is specified, and the PE headers of the image are invalid.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.#ctor(System.IO.Stream,System.Reflection.PortableExecutable.PEStreamOptions,System.Int32)">
-      <param name="peStream" />
-      <param name="options" />
-      <param name="size" />
+      <summary>Creates a Portable Executable reader over a PE image of the given size beginning at the stream's current position.</summary>
+      <param name="peStream">A PE image stream.</param>
+      <param name="options">Options specifying how sections of the PE image are read from the stream.</param>
+      <param name="size">The PE image size.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="size" /> is negative or extends past the end of the stream.</exception>
+      <exception cref="T:System.IO.IOException">Error reading from the stream (only when prefetching data).</exception>
+      <exception cref="T:System.BadImageFormatException">
+        <see cref="F:System.Reflection.PortableExecutable.PEStreamOptions.PrefetchMetadata" /> is specified, and the PE headers of the image are invalid.</exception>
     </member>
-    <member name="M:System.Reflection.PortableExecutable.PEReader.Dispose" />
-    <member name="M:System.Reflection.PortableExecutable.PEReader.GetEntireImage" />
-    <member name="M:System.Reflection.PortableExecutable.PEReader.GetMetadata" />
+    <member name="M:System.Reflection.PortableExecutable.PEReader.Dispose">
+      <summary>Disposes all memory allocated by the reader.</summary>
+    </member>
+    <member name="M:System.Reflection.PortableExecutable.PEReader.GetEntireImage">
+      <summary>Gets a <see cref="T:System.Reflection.PortableExecutable.PEMemoryBlock" /> object containing the entire PE image.</summary>
+      <returns>A memory block that contains the entire PE image.</returns>
+      <exception cref="T:System.InvalidOperationException">The entire PE image is not available.</exception>
+    </member>
+    <member name="M:System.Reflection.PortableExecutable.PEReader.GetMetadata">
+      <summary>Loads a PE section that contains CLI metadata.</summary>
+      <returns>A memory block that contains the CLI metadata.</returns>
+      <exception cref="T:System.InvalidOperationException">The PE image doesn't contain metadata (<see cref="P:System.Reflection.PortableExecutable.PEReader.HasMetadata" /> returns <see langword="false" />).</exception>
+      <exception cref="T:System.BadImageFormatException">The PE headers contain invalid data.</exception>
+      <exception cref="T:System.IO.IOException">IO error while reading from the underlying stream.</exception>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.GetSectionData(System.Int32)">
-      <param name="relativeVirtualAddress" />
+      <summary>Loads the PE section that contains the specified relative virtual address into memory and returns a memory block that starts at that address and ends at the end of the containing section.</summary>
+      <param name="relativeVirtualAddress">The Relative Virtual Address of the data to read.</param>
+      <returns>A memory block that starats at <paramref name="relativeVirtualAddress" /> and ends at the end of the containing section, or an empty block if <paramref name="relativeVirtualAddress" /> doesn't represent a location in any of the PE sections of this PE image.</returns>
+      <exception cref="T:System.BadImageFormatException">The PE headers contain invalid data.</exception>
+      <exception cref="T:System.IO.IOException">An IO error occurred while reading from the underlying stream.</exception>
+      <exception cref="T:System.InvalidOperationException">The PE image is not available.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="relativeVirtualAddress" /> is negative.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.GetSectionData(System.String)">
-      <param name="sectionName" />
+      <summary>Loads the PE section with the specified name into memory and returns a memory block that spans the section.</summary>
+      <param name="sectionName">The name of the section.</param>
+      <returns>A memory block that spans the section, or an empty block if no section of the given <paramref name="sectionName" /> exists in this PE image.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="sectionName" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The PE image is not available.</exception>
     </member>
-    <member name="P:System.Reflection.PortableExecutable.PEReader.HasMetadata" />
-    <member name="P:System.Reflection.PortableExecutable.PEReader.IsEntireImageAvailable" />
-    <member name="P:System.Reflection.PortableExecutable.PEReader.IsLoadedImage" />
-    <member name="P:System.Reflection.PortableExecutable.PEReader.PEHeaders" />
+    <member name="P:System.Reflection.PortableExecutable.PEReader.HasMetadata">
+      <summary>Gets a value that indicates if the PE image contains CLI metadata.</summary>
+      <returns>
+        <see langword="true" /> if the PE image contains CLI metadata; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.BadImageFormatException">The PE headers contain invalid data.</exception>
+      <exception cref="T:System.IO.IOException">Error reading from the underlying stream.</exception>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEReader.IsEntireImageAvailable">
+      <summary>Gets a value that indicates if the reader can access the entire PE image.</summary>
+      <returns>
+        <see langword="true" /> if the reader can access the entire PE image; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEReader.IsLoadedImage">
+      <summary>Gets a value that indicates if the PE image has been loaded into memory by the OS loader.</summary>
+      <returns>
+        <see langword="true" /> if the PE image has been loaded into memory by the OS loader; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.PEReader.PEHeaders">
+      <summary>Gets the PE headers.</summary>
+      <returns>The PE headers for this PE image.</returns>
+      <exception cref="T:System.BadImageFormatException">The headers contain invalid data.</exception>
+      <exception cref="T:System.IO.IOException">Error reading from the stream.</exception>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.ReadCodeViewDebugDirectoryData(System.Reflection.PortableExecutable.DebugDirectoryEntry)">
-      <param name="entry" />
+      <summary>Reads the data pointed to by the specified Debug Directory entry and interprets it as CodeView.</summary>
+      <param name="entry">A Debug Directory entry instance.</param>
+      <returns>A code view debug directory data instance.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="entry" /> is not a CodeView entry.</exception>
+      <exception cref="T:System.BadImageFormatException">Bad format of the data.</exception>
+      <exception cref="T:System.IO.IOException">IO error while reading from the underlying stream.</exception>
+      <exception cref="T:System.InvalidOperationException">The PE image is not available.</exception>
     </member>
-    <member name="M:System.Reflection.PortableExecutable.PEReader.ReadDebugDirectory" />
+    <member name="M:System.Reflection.PortableExecutable.PEReader.ReadDebugDirectory">
+      <summary>Reads all Debug Directory table entries.</summary>
+      <returns>An array of Debug Directory table entries.</returns>
+      <exception cref="T:System.BadImageFormatException">Bad format of the entry.</exception>
+      <exception cref="T:System.IO.IOException">IO error while reading from the underlying stream.</exception>
+      <exception cref="T:System.InvalidOperationException">The PE image is not available.</exception>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.ReadEmbeddedPortablePdbDebugDirectoryData(System.Reflection.PortableExecutable.DebugDirectoryEntry)">
-      <param name="entry" />
+      <summary>Reads the data pointed to by the specified Debug Directory entry and interprets it as an Embedded Portable PDB blob.</summary>
+      <param name="entry">The Debug Directory entry whose data is to be read.</param>
+      <returns>The provider of a metadata reader for reading a Portable PDB image.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="entry" /> is not a <see cref="F:System.Reflection.PortableExecutable.DebugDirectoryEntryType.EmbeddedPortablePdb" /> entry.</exception>
+      <exception cref="T:System.BadImageFormatException">Bad format of the data.</exception>
+      <exception cref="T:System.InvalidOperationException">PE image not available.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.ReadPdbChecksumDebugDirectoryData(System.Reflection.PortableExecutable.DebugDirectoryEntry)">
-      <param name="entry" />
+      <summary>Reads the data pointed to by the specified Debug Directory entry and interprets it as a PDB Checksum entry.</summary>
+      <param name="entry">The Debug Directory entry whose data is to be read.</param>
+      <returns>The PDB Checksum entry.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="entry" /> is not a PDB Checksum entry.</exception>
+      <exception cref="T:System.BadImageFormatException">Bad format of the data.</exception>
+      <exception cref="T:System.IO.IOException">IO error while reading from the underlying stream.</exception>
+      <exception cref="T:System.InvalidOperationException">The PE image is not available.</exception>
     </member>
     <member name="M:System.Reflection.PortableExecutable.PEReader.TryOpenAssociatedPortablePdb(System.String,System.Func{System.String,System.IO.Stream},System.Reflection.Metadata.MetadataReaderProvider@,System.String@)">
-      <param name="peImagePath" />
-      <param name="pdbFileStreamProvider" />
-      <param name="pdbReaderProvider" />
-      <param name="pdbPath" />
+      <summary>Opens a Portable PDB associated with this PE image.</summary>
+      <param name="peImagePath">The path to the PE image. The path is used to locate the PDB file located in the directory containing the PE file.</param>
+      <param name="pdbFileStreamProvider">If specified, called to open a <see cref="T:System.IO.Stream" /> for a given file path. The provider is expected to either return a readable and seekable <see cref="T:System.IO.Stream" />, or <see langword="null" /> if the target file doesn't exist or should be ignored for some reason. The provider should throw <see cref="T:System.IO.IOException" /> if it fails to open the file due to an unexpected IO error.</param>
+      <param name="pdbReaderProvider">If successful, a new instance of <see cref="T:System.Reflection.Metadata.MetadataReaderProvider" /> to be used to read the Portable PDB,.</param>
+      <param name="pdbPath">If successful and the PDB is found in a file, the path to the file, or <see langword="null" /> if the PDB is embedded in the PE image itself.</param>
+      <returns>
+        <see langword="true" /> if the PE image has a PDB associated with it and the PDB has been successfully opened; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="peImagePath" /> or <paramref name="pdbFileStreamProvider" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The stream returned from <paramref name="pdbFileStreamProvider" /> doesn't support read and seek operations.</exception>
+      <exception cref="T:System.BadImageFormatException">No matching PDB file was found due to an error: The PE image or the PDB is invalid.</exception>
+      <exception cref="T:System.IO.IOException">No matching PDB file was found due to an error: An IO error occurred while reading the PE image or the PDB.</exception>
     </member>
-    <member name="T:System.Reflection.PortableExecutable.PEStreamOptions" />
-    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.Default" />
-    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.IsLoadedImage" />
-    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.LeaveOpen" />
-    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.PrefetchEntireImage" />
-    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.PrefetchMetadata" />
-    <member name="T:System.Reflection.PortableExecutable.ResourceSectionBuilder" />
-    <member name="M:System.Reflection.PortableExecutable.ResourceSectionBuilder.#ctor" />
+    <member name="T:System.Reflection.PortableExecutable.PEStreamOptions">
+      <summary>Provides options that specify how sections of a PE image are read from a stream.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.Default">
+      <summary>By default, the stream is disposed when the <see cref="T:System.Reflection.PortableExecutable.PEReader" /> is disposed, and sections of the PE image are read lazily.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.IsLoadedImage">
+      <summary>Indicates that the underlying PE image has been loaded into memory by the OS loader.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.LeaveOpen">
+      <summary>Keeps the stream open when the <see cref="T:System.Reflection.PortableExecutable.PEReader" /> is disposed.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.PrefetchEntireImage">
+      <summary>Reads the entire image into memory right away. <see cref="T:System.Reflection.PortableExecutable.PEReader" /> closes the stream automatically by the time the constructor returns unless <see cref="F:System.Reflection.PortableExecutable.PEStreamOptions.LeaveOpen" /> is specified.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.PEStreamOptions.PrefetchMetadata">
+      <summary>Reads the metadata section into memory right away.Reading from other sections of the file is not allowed (<see cref="T:System.InvalidOperationException" /> is thrown by the <see cref="T:System.Reflection.PortableExecutable.PEReader" />).<see cref="T:System.Reflection.PortableExecutable.PEReader" /> closes the stream automatically by the time the constructor returns unless <see cref="F:System.Reflection.PortableExecutable.PEStreamOptions.LeaveOpen" /> is specified. The underlying file may be closed and even deleted after <see cref="T:System.Reflection.PortableExecutable.PEReader" /> is constructed.</summary>
+    </member>
+    <member name="T:System.Reflection.PortableExecutable.ResourceSectionBuilder">
+      <summary>Defines the base class for a PE resource section builder. Derive from <see cref="T:System.Reflection.PortableExecutable.ResourceSectionBuilder" /> to provide serialization logic for native resources.</summary>
+    </member>
+    <member name="M:System.Reflection.PortableExecutable.ResourceSectionBuilder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Reflection.PortableExecutable.ResourceSectionBuilder" /> class.</summary>
+    </member>
     <member name="M:System.Reflection.PortableExecutable.ResourceSectionBuilder.Serialize(System.Reflection.Metadata.BlobBuilder,System.Reflection.PortableExecutable.SectionLocation)">
-      <param name="builder" />
-      <param name="location" />
+      <summary>Serializes the specified resource.</summary>
+      <param name="builder">A blob that contains the data to serialize.</param>
+      <param name="location">The location to which to serialize <paramref name="builder" />.</param>
     </member>
     <member name="T:System.Reflection.PortableExecutable.SectionCharacteristics" />
     <member name="F:System.Reflection.PortableExecutable.SectionCharacteristics.Align1024Bytes" />
@@ -5859,17 +6674,49 @@
     <member name="F:System.Reflection.PortableExecutable.SectionCharacteristics.TypeNoPad" />
     <member name="F:System.Reflection.PortableExecutable.SectionCharacteristics.TypeOver" />
     <member name="F:System.Reflection.PortableExecutable.SectionCharacteristics.TypeReg" />
-    <member name="T:System.Reflection.PortableExecutable.SectionHeader" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.Name" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.NumberOfLineNumbers" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.NumberOfRelocations" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.PointerToLineNumbers" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.PointerToRawData" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.PointerToRelocations" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.SectionCharacteristics" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.SizeOfRawData" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.VirtualAddress" />
-    <member name="P:System.Reflection.PortableExecutable.SectionHeader.VirtualSize" />
+    <member name="T:System.Reflection.PortableExecutable.SectionHeader">
+      <summary>Provides information about the section header of a PE/COFF file.</summary>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.Name">
+      <summary>Gets the name of the section.</summary>
+      <returns>The name of the section.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.NumberOfLineNumbers">
+      <summary>Gets the number of line-number entries for the section.</summary>
+      <returns>The number of line-number entries for the section.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.NumberOfRelocations">
+      <summary>Gets the number of relocation entries for the section.</summary>
+      <returns>The number of relocation entries for the section. Its value is zero for PE images.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.PointerToLineNumbers">
+      <summary>Gets the file pointer to the beginning of line-number entries for the section.</summary>
+      <returns>The file pointer to the beginning of line-number entries for the section, or zero if there are no COFF line numbers.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.PointerToRawData">
+      <summary>Gets the file pointer to the first page of the section within the COFF file.</summary>
+      <returns>The file pointer to the first page of the section within the COFF file.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.PointerToRelocations">
+      <summary>Gets the file pointer to the beginning of relocation entries for the section.</summary>
+      <returns>The file pointer to the beginning of relocation entries for the section. It is set to zero for PE images or if there are no relocations.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.SectionCharacteristics">
+      <summary>Gets the flags that describe the characteristics of the section.</summary>
+      <returns>The flags that describe the characteristics of the section.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.SizeOfRawData">
+      <summary>Gets the size of the section (for object files) or the size of the initialized data on disk (for image files).</summary>
+      <returns>The size of the section (for object files) or the size of the initialized data on disk (for image files).</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.VirtualAddress">
+      <summary>Gets the virtual addess of the section.</summary>
+      <returns>The virtual address of the section.</returns>
+    </member>
+    <member name="P:System.Reflection.PortableExecutable.SectionHeader.VirtualSize">
+      <summary>Gets the total size of the section when loaded into memory.</summary>
+      <returns>The total size of the section when loaded into memory.</returns>
+    </member>
     <member name="T:System.Reflection.PortableExecutable.SectionLocation" />
     <member name="M:System.Reflection.PortableExecutable.SectionLocation.#ctor(System.Int32,System.Int32)">
       <param name="relativeVirtualAddress" />

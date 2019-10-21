@@ -172,7 +172,7 @@
       <returns>An array containing the collection objects, or an empty object array if the specified collection does not inherit from <see cref="T:System.Collections.ICollection" />.</returns>
     </member>
     <member name="M:System.ComponentModel.Design.CollectionEditor.GetObjectsFromInstance(System.Object)">
-      <summary>Returns a list containing the given object</summary>
+      <summary>Returns a list containing the given object.</summary>
       <param name="instance">An <see cref="T:System.Collections.ArrayList" /> returned as an object.</param>
       <returns>An <see cref="T:System.Collections.ArrayList" /> which contains the individual objects to be created.</returns>
     </member>

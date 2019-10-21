@@ -87,7 +87,8 @@
         <see langword="true" /> to prefer queueing the work item in a queue close to the current thread; <see langword="false" /> to prefer queueing the work item to the thread pool's shared queue.</param>
       <typeparam name="TState">The type of elements of <paramref name="state" />.</typeparam>
       <returns>
-        <see langword="true" /> if the method is successfully queued; <see cref="T:System.NotSupportedException" /> is thrown if the work item could not be queued.</returns>
+        <see langword="true" /> if the method is successfully queued; <see cref="T:System.NotSupportedException" /> is thrown if the work item could not be queued.
+.</returns>
     </member>
     <member name="M:System.Threading.ThreadPool.RegisterWaitForSingleObject(System.Threading.WaitHandle,System.Threading.WaitOrTimerCallback,System.Object,System.Int32,System.Boolean)">
       <summary>Registers a delegate to wait for a <see cref="T:System.Threading.WaitHandle" />, specifying a 32-bit signed integer for the time-out in milliseconds.</summary>

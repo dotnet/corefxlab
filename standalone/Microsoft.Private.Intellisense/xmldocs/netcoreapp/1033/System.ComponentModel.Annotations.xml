@@ -361,9 +361,10 @@ on the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.Resou
     <member name="M:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.GetNullDisplayText">
       <summary>Returns the UI display string for <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" />.</summary>
       <returns>The UI display string.
-If <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayTextResourceType" /> has not been specified, the value of <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" /> is returned.
-If <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayTextResourceType" /> has been specified and <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" /> represents a resource key within that resource type, the localized value is returned.
-If <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" /> and <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayTextResourceType" /> have not been set, returns <see langword="null" />.</returns>
+    If <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayTextResourceType" /> has not been specified, the value of <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" /> is returned.
+    If <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayTextResourceType" /> has been specified and <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" /> represents a resource key within that resource type, the localized value is returned.
+    If <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" /> and <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayTextResourceType" /> have not been set, returns <see langword="null" />.
+.</returns>
       <exception cref="T:System.InvalidOperationException">Both the <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayTextResourceType" /> and <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" /> properties are set, but a public static property with a name matching the <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayText" /> value cannot be found on the <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.NullDisplayTextResourceType" />.</exception>
     </member>
     <member name="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.HtmlEncode">
@@ -801,8 +802,8 @@ Using <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.
       <param name="name">The name of the field that caused the validation failure.</param>
       <returns>The formatted error message.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="maximumLength" /> is negative.  
--or-  
+        <paramref name="maximumLength" /> is negative.
+-or-
 <paramref name="maximumLength" /> is less than <paramref name="minimumLength" />.</exception>
       <exception cref="T:System.InvalidOperationException">The current attribute is ill-formed.</exception>
     </member>
@@ -812,8 +813,8 @@ Using <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.
       <returns>
         <see langword="true" /> if the specified object is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="maximumLength" /> is negative.  
--or-  
+        <paramref name="maximumLength" /> is negative.
+-or-
 <paramref name="maximumLength" /> is less than <see cref="P:System.ComponentModel.DataAnnotations.StringLengthAttribute.MinimumLength" />.</exception>
       <exception cref="T:System.InvalidOperationException">The current attribute is ill-formed.</exception>
     </member>
@@ -849,8 +850,8 @@ Using <see cref="P:System.ComponentModel.DataAnnotations.DisplayFormatAttribute.
       <param name="presentationLayer">The presentation layer that uses the class. Can be set to "HTML", "Silverlight", "WPF", or "WinForms".</param>
       <param name="controlParameters">The object to use to retrieve values from any data sources.</param>
       <exception cref="T:System.ArgumentException">
-        <see cref="P:System.ComponentModel.DataAnnotations.UIHintAttribute.ControlParameters" /> is <see langword="null" /> or it is a constraint key.  
--or-  
+        <see cref="P:System.ComponentModel.DataAnnotations.UIHintAttribute.ControlParameters" /> is <see langword="null" /> or it is a constraint key.
+-or-
 The value of <see cref="P:System.ComponentModel.DataAnnotations.UIHintAttribute.ControlParameters" /> is not a string.</exception>
     </member>
     <member name="P:System.ComponentModel.DataAnnotations.UIHintAttribute.ControlParameters">
@@ -980,7 +981,7 @@ The value of <see cref="P:System.ComponentModel.DataAnnotations.UIHintAttribute.
       <summary>Describes the context in which a validation check is performed.</summary>
     </member>
     <member name="M:System.ComponentModel.DataAnnotations.ValidationContext.#ctor(System.Object)">
-      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationContext" /> class using the specified object instance</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationContext" /> class using the specified object instance.</summary>
       <param name="instance">The object instance to validate. It cannot be <see langword="null" />.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="instance" /> is <see langword="null" />.</exception>
@@ -1143,8 +1144,8 @@ The value of <see cref="P:System.ComponentModel.DataAnnotations.UIHintAttribute.
       <returns>
         <see langword="true" /> if the property validates; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="value" /> cannot be assigned to the property.  
--or-  
+        <paramref name="value" /> cannot be assigned to the property.
+-or-
 <paramref name="value" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <see cref="P:System.ComponentModel.DataAnnotations.ValidationContext.MemberName" /> property of <paramref name="validationContext" /> is not a valid property.</exception>
     </member>

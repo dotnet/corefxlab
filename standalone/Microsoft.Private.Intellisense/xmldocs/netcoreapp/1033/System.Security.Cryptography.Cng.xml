@@ -17,8 +17,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="parentHandle" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="parentHandle" /> is closed.  
--or-  
+        <paramref name="parentHandle" /> is closed.
+-or-
 <paramref name="parentHandle" /> is invalid.</exception>
     </member>
     <member name="P:Microsoft.Win32.SafeHandles.SafeNCryptHandle.IsInvalid" />
@@ -45,8 +45,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="parentHandle" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="parentHandle" /> is closed.  
--or-  
+        <paramref name="parentHandle" /> is closed.
+-or-
 <paramref name="parentHandle" /> is invalid.</exception>
     </member>
     <member name="T:Microsoft.Win32.SafeHandles.SafeNCryptProviderHandle">
@@ -80,8 +80,8 @@
       <param name="keyName">The name of the key.</param>
       <param name="provider">The KSP that contains the key.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="keyName" /> is <see langword="null" />.  
--or-  
+        <paramref name="keyName" /> is <see langword="null" />.
+-or-
 <paramref name="provider" /> is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">Cryptography Next Generation (CNG) is not supported on this system.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">All other errors.</exception>
@@ -92,8 +92,8 @@
       <param name="provider">The KSP that contains the key.</param>
       <param name="openOptions">A bitwise combination of the enumeration values that specify options for opening the key, such as where the key is opened from (machine or user storage) and whether to suppress UI prompting.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="keyName" /> is <see langword="null" />.  
--or-  
+        <paramref name="keyName" /> is <see langword="null" />.
+-or-
 <paramref name="provider" /> is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">Cryptography Next Generation (CNG) is not supported on this system.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">All other errors.</exception>
@@ -110,12 +110,12 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rgbKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="rgbKey" /> is not a valid size for this algorithm.  
--or-  
+        <paramref name="rgbKey" /> is not a valid size for this algorithm.
+-or-
 <paramref name="rgbIV" /> size does not match the block size for this algorithm.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
-        <paramref name="rgbKey" /> is a known weak key for this algorithm and cannot be used.  
--or-  
+        <paramref name="rgbKey" /> is a known weak key for this algorithm and cannot be used.
+-or-
 <paramref name="rgbIV" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.AesCng.CreateEncryptor">
@@ -130,12 +130,12 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rgbKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="rgbKey" /> is not a valid size for this algorithm.  
--or-  
+        <paramref name="rgbKey" /> is not a valid size for this algorithm.
+-or-
 <paramref name="rgbIV" /> size does not match the block size for this algorithm.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
-        <paramref name="rgbKey" /> is a known weak key for this algorithm and cannot be used.  
--or-  
+        <paramref name="rgbKey" /> is a known weak key for this algorithm and cannot be used.
+-or-
 <paramref name="rgbIV" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.AesCng.GenerateIV">
@@ -987,9 +987,9 @@
       <param name="rgbSignature">The digital signature to be verified.</param>
       <returns>
         <see langword="true" /> if <paramref name="rgbSignature" /> matches the signature computed using the specified data; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">
         <paramref name="rgbHash" /> is shorter in length than the Q value of the DSA key.</exception>
     </member>
@@ -1031,8 +1031,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="otherPartyPublicKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="otherPartyPublicKey" /> is not an ECDH key, or it is not the correct size.  
--or-  
+        <paramref name="otherPartyPublicKey" /> is not an ECDH key, or it is not the correct size.
+-or-
 <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">All other errors.</exception>
     </member>
@@ -1047,8 +1047,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="otherPartyPublicKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="otherPartyPublicKey" /> is not an ECDH key, or it is not the correct size.  
--or-  
+        <paramref name="otherPartyPublicKey" /> is not an ECDH key, or it is not the correct size.
+-or-
 <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">All other errors.</exception>
     </member>
@@ -1079,16 +1079,16 @@
       <param name="prfSeed">The 64-byte PRF seed.</param>
       <returns>The key material from the key exchange with the other party's public key.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="otherPartyPublicKey" /> is <see langword="null" />.  
--or-  
-<paramref name="prfLabel" /> is <see langword="null" />.  
--or-  
+        <paramref name="otherPartyPublicKey" /> is <see langword="null" />.
+-or-
+<paramref name="prfLabel" /> is <see langword="null" />.
+-or-
 <paramref name="prfSeed" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="otherPartyPublicKey" /> is not an ECDH key, or it is not the correct size.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
-        <paramref name="prfSeed" /> is not exactly 64 bytes in length.  
--or-  
+        <paramref name="prfSeed" /> is not exactly 64 bytes in length.
+-or-
 All other cryptographic errors.</exception>
     </member>
     <member name="M:System.Security.Cryptography.ECDiffieHellmanCng.DeriveSecretAgreementHandle(System.Security.Cryptography.CngKey)">
@@ -1403,8 +1403,8 @@ All other cryptographic errors.</exception>
       <returns>
         <see langword="true" /> if the signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> or <paramref name="count" /> is less then zero.  
--or-  
+        <paramref name="offset" /> or <paramref name="count" /> is less then zero.
+-or-
 <paramref name="offset" /> or <paramref name="count" /> is larger than the length of the byte array passed in the <paramref name="data" /> parameter.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="data" /> or <paramref name="signature" /> is <see langword="null" />.</exception>
@@ -1459,8 +1459,8 @@ All other cryptographic errors.</exception>
       <param name="padding">The padding mode.</param>
       <returns>The decrypted data.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
         <paramref name="padding" /> does not equal <see cref="P:System.Security.Cryptography.RSAEncryptionPadding.Pkcs1" />, or else the <see cref="P:System.Security.Cryptography.RSAEncryptionPadding.Mode" /> of <paramref name="padding" /> does not equal <see cref="F:System.Security.Cryptography.RSAEncryptionPaddingMode.Oaep" />.</exception>
@@ -1471,8 +1471,8 @@ All other cryptographic errors.</exception>
       <param name="padding">The padding mode.</param>
       <returns>The encrypted data.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
         <paramref name="padding" /> does not equal <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pkcs1" /> or <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pss" />.</exception>
@@ -1489,8 +1489,8 @@ All other cryptographic errors.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="parameters" /> contains neither an exponent nor a modulus.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
-        <paramref name="parameters" /> is not a valid RSA key.  
--or-  
+        <paramref name="parameters" /> is not a valid RSA key.
+-or-
 <paramref name="parameters" /> is a full key pair and the default KSP is used.</exception>
     </member>
     <member name="P:System.Security.Cryptography.RSACng.Key">
@@ -1505,8 +1505,8 @@ All other cryptographic errors.</exception>
       <param name="padding">The padding mode.</param>
       <returns>The signed data.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="hash" /> is <see langword="null" />.  
--or-  
+        <paramref name="hash" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The value of the <see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> property of <paramref name="hashAlgorithm" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
@@ -1521,15 +1521,15 @@ All other cryptographic errors.</exception>
       <returns>
         <see langword="true" /> if the signature verifies for the hash; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="hash" /> is <see langword="null" />.  
--or-  
-<paramref name="signature" /> is <see langword="null" />.  
--or-  
+        <paramref name="hash" /> is <see langword="null" />.
+-or-
+<paramref name="signature" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The value of the <see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> property of <paramref name="hashAlgorithm" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
-        <paramref name="padding" /> does not equal <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pkcs1" /> or <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pss" />.  
--or-  
+        <paramref name="padding" /> does not equal <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pkcs1" /> or <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pss" />.
+-or-
 The signature is badly formatted. (In the .NET Framework 4.6 and 4.6.1 only; starting with the .NET Framework 4.6.2, the method returns <see langword="false" /> if a signature is badly formatted.</exception>
     </member>
     <member name="T:System.Security.Cryptography.TripleDESCng">
@@ -1551,8 +1551,8 @@ The signature is badly formatted. (In the .NET Framework 4.6 and 4.6.1 only; sta
       <param name="keyName">The name of the key.</param>
       <param name="provider">The KSP that contains the key.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="keyName" /> is <see langword="null" />.  
--or-  
+        <paramref name="keyName" /> is <see langword="null" />.
+-or-
 <paramref name="provider" /> is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">Cryptography Next Generation (CNG) is not supported on this system.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">All other errors.</exception>
@@ -1563,8 +1563,8 @@ The signature is badly formatted. (In the .NET Framework 4.6 and 4.6.1 only; sta
       <param name="provider">The KSP that contains the key.</param>
       <param name="openOptions">A bitwise combination of the enumeration values that specify options for opening the key, such as where the key is opened from (machine or user storage) and whether to suppress UI prompting.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="keyName" /> is <see langword="null" />.  
--or-  
+        <paramref name="keyName" /> is <see langword="null" />.
+-or-
 <paramref name="provider" /> is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">Cryptography Next Generation (CNG) is not supported on this system.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">All other errors.</exception>
@@ -1581,12 +1581,12 @@ The signature is badly formatted. (In the .NET Framework 4.6 and 4.6.1 only; sta
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rgbKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="rgbKey" /> is not a valid size for this algorithm.  
--or-  
+        <paramref name="rgbKey" /> is not a valid size for this algorithm.
+-or-
 <paramref name="rgbIV" /> size does not match the block size for this algorithm.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
-        <paramref name="rgbKey" /> is a known weak key for this algorithm and cannot be used.  
--or-  
+        <paramref name="rgbKey" /> is a known weak key for this algorithm and cannot be used.
+-or-
 <paramref name="rgbIV" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.TripleDESCng.CreateEncryptor">
@@ -1601,12 +1601,12 @@ The signature is badly formatted. (In the .NET Framework 4.6 and 4.6.1 only; sta
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rgbKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="rgbKey" /> is not a valid size for this algorithm.  
--or-  
+        <paramref name="rgbKey" /> is not a valid size for this algorithm.
+-or-
 <paramref name="rgbIV" /> size does not match the block size for this algorithm.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
-        <paramref name="rgbKey" /> is a known weak key for this algorithm and cannot be used.  
--or-  
+        <paramref name="rgbKey" /> is a known weak key for this algorithm and cannot be used.
+-or-
 <paramref name="rgbIV" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.TripleDESCng.GenerateIV">

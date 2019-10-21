@@ -136,9 +136,9 @@
       <exception cref="T:System.ArgumentNullException">The value of <paramref name="printTicket" /> is null (<see langword="Nothing" /> in Visual Basic).</exception>
       <exception cref="T:System.ArgumentException">The content of <paramref name="printTicket" /> is not well-formed.</exception>
       <exception cref="T:System.Printing.PrintQueueException">The conversion failed.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="baseType" /> is not a valid <see cref="T:System.Printing.Interop.BaseDevModeType" /> value.  
- -or-  
- The <paramref name="scope" /> is not a valid <see cref="T:System.Printing.PrintTicketScope" /> value.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="baseType" /> is not a valid <see cref="T:System.Printing.Interop.BaseDevModeType" /> value.
+-or-
+The <paramref name="scope" /> is not a valid <see cref="T:System.Printing.PrintTicketScope" /> value.</exception>
     </member>
     <member name="M:System.Printing.Interop.PrintTicketConverter.Dispose">
       <summary>Releases the resources used by the <see cref="T:System.Printing.Interop.PrintTicketConverter" />.</summary>
@@ -1504,11 +1504,11 @@
     <member name="P:System.Printing.PrintTicket.PageMediaSize">
       <summary>Gets or sets the page size for the paper (or other media) that a printer uses for a print job.</summary>
       <returns>A <see cref="T:System.Printing.PageMediaSize" /> object that represents the page size by using a name, dimensions, or both.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">Calling code has attempted to set the property with a <see cref="T:System.Printing.PageMediaSize" /> object that has at least one <see langword="null" /> property.  
+      <exception cref="T:System.ArgumentOutOfRangeException">Calling code has attempted to set the property with a <see cref="T:System.Printing.PageMediaSize" /> object that has at least one <see langword="null" /> property.
 -or-
- Calling code has attempted to set the property with a <see cref="T:System.Printing.PageMediaSize" /> object whose <see cref="P:System.Printing.PageMediaSize.PageMediaSizeName" /> property is set to a value that is not in the <see cref="T:System.Printing.PageMediaSizeName" /> enumeration.  
+Calling code has attempted to set the property with a <see cref="T:System.Printing.PageMediaSize" /> object whose <see cref="P:System.Printing.PageMediaSize.PageMediaSizeName" /> property is set to a value that is not in the <see cref="T:System.Printing.PageMediaSizeName" /> enumeration.
 -or-
- Calling code has attempted to set the property with a <see cref="T:System.Printing.PageMediaSize" /> object whose <see cref="P:System.Printing.PageMediaSize.Width" /> or <see cref="P:System.Printing.PageMediaSize.Height" /> property is set to a value less than 1.</exception>
+Calling code has attempted to set the property with a <see cref="T:System.Printing.PageMediaSize" /> object whose <see cref="P:System.Printing.PageMediaSize.Width" /> or <see cref="P:System.Printing.PageMediaSize.Height" /> property is set to a value less than 1.</exception>
     </member>
     <member name="P:System.Printing.PrintTicket.PageMediaType">
       <summary>Gets or sets a value indicating what sort of paper or media the printer uses for the print job.</summary>
@@ -1528,11 +1528,11 @@
     <member name="P:System.Printing.PrintTicket.PageResolution">
       <summary>Gets or sets the level of page resolution that the printer uses for a print job.</summary>
       <returns>A <see cref="T:System.Printing.PageResolution" /> value that represents the resolution as a qualitative value, a dots-per-inch value, or both.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">Calling code has attempted to set the property with a <see cref="T:System.Printing.PageResolution" /> object that has at least one <see langword="null" /> property.  
+      <exception cref="T:System.ArgumentOutOfRangeException">Calling code has attempted to set the property with a <see cref="T:System.Printing.PageResolution" /> object that has at least one <see langword="null" /> property.
 -or-
- Calling code has attempted to set the property with a <see cref="T:System.Printing.PageMediaSize" /> object whose <see cref="P:System.Printing.PageResolution.QualitativeResolution" /> property is set to a value that is not in the <see cref="T:System.Printing.PageQualitativeResolution" /> enumeration.  
+Calling code has attempted to set the property with a <see cref="T:System.Printing.PageMediaSize" /> object whose <see cref="P:System.Printing.PageResolution.QualitativeResolution" /> property is set to a value that is not in the <see cref="T:System.Printing.PageQualitativeResolution" /> enumeration.
 -or-
- Calling code has attempted to set the property with a <see cref="T:System.Printing.PageResolution" /> object whose <see cref="P:System.Printing.PageResolution.X" /> or <see cref="P:System.Printing.PageResolution.Y" /> property is set to a value less than 1.</exception>
+Calling code has attempted to set the property with a <see cref="T:System.Printing.PageResolution" /> object whose <see cref="P:System.Printing.PageResolution.X" /> or <see cref="P:System.Printing.PageResolution.Y" /> property is set to a value less than 1.</exception>
     </member>
     <member name="P:System.Printing.PrintTicket.PageScalingFactor">
       <summary>Gets or sets the percentage by which the printer enlarges or reduces the print image on a page.</summary>
@@ -2531,9 +2531,9 @@
       <param name="value">The object you want to convert.</param>
       <param name="destinationType">The type that <paramref name="value" /> is converted to.</param>
       <returns>The new <see cref="T:System.Object" /> of the designated type.</returns>
-      <exception cref="T:System.NotSupportedException">The <paramref name="destinationType" /> is not a type that <paramref name="value" /> can be converted to.  
- -or-  
- The <paramref name="culture" /> is a neutral culture.</exception>
+      <exception cref="T:System.NotSupportedException">The <paramref name="destinationType" /> is not a type that <paramref name="value" /> can be converted to.
+-or-
+The <paramref name="culture" /> is a neutral culture.</exception>
     </member>
     <member name="M:System.Windows.Xps.Serialization.ColorTypeConverter.GetProperties(System.ComponentModel.ITypeDescriptorContext,System.Object,System.Attribute[])">
       <summary>Gets a collection of property descriptions for the specified type.</summary>

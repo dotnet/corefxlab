@@ -37,6 +37,20 @@
     <member name="F:System.ServiceModel.BasicHttpMessageCredentialType.UserName">
       <summary>Indicates that the client be authenticated using a username credential.</summary>
     </member>
+    <member name="T:System.ServiceModel.BasicHttpMessageSecurity">
+      <summary>Configures message-level security settings for <see cref="T:System.ServiceModel.BasicHttpBinding" />.</summary>
+    </member>
+    <member name="M:System.ServiceModel.BasicHttpMessageSecurity.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.BasicHttpMessageSecurity" /> class.</summary>
+    </member>
+    <member name="P:System.ServiceModel.BasicHttpMessageSecurity.AlgorithmSuite">
+      <summary>Specifies the algorithm suite to use with <see cref="T:System.ServiceModel.BasicHttpMessageSecurity" />.</summary>
+      <returns>A <see cref="T:System.ServiceModel.Security.SecurityAlgorithmSuite" />. The default value is <see cref="P:System.ServiceModel.Security.SecurityAlgorithmSuite.Basic256" />.</returns>
+    </member>
+    <member name="P:System.ServiceModel.BasicHttpMessageSecurity.ClientCredentialType">
+      <summary>Specifies the type of credential with which the client authenticates.</summary>
+      <returns>A member of the <see cref="T:System.ServiceModel.BasicHttpMessageCredentialType" /> enumeration. The default value is <see cref="F:System.ServiceModel.BasicHttpMessageCredentialType.UserName" />.</returns>
+    </member>
     <member name="T:System.ServiceModel.BasicHttpsBinding">
       <summary>Specifies basic https binding settings.</summary>
     </member>
@@ -66,6 +80,10 @@
     </member>
     <member name="M:System.ServiceModel.BasicHttpSecurity.#ctor">
       <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.BasicHttpSecurity" /> class.</summary>
+    </member>
+    <member name="P:System.ServiceModel.BasicHttpSecurity.Message">
+      <summary>Gets the message-level security settings for a <see langword="basicHttpBinding" /> binding.</summary>
+      <returns>A <see cref="T:System.ServiceModel.BasicHttpMessageSecurity" />, which represents the message-level security settings for this binding.</returns>
     </member>
     <member name="P:System.ServiceModel.BasicHttpSecurity.Mode">
       <summary>Gets or sets the security mode for a <see langword="basicHttpBinding" /> binding.</summary>
@@ -260,6 +278,10 @@
       <summary>Creates a new instance that is a copy of the current binding element.</summary>
       <returns>A new instance that is a copy of the current binding element.</returns>
     </member>
+    <member name="P:System.ServiceModel.Channels.HttpTransportBindingElement.ExtendedProtectionPolicy">
+      <summary>Gets or sets the value of the extended security policy used by the server to validate incoming client connections.</summary>
+      <returns>The value of the extended security policy used by the server to validate incoming client connections.</returns>
+    </member>
     <member name="M:System.ServiceModel.Channels.HttpTransportBindingElement.GetProperty``1(System.ServiceModel.Channels.BindingContext)">
       <summary>Gets a property from the specified <see cref="T:System.ServiceModel.Channels.BindingContext" />.</summary>
       <param name="context">A <see cref="T:System.ServiceModel.Channels.BindingContext" />.</param>
@@ -289,13 +311,13 @@
     </member>
     <member name="P:System.ServiceModel.Channels.HttpTransportBindingElement.TransferMode">
       <summary>Gets or sets the transfer mode.</summary>
-      <returns>One of the following member values of <see cref="P:System.ServiceModel.Channels.HttpTransportBindingElement.TransferMode" />:  
+      <returns>One of the following member values of <see cref="P:System.ServiceModel.Channels.HttpTransportBindingElement.TransferMode" />:
 
-Buffered  
+Buffered
 
-Streamed  
+Streamed
 
-StreamedRequest  
+StreamedRequest
 
 StreamedResponse</returns>
     </member>
@@ -479,10 +501,39 @@ StreamedResponse</returns>
       <returns>One of the enumeration values that indicates the type of client credential to be used for authentication.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">Setting the property to an undefined value.</exception>
     </member>
+    <member name="P:System.ServiceModel.HttpTransportSecurity.ExtendedProtectionPolicy">
+      <summary>Gets or sets the extended protection policy.</summary>
+      <returns>The extended protection policy.</returns>
+    </member>
     <member name="P:System.ServiceModel.HttpTransportSecurity.ProxyCredentialType">
       <summary>Gets or sets the type of client credential to be used for authentication against the proxy.</summary>
       <returns>One of the enumeration values that indicates the type of client credential to be used for authentication against the proxy.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">Setting the property to an undefined value.</exception>
+    </member>
+    <member name="T:System.ServiceModel.MessageSecurityOverHttp">
+      <summary>Enables setting message-level security properties on the wsDualHttpBinding binding.</summary>
+    </member>
+    <member name="M:System.ServiceModel.MessageSecurityOverHttp.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.MessageSecurityOverHttp" /> class.</summary>
+    </member>
+    <member name="P:System.ServiceModel.MessageSecurityOverHttp.AlgorithmSuite">
+      <summary>Specifies the algorithm suite used for security messages at the SOAP level.</summary>
+      <returns>A <see cref="T:System.ServiceModel.Security.SecurityAlgorithmSuite" />. The default is <see cref="P:System.ServiceModel.Security.SecurityAlgorithmSuite.Basic256" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The value of <see cref="P:System.ServiceModel.MessageSecurityOverHttp.AlgorithmSuite" /> is <see langword="null" />.</exception>
+    </member>
+    <member name="P:System.ServiceModel.MessageSecurityOverHttp.ClientCredentialType">
+      <summary>Specifies the type of client credential used for client authentication in the wsHttpBinding or wsDualHttpBinding bindings.</summary>
+      <returns>A <see cref="T:System.ServiceModel.MessageCredentialType" />. The default is <see cref="F:System.ServiceModel.MessageCredentialType.Windows" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <see cref="P:System.ServiceModel.MessageSecurityOverHttp.ClientCredentialType" /> is not a valid <see cref="T:System.ServiceModel.MessageCredentialType" />.</exception>
+    </member>
+    <member name="M:System.ServiceModel.MessageSecurityOverHttp.IsSecureConversationEnabled">
+      <summary>Only used in extensibility scenarios to indicate whether an instance of a class derived from <see cref="T:System.ServiceModel.MessageSecurityOverHttp" /> is configured to perform secure conversation as described in WS-SecurityConversation.</summary>
+      <returns>Always returns <see langword="true" />, unless overridden in a derived class.</returns>
+    </member>
+    <member name="P:System.ServiceModel.MessageSecurityOverHttp.NegotiateServiceCredential">
+      <summary>Gets or sets a value that indicates whether the service credential is provisioned at the client out of band or is obtained from the service through a process of negotiation.</summary>
+      <returns>
+        <see langword="true" /> if service credential is obtained through a process of negotiation; otherwise, <see langword="false" />. The default is <see langword="true" />.</returns>
     </member>
     <member name="T:System.ServiceModel.NetHttpBinding">
       <summary>Specifies settings for <see cref="T:System.ServiceModel.NetHttpBinding" />.</summary>
@@ -563,6 +614,150 @@ StreamedResponse</returns>
     <member name="P:System.ServiceModel.NetHttpsBinding.WebSocketSettings">
       <summary>Gets the web socket settings.</summary>
       <returns>The web socket settings.</returns>
+    </member>
+    <member name="T:System.ServiceModel.NonDualMessageSecurityOverHttp">
+      <summary>Represents the security settings of the wsHttpBinding binding.</summary>
+    </member>
+    <member name="M:System.ServiceModel.NonDualMessageSecurityOverHttp.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.NonDualMessageSecurityOverHttp" /> class.</summary>
+    </member>
+    <member name="P:System.ServiceModel.NonDualMessageSecurityOverHttp.EstablishSecurityContext">
+      <summary>Gets or sets a value that indicates whether a security context token is established.</summary>
+      <returns>
+        <see langword="true" /> if a security context token is established; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="T:System.ServiceModel.WSHttpBinding">
+      <summary>Represents an interoperable binding that supports distributed transactions and secure, reliable sessions.</summary>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBinding.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.WSHttpBinding" /> class.</summary>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBinding.#ctor(System.ServiceModel.SecurityMode)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.WSHttpBinding" /> class with a specified type of security used by the binding.</summary>
+      <param name="securityMode">The value of <see cref="T:System.ServiceModel.SecurityMode" /> that specifies the type of security that is used with the SOAP message and for the client.</param>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBinding.#ctor(System.ServiceModel.SecurityMode,System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.WSHttpBinding" /> class with a specified type of security used by the binding and a value that indicates whether a reliable session is enabled.</summary>
+      <param name="securityMode">The value of <see cref="T:System.ServiceModel.SecurityMode" /> that specifies the type of security that is used with the SOAP message and for the client.</param>
+      <param name="reliableSessionEnabled">
+        <see langword="true" /> if a reliable session is enabled; otherwise, <see langword="false" />.</param>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBinding.AllowCookies">
+      <summary>Gets or sets a value that indicates whether the WCF client will automatically store and resend any cookies sent by a single web service.</summary>
+      <returns>
+        <see langword="true" /> if automatic cookies processing is required; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBinding.BuildChannelFactory``1(System.ServiceModel.Channels.BindingParameterCollection)">
+      <summary>Builds the channel factory stack on the client that creates a specified type of channel and that satisfies the features specified by a collection of binding parameters.</summary>
+      <param name="parameters">Specifies the requirements for the channel factory built.</param>
+      <typeparam name="TChannel">The type of channel the channel factory produces.</typeparam>
+      <returns>An <see cref="T:System.ServiceModel.Channels.IChannelFactory`1" /> of type TChannel that satisfies the features specified by the collection.</returns>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBinding.CreateBindingElements">
+      <summary>Returns an ordered collection of binding elements contained in the current binding.</summary>
+      <returns>The <see cref="T:System.ServiceModel.Channels.BindingElementCollection" /> that contains the ordered stack of binding elements described by the <see cref="T:System.ServiceModel.WSHttpBinding" /> binding.</returns>
+      <exception cref="T:System.InvalidOperationException">The transport security mode set cannot provide the reliable session that has been enabled.</exception>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBinding.CreateMessageSecurity">
+      <summary>Returns the security binding element from the current binding.</summary>
+      <returns>A <see cref="T:System.ServiceModel.Channels.SecurityBindingElement" /> from the current binding.</returns>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBinding.GetTransport">
+      <summary>Returns the transport binding element from the current binding.</summary>
+      <returns>The <see cref="T:System.ServiceModel.Channels.TransportBindingElement" /> from the current binding.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBinding.Security">
+      <summary>Gets the security settings used with this binding.</summary>
+      <returns>The <see cref="T:System.ServiceModel.WSHttpSecurity" /> that is used with this binding. The default value <see cref="P:System.ServiceModel.WSHttpSecurity.Mode" /> property is <see cref="P:System.ServiceModel.WSHttpSecurity.Message" />.</returns>
+    </member>
+    <member name="T:System.ServiceModel.WSHttpBindingBase">
+      <summary>Provides the base class with members common to the <see cref="T:System.ServiceModel.WSHttpBinding" /> and the <see cref="T:System.ServiceModel.WSFederationHttpBinding" />.</summary>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBindingBase.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.WSHttpBindingBase" /> class.</summary>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBindingBase.#ctor(System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.WSHttpBindingBase" /> class with a value that indicates whether a reliable session is enabled.</summary>
+      <param name="reliableSessionEnabled">
+        <see langword="true" />, if a reliable session is enabled; otherwise, <see langword="false" />.</param>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.BypassProxyOnLocal">
+      <summary>Gets or sets a value that indicates whether to bypass the proxy server for local addresses.</summary>
+      <returns>
+        <see langword="true" /> to bypass the proxy server for local addresses; otherwise, <see langword="false" />. The default value is <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBindingBase.CreateBindingElements">
+      <summary>Returns an ordered collection of binding elements contained in the current binding.</summary>
+      <returns>A <see cref="T:System.ServiceModel.Channels.BindingElementCollection" /> that contains the <see cref="T:System.ServiceModel.Channels.BindingElement" /> objects for the binding.</returns>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBindingBase.CreateMessageSecurity">
+      <summary>When implemented in a derived class, returns the <see cref="T:System.ServiceModel.Channels.SecurityBindingElement" /> from the current binding.</summary>
+      <returns>A <see cref="T:System.ServiceModel.Channels.SecurityBindingElement" /> from the current binding.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.EnvelopeVersion">
+      <summary>Gets the version of SOAP that is used for messages that are processed by this binding.</summary>
+      <returns>The value of the <see cref="T:System.ServiceModel.EnvelopeVersion" /> that is used with this binding. The value is always SOAP 1.2.</returns>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpBindingBase.GetTransport">
+      <summary>When implemented in a derived class, returns the transport binding element from the current binding.</summary>
+      <returns>The <see cref="T:System.ServiceModel.Channels.TransportBindingElement" /> from the current binding.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.MaxBufferPoolSize">
+      <summary>Gets or sets the maximum amount of memory allocated, in bytes, for the buffer manager that manages the buffers required by endpoints using this binding.</summary>
+      <returns>The maximum size, in bytes, for the pool of buffers used by an endpoint configured with this binding. The default value is 524,288 bytes.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.MaxReceivedMessageSize">
+      <summary>Gets or sets the maximum size, in bytes, for a message that can be processed by the binding.</summary>
+      <returns>The maximum size, in bytes, for a message that is processed by the binding. The default value is 65,536 bytes.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value is less than zero.</exception>
+      <exception cref="T:System.ServiceModel.QuotaExceededException">A message exceeded the maximum size allocated.</exception>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.ProxyAddress">
+      <summary>Gets or sets the URI address of the HTTP proxy.</summary>
+      <returns>A <see cref="T:System.Uri" /> that serves as the address of the HTTP proxy. The default value is <see langword="null" />.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.ReaderQuotas">
+      <summary>Gets or sets constraints on the complexity of SOAP messages that can be processed by endpoints configured with this binding.</summary>
+      <returns>The <see cref="T:System.Xml.XmlDictionaryReaderQuotas" /> that specifies the complexity constraints.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.Scheme">
+      <summary>Gets the URI transport scheme for the channels and listeners that are configured with this binding.</summary>
+      <returns>"http" if the security mode of the transport binding element is set to <see cref="F:System.ServiceModel.SecurityMode.None" /> or <see cref="F:System.ServiceModel.SecurityMode.Message" />; "https" if the security mode is set otherwise.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.TextEncoding">
+      <summary>Gets or sets the character encoding that is used for the message text.</summary>
+      <returns>The <see cref="T:System.Text.Encoding" /> that indicates the character encoding that is used. The default is <see cref="T:System.Text.UTF8Encoding" />.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.TransactionFlow">
+      <summary>Gets or sets a value that indicates whether this binding should support flowing WS-Transactions.</summary>
+      <returns>
+        <see langword="true" /> if the flowing of transactions is supported; otherwise, <see langword="false" />. The default value is <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpBindingBase.UseDefaultWebProxy">
+      <summary>Gets or sets a value that indicates whether the auto-configured HTTP proxy of the system should be used, if available.</summary>
+      <returns>
+        <see langword="true" /> if the auto-configured HTTP proxy of the system should be used, if available; otherwise, <see langword="false" />. The default value is <see langword="true" />.</returns>
+    </member>
+    <member name="T:System.ServiceModel.WSHttpSecurity">
+      <summary>Represents the security settings for the <see cref="T:System.ServiceModel.WSHttpBinding" />.</summary>
+    </member>
+    <member name="M:System.ServiceModel.WSHttpSecurity.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.WSHttpSecurity" /> class.</summary>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpSecurity.Message">
+      <summary>Gets the message-level security settings for this binding.</summary>
+      <returns>The message-level security settings for this binding.
+The default value includes: <see cref="P:System.ServiceModel.NonDualMessageSecurityOverHttp.EstablishSecurityContext" /> with default set to <see langword="true" />, <see cref="P:System.ServiceModel.MessageSecurityOverHttp.ClientCredentialType" /> is <see cref="F:System.ServiceModel.MessageCredentialType.Windows" />, <see cref="P:System.ServiceModel.MessageSecurityOverHttp.AlgorithmSuite" /> is <see cref="P:System.ServiceModel.Security.SecurityAlgorithmSuite.Basic256" />, and <see cref="P:System.ServiceModel.MessageSecurityOverHttp.NegotiateServiceCredential" /> is <see langword="true" />.</returns>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpSecurity.Mode">
+      <summary>Specifies the message <see cref="T:System.ServiceModel.SecurityMode" /> for this binding.</summary>
+      <returns>The <see cref="T:System.ServiceModel.SecurityMode" /> for this binding. The default is <see cref="F:System.ServiceModel.SecurityMode.Message" />.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <see cref="P:System.ServiceModel.WSHttpSecurity.Mode" /> set is not defined.</exception>
+    </member>
+    <member name="P:System.ServiceModel.WSHttpSecurity.Transport">
+      <summary>Gets an object that contains the transport-level security settings for this binding.</summary>
+      <returns>The <see cref="T:System.ServiceModel.HttpTransportSecurity" /> for this binding.
+The default value includes a <see cref="P:System.ServiceModel.HttpTransportSecurity.ClientCredentialType" /> of <see cref="F:System.ServiceModel.HttpClientCredentialType.None" /> and a <see cref="P:System.ServiceModel.HttpTransportSecurity.ProxyCredentialType" /> of <see cref="F:System.ServiceModel.HttpProxyCredentialType.None" />.</returns>
     </member>
   </members>
 </doc>

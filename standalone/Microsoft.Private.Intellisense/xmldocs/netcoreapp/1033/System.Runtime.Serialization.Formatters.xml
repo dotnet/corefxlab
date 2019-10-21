@@ -285,9 +285,9 @@
       <param name="serializationStream">The stream from which to deserialize the object graph.</param>
       <returns>The top (root) of the object graph.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="serializationStream" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.Runtime.Serialization.SerializationException">The <paramref name="serializationStream" /> supports seeking, but its length is 0.  
- -or-  
- The target type is a <see cref="T:System.Decimal" />, but the value is out of range of the <see cref="T:System.Decimal" /> type.</exception>
+      <exception cref="T:System.Runtime.Serialization.SerializationException">The <paramref name="serializationStream" /> supports seeking, but its length is 0.
+-or-
+The target type is a <see cref="T:System.Decimal" />, but the value is out of range of the <see cref="T:System.Decimal" /> type.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
     </member>
     <member name="P:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.FilterLevel">
@@ -298,9 +298,9 @@
       <summary>Serializes the object, or graph of objects with the specified top (root), to the given stream.</summary>
       <param name="serializationStream">The stream to which the graph is to be serialized.</param>
       <param name="graph">The object at the root of the graph to serialize.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="serializationStream" /> is <see langword="null" />.  
- -or-  
- The <paramref name="graph" /> is null.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="serializationStream" /> is <see langword="null" />.
+-or-
+The <paramref name="graph" /> is null.</exception>
       <exception cref="T:System.Runtime.Serialization.SerializationException">An error has occurred during serialization, such as if an object in the <paramref name="graph" /> parameter is not marked as serializable.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
     </member>
@@ -369,8 +369,8 @@
       <param name="obj">The object to write to the formatter.</param>
       <param name="members">The members to extract from the object.</param>
       <returns>An array of <see cref="T:System.Object" /> that contains data stored in <paramref name="members" /> and associated with <paramref name="obj" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="obj" /> or <paramref name="members" /> parameter is <see langword="null" />.  
- An element of <paramref name="members" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="obj" /> or <paramref name="members" /> parameter is <see langword="null" />.
+An element of <paramref name="members" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Runtime.Serialization.SerializationException">An element of <paramref name="members" /> does not represent a field.</exception>
     </member>
     <member name="M:System.Runtime.Serialization.FormatterServices.GetSafeUninitializedObject(System.Type)">
@@ -422,8 +422,8 @@
       <param name="members">An array of <see cref="T:System.Reflection.MemberInfo" /> that describes which fields and properties to populate.</param>
       <param name="data">An array of <see cref="T:System.Object" /> that specifies the values for each field and property to populate.</param>
       <returns>The newly populated object.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="obj" />, <paramref name="members" />, or <paramref name="data" /> parameter is <see langword="null" />.  
- An element of <paramref name="members" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="obj" />, <paramref name="members" />, or <paramref name="data" /> parameter is <see langword="null" />.
+An element of <paramref name="members" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The length of <paramref name="members" /> does not match the length of <paramref name="data" />.</exception>
       <exception cref="T:System.Runtime.Serialization.SerializationException">An element of <paramref name="members" /> is not an instance of <see cref="T:System.Reflection.FieldInfo" />.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>

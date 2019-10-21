@@ -53,10 +53,10 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="stream" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="mode" /> is not a valid <see cref="T:System.IO.Compression.CompressionMode" /> value.  
--or-  
-<see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Compress" /> and <see cref="P:System.IO.Stream.CanWrite" /> is <see langword="false" />.  
--or-  
+        <paramref name="mode" /> is not a valid <see cref="T:System.IO.Compression.CompressionMode" /> value.
+-or-
+<see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Compress" /> and <see cref="P:System.IO.Stream.CanWrite" /> is <see langword="false" />.
+-or-
 <see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Decompress" /> and <see cref="P:System.IO.Stream.CanRead" /> is <see langword="false" />.</exception>
     </member>
     <member name="M:System.IO.Compression.DeflateStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)">
@@ -68,10 +68,10 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="stream" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="mode" /> is not a valid <see cref="T:System.IO.Compression.CompressionMode" /> value.  
--or-  
-<see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Compress" /> and <see cref="P:System.IO.Stream.CanWrite" /> is <see langword="false" />.  
--or-  
+        <paramref name="mode" /> is not a valid <see cref="T:System.IO.Compression.CompressionMode" /> value.
+-or-
+<see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Compress" /> and <see cref="P:System.IO.Stream.CanWrite" /> is <see langword="false" />.
+-or-
 <see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Decompress" /> and <see cref="P:System.IO.Stream.CanRead" /> is <see langword="false" />.</exception>
     </member>
     <member name="P:System.IO.Compression.DeflateStream.BaseStream">
@@ -195,12 +195,12 @@ The end write call is invalid.</exception>
       <returns>The number of bytes that were read into the byte array.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.IO.Compression.CompressionMode" /> value was <see langword="Compress" /> when the object was created.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.IO.Compression.CompressionMode" /> value was <see langword="Compress" /> when the object was created.
 -or-
- The underlying stream does not support reading.</exception>
+The underlying stream does not support reading.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> or <paramref name="count" /> is less than zero.  
--or-  
+        <paramref name="offset" /> or <paramref name="count" /> is less than zero.
+-or-
 <paramref name="array" /> length minus the index starting point is less than <paramref name="count" />.</exception>
       <exception cref="T:System.IO.InvalidDataException">The data is in an invalid format.</exception>
       <exception cref="T:System.ObjectDisposedException">The stream is closed.</exception>
@@ -292,10 +292,10 @@ The end write call is invalid.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="stream" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="mode" /> is not a valid <see cref="T:System.IO.Compression.CompressionMode" /> enumeration value.  
--or-  
-<see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Compress" /> and <see cref="P:System.IO.Stream.CanWrite" /> is <see langword="false" />.  
--or-  
+        <paramref name="mode" /> is not a valid <see cref="T:System.IO.Compression.CompressionMode" /> enumeration value.
+-or-
+<see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Compress" /> and <see cref="P:System.IO.Stream.CanWrite" /> is <see langword="false" />.
+-or-
 <see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Decompress" /> and <see cref="P:System.IO.Stream.CanRead" /> is <see langword="false" />.</exception>
     </member>
     <member name="M:System.IO.Compression.GZipStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)">
@@ -307,10 +307,10 @@ The end write call is invalid.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="stream" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="mode" /> is not a valid <see cref="T:System.IO.Compression.CompressionMode" /> value.  
--or-  
-<see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Compress" /> and <see cref="P:System.IO.Stream.CanWrite" /> is <see langword="false" />.  
--or-  
+        <paramref name="mode" /> is not a valid <see cref="T:System.IO.Compression.CompressionMode" /> value.
+-or-
+<see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Compress" /> and <see cref="P:System.IO.Stream.CanWrite" /> is <see langword="false" />.
+-or-
 <see cref="T:System.IO.Compression.CompressionMode" /> is <see cref="F:System.IO.Compression.CompressionMode.Decompress" /> and <see cref="P:System.IO.Stream.CanRead" /> is <see langword="false" />.</exception>
     </member>
     <member name="P:System.IO.Compression.GZipStream.BaseStream">
@@ -340,9 +340,9 @@ The end write call is invalid.</exception>
       <param name="asyncCallback">An optional asynchronous callback to be called when the write operation is complete.</param>
       <param name="asyncState">A user-provided object that distinguishes this particular asynchronous write request from other requests.</param>
       <returns>An  object that represents the asynchronous write operation, which could still be pending.</returns>
-      <exception cref="T:System.InvalidOperationException">The underlying stream is <see langword="null" />.  
- -or-  
- The underlying stream is closed.</exception>
+      <exception cref="T:System.InvalidOperationException">The underlying stream is <see langword="null" />.
+-or-
+The underlying stream is closed.</exception>
     </member>
     <member name="P:System.IO.Compression.GZipStream.CanRead">
       <summary>Gets a value indicating whether the stream supports reading while decompressing a file.</summary>
@@ -393,9 +393,9 @@ The end write call is invalid.</exception>
     <member name="M:System.IO.Compression.GZipStream.EndWrite(System.IAsyncResult)">
       <summary>Handles the end of an asynchronous write operation. (Consider using the <see cref="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32)" /> method instead.)</summary>
       <param name="asyncResult">The object that represents the asynchronous call.</param>
-      <exception cref="T:System.InvalidOperationException">The underlying stream is <see langword="null" />.  
- -or-  
- The underlying stream is closed.</exception>
+      <exception cref="T:System.InvalidOperationException">The underlying stream is <see langword="null" />.
+-or-
+The underlying stream is closed.</exception>
     </member>
     <member name="M:System.IO.Compression.GZipStream.Flush">
       <summary>The current implementation of this method has no functionality.</summary>
@@ -424,12 +424,12 @@ The end write call is invalid.</exception>
       <returns>The number of bytes that were decompressed into the byte array. If the end of the stream has been reached, zero or the number of bytes read is returned.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.IO.Compression.CompressionMode" /> value was <see langword="Compress" /> when the object was created.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.IO.Compression.CompressionMode" /> value was <see langword="Compress" /> when the object was created.
 -or-
- The underlying stream does not support reading.</exception>
+The underlying stream does not support reading.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> or <paramref name="count" /> is less than zero.  
--or-  
+        <paramref name="offset" /> or <paramref name="count" /> is less than zero.
+-or-
 <paramref name="array" /> length minus the index starting point is less than <paramref name="count" />.</exception>
       <exception cref="T:System.IO.InvalidDataException">The data is in an invalid format.</exception>
       <exception cref="T:System.ObjectDisposedException">The stream is closed.</exception>
@@ -514,11 +514,11 @@ The end write call is invalid.</exception>
         <paramref name="stream" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="mode" /> is an invalid value.</exception>
-      <exception cref="T:System.IO.InvalidDataException">The contents of the stream could not be interpreted as a zip archive.  
- -or-  
- <paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is missing from the archive or is corrupt and cannot be read.  
- -or-  
- <paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is too large to fit into memory.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The contents of the stream could not be interpreted as a zip archive.
+-or-
+<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is missing from the archive or is corrupt and cannot be read.
+-or-
+<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is too large to fit into memory.</exception>
     </member>
     <member name="M:System.IO.Compression.ZipArchive.#ctor(System.IO.Stream,System.IO.Compression.ZipArchiveMode,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.Compression.ZipArchive" /> class on the specified stream for the specified mode, and optionally leaves the stream open.</summary>
@@ -531,11 +531,11 @@ The end write call is invalid.</exception>
         <paramref name="stream" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="mode" /> is an invalid value.</exception>
-      <exception cref="T:System.IO.InvalidDataException">The contents of the stream could not be interpreted as a zip archive.  
- -or-  
- <paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is missing from the archive or is corrupt and cannot be read.  
- -or-  
- <paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is too large to fit into memory.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The contents of the stream could not be interpreted as a zip archive.
+-or-
+<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is missing from the archive or is corrupt and cannot be read.
+-or-
+<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is too large to fit into memory.</exception>
     </member>
     <member name="M:System.IO.Compression.ZipArchive.#ctor(System.IO.Stream,System.IO.Compression.ZipArchiveMode,System.Boolean,System.Text.Encoding)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.Compression.ZipArchive" /> class on the specified stream for the specified mode, uses the specified encoding for entry names, and optionally leaves the stream open.</summary>
@@ -549,11 +549,11 @@ The end write call is invalid.</exception>
         <paramref name="stream" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="mode" /> is an invalid value.</exception>
-      <exception cref="T:System.IO.InvalidDataException">The contents of the stream could not be interpreted as a zip archive.  
- -or-  
- <paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is missing from the archive or is corrupt and cannot be read.  
- -or-  
- <paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is too large to fit into memory.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The contents of the stream could not be interpreted as a zip archive.
+-or-
+<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is missing from the archive or is corrupt and cannot be read.
+-or-
+<paramref name="mode" /> is <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and an entry is too large to fit into memory.</exception>
     </member>
     <member name="M:System.IO.Compression.ZipArchive.CreateEntry(System.String)">
       <summary>Creates an empty entry that has the specified path and entry name in the zip archive.</summary>
@@ -640,9 +640,9 @@ The end write call is invalid.</exception>
       <summary>Gets or sets the last time the entry in the zip archive was changed.</summary>
       <returns>The last time the entry in the zip archive was changed.</returns>
       <exception cref="T:System.NotSupportedException">The attempt to set this property failed, because the zip archive for the entry is in <see cref="F:System.IO.Compression.ZipArchiveMode.Read" /> mode.</exception>
-      <exception cref="T:System.IO.IOException">The archive mode is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />.  
+      <exception cref="T:System.IO.IOException">The archive mode is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Create" />.
 -or-
- The archive mode is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and the entry has been opened.</exception>
+The archive mode is set to <see cref="F:System.IO.Compression.ZipArchiveMode.Update" /> and the entry has been opened.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">An attempt was made to set this property to a value that is either earlier than 1980 January 1 0:00:00 (midnight) or later than 2107 December 31 23:59:58 (one second before midnight).</exception>
     </member>
     <member name="P:System.IO.Compression.ZipArchiveEntry.Length">
@@ -657,14 +657,14 @@ The end write call is invalid.</exception>
     <member name="M:System.IO.Compression.ZipArchiveEntry.Open">
       <summary>Opens the entry from the zip archive.</summary>
       <returns>The stream that represents the contents of the entry.</returns>
-      <exception cref="T:System.IO.IOException">The entry is already currently open for writing.  
- -or-  
- The entry has been deleted from the archive.  
- -or-  
- The archive for this entry was opened with the <see cref="F:System.IO.Compression.ZipArchiveMode.Create" /> mode, and this entry has already been written to.</exception>
-      <exception cref="T:System.IO.InvalidDataException">The entry is either missing from the archive or is corrupt and cannot be read.  
- -or-  
- The entry has been compressed by using a compression method that is not supported.</exception>
+      <exception cref="T:System.IO.IOException">The entry is already currently open for writing.
+-or-
+The entry has been deleted from the archive.
+-or-
+The archive for this entry was opened with the <see cref="F:System.IO.Compression.ZipArchiveMode.Create" /> mode, and this entry has already been written to.</exception>
+      <exception cref="T:System.IO.InvalidDataException">The entry is either missing from the archive or is corrupt and cannot be read.
+-or-
+The entry has been compressed by using a compression method that is not supported.</exception>
       <exception cref="T:System.ObjectDisposedException">The zip archive for this entry has been disposed.</exception>
     </member>
     <member name="M:System.IO.Compression.ZipArchiveEntry.ToString">

@@ -830,9 +830,9 @@
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)">
-      <summary>Providers should implement this method to provide a non-default implementation for <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" /> overloads.  
- The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteReader" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token. Exceptions thrown by ExecuteReader will be communicated via the returned Task Exception property.  
- This method accepts a cancellation token that can be used to request the operation to be cancelled early. Implementations may ignore this request.</summary>
+      <summary>Providers should implement this method to provide a non-default implementation for <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" /> overloads.
+The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteReader" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token. Exceptions thrown by ExecuteReader will be communicated via the returned Task Exception property.
+This method accepts a cancellation token that can be used to request the operation to be cancelled early. Implementations may ignore this request.</summary>
       <param name="behavior">Options for statement execution and data retrieval.</param>
       <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
@@ -844,15 +844,15 @@
       <returns>The number of rows affected.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteNonQueryAsync">
-      <summary>An asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" />, which executes a SQL statement against a connection object.  
- Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteNonQueryAsync(System.Threading.CancellationToken)" /> with CancellationToken.None.</summary>
+      <summary>An asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" />, which executes a SQL statement against a connection object.
+Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteNonQueryAsync(System.Threading.CancellationToken)" /> with CancellationToken.None.</summary>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteNonQueryAsync(System.Threading.CancellationToken)">
-      <summary>This is the asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" />. Providers should override with an appropriate implementation. The cancellation token may optionally be ignored.  
- The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token.  Exceptions thrown by <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" /> will be communicated via the returned Task Exception property.  
- Do not invoke other methods and properties of the <see langword="DbCommand" /> object until the returned Task is complete.</summary>
+      <summary>This is the asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" />. Providers should override with an appropriate implementation. The cancellation token may optionally be ignored.
+The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token.  Exceptions thrown by <see cref="M:System.Data.Common.DbCommand.ExecuteNonQuery" /> will be communicated via the returned Task Exception property.
+Do not invoke other methods and properties of the <see langword="DbCommand" /> object until the returned Task is complete.</summary>
       <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
@@ -867,15 +867,15 @@
       <returns>An <see cref="T:System.Data.Common.DbDataReader" /> object.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteReaderAsync">
-      <summary>An asynchronous version of <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" />, which executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" /> and returns a <see cref="T:System.Data.Common.DbDataReader" />.  
- Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" /> with CancellationToken.None.</summary>
+      <summary>An asynchronous version of <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" />, which executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" /> and returns a <see cref="T:System.Data.Common.DbDataReader" />.
+Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" /> with CancellationToken.None.</summary>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteReaderAsync(System.Data.CommandBehavior)">
-      <summary>An asynchronous version of <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" />, which executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" /> and returns a <see cref="T:System.Data.Common.DbDataReader" />.  
- Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" />.</summary>
+      <summary>An asynchronous version of <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" />, which executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" /> and returns a <see cref="T:System.Data.Common.DbDataReader" />.
+Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" />.</summary>
       <param name="behavior">One of the enumeration values that specified the command behavior.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
@@ -890,8 +890,8 @@
       <exception cref="T:System.ArgumentException">An invalid <see cref="T:System.Data.CommandBehavior" /> value.</exception>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteReaderAsync(System.Threading.CancellationToken)">
-      <summary>An asynchronous version of <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" />, which executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" /> and returns a <see cref="T:System.Data.Common.DbDataReader" />. This method propagates a notification that operations should be canceled.  
- Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" />.</summary>
+      <summary>An asynchronous version of <see cref="Overload:System.Data.Common.DbCommand.ExecuteReader" />, which executes the <see cref="P:System.Data.Common.DbCommand.CommandText" /> against the <see cref="P:System.Data.Common.DbCommand.Connection" /> and returns a <see cref="T:System.Data.Common.DbDataReader" />. This method propagates a notification that operations should be canceled.
+Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteDbDataReaderAsync(System.Data.CommandBehavior,System.Threading.CancellationToken)" />.</summary>
       <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
@@ -902,15 +902,15 @@
       <returns>The first column of the first row in the result set.</returns>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteScalarAsync">
-      <summary>An asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteScalar" />, which executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.  
- Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteScalarAsync(System.Threading.CancellationToken)" /> with CancellationToken.None.</summary>
+      <summary>An asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteScalar" />, which executes the query and returns the first column of the first row in the result set returned by the query. All other columns and rows are ignored.
+Invokes <see cref="M:System.Data.Common.DbCommand.ExecuteScalarAsync(System.Threading.CancellationToken)" /> with CancellationToken.None.</summary>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
     </member>
     <member name="M:System.Data.Common.DbCommand.ExecuteScalarAsync(System.Threading.CancellationToken)">
-      <summary>This is the asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteScalar" />. Providers should override with an appropriate implementation. The cancellation token may optionally be ignored.  
- The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteScalar" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token. Exceptions thrown by ExecuteScalar will be communicated via the returned Task Exception property.  
- Do not invoke other methods and properties of the <see langword="DbCommand" /> object until the returned Task is complete.</summary>
+      <summary>This is the asynchronous version of <see cref="M:System.Data.Common.DbCommand.ExecuteScalar" />. Providers should override with an appropriate implementation. The cancellation token may optionally be ignored.
+The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbCommand.ExecuteScalar" /> method and returns a completed task, blocking the calling thread. The default implementation will return a cancelled task if passed an already cancelled cancellation token. Exceptions thrown by ExecuteScalar will be communicated via the returned Task Exception property.
+Do not invoke other methods and properties of the <see langword="DbCommand" /> object until the returned Task is complete.</summary>
       <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A task representing the asynchronous operation.</returns>
       <exception cref="T:System.Data.Common.DbException">An error occurred while executing the command text.</exception>
@@ -1207,9 +1207,9 @@
       <returns>A task representing the asynchronous operation.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.OpenAsync(System.Threading.CancellationToken)">
-      <summary>This is the asynchronous version of <see cref="M:System.Data.Common.DbConnection.Open" />. Providers should override with an appropriate implementation. The cancellation token can optionally be honored.  
- The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbConnection.Open" /> call and returns a completed task. The default implementation will return a cancelled task if passed an already cancelled cancellationToken. Exceptions thrown by Open will be communicated via the returned Task Exception property.  
- Do not invoke other methods and properties of the <see langword="DbConnection" /> object until the returned Task is complete.</summary>
+      <summary>This is the asynchronous version of <see cref="M:System.Data.Common.DbConnection.Open" />. Providers should override with an appropriate implementation. The cancellation token can optionally be honored.
+The default implementation invokes the synchronous <see cref="M:System.Data.Common.DbConnection.Open" /> call and returns a completed task. The default implementation will return a cancelled task if passed an already cancelled cancellationToken. Exceptions thrown by Open will be communicated via the returned Task Exception property.
+Do not invoke other methods and properties of the <see langword="DbConnection" /> object until the returned Task is complete.</summary>
       <param name="cancellationToken">The cancellation instruction.</param>
       <returns>A task representing the asynchronous operation.</returns>
     </member>
@@ -1256,9 +1256,9 @@
       <param name="value">The value for the specified key.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="keyword" /> is a null reference (<see langword="Nothing" /> in Visual Basic).</exception>
-      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> is read-only.  
- -or-  
- The <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> is read-only.
+-or-
+The <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> has a fixed size.</exception>
     </member>
     <member name="M:System.Data.Common.DbConnectionStringBuilder.AppendKeyValuePair(System.Text.StringBuilder,System.String,System.String)">
       <summary>Provides an efficient and safe way to append a key and value to an existing <see cref="T:System.Text.StringBuilder" /> object.</summary>
@@ -1326,13 +1326,13 @@
     <member name="P:System.Data.Common.DbConnectionStringBuilder.Item(System.String)">
       <summary>Gets or sets the value associated with the specified key.</summary>
       <param name="keyword">The key of the item to get or set.</param>
-      <returns>The value associated with the specified key. If the specified key is not found, trying to get it returns a null reference (<see langword="Nothing" /> in Visual Basic), and trying to set it creates a new element using the specified key.  
- Passing a null (<see langword="Nothing" /> in Visual Basic) key throws an <see cref="T:System.ArgumentNullException" />. Assigning a null value removes the key/value pair.</returns>
+      <returns>The value associated with the specified key. If the specified key is not found, trying to get it returns a null reference (<see langword="Nothing" /> in Visual Basic), and trying to set it creates a new element using the specified key.
+Passing a null (<see langword="Nothing" /> in Visual Basic) key throws an <see cref="T:System.ArgumentNullException" />. Assigning a null value removes the key/value pair.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="keyword" /> is a null reference (<see langword="Nothing" /> in Visual Basic).</exception>
-      <exception cref="T:System.NotSupportedException">The property is set, and the <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> is read-only.  
- -or-  
- The property is set, <paramref name="keyword" /> does not exist in the collection, and the <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The property is set, and the <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> is read-only.
+-or-
+The property is set, <paramref name="keyword" /> does not exist in the collection, and the <see cref="T:System.Data.Common.DbConnectionStringBuilder" /> has a fixed size.</exception>
     </member>
     <member name="P:System.Data.Common.DbConnectionStringBuilder.Keys">
       <summary>Gets an <see cref="T:System.Collections.ICollection" /> that contains the keys in the <see cref="T:System.Data.Common.DbConnectionStringBuilder" />.</summary>
@@ -1529,13 +1529,13 @@
       <param name="srcTable">The name of the source table to use for table mapping.</param>
       <returns>The number of rows successfully added to or refreshed in the <see cref="T:System.Data.DataSet" />. This does not include rows affected by statements that do not return rows.</returns>
       <exception cref="T:System.SystemException">The <see cref="T:System.Data.DataSet" /> is invalid.</exception>
-      <exception cref="T:System.InvalidOperationException">The source table is invalid.  
- -or-  
- The connection is invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The source table is invalid.
+-or-
+The connection is invalid.</exception>
       <exception cref="T:System.InvalidCastException">The connection could not be found.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="startRecord" /> parameter is less than 0.  
- -or-  
- The <paramref name="maxRecords" /> parameter is less than 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="startRecord" /> parameter is less than 0.
+-or-
+The <paramref name="maxRecords" /> parameter is less than 0.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataAdapter.Fill(System.Data.DataSet,System.Int32,System.Int32,System.String,System.Data.IDbCommand,System.Data.CommandBehavior)">
       <summary>Adds or refreshes rows in a specified range in the <see cref="T:System.Data.DataSet" /> to match those in the data source using the <see cref="T:System.Data.DataSet" /> and source table names, command string, and command behavior.</summary>
@@ -1547,9 +1547,9 @@
       <param name="behavior">One of the <see cref="T:System.Data.CommandBehavior" /> values.</param>
       <returns>The number of rows successfully added to or refreshed in the <see cref="T:System.Data.DataSet" />. This does not include rows affected by statements that do not return rows.</returns>
       <exception cref="T:System.InvalidOperationException">The source table is invalid.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="startRecord" /> parameter is less than 0.  
- -or-  
- The <paramref name="maxRecords" /> parameter is less than 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="startRecord" /> parameter is less than 0.
+-or-
+The <paramref name="maxRecords" /> parameter is less than 0.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataAdapter.Fill(System.Data.DataSet,System.String)">
       <summary>Adds or refreshes rows in the <see cref="T:System.Data.DataSet" /> to match those in the data source using the <see cref="T:System.Data.DataSet" /> and <see cref="T:System.Data.DataTable" /> names.</summary>
@@ -1580,13 +1580,13 @@
       <param name="behavior">One of the <see cref="T:System.Data.CommandBehavior" /> values.</param>
       <returns>The number of rows added to or refreshed in the data tables.</returns>
       <exception cref="T:System.SystemException">The <see cref="T:System.Data.DataSet" /> is invalid.</exception>
-      <exception cref="T:System.InvalidOperationException">The source table is invalid.  
- -or-  
- The connection is invalid.</exception>
+      <exception cref="T:System.InvalidOperationException">The source table is invalid.
+-or-
+The connection is invalid.</exception>
       <exception cref="T:System.InvalidCastException">The connection could not be found.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="startRecord" /> parameter is less than 0.  
- -or-  
- The <paramref name="maxRecords" /> parameter is less than 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="startRecord" /> parameter is less than 0.
+-or-
+The <paramref name="maxRecords" /> parameter is less than 0.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataAdapter.Fill(System.Int32,System.Int32,System.Data.DataTable[])">
       <summary>Adds or refreshes rows in a <see cref="T:System.Data.DataTable" /> to match those in the data source starting at the specified record and retrieving up to the specified maximum number of records.</summary>
@@ -1704,11 +1704,11 @@
       <returns>The number of rows successfully updated from the <see cref="T:System.Data.DataSet" />.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="T:System.Data.DataSet" /> is invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The source table is invalid.</exception>
-      <exception cref="T:System.SystemException">No <see cref="T:System.Data.DataRow" /> exists to update.  
- -or-  
- No <see cref="T:System.Data.DataTable" /> exists to update.  
- -or-  
- No <see cref="T:System.Data.DataSet" /> exists to use as a source.</exception>
+      <exception cref="T:System.SystemException">No <see cref="T:System.Data.DataRow" /> exists to update.
+-or-
+No <see cref="T:System.Data.DataTable" /> exists to update.
+-or-
+No <see cref="T:System.Data.DataSet" /> exists to use as a source.</exception>
       <exception cref="T:System.Data.DBConcurrencyException">An attempt to execute an INSERT, UPDATE, or DELETE statement resulted in zero records affected.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataRow[],System.Data.Common.DataTableMapping)">
@@ -1718,11 +1718,11 @@
       <returns>The number of rows successfully updated from the <see cref="T:System.Data.DataSet" />.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="T:System.Data.DataSet" /> is invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The source table is invalid.</exception>
-      <exception cref="T:System.SystemException">No <see cref="T:System.Data.DataRow" /> exists to update.  
- -or-  
- No <see cref="T:System.Data.DataTable" /> exists to update.  
- -or-  
- No <see cref="T:System.Data.DataSet" /> exists to use as a source.</exception>
+      <exception cref="T:System.SystemException">No <see cref="T:System.Data.DataRow" /> exists to update.
+-or-
+No <see cref="T:System.Data.DataTable" /> exists to update.
+-or-
+No <see cref="T:System.Data.DataSet" /> exists to use as a source.</exception>
       <exception cref="T:System.Data.DBConcurrencyException">An attempt to execute an INSERT, UPDATE, or DELETE statement resulted in zero records affected.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataAdapter.Update(System.Data.DataSet)">
@@ -1747,35 +1747,34 @@
       <returns>The number of rows successfully updated from the <see cref="T:System.Data.DataTable" />.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="T:System.Data.DataSet" /> is invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The source table is invalid.</exception>
-      <exception cref="T:System.SystemException">No <see cref="T:System.Data.DataRow" /> exists to update.  
- -or-  
- No <see cref="T:System.Data.DataTable" /> exists to update.  
- -or-  
- No <see cref="T:System.Data.DataSet" /> exists to use as a source.</exception>
+      <exception cref="T:System.SystemException">No <see cref="T:System.Data.DataRow" /> exists to update.
+-or-
+No <see cref="T:System.Data.DataTable" /> exists to update.
+-or-
+No <see cref="T:System.Data.DataSet" /> exists to use as a source.</exception>
       <exception cref="T:System.Data.DBConcurrencyException">An attempt to execute an INSERT, UPDATE, or DELETE statement resulted in zero records affected.</exception>
     </member>
     <member name="P:System.Data.Common.DbDataAdapter.UpdateBatchSize">
       <summary>Gets or sets a value that enables or disables batch processing support, and specifies the number of commands that can be executed in a batch.</summary>
-      <returns>The number of rows to process per batch.  
+      <returns>The number of rows to process per batch.
   Value is  
-
+  
   Effect  
-
+  
   0  
-
+  
   There is no limit on the batch size.  
-
+  
   1  
-
+  
   Disables batch updating.  
-
+  
   &gt; 1  
-
+  
   Changes are sent using batches of <see cref="P:System.Data.Common.DbDataAdapter.UpdateBatchSize" /> operations at a time.  
-
+  
    
-
- When setting this to a value other than 1, all the commands associated with the <see cref="T:System.Data.Common.DbDataAdapter" /> must have their <see cref="P:System.Data.IDbCommand.UpdatedRowSource" /> property set to None or OutputParameters. An exception will be thrown otherwise.</returns>
+When setting this to a value other than 1, all the commands associated with the <see cref="T:System.Data.Common.DbDataAdapter" /> must have their <see cref="P:System.Data.IDbCommand.UpdatedRowSource" /> property set to None or OutputParameters. An exception will be thrown otherwise.</returns>
     </member>
     <member name="P:System.Data.Common.DbDataAdapter.UpdateCommand">
       <summary>Gets or sets a command used to update records in the data source.</summary>
@@ -1909,15 +1908,15 @@
       <param name="ordinal">The zero-based column ordinal.</param>
       <typeparam name="T">The type of the value to be returned.</typeparam>
       <returns>The value of the specified column.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.
 -or-
- The data reader was closed during data retrieval.  
+The data reader was closed during data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).
 -or-
- The reader tried to read a previously-read column in sequential mode.  
+The reader tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The value returned by the database doesn't match or cannot be cast to <typeparamref name="T" />.</exception>
     </member>
@@ -1926,15 +1925,15 @@
       <param name="ordinal">The zero-based column ordinal.</param>
       <typeparam name="T">The type of the value to be returned.</typeparam>
       <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> contains the value of the specified column.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.
 -or-
- The data reader was closed during the data retrieval.  
+The data reader was closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).
 -or-
- Tried to read a previously-read column in sequential mode.  
+Tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get_*_ methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get_*_ methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The value returned by the database doesn't match or cannot be cast to <typeparamref name="T" />.</exception>
     </member>
@@ -1944,15 +1943,15 @@
       <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <typeparam name="T">The type of the value to be returned.</typeparam>
       <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> contains the value of the specified column.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.
 -or-
- The data reader was closed during the data retrieval.  
+The data reader was closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).
 -or-
- Tried to read a previously-read column in sequential mode.  
+Tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get_*_ methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get_*_ methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The value returned by the database doesn't match or cannot be cast to <typeparamref name="T" />.</exception>
     </member>
@@ -2029,15 +2028,15 @@
       <summary>Gets a stream to retrieve data from the specified column.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>A stream.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.
 -or-
- The data reader is closed during the data retrieval.  
+The data reader is closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).
 -or-
- The data reader tried to read a previously-read column in sequential mode.  
+The data reader tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified column isn't a binary type that supports reading with a <see cref="T:System.IO.Stream" />.</exception>
     </member>
@@ -2052,15 +2051,15 @@
       <summary>Gets a text reader to retrieve data from the column.</summary>
       <param name="ordinal">The zero-based column ordinal.</param>
       <returns>A text reader.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.
 -or-
- The data reader is closed during the data retrieval.  
+The data reader is closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).
 -or-
- The data reader tried to read a previously-read column in sequential mode.  
+The data reader tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
       <exception cref="T:System.InvalidCastException">The specified column isn't a text type that supports reading with a <see cref="T:System.IO.TextReader" />.</exception>
     </member>
@@ -2097,15 +2096,15 @@
       <summary>Asynchronously gets a value that indicates whether the column contains non-existent or missing values.</summary>
       <param name="ordinal">The zero-based column to be retrieved.</param>
       <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is <see langword="true" /> if the specified column value is equivalent to <see langword="DBNull" /> or <see langword="false" /> if it is not.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.
 -or-
- The data reader is closed during the data retrieval.  
+The data reader is closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).
 -or-
- Trying to read a previously read column in sequential mode.  
+Trying to read a previously read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
     </member>
     <member name="M:System.Data.Common.DbDataReader.IsDBNullAsync(System.Int32,System.Threading.CancellationToken)">
@@ -2113,15 +2112,15 @@
       <param name="ordinal">The zero-based column to be retrieved.</param>
       <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
       <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is <see langword="true" /> if the specified column value is equivalent to <see langword="DBNull" /> or <see langword="false" /> if it is not.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.
 -or-
- The data reader is closed during the data retrieval.  
+The data reader is closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).
 -or-
- Trying to read a previously read column in sequential mode.  
+Trying to read a previously read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The column index is out of range.</exception>
     </member>
     <member name="P:System.Data.Common.DbDataReader.Item(System.Int32)">
@@ -2835,35 +2834,35 @@
     </member>
     <member name="M:System.Data.Common.DbProviderFactories.GetFactoryClasses">
       <summary>Returns a <see cref="T:System.Data.DataTable" /> that contains information about all installed providers that implement <see cref="T:System.Data.Common.DbProviderFactory" />.</summary>
-      <returns>A <see cref="T:System.Data.DataTable" /> containing <see cref="T:System.Data.DataRow" /> objects that contain the following data:  
+      <returns>A <see cref="T:System.Data.DataTable" /> containing <see cref="T:System.Data.DataRow" /> objects that contain the following data:
   Column ordinal  
-
+  
   Column name  
-
+  
   Description  
-
+  
   0  
-
+  
   **Name**  
-
+  
   Human-readable name for the data provider.  
-
+  
   1  
-
+  
   **Description**  
-
+  
   Human-readable description of the data provider.  
-
+  
   2  
-
+  
   **InvariantName**  
-
+  
   Name that can be used programmatically to refer to the data provider.  
-
+  
   3  
-
+  
   **AssemblyQualifiedName**  
-
+  
   Fully qualified name of the factory class, which contains enough information to instantiate the object.</returns>
     </member>
     <member name="M:System.Data.Common.DbProviderFactories.GetProviderInvariantNames" />
@@ -3321,9 +3320,9 @@
       <param name="column">The <see cref="T:System.Data.DataColumn" /> to which the constraint applies.</param>
       <param name="primaryKey">Specifies whether the column should be the primary key. If <see langword="true" />, the column will be a primary key column.</param>
       <returns>A new <see langword="UniqueConstraint" />.</returns>
-      <exception cref="T:System.ArgumentException">The constraint already belongs to this collection.  
- -Or-  
- The constraint belongs to another collection.</exception>
+      <exception cref="T:System.ArgumentException">The constraint already belongs to this collection.
+-Or-
+The constraint belongs to another collection.</exception>
       <exception cref="T:System.Data.DuplicateNameException">The collection already has a constraint with the specified name. (The comparison is not case-sensitive.)</exception>
     </member>
     <member name="M:System.Data.ConstraintCollection.Add(System.String,System.Data.DataColumn,System.Data.DataColumn)">
@@ -3339,9 +3338,9 @@
       <param name="columns">An array of <see cref="T:System.Data.DataColumn" /> objects to which the constraint applies.</param>
       <param name="primaryKey">Specifies whether the column should be the primary key. If <see langword="true" />, the column will be a primary key column.</param>
       <returns>A new <see langword="UniqueConstraint" />.</returns>
-      <exception cref="T:System.ArgumentException">The constraint already belongs to this collection.  
- -Or-  
- The constraint belongs to another collection.</exception>
+      <exception cref="T:System.ArgumentException">The constraint already belongs to this collection.
+-Or-
+The constraint belongs to another collection.</exception>
       <exception cref="T:System.Data.DuplicateNameException">The collection already has a constraint with the specified name. (The comparison is not case-sensitive.)</exception>
     </member>
     <member name="M:System.Data.ConstraintCollection.Add(System.String,System.Data.DataColumn[],System.Data.DataColumn[])">
@@ -3525,9 +3524,9 @@
       <exception cref="T:System.ArgumentException">The <see cref="P:System.Data.DataColumn.AutoIncrement" /> or <see cref="P:System.Data.DataColumn.Unique" /> property is set to <see langword="true" />.</exception>
       <exception cref="T:System.FormatException">When you are using the CONVERT function, the expression evaluates to a string, but the string does not contain a representation that can be converted to the type parameter.</exception>
       <exception cref="T:System.InvalidCastException">When you are using the CONVERT function, the requested cast is not possible. See the Conversion function in the following section for detailed information about possible casts.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">When you use the SUBSTRING function, the start argument is out of range.  
- -Or-  
- When you use the SUBSTRING function, the length argument is out of range.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">When you use the SUBSTRING function, the start argument is out of range.
+-Or-
+When you use the SUBSTRING function, the length argument is out of range.</exception>
       <exception cref="T:System.Exception">When you use the LEN function or the TRIM function, the expression does not evaluate to a string. This includes expressions that evaluate to <see cref="T:System.Char" />.</exception>
     </member>
     <member name="P:System.Data.DataColumn.ExtendedProperties">
@@ -3655,13 +3654,13 @@
       <summary>Checks whether a specific column can be removed from the collection.</summary>
       <param name="column">A <see cref="T:System.Data.DataColumn" /> in the collection.</param>
       <returns>
-        <see langword="true" /> if the column can be removed. <see langword="false" /> if,  
+        <see langword="true" /> if the column can be removed. <see langword="false" /> if,
 
-The <paramref name="column" /> parameter is <see langword="null" />.  
+The <paramref name="column" /> parameter is <see langword="null" />.
 
-The column does not belong to this collection.  
+The column does not belong to this collection.
 
-The column is part of a relationship.  
+The column is part of a relationship.
 
 Another column's expression depends on this column.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="column" /> parameter is null.</exception>
@@ -3713,11 +3712,11 @@ Another column's expression depends on this column.</exception>
       <summary>Removes the specified <see cref="T:System.Data.DataColumn" /> object from the collection.</summary>
       <param name="column">The <see cref="T:System.Data.DataColumn" /> to remove.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="column" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The column does not belong to this collection.  
- -Or-  
- The column is part of a relationship.  
- -Or-  
- Another column's expression depends on this column.</exception>
+      <exception cref="T:System.ArgumentException">The column does not belong to this collection.
+-Or-
+The column is part of a relationship.
+-Or-
+Another column's expression depends on this column.</exception>
     </member>
     <member name="M:System.Data.DataColumnCollection.Remove(System.String)">
       <summary>Removes the <see cref="T:System.Data.DataColumn" /> object that has the specified name from the collection.</summary>
@@ -3851,15 +3850,15 @@ Another column's expression depends on this column.</exception>
       <param name="name">The name of the column.</param>
       <typeparam name="T">The type of the value to be returned.</typeparam>
       <returns>The value of the specified column.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.
 -or-
- The data reader was closed during data retrieval.  
+The data reader was closed during data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).
 -or-
- The reader tried to read a previously-read column in sequential mode.  
+The reader tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The name specified is not a valid column name.</exception>
       <exception cref="T:System.InvalidCastException">The value returned by the database doesn't match or cannot be cast to <typeparamref name="T" />.</exception>
     </member>
@@ -3870,15 +3869,15 @@ Another column's expression depends on this column.</exception>
       <param name="cancellationToken">An optional token to cancel the asynchronous operation.</param>
       <typeparam name="T">The type of the value to be returned.</typeparam>
       <returns>A task whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> contains the value of the specified column.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during data retrieval.
 -or-
- The data reader was closed during the data retrieval.  
+The data reader was closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or it returned <see langword="false" />).
 -or-
- Tried to read a previously-read column in sequential mode.  
+Tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get_*_ methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get_*_ methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The name specified is not a valid column name.</exception>
       <exception cref="T:System.InvalidCastException">The value returned by the database doesn't match or cannot be cast to <typeparamref name="T" />.</exception>
     </member>
@@ -3942,15 +3941,15 @@ Another column's expression depends on this column.</exception>
       <param name="reader">The data reader to get the column value from.</param>
       <param name="name">The name of the column.</param>
       <returns>A stream.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.
 -or-
- The data reader is closed during the data retrieval.  
+The data reader is closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).
 -or-
- The data reader tried to read a previously-read column in sequential mode.  
+The data reader tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The name specified is not a valid column name.</exception>
       <exception cref="T:System.InvalidCastException">The specified column isn't a binary type that supports reading with a <see cref="T:System.IO.Stream" />.</exception>
     </member>
@@ -3967,15 +3966,15 @@ Another column's expression depends on this column.</exception>
       <param name="reader">The data reader to get the column value from.</param>
       <param name="name">The name of the column.</param>
       <returns>A text reader.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.
 -or-
- The data reader is closed during the data retrieval.  
+The data reader is closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).
 -or-
- The data reader tried to read a previously-read column in sequential mode.  
+The data reader tried to read a previously-read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The name specified is not a valid column name.</exception>
       <exception cref="T:System.InvalidCastException">The specified column isn't a text type that supports reading with a <see cref="T:System.IO.TextReader" />.</exception>
     </member>
@@ -4000,15 +3999,15 @@ Another column's expression depends on this column.</exception>
       <param name="name">The name of the column.</param>
       <param name="cancellationToken">An optional token to cancel the asynchronous operation.</param>
       <returns>A <see cref="T:System.Threading.Tasks.Task`1" /> whose <see cref="P:System.Threading.Tasks.Task`1.Result" /> property is <see langword="true" /> if the specified column value is equivalent to <see langword="DBNull" /> or <see langword="false" /> if it is not.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.  
+      <exception cref="T:System.InvalidOperationException">The connection was dropped or closed during the data retrieval.
 -or-
- The data reader is closed during the data retrieval.  
+The data reader is closed during the data retrieval.
 -or-
- There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).  
+There is no data ready to be read (for example, the first <see cref="M:System.Data.Common.DbDataReader.Read" /> hasn't been called, or returned false).
 -or-
- Trying to read a previously read column in sequential mode.  
+Trying to read a previously read column in sequential mode.
 -or-
- There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
+There was an asynchronous operation in progress. This applies to all Get* methods when running in sequential mode, as they could be called while reading a stream.</exception>
       <exception cref="T:System.IndexOutOfRangeException">The name specified is not a valid column name.</exception>
     </member>
     <member name="T:System.Data.DataRelation">
@@ -4020,9 +4019,9 @@ Another column's expression depends on this column.</exception>
       <param name="parentColumn">The parent <see cref="T:System.Data.DataColumn" /> in the relationship.</param>
       <param name="childColumn">The child <see cref="T:System.Data.DataColumn" /> in the relationship.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the <see cref="T:System.Data.DataColumn" /> objects contains <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types  
- -Or-  
- The tables do not belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types
+-Or-
+The tables do not belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.DataRelation.#ctor(System.String,System.Data.DataColumn,System.Data.DataColumn,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.Data.DataRelation" /> class using the specified name, parent and child <see cref="T:System.Data.DataColumn" /> objects, and a value that indicates whether to create constraints.</summary>
@@ -4031,9 +4030,9 @@ Another column's expression depends on this column.</exception>
       <param name="childColumn">The child <see cref="T:System.Data.DataColumn" /> in the relation.</param>
       <param name="createConstraints">A value that indicates whether constraints are created. <see langword="true" />, if constraints are created. Otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the <see cref="T:System.Data.DataColumn" /> objects contains <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types  
- -Or-  
- The tables do not belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types
+-Or-
+The tables do not belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.DataRelation.#ctor(System.String,System.Data.DataColumn[],System.Data.DataColumn[])">
       <summary>Initializes a new instance of the <see cref="T:System.Data.DataRelation" /> class using the specified <see cref="T:System.Data.DataRelation" /> name and matched arrays of parent and child <see cref="T:System.Data.DataColumn" /> objects.</summary>
@@ -4041,11 +4040,11 @@ Another column's expression depends on this column.</exception>
       <param name="parentColumns">An array of parent <see cref="T:System.Data.DataColumn" /> objects.</param>
       <param name="childColumns">An array of child <see cref="T:System.Data.DataColumn" /> objects.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the <see cref="T:System.Data.DataColumn" /> objects contains <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The <see cref="T:System.Data.DataColumn" /> objects have different data types  
- -Or-  
- One or both of the arrays are not composed of distinct columns from the same table.  
- -Or-  
- The tables do not belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The <see cref="T:System.Data.DataColumn" /> objects have different data types
+-Or-
+One or both of the arrays are not composed of distinct columns from the same table.
+-Or-
+The tables do not belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.DataRelation.#ctor(System.String,System.Data.DataColumn[],System.Data.DataColumn[],System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.Data.DataRelation" /> class using the specified name, matched arrays of parent and child <see cref="T:System.Data.DataColumn" /> objects, and value that indicates whether to create constraints.</summary>
@@ -4054,9 +4053,9 @@ Another column's expression depends on this column.</exception>
       <param name="childColumns">An array of child <see cref="T:System.Data.DataColumn" /> objects.</param>
       <param name="createConstraints">A value that indicates whether to create constraints. <see langword="true" />, if constraints are created. Otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the <see cref="T:System.Data.DataColumn" /> objects is <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types  
- -Or-  
- The tables do not belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types
+-Or-
+The tables do not belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.DataRelation.#ctor(System.String,System.String,System.String,System.String,System.String,System.String[],System.String[],System.Boolean)">
       <summary>This constructor is provided for design time support in the Visual Studio environment.</summary>
@@ -4080,11 +4079,11 @@ Another column's expression depends on this column.</exception>
     </member>
     <member name="M:System.Data.DataRelation.CheckStateForProperty">
       <summary>This method supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
-      <exception cref="T:System.Data.DataException">The parent and child tables belong to different <see cref="T:System.Data.DataSet" /> objects.  
- -Or-  
- One or more pairs of parent and child <see cref="T:System.Data.DataColumn" /> objects have mismatched data types.  
- -Or-  
- The parent and child <see cref="T:System.Data.DataColumn" /> objects are identical.</exception>
+      <exception cref="T:System.Data.DataException">The parent and child tables belong to different <see cref="T:System.Data.DataSet" /> objects.
+-Or-
+One or more pairs of parent and child <see cref="T:System.Data.DataColumn" /> objects have mismatched data types.
+-Or-
+The parent and child <see cref="T:System.Data.DataColumn" /> objects are identical.</exception>
     </member>
     <member name="P:System.Data.DataRelation.ChildColumns">
       <summary>Gets the child <see cref="T:System.Data.DataColumn" /> objects of this relation.</summary>
@@ -4395,9 +4394,9 @@ Another column's expression depends on this column.</exception>
       <summary>Gets the parent row of a <see cref="T:System.Data.DataRow" /> using the specified <see cref="T:System.Data.DataRelation" />.</summary>
       <param name="relation">The <see cref="T:System.Data.DataRelation" /> to use.</param>
       <returns>The parent <see cref="T:System.Data.DataRow" /> of the current row.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="relation" /> does not belong to the <see cref="T:System.Data.DataTable" />.  
+      <exception cref="T:System.ArgumentNullException">The <paramref name="relation" /> does not belong to the <see cref="T:System.Data.DataTable" />.
 -or-
- The row is <see langword="null" />.</exception>
+The row is <see langword="null" />.</exception>
       <exception cref="T:System.Data.DataException">A child row has multiple parents.</exception>
       <exception cref="T:System.Data.InvalidConstraintException">This row does not belong to the child table of the <see cref="T:System.Data.DataRelation" /> object.</exception>
       <exception cref="T:System.Data.RowNotInTableException">The row does not belong to a table.</exception>
@@ -4407,9 +4406,9 @@ Another column's expression depends on this column.</exception>
       <param name="relation">The <see cref="T:System.Data.DataRelation" /> to use.</param>
       <param name="version">One of the <see cref="T:System.Data.DataRowVersion" /> values specifying the version of the data to get.</param>
       <returns>The parent <see cref="T:System.Data.DataRow" /> of the current row.</returns>
-      <exception cref="T:System.ArgumentNullException">The row is <see langword="null" />.  
+      <exception cref="T:System.ArgumentNullException">The row is <see langword="null" />.
 -or-
- The <paramref name="relation" /> does not belong to this table's parent relations.</exception>
+The <paramref name="relation" /> does not belong to this table's parent relations.</exception>
       <exception cref="T:System.Data.DataException">A child row has multiple parents.</exception>
       <exception cref="T:System.Data.InvalidConstraintException">The relation's child table is not the table the row belongs to.</exception>
       <exception cref="T:System.Data.RowNotInTableException">The row does not belong to a table.</exception>
@@ -5025,6 +5024,7 @@ Another column's expression depends on this column.</exception>
       <exception cref="T:System.ArgumentException">A column with the specified name or relation was not found.
 -or-
 The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <see cref="T:System.Data.DataRowView" /> is not new.</exception>
+      <exception cref="T:System.Data.DataException">Unmatched <paramref name="property" /> when setting a value.</exception>
     </member>
     <member name="E:System.Data.DataRowView.PropertyChanged">
       <summary>Event that is raised when a <see cref="T:System.Data.DataRowView" /> property is changed.</summary>
@@ -5139,9 +5139,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     </member>
     <member name="M:System.Data.DataSet.Copy">
       <summary>Copies both the structure and data for this <see cref="T:System.Data.DataSet" />.</summary>
-      <returns>A new <see cref="T:System.Data.DataSet" /> with the same structure (table schemas, relations, and constraints) and data as this <see cref="T:System.Data.DataSet" />.  
-   
- If these classes have been subclassed, the copy will also be of the same subclasses.</returns>
+      <returns>A new <see cref="T:System.Data.DataSet" /> with the same structure (table schemas, relations, and constraints) and data as this <see cref="T:System.Data.DataSet" />.
+
+If these classes have been subclassed, the copy will also be of the same subclasses.</returns>
     </member>
     <member name="M:System.Data.DataSet.CreateDataReader">
       <summary>Returns a <see cref="T:System.Data.DataTableReader" /> with one result set per <see cref="T:System.Data.DataTable" />, in the same sequence as the tables appear in the <see cref="P:System.Data.DataSet.Tables" /> collection.</summary>
@@ -5673,9 +5673,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     </member>
     <member name="M:System.Data.DataTable.Copy">
       <summary>Copies both the structure and data for this <see cref="T:System.Data.DataTable" />.</summary>
-      <returns>A new <see cref="T:System.Data.DataTable" /> with the same structure (table schemas and constraints) and data as this <see cref="T:System.Data.DataTable" />.  
- If these classes have been derived, the copy will also be of the same derived classes.  
- <see cref="M:System.Data.DataTable.Copy" /> creates a new <see cref="T:System.Data.DataTable" /> with the same structure and data as the original <see cref="T:System.Data.DataTable" />. To copy the structure to a new <see cref="T:System.Data.DataTable" />, but not the data, use <see cref="M:System.Data.DataTable.Clone" />.</returns>
+      <returns>A new <see cref="T:System.Data.DataTable" /> with the same structure (table schemas and constraints) and data as this <see cref="T:System.Data.DataTable" />.
+If these classes have been derived, the copy will also be of the same derived classes.
+<see cref="M:System.Data.DataTable.Copy" /> creates a new <see cref="T:System.Data.DataTable" /> with the same structure and data as the original <see cref="T:System.Data.DataTable" />. To copy the structure to a new <see cref="T:System.Data.DataTable" />, but not the data, use <see cref="M:System.Data.DataTable.Clone" />.</returns>
     </member>
     <member name="M:System.Data.DataTable.CreateDataReader">
       <summary>Returns a <see cref="T:System.Data.DataTableReader" /> corresponding to the data within this <see cref="T:System.Data.DataTable" />.</summary>
@@ -6236,9 +6236,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.DataTableCollection.IndexOf(System.String)">
       <summary>Gets the index in the collection of the <see cref="T:System.Data.DataTable" /> object with the specified name.</summary>
       <param name="tableName">The name of the <see langword="DataTable" /> object to look for.</param>
-      <returns>The zero-based index of the <see langword="DataTable" /> with the specified name, or -1 if the table does not exist in the collection.  
-   
- Returns -1 when two or more tables have the same name but different namespaces. The call does not succeed if there is any ambiguity when matching a table name to exactly one table.</returns>
+      <returns>The zero-based index of the <see langword="DataTable" /> with the specified name, or -1 if the table does not exist in the collection.
+
+Returns -1 when two or more tables have the same name but different namespaces. The call does not succeed if there is any ambiguity when matching a table name to exactly one table.</returns>
     </member>
     <member name="M:System.Data.DataTableCollection.IndexOf(System.String,System.String)">
       <summary>Gets the index in the collection of the specified <see cref="T:System.Data.DataTable" /> object.</summary>
@@ -6267,9 +6267,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <summary>Removes the specified <see cref="T:System.Data.DataTable" /> object from the collection.</summary>
       <param name="table">The <see langword="DataTable" /> to remove.</param>
       <exception cref="T:System.ArgumentNullException">The value specified for the table is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The table does not belong to this collection.  
- -or-  
- The table is part of a relationship.</exception>
+      <exception cref="T:System.ArgumentException">The table does not belong to this collection.
+-or-
+The table is part of a relationship.</exception>
     </member>
     <member name="M:System.Data.DataTableCollection.Remove(System.String)">
       <summary>Removes the <see cref="T:System.Data.DataTable" /> object with the specified name from the collection.</summary>
@@ -6313,9 +6313,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <typeparam name="T">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
       <returns>A <see cref="T:System.Data.DataTable" /> that contains the input sequence as the type of <see cref="T:System.Data.DataRow" /> objects.</returns>
       <exception cref="T:System.ArgumentNullException">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence is <see langword="null" /> and a new table cannot be created.</exception>
-      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.  
- The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.  
- A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.
+The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.
+A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Data.DataTableExtensions.CopyToDataTable``1(System.Collections.Generic.IEnumerable{``0},System.Data.DataTable,System.Data.LoadOption)">
       <summary>Copies <see cref="T:System.Data.DataRow" /> objects to the specified <see cref="T:System.Data.DataTable" />, given an input <see cref="T:System.Collections.Generic.IEnumerable`1" /> object where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />.</summary>
@@ -6325,9 +6325,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <typeparam name="T">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
       <exception cref="T:System.ArgumentException">The copied <see cref="T:System.Data.DataRow" /> objects do not fit the schema of the destination <see cref="T:System.Data.DataTable" />.</exception>
       <exception cref="T:System.ArgumentNullException">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence is <see langword="null" /> or the destination <see cref="T:System.Data.DataTable" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.  
- The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.  
- A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.
+The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.
+A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Data.DataTableExtensions.CopyToDataTable``1(System.Collections.Generic.IEnumerable{``0},System.Data.DataTable,System.Data.LoadOption,System.Data.FillErrorEventHandler)">
       <summary>Copies <see cref="T:System.Data.DataRow" /> objects to the specified <see cref="T:System.Data.DataTable" />, given an input <see cref="T:System.Collections.Generic.IEnumerable`1" /> object where the generic parameter <paramref name="T" /> is <see cref="T:System.Data.DataRow" />.</summary>
@@ -6338,11 +6338,11 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <typeparam name="T">The type of objects in the source sequence, typically <see cref="T:System.Data.DataRow" />.</typeparam>
       <exception cref="T:System.ArgumentException">The copied <see cref="T:System.Data.DataRow" /> objects do not fit the schema of the destination <see cref="T:System.Data.DataTable" />.</exception>
       <exception cref="T:System.ArgumentNullException">The source <see cref="T:System.Collections.Generic.IEnumerable`1" /> sequence is <see langword="null" /> or the destination <see cref="T:System.Data.DataTable" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.  
- -or-  
- The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.  
- -or-  
- A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">A <see cref="T:System.Data.DataRow" /> in the source sequence has a state of <see cref="F:System.Data.DataRowState.Deleted" />.
+-or-
+The source sequence does not contain any <see cref="T:System.Data.DataRow" /> objects.
+-or-
+A <see cref="T:System.Data.DataRow" /> in the source sequence is <see langword="null" />.</exception>
     </member>
     <member name="T:System.Data.DataTableNewRowEventArgs">
       <summary>Provides data for the <see cref="M:System.Data.DataTable.NewRow" /> method.</summary>
@@ -7604,18 +7604,18 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <param name="parentColumn">The parent <see cref="T:System.Data.DataColumn" /> in the constraint.</param>
       <param name="childColumn">The child <see cref="T:System.Data.DataColumn" /> in the constraint.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the columns is <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.  
- -Or -  
- The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.
+-Or -
+The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.ForeignKeyConstraint.#ctor(System.Data.DataColumn[],System.Data.DataColumn[])">
       <summary>Initializes a new instance of the <see cref="T:System.Data.ForeignKeyConstraint" /> class with the specified arrays of parent and child <see cref="T:System.Data.DataColumn" /> objects.</summary>
       <param name="parentColumns">An array of parent <see cref="T:System.Data.DataColumn" /> in the constraint.</param>
       <param name="childColumns">An array of child <see cref="T:System.Data.DataColumn" /> in the constraint.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the columns is <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.  
- -Or -  
- The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.
+-Or -
+The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.ForeignKeyConstraint.#ctor(System.String,System.Data.DataColumn,System.Data.DataColumn)">
       <summary>Initializes a new instance of the <see cref="T:System.Data.ForeignKeyConstraint" /> class with the specified name, parent and child <see cref="T:System.Data.DataColumn" /> objects.</summary>
@@ -7623,9 +7623,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <param name="parentColumn">The parent <see cref="T:System.Data.DataColumn" /> in the constraint.</param>
       <param name="childColumn">The child <see cref="T:System.Data.DataColumn" /> in the constraint.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the columns is <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.  
- -Or -  
- The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.
+-Or -
+The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.ForeignKeyConstraint.#ctor(System.String,System.Data.DataColumn[],System.Data.DataColumn[])">
       <summary>Initializes a new instance of the <see cref="T:System.Data.ForeignKeyConstraint" /> class with the specified name, and arrays of parent and child <see cref="T:System.Data.DataColumn" /> objects.</summary>
@@ -7633,9 +7633,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <param name="parentColumns">An array of parent <see cref="T:System.Data.DataColumn" /> in the constraint.</param>
       <param name="childColumns">An array of child <see cref="T:System.Data.DataColumn" /> in the constraint.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the columns is <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.  
- -Or -  
- The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.
+-Or -
+The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.ForeignKeyConstraint.#ctor(System.String,System.String,System.String,System.String[],System.String[],System.Data.AcceptRejectRule,System.Data.Rule,System.Data.Rule)">
       <summary>This constructor is provided for design time support in the Visual Studio  environment. <see cref="T:System.Data.ForeignKeyConstraint" /> objects created by using this constructor must then be added to the collection via <see cref="M:System.Data.ConstraintCollection.AddRange(System.Data.Constraint[])" />. Tables and columns with the specified names must exist at the time the method is called, or if <see cref="M:System.Data.DataTable.BeginInit" /> has been called prior to calling this constructor, the tables and columns with the specified names must exist at the time that <see cref="M:System.Data.DataTable.EndInit" /> is called.</summary>
@@ -7648,9 +7648,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <param name="deleteRule">One of the <see cref="T:System.Data.Rule" /> values to use when a row is deleted. The default is <see langword="Cascade" />. Possible values include: <see langword="None" />, <see langword="Cascade" />, <see langword="SetNull" />, <see langword="SetDefault" />, and <see langword="Default" />.</param>
       <param name="updateRule">One of the <see cref="T:System.Data.Rule" /> values to use when a row is updated. The default is <see langword="Cascade" />. Possible values include: <see langword="None" />, <see langword="Cascade" />, <see langword="SetNull" />, <see langword="SetDefault" />, and <see langword="Default" />.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the columns is <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.  
- -Or -  
- The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.
+-Or -
+The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="M:System.Data.ForeignKeyConstraint.#ctor(System.String,System.String,System.String[],System.String[],System.Data.AcceptRejectRule,System.Data.Rule,System.Data.Rule)">
       <summary>This constructor is provided for design time support in the Visual Studio  environment. <see cref="T:System.Data.ForeignKeyConstraint" /> objects created by using this constructor must then be added to the collection via <see cref="M:System.Data.ConstraintCollection.AddRange(System.Data.Constraint[])" />. Tables and columns with the specified names must exist at the time the method is called, or if <see cref="M:System.Data.DataTable.BeginInit" /> has been called prior to calling this constructor, the tables and columns with the specified names must exist at the time that <see cref="M:System.Data.DataTable.EndInit" /> is called.</summary>
@@ -7662,9 +7662,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <param name="deleteRule">One of the <see cref="T:System.Data.Rule" /> values to use when a row is deleted. The default is <see langword="Cascade" />. Possible values include: <see langword="None" />, <see langword="Cascade" />, <see langword="SetNull" />, <see langword="SetDefault" />, and <see langword="Default" />.</param>
       <param name="updateRule">One of the <see cref="T:System.Data.Rule" /> values to use when a row is updated. The default is <see langword="Cascade" />. Possible values include: <see langword="None" />, <see langword="Cascade" />, <see langword="SetNull" />, <see langword="SetDefault" />, and <see langword="Default" />.</param>
       <exception cref="T:System.ArgumentNullException">One or both of the columns is <see langword="null" />.</exception>
-      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.  
- -Or -  
- The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
+      <exception cref="T:System.Data.InvalidConstraintException">The columns have different data types.
+-Or -
+The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</exception>
     </member>
     <member name="P:System.Data.ForeignKeyConstraint.AcceptRejectRule">
       <summary>Indicates the action that should take place across this constraint when <see cref="M:System.Data.DataTable.AcceptChanges" /> is invoked.</summary>
@@ -7751,8 +7751,8 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <exception cref="T:System.IndexOutOfRangeException">A <see cref="T:System.Data.Common.DataColumnMapping" /> object does not exist with the specified <see langword="SourceColumn" /> name.</exception>
     </member>
     <member name="T:System.Data.IDataAdapter">
-      <summary>Allows an object to implement a DataAdapter, and represents a set of methods and mapping action-related properties that are used to fill and update a <see cref="T:System.Data.DataSet" /> and update a data source.  
- <see cref="T:System.Data.IDbDataAdapter" /> instances are for data sources that are (or resemble) relational databases with textual commands (like Transact-SQL), while <see cref="T:System.Data.IDataAdapter" /> instances could can use any type of data source.</summary>
+      <summary>Allows an object to implement a DataAdapter, and represents a set of methods and mapping action-related properties that are used to fill and update a <see cref="T:System.Data.DataSet" /> and update a data source.
+<see cref="T:System.Data.IDbDataAdapter" /> instances are for data sources that are (or resemble) relational databases with textual commands (like Transact-SQL), while <see cref="T:System.Data.IDataAdapter" /> instances could can use any type of data source.</summary>
     </member>
     <member name="M:System.Data.IDataAdapter.Fill(System.Data.DataSet)">
       <summary>Adds or updates rows in the <see cref="T:System.Data.DataSet" /> to match those in the data source using the <see cref="T:System.Data.DataSet" /> name, and creates a <see cref="T:System.Data.DataTable" /> named "Table".</summary>
@@ -8069,9 +8069,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.IDbCommand.ExecuteNonQuery">
       <summary>Executes an SQL statement against the <see langword="Connection" /> object of a .NET Framework data provider, and returns the number of rows affected.</summary>
       <returns>The number of rows affected.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection does not exist.  
- -or-  
- The connection is not open.</exception>
+      <exception cref="T:System.InvalidOperationException">The connection does not exist.
+-or-
+The connection is not open.</exception>
     </member>
     <member name="M:System.Data.IDbCommand.ExecuteReader">
       <summary>Executes the <see cref="P:System.Data.IDbCommand.CommandText" /> against the <see cref="P:System.Data.IDbCommand.Connection" /> and builds an <see cref="T:System.Data.IDataReader" />.</summary>
@@ -8092,9 +8092,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     </member>
     <member name="M:System.Data.IDbCommand.Prepare">
       <summary>Creates a prepared (or compiled) version of the command on the data source.</summary>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not set.  
- -or-  
- The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not <see cref="M:System.Data.OleDb.OleDbConnection.Open" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not set.
+-or-
+The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not <see cref="M:System.Data.OleDb.OleDbConnection.Open" />.</exception>
     </member>
     <member name="P:System.Data.IDbCommand.Transaction">
       <summary>Gets or sets the transaction within which the <see langword="Command" /> object of a .NET Framework data provider executes.</summary>
@@ -8187,9 +8187,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.IDbTransaction.Commit">
       <summary>Commits the database transaction.</summary>
       <exception cref="T:System.Exception">An error occurred while trying to commit the transaction.</exception>
-      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.  
- -or-  
- The connection is broken.</exception>
+      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.
+-or-
+The connection is broken.</exception>
     </member>
     <member name="P:System.Data.IDbTransaction.Connection">
       <summary>Specifies the Connection object to associate with the transaction.</summary>
@@ -8202,9 +8202,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.IDbTransaction.Rollback">
       <summary>Rolls back a transaction from a pending state.</summary>
       <exception cref="T:System.Exception">An error occurred while trying to commit the transaction.</exception>
-      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.  
- -or-  
- The connection is broken.</exception>
+      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.
+-or-
+The connection is broken.</exception>
     </member>
     <member name="T:System.Data.InRowChangingEventException">
       <summary>Represents the exception that is thrown when you call the <see cref="M:System.Data.DataRow.EndEdit" /> method within the <see cref="E:System.Data.DataTable.RowChanging" /> event.</summary>
@@ -8776,49 +8776,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlBinary.CompareTo(System.Data.SqlTypes.SqlBinary)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlBinary" /> object to the supplied <see cref="T:System.Data.SqlTypes.SqlBinary" /> object and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlBinary" /> object to be compared to this <see cref="T:System.Data.SqlTypes.SqlBinary" /> structure.</param>
-      <returns>A signed number that indicates the relative values of this <see cref="T:System.Data.SqlTypes.SqlBinary" /> structure and the object.  
+      <returns>A signed number that indicates the relative values of this <see cref="T:System.Data.SqlTypes.SqlBinary" /> structure and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   The value of this <see cref="T:System.Data.SqlTypes.SqlBinary" /> object is less than the object.  
-
+  
   Zero  
-
+  
   This <see cref="T:System.Data.SqlTypes.SqlBinary" /> object is the same as object.  
-
+  
   Greater than zero  
-
+  
   This <see cref="T:System.Data.SqlTypes.SqlBinary" /> object is greater than object.  
-
+  
  -or-  
-
+  
  The object is a null reference.</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlBinary.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlBinary" /> object to the supplied object and returns an indication of their relative values.</summary>
       <param name="value">The object to be compared to this <see cref="T:System.Data.SqlTypes.SqlBinary" /> structure.</param>
-      <returns>A signed number that indicates the relative values of this <see cref="T:System.Data.SqlTypes.SqlBinary" /> structure and the object.  
+      <returns>A signed number that indicates the relative values of this <see cref="T:System.Data.SqlTypes.SqlBinary" /> structure and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   The value of this <see cref="T:System.Data.SqlTypes.SqlBinary" /> object is less than the object.  
-
+  
   Zero  
-
+  
   This <see cref="T:System.Data.SqlTypes.SqlBinary" /> object is the same as object.  
-
+  
   Greater than zero  
-
+  
   This <see cref="T:System.Data.SqlTypes.SqlBinary" /> object is greater than object.  
-
+  
  -or-  
-
+  
  The object is a null reference.</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlBinary.Concat(System.Data.SqlTypes.SqlBinary,System.Data.SqlTypes.SqlBinary)">
@@ -8870,9 +8870,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <summary>Gets the single byte from the <see cref="P:System.Data.SqlTypes.SqlBinary.Value" /> property located at the position indicated by the integer parameter, <paramref name="index" />. If <paramref name="index" /> indicates a position beyond the end of the byte array, a <see cref="T:System.Data.SqlTypes.SqlNullValueException" /> will be raised. This property is read-only.</summary>
       <param name="index">The position of the byte to be retrieved.</param>
       <returns>The byte located at the position indicated by the integer parameter.</returns>
-      <exception cref="T:System.Data.SqlTypes.SqlNullValueException">The property is read when the <see cref="P:System.Data.SqlTypes.SqlBinary.Value" /> property contains <see cref="F:System.Data.SqlTypes.SqlBinary.Null" />  
+      <exception cref="T:System.Data.SqlTypes.SqlNullValueException">The property is read when the <see cref="P:System.Data.SqlTypes.SqlBinary.Value" /> property contains <see cref="F:System.Data.SqlTypes.SqlBinary.Null" />
 -or-
- The <paramref name="index" /> parameter indicates a position beyond the length of the byte array as indicated by the <see cref="P:System.Data.SqlTypes.SqlBinary.Length" /> property.</exception>
+The <paramref name="index" /> parameter indicates a position beyond the length of the byte array as indicated by the <see cref="P:System.Data.SqlTypes.SqlBinary.Length" /> property.</exception>
     </member>
     <member name="P:System.Data.SqlTypes.SqlBinary.Length">
       <summary>Gets the length in bytes of the <see cref="P:System.Data.SqlTypes.SqlBinary.Value" /> property. This property is read-only.</summary>
@@ -9006,49 +9006,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlBoolean.CompareTo(System.Data.SqlTypes.SqlBoolean)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlBoolean" /> object to the supplied <see cref="T:System.Data.SqlTypes.SqlBoolean" /> object and returns an indication of their relative values.</summary>
       <param name="value">A <see cref="T:System.Data.SqlTypes.SqlBoolean" /><see cref="T:System.Data.SqlTypes.SqlBoolean" /> object to compare, or a null reference (<see langword="Nothing" /> in Visual Basic).</param>
-      <returns>A signed number that indicates the relative values of the instance and value.  
+      <returns>A signed number that indicates the relative values of the instance and value.
   Value  
-
+  
   Description  
-
+  
   A negative integer  
-
+  
   This instance is less than <paramref name="value" />.  
-
+  
   Zero  
-
+  
   This instance is equal to <paramref name="value" />.  
-
+  
   A positive integer  
-
+  
   This instance is greater than <paramref name="value" />.  
-
+  
  -or-  
-
+  
  <paramref name="value" /> is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlBoolean.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlBoolean" /> structure to a specified object and returns an indication of their relative values.</summary>
       <param name="value">An object to compare, or a null reference (<see langword="Nothing" /> in Visual Basic).</param>
-      <returns>A signed number that indicates the relative values of the instance and value.  
+      <returns>A signed number that indicates the relative values of the instance and value.
   Value  
-
+  
   Description  
-
+  
   A negative integer  
-
+  
   This instance is less than <paramref name="value" />.  
-
+  
   Zero  
-
+  
   This instance is equal to <paramref name="value" />.  
-
+  
   A positive integer  
-
+  
   This instance is greater than <paramref name="value" />.  
-
+  
  -or-  
-
+  
  <paramref name="value" /> is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlBoolean.Equals(System.Data.SqlTypes.SqlBoolean,System.Data.SqlTypes.SqlBoolean)">
@@ -9331,8 +9331,8 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     </member>
     <member name="M:System.Data.SqlTypes.SqlBoolean.ToSqlSingle">
       <summary>Converts this <see cref="T:System.Data.SqlTypes.SqlBoolean" /> structure to <see cref="T:System.Data.SqlTypes.SqlSingle" />.</summary>
-      <returns>A new <see cref="T:System.Data.SqlTypes.SqlSingle" /> structure whose value is 1 or 0.  
- If the <see cref="T:System.Data.SqlTypes.SqlBoolean" /> structure's value equals true, the new <see cref="T:System.Data.SqlTypes.SqlSingle" /> structure's value is 1; otherwise the new <see cref="T:System.Data.SqlTypes.SqlSingle" /> structure's value is 0.</returns>
+      <returns>A new <see cref="T:System.Data.SqlTypes.SqlSingle" /> structure whose value is 1 or 0.
+If the <see cref="T:System.Data.SqlTypes.SqlBoolean" /> structure's value equals true, the new <see cref="T:System.Data.SqlTypes.SqlSingle" /> structure's value is 1; otherwise the new <see cref="T:System.Data.SqlTypes.SqlSingle" /> structure's value is 0.</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlBoolean.ToSqlString">
       <summary>Converts this <see cref="T:System.Data.SqlTypes.SqlBoolean" /> structure to <see cref="T:System.Data.SqlTypes.SqlString" />.</summary>
@@ -9388,49 +9388,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlByte.CompareTo(System.Data.SqlTypes.SqlByte)">
       <summary>Compares this instance to the supplied <see cref="T:System.Data.SqlTypes.SqlByte" /> object and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlByte" /> object to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return Value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlByte.CompareTo(System.Object)">
       <summary>Compares this instance to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return Value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlByte.Divide(System.Data.SqlTypes.SqlByte,System.Data.SqlTypes.SqlByte)">
@@ -9741,7 +9741,7 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
       <returns>A string that contains the <see cref="P:System.Data.SqlTypes.SqlByte.Value" /> of the <see cref="T:System.Data.SqlTypes.SqlByte" />. If the <see langword="Value" /> is null, the <see langword="String" /> will be a null string.</returns>
     </member>
     <member name="P:System.Data.SqlTypes.SqlByte.Value">
-      <summary>Gets the value of the <see cref="T:System.Data.SqlTypes.SqlByte" /> structure. This property is read-only</summary>
+      <summary>Gets the value of the <see cref="T:System.Data.SqlTypes.SqlByte" /> structure. This property is read-only.</summary>
       <returns>The value of the <see cref="T:System.Data.SqlTypes.SqlByte" /> structure.</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlByte.Xor(System.Data.SqlTypes.SqlByte,System.Data.SqlTypes.SqlByte)">
@@ -9792,9 +9792,9 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     </member>
     <member name="P:System.Data.SqlTypes.SqlBytes.Length">
       <summary>Gets the length of the value that is contained in the <see cref="T:System.Data.SqlTypes.SqlBytes" /> instance.</summary>
-      <returns>A <see cref="T:System.Int64" /> value representing the length of the value that is contained in the <see cref="T:System.Data.SqlTypes.SqlBytes" /> instance.  
- Returns -1 if no buffer is available to the instance or if the value is null.  
- Returns a <see cref="P:System.IO.Stream.Length" /> for a stream-wrapped instance.</returns>
+      <returns>A <see cref="T:System.Int64" /> value representing the length of the value that is contained in the <see cref="T:System.Data.SqlTypes.SqlBytes" /> instance.
+Returns -1 if no buffer is available to the instance or if the value is null.
+Returns a <see cref="P:System.IO.Stream.Length" /> for a stream-wrapped instance.</returns>
     </member>
     <member name="P:System.Data.SqlTypes.SqlBytes.MaxLength">
       <summary>Gets the maximum length of the value of the internal buffer of this <see cref="T:System.Data.SqlTypes.SqlBytes" />.</summary>
@@ -9909,14 +9909,14 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     </member>
     <member name="P:System.Data.SqlTypes.SqlChars.Length">
       <summary>Gets the length of the value that is contained in the <see cref="T:System.Data.SqlTypes.SqlChars" /> instance.</summary>
-      <returns>A <see cref="T:System.Int64" /> value that indicates the length in characters of the value that is contained in the <see cref="T:System.Data.SqlTypes.SqlChars" /> instance.  
- Returns -1 if no buffer is available to the instance, or if the value is null.  
- Returns a <see cref="P:System.IO.Stream.Length" /> for a stream-wrapped instance.</returns>
+      <returns>A <see cref="T:System.Int64" /> value that indicates the length in characters of the value that is contained in the <see cref="T:System.Data.SqlTypes.SqlChars" /> instance.
+Returns -1 if no buffer is available to the instance, or if the value is null.
+Returns a <see cref="P:System.IO.Stream.Length" /> for a stream-wrapped instance.</returns>
     </member>
     <member name="P:System.Data.SqlTypes.SqlChars.MaxLength">
       <summary>Gets the maximum length in two-byte characters of the value the internal buffer can hold.</summary>
-      <returns>An <see cref="T:System.Int64" /> value representing the maximum length in two-byte characters of the value of the internal buffer.  
- Returns -1 for a stream-wrapped <see cref="T:System.Data.SqlTypes.SqlChars" />.</returns>
+      <returns>An <see cref="T:System.Int64" /> value representing the maximum length in two-byte characters of the value of the internal buffer.
+Returns -1 for a stream-wrapped <see cref="T:System.Data.SqlTypes.SqlChars" />.</returns>
     </member>
     <member name="P:System.Data.SqlTypes.SqlChars.Null">
       <summary>Returns a null instance of this <see cref="T:System.Data.SqlTypes.SqlChars" />.</summary>
@@ -10067,49 +10067,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlDateTime.CompareTo(System.Data.SqlTypes.SqlDateTime)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlDateTime" /> structure to the supplied <see cref="T:System.Data.SqlTypes.SqlDateTime" /> structure and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlDateTime" /> structure to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than <see cref="T:System.Data.SqlTypes.SqlDateTime" />.  
-
+  
   Zero  
-
+  
   This instance is the same as <see cref="T:System.Data.SqlTypes.SqlDateTime" />.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than <see cref="T:System.Data.SqlTypes.SqlDateTime" />  
-
+  
  -or-  
-
+  
  <see cref="T:System.Data.SqlTypes.SqlDateTime" /> is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlDateTime.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlDateTime" /> structure to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> as Visual Basic).</returns>
     </member>
     <member name="P:System.Data.SqlTypes.SqlDateTime.DayTicks">
@@ -10366,49 +10366,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlDecimal.CompareTo(System.Data.SqlTypes.SqlDecimal)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlDecimal" /> instance to the supplied <see cref="T:System.Data.SqlTypes.SqlDecimal" /> object and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlDecimal" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlDecimal.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlDecimal" /> instance to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return Value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlDecimal.ConvertToPrecScale(System.Data.SqlTypes.SqlDecimal,System.Int32,System.Int32)">
@@ -10769,49 +10769,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlDouble.CompareTo(System.Data.SqlTypes.SqlDouble)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlDouble" /> instance to the supplied <see cref="T:System.Data.SqlTypes.SqlDouble" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlDouble" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlDouble.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlDouble" /> instance to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to compare.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlDouble.Divide(System.Data.SqlTypes.SqlDouble,System.Data.SqlTypes.SqlDouble)">
@@ -11115,49 +11115,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlGuid.CompareTo(System.Data.SqlTypes.SqlGuid)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlGuid" /> structure to the supplied <see cref="T:System.Data.SqlTypes.SqlGuid" /> and returns an indication of their relative values. Compares more than the last 6 bytes, but treats the last 6 bytes as the most significant ones in comparisons.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlGuid" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return Value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than object.  
-
+  
   Zero  
-
+  
   This instance is the same as object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than object  
-
+  
  -or-  
-
+  
  object is a null reference (<see langword="Nothing" />).</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlGuid.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlGuid" /> structure to the supplied object and returns an indication of their relative values. Compares more than the last 6 bytes, but treats the last 6 bytes as the most significant ones in comparisons.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return Value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than object.  
-
+  
   Zero  
-
+  
   This instance is the same as object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than object  
-
+  
  -or-  
-
+  
  object is a null reference (<see langword="Nothing" />)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlGuid.Equals(System.Data.SqlTypes.SqlGuid,System.Data.SqlTypes.SqlGuid)">
@@ -11345,49 +11345,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlInt16.CompareTo(System.Data.SqlTypes.SqlInt16)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlInt16" /> instance to the supplied <see cref="T:System.Data.SqlTypes.SqlInt16" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlInt16" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlInt16.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlInt16" /> instance to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlInt16.Divide(System.Data.SqlTypes.SqlInt16,System.Data.SqlTypes.SqlInt16)">
@@ -11743,49 +11743,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlInt32.CompareTo(System.Data.SqlTypes.SqlInt32)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlInt32" /> instance to the supplied <see cref="T:System.Data.SqlTypes.SqlInt32" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlInt32" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlInt32.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlInt32" /> instance to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlInt32.Divide(System.Data.SqlTypes.SqlInt32,System.Data.SqlTypes.SqlInt32)">
@@ -12141,49 +12141,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlInt64.CompareTo(System.Data.SqlTypes.SqlInt64)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlInt64" /> instance to the supplied <see cref="T:System.Data.SqlTypes.SqlInt64" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlInt64" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlInt64.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlInt64" /> instance to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlInt64.Divide(System.Data.SqlTypes.SqlInt64,System.Data.SqlTypes.SqlInt64)">
@@ -12539,49 +12539,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlMoney.CompareTo(System.Data.SqlTypes.SqlMoney)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlMoney" /> instance to the supplied <see cref="T:System.Data.SqlTypes.SqlMoney" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlMoney" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlMoney.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlMoney" /> instance to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlMoney.Divide(System.Data.SqlTypes.SqlMoney,System.Data.SqlTypes.SqlMoney)">
@@ -12933,49 +12933,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlSingle.CompareTo(System.Data.SqlTypes.SqlSingle)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlSingle" /> instance to the supplied <see cref="T:System.Data.SqlTypes.SqlSingle" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlSingle" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return Value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlSingle.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlSingle" /> instance to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlSingle.Divide(System.Data.SqlTypes.SqlSingle,System.Data.SqlTypes.SqlSingle)">
@@ -13329,49 +13329,49 @@ The <see cref="P:System.Data.DataRowView.DataView" /> doesn't allow edits and <s
     <member name="M:System.Data.SqlTypes.SqlString.CompareTo(System.Data.SqlTypes.SqlString)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlString" /> instance to the supplied <see cref="T:System.Data.SqlTypes.SqlString" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Data.SqlTypes.SqlString" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic).</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlString.CompareTo(System.Object)">
       <summary>Compares this <see cref="T:System.Data.SqlTypes.SqlString" /> object to the supplied <see cref="T:System.Object" /> and returns an indication of their relative values.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be compared.</param>
-      <returns>A signed number that indicates the relative values of the instance and the object.  
+      <returns>A signed number that indicates the relative values of the instance and the object.
   Return Value  
-
+  
   Condition  
-
+  
   Less than zero  
-
+  
   This instance is less than the object.  
-
+  
   Zero  
-
+  
   This instance is the same as the object.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than the object  
-
+  
  -or-  
-
+  
  The object is a null reference (<see langword="Nothing" /> in Visual Basic)</returns>
     </member>
     <member name="M:System.Data.SqlTypes.SqlString.Concat(System.Data.SqlTypes.SqlString,System.Data.SqlTypes.SqlString)">

@@ -191,8 +191,8 @@ The length for <paramref name="index" /> is invalid.</exception>
       <returns>The number of bytes written.</returns>
       <exception cref="T:System.ObjectDisposedException">The current <see cref="T:System.Security.Cryptography.FromBase64Transform" /> object has already been disposed.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="inputCount" /> uses an invalid value.  
--or-  
+        <paramref name="inputCount" /> uses an invalid value.
+-or-
 <paramref name="inputBuffer" /> has an invalid offset length.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="inputOffset" /> is out of range. This parameter requires a non-negative number.</exception>
@@ -207,8 +207,8 @@ The length for <paramref name="index" /> is invalid.</exception>
       <returns>The computed conversion.</returns>
       <exception cref="T:System.ObjectDisposedException">The current <see cref="T:System.Security.Cryptography.FromBase64Transform" /> object has already been disposed.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="inputBuffer" /> has an invalid offset length.  
--or-  
+        <paramref name="inputBuffer" /> has an invalid offset length.
+-or-
 <paramref name="inputCount" /> has an invalid value.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="inputOffset" /> is out of range. This parameter requires a non-negative number.</exception>
@@ -319,8 +319,8 @@ The length for <paramref name="index" /> is invalid.</exception>
       <param name="array">The array to copy the <see cref="T:System.Security.Cryptography.OidCollection" /> object to.</param>
       <param name="index">The location where the copy operation starts.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> cannot be a multidimensional array.  
--or-  
+        <paramref name="array" /> cannot be a multidimensional array.
+-or-
 The length of <paramref name="array" /> is an invalid offset length.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
@@ -433,9 +433,9 @@ The length of <paramref name="array" /> is an invalid offset length.</exception>
       <returns>The number of bytes written.</returns>
       <exception cref="T:System.ObjectDisposedException">The current <see cref="T:System.Security.Cryptography.ToBase64Transform" /> object has already been disposed.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The data size is not valid.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="inputBuffer" /> parameter contains an invalid offset length.  
- -or-  
- The <paramref name="inputCount" /> parameter contains an invalid value.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="inputBuffer" /> parameter contains an invalid offset length.
+-or-
+The <paramref name="inputCount" /> parameter contains an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="inputBuffer" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="inputBuffer" /> parameter requires a non-negative number.</exception>
     </member>
@@ -446,9 +446,9 @@ The length of <paramref name="array" /> is an invalid offset length.</exception>
       <param name="inputCount">The number of bytes in the byte array to use as data.</param>
       <returns>The computed base 64 conversion.</returns>
       <exception cref="T:System.ObjectDisposedException">The current <see cref="T:System.Security.Cryptography.ToBase64Transform" /> object has already been disposed.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="inputBuffer" /> parameter contains an invalid offset length.  
- -or-  
- The <paramref name="inputCount" /> parameter contains an invalid value.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="inputBuffer" /> parameter contains an invalid offset length.
+-or-
+The <paramref name="inputCount" /> parameter contains an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="inputBuffer" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="inputBuffer" /> parameter requires a non-negative number.</exception>
     </member>

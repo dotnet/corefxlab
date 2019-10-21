@@ -58,9 +58,9 @@
     <member name="M:System.Data.Odbc.OdbcCommand.ExecuteNonQuery">
       <summary>Executes an SQL statement against the <see cref="P:System.Data.Odbc.OdbcCommand.Connection" /> and returns the number of rows affected.</summary>
       <returns>For UPDATE, INSERT, and DELETE statements, the return value is the number of rows affected by the command. For all other types of statements, the return value is -1.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection does not exist.  
- -or-  
- The connection is not open.</exception>
+      <exception cref="T:System.InvalidOperationException">The connection does not exist.
+-or-
+The connection is not open.</exception>
     </member>
     <member name="M:System.Data.Odbc.OdbcCommand.ExecuteReader">
       <summary>Sends the <see cref="P:System.Data.Odbc.OdbcCommand.CommandText" /> to the <see cref="P:System.Data.Odbc.OdbcCommand.Connection" /> and builds an <see cref="T:System.Data.Odbc.OdbcDataReader" />.</summary>
@@ -81,9 +81,9 @@
     </member>
     <member name="M:System.Data.Odbc.OdbcCommand.Prepare">
       <summary>Creates a prepared or compiled version of the command at the data source.</summary>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Data.Odbc.OdbcCommand.Connection" /> is not set.  
- -or-  
- The <see cref="P:System.Data.Odbc.OdbcCommand.Connection" /> is not <see cref="M:System.Data.Odbc.OdbcConnection.Open" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Data.Odbc.OdbcCommand.Connection" /> is not set.
+-or-
+The <see cref="P:System.Data.Odbc.OdbcCommand.Connection" /> is not <see cref="M:System.Data.Odbc.OdbcConnection.Open" />.</exception>
     </member>
     <member name="M:System.Data.Odbc.OdbcCommand.ResetCommandTimeout">
       <summary>Resets the <see cref="P:System.Data.Odbc.OdbcCommand.CommandTimeout" /> property to the default value.</summary>
@@ -1068,9 +1068,9 @@
     <member name="M:System.Data.Odbc.OdbcTransaction.Commit">
       <summary>Commits the database transaction.</summary>
       <exception cref="T:System.Exception">An error occurred while trying to commit the transaction.</exception>
-      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.  
- -or-  
- The connection is broken.</exception>
+      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.
+-or-
+The connection is broken.</exception>
     </member>
     <member name="P:System.Data.Odbc.OdbcTransaction.Connection">
       <summary>Gets the <see cref="T:System.Data.Odbc.OdbcConnection" /> object associated with the transaction, or <see langword="null" /> if the transaction is no longer valid.</summary>
@@ -1083,9 +1083,9 @@
     <member name="M:System.Data.Odbc.OdbcTransaction.Rollback">
       <summary>Rolls back a transaction from a pending state.</summary>
       <exception cref="T:System.Exception">An error occurred while trying to commit the transaction.</exception>
-      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.  
- -or-  
- The connection is broken.</exception>
+      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.
+-or-
+The connection is broken.</exception>
     </member>
     <member name="T:System.Data.Odbc.OdbcType">
       <summary>Specifies the data type of a field, property, for use in an <see cref="T:System.Data.Odbc.OdbcParameter" />.</summary>

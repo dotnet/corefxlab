@@ -21,8 +21,8 @@
       <summary>Runs a script.</summary>
       <param name="url">Internal only.</param>
       <param name="host">Internal only.</param>
-      <returns>A <see cref="T:System.String" />.  
- An internal-only value returned.</returns>
+      <returns>A <see cref="T:System.String" />.
+An internal-only value returned.</returns>
     </member>
     <member name="T:System.Net.WebProxy">
       <summary>Contains HTTP proxy settings for the <see cref="T:System.Net.WebRequest" /> class.</summary>

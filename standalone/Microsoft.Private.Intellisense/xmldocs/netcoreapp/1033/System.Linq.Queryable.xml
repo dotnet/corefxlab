@@ -494,9 +494,9 @@
       <returns>The first element in <paramref name="source" /> that passes the test in <paramref name="predicate" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="source" /> or <paramref name="predicate" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.  
- -or-  
- The source sequence is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.
+-or-
+The source sequence is empty.</exception>
     </member>
     <member name="M:System.Linq.Queryable.FirstOrDefault``1(System.Linq.IQueryable{``0})">
       <summary>Returns the first element of a sequence, or a default value if the sequence contains no elements.</summary>
@@ -715,9 +715,9 @@
       <returns>The last element in <paramref name="source" /> that passes the test specified by <paramref name="predicate" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="source" /> or <paramref name="predicate" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.  
- -or-  
- The source sequence is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.
+-or-
+The source sequence is empty.</exception>
     </member>
     <member name="M:System.Linq.Queryable.LastOrDefault``1(System.Linq.IQueryable{``0})">
       <summary>Returns the last element in a sequence, or a default value if the sequence contains no elements.</summary>
@@ -959,11 +959,11 @@
       <returns>The single element of the input sequence that satisfies the condition in <paramref name="predicate" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="source" /> or <paramref name="predicate" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.  
- -or-  
- More than one element satisfies the condition in <paramref name="predicate" />.  
- -or-  
- The source sequence is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">No element satisfies the condition in <paramref name="predicate" />.
+-or-
+More than one element satisfies the condition in <paramref name="predicate" />.
+-or-
+The source sequence is empty.</exception>
     </member>
     <member name="M:System.Linq.Queryable.SingleOrDefault``1(System.Linq.IQueryable{``0})">
       <summary>Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence.</summary>

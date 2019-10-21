@@ -738,6 +738,7 @@
       <summary>Writes this <see cref="T:System.Xml.Linq.XDocumentType" /> to the specified <see cref="T:System.Xml.XmlWriter" />.</summary>
       <param name="writer">The writer to write this <see cref="T:System.Xml.Linq.XDocumentType" /> to.</param>
       <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous write operation.</returns>
     </member>
     <member name="T:System.Xml.Linq.XElement">
       <summary>Represents an XML element.  See XElement Class Overview and the Remarks section on this page for usage information and examples.</summary>
@@ -886,19 +887,25 @@
       <returns>An <see cref="T:System.Xml.Linq.XElement" /> that contains the XML that was read from the specified <see cref="T:System.Xml.XmlReader" />.</returns>
     </member>
     <member name="M:System.Xml.Linq.XElement.LoadAsync(System.IO.Stream,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
-      <param name="stream" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously creates a new <see cref="T:System.Xml.Linq.XElement" /> and initializes its underlying XML tree using the specified stream, optionally preserving white space.</summary>
+      <param name="stream">The stream containing the raw XML to read.</param>
+      <param name="options">A bitwise combination of the enumeration values that specify the load options to parse the XML.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A new <see cref="T:System.Xml.Linq.XElement" /> containing the contents of the specified stream.</returns>
     </member>
     <member name="M:System.Xml.Linq.XElement.LoadAsync(System.IO.TextReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
-      <param name="textReader" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously creates a new <see cref="T:System.Xml.Linq.XElement" /> and initializes its underlying XML tree using the specified text reader, optionally preserving white space.</summary>
+      <param name="textReader">A reader containing the raw XML to read.</param>
+      <param name="options">A bitwise combination of the enumeration values that specify the load options to parse the XML.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A new <see cref="T:System.Xml.Linq.XElement" /> containing the contents of the specified reader.</returns>
     </member>
     <member name="M:System.Xml.Linq.XElement.LoadAsync(System.Xml.XmlReader,System.Xml.Linq.LoadOptions,System.Threading.CancellationToken)">
-      <param name="reader" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously creates a new <see cref="T:System.Xml.Linq.XElement" /> and initializes its underlying XML tree using the specified XML reader, optionally preserving white space.</summary>
+      <param name="reader">A reader containing the XML to be read.</param>
+      <param name="options">A bitwise combination of the enumeration values that specify the load options to parse the XML.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A new <see cref="T:System.Xml.Linq.XElement" /> containing the contents of the specified reader.</returns>
     </member>
     <member name="P:System.Xml.Linq.XElement.Name">
       <summary>Gets or sets the name of this element.</summary>
@@ -1134,18 +1141,24 @@
       <param name="writer">A <see cref="T:System.Xml.XmlWriter" /> that the <see cref="T:System.Xml.Linq.XElement" /> will be written to.</param>
     </member>
     <member name="M:System.Xml.Linq.XElement.SaveAsync(System.IO.Stream,System.Xml.Linq.SaveOptions,System.Threading.CancellationToken)">
-      <param name="stream" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously outputs this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.IO.Stream" />.</summary>
+      <param name="stream">The stream to output the XML to.</param>
+      <param name="options">A bitwise combination of the enumeration values that specify the serialization options.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous save operation.</returns>
     </member>
     <member name="M:System.Xml.Linq.XElement.SaveAsync(System.IO.TextWriter,System.Xml.Linq.SaveOptions,System.Threading.CancellationToken)">
-      <param name="textWriter" />
-      <param name="options" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously outputs this <see cref="T:System.Xml.Linq.XElement" /> to a <see cref="T:System.IO.TextWriter" />.</summary>
+      <param name="textWriter">The writer to output the XML to.</param>
+      <param name="options">A bitwise combination of the enumeration values that specify the serialization options.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous save operation.</returns>
     </member>
     <member name="M:System.Xml.Linq.XElement.SaveAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously outputs this <see cref="T:System.Xml.Linq.XElement" /> to an <see cref="T:System.Xml.XmlWriter" />.</summary>
+      <param name="writer">The writer to output the XML to.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous save operation.</returns>
     </member>
     <member name="M:System.Xml.Linq.XElement.SetAttributeValue(System.Xml.Linq.XName,System.Object)">
       <summary>Sets the value of an attribute, adds an attribute, or removes an attribute.</summary>
@@ -1186,8 +1199,10 @@
       <param name="writer">An <see cref="T:System.Xml.XmlWriter" /> into which this method will write.</param>
     </member>
     <member name="M:System.Xml.Linq.XElement.WriteToAsync(System.Xml.XmlWriter,System.Threading.CancellationToken)">
-      <param name="writer" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously writes this <see cref="T:System.Xml.Linq.XElement" /> to the specified writer.</summary>
+      <param name="writer">The writer to write this <see cref="T:System.Xml.Linq.XElement" /> to.</param>
+      <param name="cancellationToken">A token that can be used to request cancellation of the asynchronous operation.</param>
+      <returns>A task representing the asynchronous write operation.</returns>
     </member>
     <member name="T:System.Xml.Linq.XName">
       <summary>Represents a name of an XML element or attribute.</summary>
@@ -1317,12 +1332,12 @@
       <returns>The URI of this <see cref="T:System.Xml.Linq.XNamespace" />.</returns>
     </member>
     <member name="P:System.Xml.Linq.XNamespace.Xml">
-      <summary>Gets the <see cref="T:System.Xml.Linq.XNamespace" /> object that corresponds to the XML URI (<c></c>).</summary>
-      <returns>The <see cref="T:System.Xml.Linq.XNamespace" /> that corresponds to the XML URI (<c></c>).</returns>
+      <summary>Gets the <see cref="T:System.Xml.Linq.XNamespace" /> object that corresponds to the XML URI (<c>http://www.w3.org/XML/1998/namespace</c>).</summary>
+      <returns>The <see cref="T:System.Xml.Linq.XNamespace" /> that corresponds to the XML URI (<c>http://www.w3.org/XML/1998/namespace</c>).</returns>
     </member>
     <member name="P:System.Xml.Linq.XNamespace.Xmlns">
-      <summary>Gets the <see cref="T:System.Xml.Linq.XNamespace" /> object that corresponds to the xmlns URI (<c></c>).</summary>
-      <returns>The <see cref="T:System.Xml.Linq.XNamespace" /> that corresponds to the xmlns URI (<c></c>).</returns>
+      <summary>Gets the <see cref="T:System.Xml.Linq.XNamespace" /> object that corresponds to the xmlns URI (<c>http://www.w3.org/2000/xmlns/</c>).</summary>
+      <returns>The <see cref="T:System.Xml.Linq.XNamespace" /> that corresponds to the xmlns URI (<c>http://www.w3.org/2000/xmlns/</c>).</returns>
     </member>
     <member name="T:System.Xml.Linq.XNode">
       <summary>Represents the abstract concept of a node (element, comment, document type, processing instruction, or text node) in the XML tree.</summary>
@@ -1354,9 +1369,9 @@
     <member name="M:System.Xml.Linq.XNode.Ancestors(System.Xml.Linq.XName)">
       <summary>Returns a filtered collection of the ancestor elements of this node. Only elements that have a matching <see cref="T:System.Xml.Linq.XName" /> are included in the collection.</summary>
       <param name="name">The <see cref="T:System.Xml.Linq.XName" /> to match.</param>
-      <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1" /> of <see cref="T:System.Xml.Linq.XElement" /> of the ancestor elements of this node. Only elements that have a matching <see cref="T:System.Xml.Linq.XName" /> are included in the collection.  
- The nodes in the returned collection are in reverse document order.  
- This method uses deferred execution.</returns>
+      <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1" /> of <see cref="T:System.Xml.Linq.XElement" /> of the ancestor elements of this node. Only elements that have a matching <see cref="T:System.Xml.Linq.XName" /> are included in the collection.
+The nodes in the returned collection are in reverse document order.
+This method uses deferred execution.</returns>
     </member>
     <member name="M:System.Xml.Linq.XNode.CompareDocumentOrder(System.Xml.Linq.XNode,System.Xml.Linq.XNode)">
       <summary>Compares two nodes to determine their relative XML document order.</summary>

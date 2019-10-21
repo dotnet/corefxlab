@@ -373,9 +373,9 @@
     <member name="M:System.ComponentModel.BindingList`1.AddNew">
       <summary>Adds a new item to the collection.</summary>
       <returns>The item added to the list.</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Windows.Forms.BindingSource.AllowNew" /> property is set to <see langword="false" />.  
- -or-  
- A public parameterless constructor could not be found for the current item type.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Windows.Forms.BindingSource.AllowNew" /> property is set to <see langword="false" />.
+-or-
+A public parameterless constructor could not be found for the current item type.</exception>
     </member>
     <member name="M:System.ComponentModel.BindingList`1.AddNewCore">
       <summary>Adds a new item to the end of the collection.</summary>
@@ -469,8 +469,8 @@
       <param name="index">The zero-based index of the item to replace.</param>
       <param name="item">The new value for the item at the specified index. The value can be <see langword="null" /> for reference types.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
     </member>
     <member name="P:System.ComponentModel.BindingList`1.SortDirectionCore">
@@ -832,9 +832,9 @@
     <member name="M:System.ComponentModel.Container.Add(System.ComponentModel.IComponent,System.String)">
       <summary>Adds the specified <see cref="T:System.ComponentModel.Component" /> to the <see cref="T:System.ComponentModel.Container" /> and assigns it a name.</summary>
       <param name="component">The component to add.</param>
-      <param name="name">The unique, case-insensitive name to assign to the component.  
- -or-  
- <see langword="null" />, which leaves the component unnamed.</param>
+      <param name="name">The unique, case-insensitive name to assign to the component.
+-or-
+<see langword="null" />, which leaves the component unnamed.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="component" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
@@ -3109,13 +3109,13 @@
       <param name="member">The member information for the descriptor. This can be a <see cref="T:System.Reflection.MethodInfo" />, <see cref="T:System.Reflection.ConstructorInfo" />, <see cref="T:System.Reflection.FieldInfo" />, or <see cref="T:System.Reflection.PropertyInfo" />. If this is a <see cref="T:System.Reflection.MethodInfo" />, <see cref="T:System.Reflection.FieldInfo" />, or <see cref="T:System.Reflection.PropertyInfo" />, it must represent a <see langword="static" /> member.</param>
       <param name="arguments">The collection of arguments to pass to the member. This parameter can be <see langword="null" /> or an empty collection if there are no arguments. The collection can also consist of other instances of <see cref="T:System.ComponentModel.Design.Serialization.InstanceDescriptor" />.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="member" /> is of type <see cref="T:System.Reflection.MethodInfo" />, <see cref="T:System.Reflection.FieldInfo" />, or <see cref="T:System.Reflection.PropertyInfo" />, and it does not represent a <see langword="static" /> member.  
+        <paramref name="member" /> is of type <see cref="T:System.Reflection.MethodInfo" />, <see cref="T:System.Reflection.FieldInfo" />, or <see cref="T:System.Reflection.PropertyInfo" />, and it does not represent a <see langword="static" /> member.
 -or-
-<paramref name="member" /> is of type <see cref="T:System.Reflection.PropertyInfo" /> and is not readable.  
+<paramref name="member" /> is of type <see cref="T:System.Reflection.PropertyInfo" /> and is not readable.
 -or-
 <paramref name="member" /> is of type <see cref="T:System.Reflection.MethodInfo" /> or <see cref="T:System.Reflection.ConstructorInfo" />, and the number of arguments in <paramref name="arguments" /> does not match the signature of <paramref name="member" />.
 -or-
-<paramref name="member" /> is of type <see cref="T:System.Reflection.ConstructorInfo" /> and represents a <see langword="static" /> member.  
+<paramref name="member" /> is of type <see cref="T:System.Reflection.ConstructorInfo" /> and represents a <see langword="static" /> member.
 -or-
 <paramref name="member" /> is of type <see cref="T:System.Reflection.FieldInfo" />, and the number of arguments in <paramref name="arguments" /> is not zero.</exception>
     </member>
@@ -3126,10 +3126,10 @@
       <param name="isComplete">
         <see langword="true" /> if the specified information completely describes the instance; otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="member" /> is of type <see cref="T:System.Reflection.MethodInfo" />, <see cref="T:System.Reflection.FieldInfo" />, or <see cref="T:System.Reflection.PropertyInfo" />, and it does not represent a <see langword="static" /> member  
-<paramref name="member" /> is of type <see cref="T:System.Reflection.PropertyInfo" /> and is not readable.  
-<paramref name="member" /> is of type <see cref="T:System.Reflection.MethodInfo" /> or <see cref="T:System.Reflection.ConstructorInfo" /> and the number of arguments in <paramref name="arguments" /> does not match the signature of <paramref name="member" />.  
-<paramref name="member" /> is of type <see cref="T:System.Reflection.ConstructorInfo" /> and represents a <see langword="static" /> member  
+        <paramref name="member" /> is of type <see cref="T:System.Reflection.MethodInfo" />, <see cref="T:System.Reflection.FieldInfo" />, or <see cref="T:System.Reflection.PropertyInfo" />, and it does not represent a <see langword="static" /> member
+<paramref name="member" /> is of type <see cref="T:System.Reflection.PropertyInfo" /> and is not readable.
+<paramref name="member" /> is of type <see cref="T:System.Reflection.MethodInfo" /> or <see cref="T:System.Reflection.ConstructorInfo" /> and the number of arguments in <paramref name="arguments" /> does not match the signature of <paramref name="member" />.
+<paramref name="member" /> is of type <see cref="T:System.Reflection.ConstructorInfo" /> and represents a <see langword="static" /> member
 <paramref name="member" /> is of type <see cref="T:System.Reflection.FieldInfo" />, and the number of arguments in <paramref name="arguments" /> is not zero.</exception>
     </member>
     <member name="P:System.ComponentModel.Design.Serialization.InstanceDescriptor.Arguments">
@@ -4070,8 +4070,8 @@ The view object must implement any interfaces the development environment requir
       <returns>The element at the specified index.</returns>
       <exception cref="T:System.NotSupportedException">The collection is read-only.</exception>
       <exception cref="T:System.IndexOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.ComponentModel.EventDescriptorCollection.Count" />.</exception>
     </member>
     <member name="M:System.ComponentModel.EventDescriptorCollection.System#Collections#IList#Remove(System.Object)">
@@ -4292,7 +4292,7 @@ The view object must implement any interfaces the development environment requir
       <param name="sorts">The <see cref="T:System.ComponentModel.ListSortDescriptionCollection" /> containing the sorts to apply to the data source.</param>
     </member>
     <member name="P:System.ComponentModel.IBindingListView.Filter">
-      <summary>Gets or sets the filter to be used to exclude items from the collection of items returned by the data source</summary>
+      <summary>Gets or sets the filter to be used to exclude items from the collection of items returned by the data source.</summary>
       <returns>The string used to filter items out in the item collection returned by the data source.</returns>
     </member>
     <member name="M:System.ComponentModel.IBindingListView.RemoveFilter">
@@ -5250,8 +5250,8 @@ The view object must implement any interfaces the development environment requir
     </member>
     <member name="M:System.ComponentModel.MarshalByValueComponent.ToString">
       <summary>Returns a <see cref="T:System.String" /> containing the name of the <see cref="T:System.ComponentModel.Component" />, if any. This method should not be overridden.</summary>
-      <returns>A <see cref="T:System.String" /> containing the name of the <see cref="T:System.ComponentModel.Component" />, if any.  
- <see langword="null" /> if the <see cref="T:System.ComponentModel.Component" /> is unnamed.</returns>
+      <returns>A <see cref="T:System.String" /> containing the name of the <see cref="T:System.ComponentModel.Component" />, if any.
+<see langword="null" /> if the <see cref="T:System.ComponentModel.Component" /> is unnamed.</returns>
     </member>
     <member name="T:System.ComponentModel.MaskedTextProvider">
       <summary>Represents a mask-parsing service that can be used by any number of controls that support masking, such as the <see cref="T:System.Windows.Forms.MaskedTextBox" /> control.</summary>
@@ -5294,9 +5294,9 @@ The view object must implement any interfaces the development environment requir
       <param name="passwordChar">A <see cref="T:System.Char" /> that will be displayed for characters entered into a password string.</param>
       <param name="restrictToAscii">
         <see langword="true" /> to restrict input to ASCII-compatible characters; otherwise <see langword="false" /> to allow the entire Unicode set.</param>
-      <exception cref="T:System.ArgumentException">The mask parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />.  
- -or-  
- The mask contains one or more non-printable characters.</exception>
+      <exception cref="T:System.ArgumentException">The mask parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+-or-
+The mask contains one or more non-printable characters.</exception>
     </member>
     <member name="M:System.ComponentModel.MaskedTextProvider.#ctor(System.String,System.Globalization.CultureInfo,System.Char,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.MaskedTextProvider" /> class using the specified mask, culture, password character, and prompt usage value.</summary>
@@ -6239,7 +6239,7 @@ The view object must implement any interfaces the development environment requir
       <returns>The value of a property for a given component.</returns>
     </member>
     <member name="M:System.ComponentModel.PropertyDescriptor.GetValueChangedHandler(System.Object)">
-      <summary>Retrieves the current set of <c>ValueChanged</c> event handlers for a specific component</summary>
+      <summary>Retrieves the current set of <c>ValueChanged</c> event handlers for a specific component.</summary>
       <param name="component">The component for which to retrieve event handlers.</param>
       <returns>A combined multicast event handler, or <see langword="null" /> if no event handlers are currently assigned to <paramref name="component" />.</returns>
     </member>
@@ -6513,8 +6513,8 @@ The view object must implement any interfaces the development environment requir
       <exception cref="T:System.ArgumentException">
         <paramref name="value" /> is not a <see cref="T:System.ComponentModel.PropertyDescriptor" />.</exception>
       <exception cref="T:System.IndexOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.ComponentModel.EventDescriptorCollection.Count" />.</exception>
     </member>
     <member name="M:System.ComponentModel.PropertyDescriptorCollection.System#Collections#IList#Remove(System.Object)">
@@ -6577,21 +6577,21 @@ The view object must implement any interfaces the development environment requir
       <summary>Initializes the attribute using the specified names of tab classes and array of tab scopes.</summary>
       <param name="tabClassNames">An array of fully qualified type names of the types to create for tabs on the Properties window.</param>
       <param name="tabScopes">The scope of each tab. If the scope is <see cref="F:System.ComponentModel.PropertyTabScope.Component" />, it is shown only for components with the corresponding <see cref="T:System.ComponentModel.PropertyTabAttribute" />. If it is <see cref="F:System.ComponentModel.PropertyTabScope.Document" />, it is shown for all components on the document.</param>
-      <exception cref="T:System.ArgumentException">One or more of the values in <paramref name="tabScopes" /> is not <see cref="F:System.ComponentModel.PropertyTabScope.Document" /> or <see cref="F:System.ComponentModel.PropertyTabScope.Component" />.  
- -or-  
- The length of the <paramref name="tabClassNames" /> and <paramref name="tabScopes" /> arrays do not match.  
- -or-  
- <paramref name="tabClassNames" /> or <paramref name="tabScopes" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">One or more of the values in <paramref name="tabScopes" /> is not <see cref="F:System.ComponentModel.PropertyTabScope.Document" /> or <see cref="F:System.ComponentModel.PropertyTabScope.Component" />.
+-or-
+The length of the <paramref name="tabClassNames" /> and <paramref name="tabScopes" /> arrays do not match.
+-or-
+<paramref name="tabClassNames" /> or <paramref name="tabScopes" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.ComponentModel.PropertyTabAttribute.InitializeArrays(System.Type[],System.ComponentModel.PropertyTabScope[])">
       <summary>Initializes the attribute using the specified names of tab classes and array of tab scopes.</summary>
       <param name="tabClasses">The types of tabs to create.</param>
       <param name="tabScopes">The scope of each tab. If the scope is <see cref="F:System.ComponentModel.PropertyTabScope.Component" />, it is shown only for components with the corresponding <see cref="T:System.ComponentModel.PropertyTabAttribute" />. If it is <see cref="F:System.ComponentModel.PropertyTabScope.Document" />, it is shown for all components on the document.</param>
-      <exception cref="T:System.ArgumentException">One or more of the values in <paramref name="tabScopes" /> is not <see cref="F:System.ComponentModel.PropertyTabScope.Document" /> or <see cref="F:System.ComponentModel.PropertyTabScope.Component" />.  
- -or-  
- The length of the <paramref name="tabClassNames" /> and <paramref name="tabScopes" /> arrays do not match.  
- -or-  
- <paramref name="tabClassNames" /> or <paramref name="tabScopes" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">One or more of the values in <paramref name="tabScopes" /> is not <see cref="F:System.ComponentModel.PropertyTabScope.Document" /> or <see cref="F:System.ComponentModel.PropertyTabScope.Component" />.
+-or-
+The length of the <paramref name="tabClassNames" /> and <paramref name="tabScopes" /> arrays do not match.
+-or-
+<paramref name="tabClassNames" /> or <paramref name="tabScopes" /> is <see langword="null" />.</exception>
     </member>
     <member name="P:System.ComponentModel.PropertyTabAttribute.TabClasses">
       <summary>Gets the types of tabs that this attribute uses.</summary>
@@ -6622,7 +6622,7 @@ The view object must implement any interfaces the development environment requir
       <summary>This tab is added to the Properties window and cannot be removed.</summary>
     </member>
     <member name="T:System.ComponentModel.ProvidePropertyAttribute">
-      <summary>Specifies the name of the property that an implementer of <see cref="T:System.ComponentModel.IExtenderProvider" /> offers to other components. This class cannot be inherited</summary>
+      <summary>Specifies the name of the property that an implementer of <see cref="T:System.ComponentModel.IExtenderProvider" /> offers to other components. This class cannot be inherited.</summary>
     </member>
     <member name="M:System.ComponentModel.ProvidePropertyAttribute.#ctor(System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.ProvidePropertyAttribute" /> class with the name of the property and the type of its receiver.</summary>
@@ -8451,7 +8451,7 @@ The view object must implement any interfaces the development environment requir
         <see langword="true" /> if this converter can perform the conversion; otherwise <see langword="false" />.</returns>
     </member>
     <member name="M:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicyTypeConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
-      <summary>Convert the object to the specified type</summary>
+      <summary>Convert the object to the specified type.</summary>
       <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext" /> that provides a format context.</param>
       <param name="culture">A <see cref="T:System.Globalization.CultureInfo" /> object. If <see langword="null" /> is passed, the current culture is assumed.</param>
       <param name="value">The <see cref="T:System.Object" /> to convert. This should be a <see cref="T:System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy" /> object.</param>
@@ -8515,9 +8515,9 @@ The view object must implement any interfaces the development environment requir
     <member name="P:System.Timers.Timer.Interval">
       <summary>Gets or sets the interval, expressed in milliseconds, at which to raise the <see cref="E:System.Timers.Timer.Elapsed" /> event.</summary>
       <returns>The time, in milliseconds, between <see cref="E:System.Timers.Timer.Elapsed" /> events. The value must be greater than zero, and less than or equal to <see cref="F:System.Int32.MaxValue" />. The default is 100 milliseconds.</returns>
-      <exception cref="T:System.ArgumentException">The interval is less than or equal to zero.  
- -or-  
- The interval is greater than <see cref="F:System.Int32.MaxValue" />, and the timer is currently enabled. (If the timer is not currently enabled, no exception is thrown until it becomes enabled.)</exception>
+      <exception cref="T:System.ArgumentException">The interval is less than or equal to zero.
+-or-
+The interval is greater than <see cref="F:System.Int32.MaxValue" />, and the timer is currently enabled. (If the timer is not currently enabled, no exception is thrown until it becomes enabled.)</exception>
     </member>
     <member name="P:System.Timers.Timer.Site">
       <summary>Gets or sets the site that binds the <see cref="T:System.Timers.Timer" /> to its container in design mode.</summary>

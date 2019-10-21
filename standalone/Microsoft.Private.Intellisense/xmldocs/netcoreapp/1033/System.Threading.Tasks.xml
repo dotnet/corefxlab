@@ -98,15 +98,15 @@
       <param name="exception">The exception to bind to the task.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="exception" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The task has already completed.  
- -or-  
- The builder is not initialized.</exception>
+      <exception cref="T:System.InvalidOperationException">The task has already completed.
+-or-
+The builder is not initialized.</exception>
     </member>
     <member name="M:System.Runtime.CompilerServices.AsyncTaskMethodBuilder.SetResult">
       <summary>Marks the task as successfully completed.</summary>
-      <exception cref="T:System.InvalidOperationException">The task has already completed.  
- -or-  
- The builder is not initialized.</exception>
+      <exception cref="T:System.InvalidOperationException">The task has already completed.
+-or-
+The builder is not initialized.</exception>
     </member>
     <member name="M:System.Runtime.CompilerServices.AsyncTaskMethodBuilder.SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)">
       <summary>Associates the builder with the specified state machine.</summary>
@@ -493,7 +493,8 @@
     </member>
     <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetCanceled">
       <summary>Attempts to transition the underlying <see cref="T:System.Threading.Tasks.Task`1" /> into the <see cref="F:System.Threading.Tasks.TaskStatus.Canceled" /> state.</summary>
-      <returns>True if the operation was successful; false if the operation was unsuccessful or the object has already been disposed.</returns>
+      <returns>
+        <see langword="true" /> if the operation was successful; false if the operation was unsuccessful or the object has already been disposed.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="P:System.Threading.Tasks.TaskCompletionSource`1.Task" /> was disposed.</exception>
     </member>
     <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetCanceled(System.Threading.CancellationToken)">
@@ -505,24 +506,27 @@
     <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetException(System.Collections.Generic.IEnumerable{System.Exception})">
       <summary>Attempts to transition the underlying <see cref="T:System.Threading.Tasks.Task`1" /> into the <see cref="F:System.Threading.Tasks.TaskStatus.Faulted" /> state and binds a collection of exception objects to it.</summary>
       <param name="exceptions">The collection of exceptions to bind to this <see cref="T:System.Threading.Tasks.Task`1" />.</param>
-      <returns>True if the operation was successful; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the operation was successful; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="P:System.Threading.Tasks.TaskCompletionSource`1.Task" /> was disposed.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="exceptions" /> argument is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">There are one or more null elements in <paramref name="exceptions" />.  
- -or-  
- The <paramref name="exceptions" /> collection is empty.</exception>
+      <exception cref="T:System.ArgumentException">There are one or more null elements in <paramref name="exceptions" />.
+-or-
+The <paramref name="exceptions" /> collection is empty.</exception>
     </member>
     <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetException(System.Exception)">
       <summary>Attempts to transition the underlying <see cref="T:System.Threading.Tasks.Task`1" /> into the <see cref="F:System.Threading.Tasks.TaskStatus.Faulted" /> state and binds it to a specified exception.</summary>
       <param name="exception">The exception to bind to this <see cref="T:System.Threading.Tasks.Task`1" />.</param>
-      <returns>True if the operation was successful; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the operation was successful; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="P:System.Threading.Tasks.TaskCompletionSource`1.Task" /> was disposed.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="exception" /> argument is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetResult(`0)">
       <summary>Attempts to transition the underlying <see cref="T:System.Threading.Tasks.Task`1" /> into the <see cref="F:System.Threading.Tasks.TaskStatus.RanToCompletion" /> state.</summary>
       <param name="result">The result value to bind to this <see cref="T:System.Threading.Tasks.Task`1" />.</param>
-      <returns>True if the operation was successful; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the operation was successful; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="P:System.Threading.Tasks.TaskCompletionSource`1.Task" /> was disposed.</exception>
     </member>
     <member name="T:System.Threading.Tasks.TaskExtensions">

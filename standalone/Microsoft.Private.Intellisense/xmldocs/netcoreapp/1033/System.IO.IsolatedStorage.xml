@@ -121,9 +121,9 @@
       <summary>Gets a value that represents the amount of free space available for isolated storage.</summary>
       <returns>The available free space for isolated storage, in bytes.</returns>
       <exception cref="T:System.InvalidOperationException">The isolated store is closed.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.Close">
@@ -143,13 +143,13 @@
         <paramref name="sourceFileName" /> was not found.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
         <paramref name="sourceFileName" /> was not found.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.  
- -or-  
- <paramref name="destinationFileName" /> exists.  
- -or-  
- An I/O error has occurred.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.
+-or-
+<paramref name="destinationFileName" /> exists.
+-or-
+An I/O error has occurred.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.CopyFile(System.String,System.String,System.Boolean)">
       <summary>Copies an existing file to a new file, and optionally overwrites an existing file.</summary>
@@ -167,11 +167,11 @@
         <paramref name="sourceFileName" /> was not found.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
         <paramref name="sourceFileName" /> was not found.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.  
- -or-  
- An I/O error has occurred.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.
+-or-
+An I/O error has occurred.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.CreateDirectory(System.String)">
       <summary>Creates a directory in the isolated storage scope.</summary>
@@ -183,9 +183,9 @@
       <summary>Creates a file in the isolated store.</summary>
       <param name="path">The relative path of the file to create.</param>
       <returns>A new isolated storage file.</returns>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is malformed.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -220,9 +220,9 @@
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The isolated store is closed.</exception>
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.Dispose">
       <summary>Releases all resources used by the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFile" />.</summary>
@@ -251,9 +251,9 @@
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetDirectoryNames">
       <summary>Enumerates the directories at the root of an isolated store.</summary>
@@ -308,9 +308,9 @@
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetLastWriteTime(System.String)">
       <summary>Returns the date and time a specified file or directory was last written to.</summary>
@@ -322,18 +322,18 @@
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetMachineStoreForApplication">
       <summary>Obtains machine-scoped isolated storage corresponding to the calling code's application identity.</summary>
       <returns>An object corresponding to the isolated storage scope based on the calling code's application identity.</returns>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The application identity of the caller could not be determined.  
- -or-  
- The granted permission set for the application domain could not be determined.  
- -or-  
- An isolated storage location cannot be initialized.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The application identity of the caller could not be determined.
+-or-
+The granted permission set for the application domain could not be determined.
+-or-
+An isolated storage location cannot be initialized.</exception>
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetMachineStoreForAssembly">
@@ -346,13 +346,13 @@
       <summary>Obtains machine-scoped isolated storage corresponding to the application domain identity and the assembly identity.</summary>
       <returns>An object corresponding to the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope" />, based on a combination of the application domain identity and the assembly identity.</returns>
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The store failed to open.  
- -or-  
- The assembly specified has insufficient permissions to create isolated stores.  
- -or-  
- The permissions for the application domain cannot be determined.  
- -or-  
- An isolated storage location cannot be initialized.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The store failed to open.
+-or-
+The assembly specified has insufficient permissions to create isolated stores.
+-or-
+The permissions for the application domain cannot be determined.
+-or-
+An isolated storage location cannot be initialized.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Object)">
       <summary>Obtains isolated storage corresponding to the given application identity.</summary>
@@ -362,13 +362,13 @@
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
       <exception cref="T:System.ArgumentNullException">The  <paramref name="applicationIdentity" /> identity has not been passed in.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="scope" /> is invalid.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
- -or-  
- <paramref name="scope" /> contains the enumeration value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application" />, but the application identity of the caller cannot be determined,because the <see cref="P:System.AppDomain.ActivationContext" /> for  the current application domain returned <see langword="null" />.  
- -or-  
- <paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain" />, but the permissions for the application domain cannot be determined.  
- -or-  
- <paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly" />, but the permissions for the calling assembly cannot be determined.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.
+-or-
+<paramref name="scope" /> contains the enumeration value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application" />, but the application identity of the caller cannot be determined,because the <see cref="P:System.AppDomain.ActivationContext" /> for  the current application domain returned <see langword="null" />.
+-or-
+<paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain" />, but the permissions for the application domain cannot be determined.
+-or-
+<paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly" />, but the permissions for the calling assembly cannot be determined.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Object,System.Object)">
       <summary>Obtains the isolated storage corresponding to the given application domain and assembly evidence objects.</summary>
@@ -377,17 +377,17 @@
       <param name="assemblyIdentity">An object that contains evidence for the code assembly identity.</param>
       <returns>An object that represents the parameters.</returns>
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
-      <exception cref="T:System.ArgumentNullException">Neither <paramref name="domainIdentity" /> nor <paramref name="assemblyIdentity" /> has been passed in. This verifies that the correct constructor is being used.  
- -or-  
- Either <paramref name="domainIdentity" /> or <paramref name="assemblyIdentity" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">Neither <paramref name="domainIdentity" /> nor <paramref name="assemblyIdentity" /> has been passed in. This verifies that the correct constructor is being used.
+-or-
+Either <paramref name="domainIdentity" /> or <paramref name="assemblyIdentity" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="scope" /> is invalid.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
- -or-  
- <paramref name="scope" /> contains the enumeration value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application" />, but the application identity of the caller cannot be determined, because the <see cref="P:System.AppDomain.ActivationContext" /> for  the current application domain returned <see langword="null" />.  
- -or-  
- <paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain" />, but the permissions for the application domain cannot be determined.  
- -or-  
- <paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly" />, but the permissions for the calling assembly cannot be determined.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.
+-or-
+<paramref name="scope" /> contains the enumeration value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application" />, but the application identity of the caller cannot be determined, because the <see cref="P:System.AppDomain.ActivationContext" /> for  the current application domain returned <see langword="null" />.
+-or-
+<paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain" />, but the permissions for the application domain cannot be determined.
+-or-
+<paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly" />, but the permissions for the calling assembly cannot be determined.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Type)">
       <summary>Obtains isolated storage corresponding to the isolation scope and the application identity object.</summary>
@@ -397,13 +397,13 @@
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
       <exception cref="T:System.ArgumentNullException">The   <paramref name="applicationEvidence" /> identity has not been passed in.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="scope" /> is invalid.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
- -or-  
- <paramref name="scope" /> contains the enumeration value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application" />, but the application identity of the caller cannot be determined, because the <see cref="P:System.AppDomain.ActivationContext" /> for  the current application domain returned <see langword="null" />.  
- -or-  
- <paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain" />, but the permissions for the application domain cannot be determined.  
- -or-  
- <paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly" />, but the permissions for the calling assembly cannot be determined.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.
+-or-
+<paramref name="scope" /> contains the enumeration value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application" />, but the application identity of the caller cannot be determined, because the <see cref="P:System.AppDomain.ActivationContext" /> for  the current application domain returned <see langword="null" />.
+-or-
+<paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain" />, but the permissions for the application domain cannot be determined.
+-or-
+<paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly" />, but the permissions for the calling assembly cannot be determined.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(System.IO.IsolatedStorage.IsolatedStorageScope,System.Type,System.Type)">
       <summary>Obtains isolated storage corresponding to the isolated storage scope given the application domain and assembly evidence types.</summary>
@@ -413,45 +413,45 @@
       <returns>An object that represents the parameters.</returns>
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="scope" /> is invalid.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The evidence type provided is missing in the assembly evidence list.  
- -or-  
- An isolated storage location cannot be initialized.  
- -or-  
- <paramref name="scope" /> contains the enumeration value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application" />, but the application identity of the caller cannot be determined, because the <see cref="P:System.AppDomain.ActivationContext" /> for  the current application domain returned <see langword="null" />.  
- -or-  
- <paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain" />, but the permissions for the application domain cannot be determined.  
- -or-  
- <paramref name="scope" /> contains <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly" />, but the permissions for the calling assembly cannot be determined.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The evidence type provided is missing in the assembly evidence list.
+-or-
+An isolated storage location cannot be initialized.
+-or-
+<paramref name="scope" /> contains the enumeration value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Application" />, but the application identity of the caller cannot be determined, because the <see cref="P:System.AppDomain.ActivationContext" /> for  the current application domain returned <see langword="null" />.
+-or-
+<paramref name="scope" /> contains the value <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Domain" />, but the permissions for the application domain cannot be determined.
+-or-
+<paramref name="scope" /> contains <see cref="F:System.IO.IsolatedStorage.IsolatedStorageScope.Assembly" />, but the permissions for the calling assembly cannot be determined.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForApplication">
       <summary>Obtains user-scoped isolated storage corresponding to the calling code's application identity.</summary>
       <returns>An object corresponding to the isolated storage scope based on the calling code's assembly identity.</returns>
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
- -or-  
- The application identity of the caller cannot be determined, because the <see cref="P:System.AppDomain.ActivationContext" /> property returned <see langword="null" />.  
- -or-  
- The permissions for the application domain cannot be determined.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.
+-or-
+The application identity of the caller cannot be determined, because the <see cref="P:System.AppDomain.ActivationContext" /> property returned <see langword="null" />.
+-or-
+The permissions for the application domain cannot be determined.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly">
       <summary>Obtains user-scoped isolated storage corresponding to the calling code's assembly identity.</summary>
       <returns>An object corresponding to the isolated storage scope based on the calling code's assembly identity.</returns>
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.  
- -or-  
- The permissions for the calling assembly cannot be determined.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">An isolated storage location cannot be initialized.
+-or-
+The permissions for the calling assembly cannot be determined.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForDomain">
       <summary>Obtains user-scoped isolated storage corresponding to the application domain identity and assembly identity.</summary>
       <returns>An object corresponding to the <see cref="T:System.IO.IsolatedStorage.IsolatedStorageScope" />, based on a combination of the application domain identity and the assembly identity.</returns>
       <exception cref="T:System.Security.SecurityException">Sufficient isolated storage permissions have not been granted.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The store failed to open.  
- -or-  
- The assembly specified has insufficient permissions to create isolated stores.  
- -or-  
- An isolated storage location cannot be initialized.  
- -or-  
- The permissions for the application domain cannot be determined.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The store failed to open.
+-or-
+The assembly specified has insufficient permissions to create isolated stores.
+-or-
+An isolated storage location cannot be initialized.
+-or-
+The permissions for the application domain cannot be determined.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForSite">
       <summary>Obtains a user-scoped isolated store for use by applications in a virtual host domain.</summary>
@@ -469,9 +469,9 @@
       <exception cref="T:System.InvalidOperationException">The isolated store has been closed.</exception>
       <exception cref="T:System.NotSupportedException">The current scope is not for an application user.</exception>
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
     </member>
     <member name="P:System.IO.IsolatedStorage.IsolatedStorageFile.IsEnabled">
       <summary>Gets a value that indicates whether isolated storage is enabled.</summary>
@@ -496,13 +496,13 @@
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
         <paramref name="sourceDirectoryName" /> does not exist.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.  
- -or-  
- <paramref name="destinationDirectoryName" /> already exists.  
- -or-  
- <paramref name="sourceDirectoryName" /> and <paramref name="destinationDirectoryName" /> refer to the same directory.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.
+-or-
+<paramref name="destinationDirectoryName" /> already exists.
+-or-
+<paramref name="sourceDirectoryName" /> and <paramref name="destinationDirectoryName" /> refer to the same directory.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.MoveFile(System.String,System.String)">
       <summary>Moves a specified file to a new location, and optionally lets you specify a new file name.</summary>
@@ -516,18 +516,18 @@
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
       <exception cref="T:System.IO.FileNotFoundException">
         <paramref name="sourceFileName" /> was not found.</exception>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.OpenFile(System.String,System.IO.FileMode)">
       <summary>Opens a file in the specified mode.</summary>
       <param name="path">The relative path of the file within the isolated store.</param>
       <param name="mode">One of the enumeration values that specifies how to open the file.</param>
       <returns>A file that is opened in the specified mode, with read/write access, and is unshared.</returns>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is malformed.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -542,9 +542,9 @@
       <param name="mode">One of the enumeration values that specifies how to open the file.</param>
       <param name="access">One of the enumeration values that specifies whether the file will be opened with read, write, or read/write access.</param>
       <returns>A file that is opened in the specified mode and access, and is unshared.</returns>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is malformed.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -560,9 +560,9 @@
       <param name="access">One of the enumeration values that specifies whether the file will be opened with read, write, or read/write access</param>
       <param name="share">A bitwise combination of enumeration values that specify the type of access other <see cref="T:System.IO.IsolatedStorage.IsolatedStorageFileStream" /> objects have to this file.</param>
       <returns>A file that is opened in the specified mode and access, and with the specified sharing options.</returns>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is malformed.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -574,9 +574,9 @@
     <member name="P:System.IO.IsolatedStorage.IsolatedStorageFile.Quota">
       <summary>Gets a value that represents the maximum amount of space available for isolated storage.</summary>
       <returns>The limit of isolated storage space, in bytes.</returns>
-      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.  
- -or-  
- Isolated storage is disabled.</exception>
+      <exception cref="T:System.IO.IsolatedStorage.IsolatedStorageException">The isolated store has been removed.
+-or-
+Isolated storage is disabled.</exception>
       <exception cref="T:System.ObjectDisposedException">The isolated store has been disposed.</exception>
     </member>
     <member name="M:System.IO.IsolatedStorage.IsolatedStorageFile.Remove">

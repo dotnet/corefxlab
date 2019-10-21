@@ -104,8 +104,8 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="value" /> is not a <see cref="T:System.Diagnostics.CounterCreationData" /> object.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is greater than the number of items in the collection.</exception>
     </member>
     <member name="P:System.Diagnostics.CounterCreationDataCollection.Item(System.Int32)">
@@ -113,8 +113,8 @@
       <param name="index">An index into the <see cref="T:System.Diagnostics.CounterCreationDataCollection" />.</param>
       <returns>The collection index, which is used to access individual elements of the collection.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is equal to or greater than the number of items in the collection.</exception>
     </member>
     <member name="M:System.Diagnostics.CounterCreationDataCollection.OnValidate(System.Object)">
@@ -131,8 +131,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="value" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="value" /> is not a <see cref="T:System.Diagnostics.CounterCreationData" /> object.  
--or-  
+        <paramref name="value" /> is not a <see cref="T:System.Diagnostics.CounterCreationData" /> object.
+-or-
 <paramref name="value" /> does not exist in the collection.</exception>
     </member>
     <member name="T:System.Diagnostics.CounterSample">
@@ -368,14 +368,14 @@
       <param name="categoryName">The name of the performance counter category (performance object) with which this performance counter is associated.</param>
       <param name="counterName">The name of the performance counter.</param>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="categoryName" /> is an empty string ("").  
--or-  
-<paramref name="counterName" /> is an empty string ("").  
--or-  
-The category specified does not exist.  
--or-  
-The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
--or-  
+        <paramref name="categoryName" /> is an empty string ("").
+-or-
+<paramref name="counterName" /> is an empty string ("").
+-or-
+The category specified does not exist.
+-or-
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.
+-or-
 <paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
@@ -388,17 +388,17 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="counterName">The name of the performance counter.</param>
       <param name="readOnly">
         <see langword="true" /> to access the counter in read-only mode (although the counter itself could be read/write); <see langword="false" /> to access the counter in read/write mode.</param>
-      <exception cref="T:System.InvalidOperationException">The <paramref name="categoryName" /> is an empty string ("").  
- -or-  
- The <paramref name="counterName" /> is an empty string ("").  
- -or-  
- The category specified does not exist. (if <paramref name="readOnly" /> is <see langword="true" />).  
- -or-  
- The category specified is not a .NET Framework custom category (if <paramref name="readOnly" /> is <see langword="false" />).  
- -or-  
- The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
- -or-  
- <paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
+      <exception cref="T:System.InvalidOperationException">The <paramref name="categoryName" /> is an empty string ("").
+-or-
+The <paramref name="counterName" /> is an empty string ("").
+-or-
+The category specified does not exist. (if <paramref name="readOnly" /> is <see langword="true" />).
+-or-
+The category specified is not a .NET Framework custom category (if <paramref name="readOnly" /> is <see langword="false" />).
+-or-
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.
+-or-
+<paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
@@ -410,16 +410,16 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="counterName">The name of the performance counter.</param>
       <param name="instanceName">The name of the performance counter category instance, or an empty string (""), if the category contains a single instance.</param>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="categoryName" /> is an empty string ("").  
--or-  
-<paramref name="counterName" /> is an empty string ("").  
--or-  
-The category specified is not valid.  
--or-  
-The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
--or-  
-<paramref name="instanceName" /> is longer than 127 characters.  
--or-  
+        <paramref name="categoryName" /> is an empty string ("").
+-or-
+<paramref name="counterName" /> is an empty string ("").
+-or-
+The category specified is not valid.
+-or-
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.
+-or-
+<paramref name="instanceName" /> is longer than 127 characters.
+-or-
 <paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
@@ -434,20 +434,20 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="readOnly">
         <see langword="true" /> to access a counter in read-only mode; <see langword="false" /> to access a counter in read/write mode.</param>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="categoryName" /> is an empty string ("").  
--or-  
-<paramref name="counterName" /> is an empty string ("").  
--or-  
-The read/write permission setting requested is invalid for this counter.  
--or-  
-The category specified does not exist (if <paramref name="readOnly" /> is <see langword="true" />).  
--or-  
-The category specified is not a .NET Framework custom category (if <paramref name="readOnly" /> is <see langword="false" />).  
--or-  
-The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
--or-  
-<paramref name="instanceName" /> is longer than 127 characters.  
--or-  
+        <paramref name="categoryName" /> is an empty string ("").
+-or-
+<paramref name="counterName" /> is an empty string ("").
+-or-
+The read/write permission setting requested is invalid for this counter.
+-or-
+The category specified does not exist (if <paramref name="readOnly" /> is <see langword="true" />).
+-or-
+The category specified is not a .NET Framework custom category (if <paramref name="readOnly" /> is <see langword="false" />).
+-or-
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.
+-or-
+<paramref name="instanceName" /> is longer than 127 characters.
+-or-
 <paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="categoryName" /> or <paramref name="counterName" /> is <see langword="null" />.</exception>
@@ -461,18 +461,18 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="instanceName">The name of the performance counter category instance, or an empty string (""), if the category contains a single instance.</param>
       <param name="machineName">The computer on which the performance counter and its associated category exist.</param>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="categoryName" /> is an empty string ("").  
--or-  
-<paramref name="counterName" /> is an empty string ("").  
--or-  
-The read/write permission setting requested is invalid for this counter.  
--or-  
-The counter does not exist on the specified computer.  
--or-  
-The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.  
--or-  
-<paramref name="instanceName" /> is longer than 127 characters.  
--or-  
+        <paramref name="categoryName" /> is an empty string ("").
+-or-
+<paramref name="counterName" /> is an empty string ("").
+-or-
+The read/write permission setting requested is invalid for this counter.
+-or-
+The counter does not exist on the specified computer.
+-or-
+The category specified is marked as multi-instance and requires the performance counter to be created with an instance name.
+-or-
+<paramref name="instanceName" /> is longer than 127 characters.
+-or-
 <paramref name="categoryName" /> and <paramref name="counterName" /> have been localized into different languages.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter is not valid.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -497,9 +497,9 @@ The category specified is marked as multi-instance and requires the performance 
     <member name="P:System.Diagnostics.PerformanceCounter.CounterHelp">
       <summary>Gets the description for this performance counter.</summary>
       <returns>A description of the item or quantity that this performance counter measures.</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Diagnostics.PerformanceCounter" /> instance is not associated with a performance counter.  
- -or-  
- The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Diagnostics.PerformanceCounter" /> instance is not associated with a performance counter.
+-or-
+The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.CounterName">
@@ -510,19 +510,19 @@ The category specified is marked as multi-instance and requires the performance 
     <member name="P:System.Diagnostics.PerformanceCounter.CounterType">
       <summary>Gets the counter type of the associated performance counter.</summary>
       <returns>A <see cref="T:System.Diagnostics.PerformanceCounterType" /> that describes both how the counter interacts with a monitoring application and the nature of the values it contains (for example, calculated or uncalculated).</returns>
-      <exception cref="T:System.InvalidOperationException">The instance is not correctly associated with a performance counter.  
- -or-  
- The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
+      <exception cref="T:System.InvalidOperationException">The instance is not correctly associated with a performance counter.
+-or-
+The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.Decrement">
       <summary>Decrements the associated performance counter by one through an efficient atomic operation.</summary>
       <returns>The decremented counter value.</returns>
-      <exception cref="T:System.InvalidOperationException">The counter is read-only, so the application cannot decrement it.  
- -or-  
- The instance is not correctly associated with a performance counter.  
- -or-  
- The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
+      <exception cref="T:System.InvalidOperationException">The counter is read-only, so the application cannot decrement it.
+-or-
+The instance is not correctly associated with a performance counter.
+-or-
+The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
     </member>
     <member name="F:System.Diagnostics.PerformanceCounter.DefaultFileMappingSize">
@@ -534,22 +534,22 @@ The category specified is marked as multi-instance and requires the performance 
     <member name="M:System.Diagnostics.PerformanceCounter.Increment">
       <summary>Increments the associated performance counter by one through an efficient atomic operation.</summary>
       <returns>The incremented counter value.</returns>
-      <exception cref="T:System.InvalidOperationException">The counter is read-only, so the application cannot increment it.  
- -or-  
- The instance is not correctly associated with a performance counter.  
- -or-  
- The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
+      <exception cref="T:System.InvalidOperationException">The counter is read-only, so the application cannot increment it.
+-or-
+The instance is not correctly associated with a performance counter.
+-or-
+The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.IncrementBy(System.Int64)">
       <summary>Increments or decrements the value of the associated performance counter by a specified amount through an efficient atomic operation.</summary>
       <param name="value">The value to increment by. (A negative value decrements the counter.)</param>
       <returns>The new counter value.</returns>
-      <exception cref="T:System.InvalidOperationException">The counter is read-only, so the application cannot increment it.  
- -or-  
- The instance is not correctly associated with a performance counter.  
- -or-  
- The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
+      <exception cref="T:System.InvalidOperationException">The counter is read-only, so the application cannot increment it.
+-or-
+The instance is not correctly associated with a performance counter.
+-or-
+The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.InstanceLifetime">
@@ -564,16 +564,16 @@ The category specified is marked as multi-instance and requires the performance 
       <returns>The name of the performance counter category instance, or an empty string (""), if the counter is a single-instance counter.</returns>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounter.MachineName">
-      <summary>Gets or sets the computer name for this performance counter</summary>
+      <summary>Gets or sets the computer name for this performance counter.</summary>
       <returns>The server on which the performance counter and its associated category reside.</returns>
       <exception cref="T:System.ArgumentException">The <see cref="P:System.Diagnostics.PerformanceCounter.MachineName" /> format is invalid.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.NextSample">
       <summary>Obtains a counter sample, and returns the raw, or uncalculated, value for it.</summary>
       <returns>A <see cref="T:System.Diagnostics.CounterSample" /> that represents the next raw value that the system obtains for this counter.</returns>
-      <exception cref="T:System.InvalidOperationException">The instance is not correctly associated with a performance counter.  
- -or-  
- The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
+      <exception cref="T:System.InvalidOperationException">The instance is not correctly associated with a performance counter.
+-or-
+The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
@@ -587,11 +587,11 @@ The category specified is marked as multi-instance and requires the performance 
     <member name="P:System.Diagnostics.PerformanceCounter.RawValue">
       <summary>Gets or sets the raw, or uncalculated, value of this counter.</summary>
       <returns>The raw value of the counter.</returns>
-      <exception cref="T:System.InvalidOperationException">You are trying to set the counter's raw value, but the counter is read-only.  
- -or-  
- The instance is not correctly associated with a performance counter.  
- -or-  
- The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
+      <exception cref="T:System.InvalidOperationException">You are trying to set the counter's raw value, but the counter is read-only.
+-or-
+The instance is not correctly associated with a performance counter.
+-or-
+The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
@@ -602,11 +602,11 @@ The category specified is marked as multi-instance and requires the performance 
     </member>
     <member name="M:System.Diagnostics.PerformanceCounter.RemoveInstance">
       <summary>Deletes the category instance specified by the <see cref="T:System.Diagnostics.PerformanceCounter" /> object <see cref="P:System.Diagnostics.PerformanceCounter.InstanceName" /> property.</summary>
-      <exception cref="T:System.InvalidOperationException">This counter is read-only, so any instance that is associated with the category cannot be removed.  
- -or-  
- The instance is not correctly associated with a performance counter.  
- -or-  
- The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
+      <exception cref="T:System.InvalidOperationException">This counter is read-only, so any instance that is associated with the category cannot be removed.
+-or-
+The instance is not correctly associated with a performance counter.
+-or-
+The <see cref="P:System.Diagnostics.PerformanceCounter.InstanceLifetime" /> property is set to <see cref="F:System.Diagnostics.PerformanceCounterInstanceLifetime.Process" /> when using global shared memory.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
     </member>
     <member name="T:System.Diagnostics.PerformanceCounterCategory">
@@ -625,9 +625,9 @@ The category specified is marked as multi-instance and requires the performance 
       <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> class and sets the <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> and <see cref="P:System.Diagnostics.PerformanceCounterCategory.MachineName" /> properties to the specified values.</summary>
       <param name="categoryName">The name of the performance counter category, or performance object, with which to associate this <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> instance.</param>
       <param name="machineName">The computer on which the performance counter category and its associated counters exist.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").  
- -or-  
- The <paramref name="machineName" /> syntax is invalid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").
+-or-
+The <paramref name="machineName" /> syntax is invalid.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounterCategory.CategoryHelp">
@@ -662,9 +662,9 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="categoryName">The name of the performance counter category, or performance object, with which the specified performance counter is associated.</param>
       <returns>
         <see langword="true" />, if the counter is registered to the specified category on the local computer; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.  
- -or-  
- The <paramref name="counterName" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.
+-or-
+The <paramref name="counterName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").</exception>
       <exception cref="T:System.InvalidOperationException">The category name does not exist.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
@@ -677,12 +677,12 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="machineName">The name of the computer on which the performance counter category and its associated counters exist.</param>
       <returns>
         <see langword="true" />, if the counter is registered to the specified category on the specified computer; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.  
- -or-  
- The <paramref name="counterName" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").  
- -or-  
- The <paramref name="machineName" /> is invalid.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> is <see langword="null" />.
+-or-
+The <paramref name="counterName" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> is an empty string ("").
+-or-
+The <paramref name="machineName" /> is invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The category name does not exist.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
@@ -693,15 +693,15 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="categoryHelp">A description of the custom category.</param>
       <param name="counterData">A <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> that specifies the counters to create as part of the new category.</param>
       <returns>A <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> that is associated with the new custom category, or performance object.</returns>
-      <exception cref="T:System.ArgumentException">A counter name that is specified within the <paramref name="counterData" /> collection is <see langword="null" /> or an empty string ("").  
- -or-  
- A counter that is specified within the <paramref name="counterData" /> collection already exists.  
- -or-  
- The <paramref name="counterName" /> parameter has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
+      <exception cref="T:System.ArgumentException">A counter name that is specified within the <paramref name="counterData" /> collection is <see langword="null" /> or an empty string ("").
+-or-
+A counter that is specified within the <paramref name="counterData" /> collection already exists.
+-or-
+The <paramref name="counterName" /> parameter has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.  
- -or-  
- The layout of the <paramref name="counterData" /> collection is incorrect for base counters. A counter of type <see langword="AverageCount64" />, <see langword="AverageTimer32" />, <see langword="CounterMultiTimer" />, <see langword="CounterMultiTimerInverse" />, <see langword="CounterMultiTimer100Ns" />, <see langword="CounterMultiTimer100NsInverse" />, <see langword="RawFraction" />, <see langword="SampleFraction" /> or <see langword="SampleCounter" /> has to be immediately followed by one of the base counter types (<see langword="AverageBase" />, <see langword="MultiBase" />, <see langword="RawBase" />, or <see langword="SampleBase" />).</exception>
+      <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.
+-or-
+The layout of the <paramref name="counterData" /> collection is incorrect for base counters. A counter of type <see langword="AverageCount64" />, <see langword="AverageTimer32" />, <see langword="CounterMultiTimer" />, <see langword="CounterMultiTimerInverse" />, <see langword="CounterMultiTimer100Ns" />, <see langword="CounterMultiTimer100NsInverse" />, <see langword="RawFraction" />, <see langword="SampleFraction" /> or <see langword="SampleCounter" /> has to be immediately followed by one of the base counter types (<see langword="AverageBase" />, <see langword="MultiBase" />, <see langword="RawBase" />, or <see langword="SampleBase" />).</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
@@ -712,20 +712,20 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="categoryType">One of the <see cref="T:System.Diagnostics.PerformanceCounterCategoryType" /> values.</param>
       <param name="counterData">A <see cref="T:System.Diagnostics.CounterCreationDataCollection" /> that specifies the counters to create as part of the new category.</param>
       <returns>A <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> that is associated with the new custom category, or performance object.</returns>
-      <exception cref="T:System.ArgumentException">A counter name that is specified within the <paramref name="counterData" /> collection is <see langword="null" /> or an empty string ("").  
- -or-  
- A counter that is specified within the <paramref name="counterData" /> collection already exists.  
- -or-  
- <paramref name="counterName" /> has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
+      <exception cref="T:System.ArgumentException">A counter name that is specified within the <paramref name="counterData" /> collection is <see langword="null" /> or an empty string ("").
+-or-
+A counter that is specified within the <paramref name="counterData" /> collection already exists.
+-or-
+<paramref name="counterName" /> has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="categoryName" /> is <see langword="null" />.  
--or-  
+        <paramref name="categoryName" /> is <see langword="null" />.
+-or-
 <paramref name="counterData" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="categoryType" /> value is outside of the range of the following values: <see langword="MultiInstance" />, <see langword="SingleInstance" />, or <see langword="Unknown" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.  
- -or-  
- The layout of the <paramref name="counterData" /> collection is incorrect for base counters. A counter of type <see langword="AverageCount64" />, <see langword="AverageTimer32" />, <see langword="CounterMultiTimer" />, <see langword="CounterMultiTimerInverse" />, <see langword="CounterMultiTimer100Ns" />, <see langword="CounterMultiTimer100NsInverse" />, <see langword="RawFraction" />, <see langword="SampleFraction" />, or <see langword="SampleCounter" /> must be immediately followed by one of the base counter types (<see langword="AverageBase" />, <see langword="MultiBase" />, <see langword="RawBase" />, or <see langword="SampleBase" />).</exception>
+      <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.
+-or-
+The layout of the <paramref name="counterData" /> collection is incorrect for base counters. A counter of type <see langword="AverageCount64" />, <see langword="AverageTimer32" />, <see langword="CounterMultiTimer" />, <see langword="CounterMultiTimerInverse" />, <see langword="CounterMultiTimer100Ns" />, <see langword="CounterMultiTimer100NsInverse" />, <see langword="RawFraction" />, <see langword="SampleFraction" />, or <see langword="SampleCounter" /> must be immediately followed by one of the base counter types (<see langword="AverageBase" />, <see langword="MultiBase" />, <see langword="RawBase" />, or <see langword="SampleBase" />).</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
@@ -738,15 +738,15 @@ The category specified is marked as multi-instance and requires the performance 
       <param name="counterHelp">A description of the counter that is associated with the new custom category.</param>
       <returns>A <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> that is associated with the new system category, or performance object.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="counterName" /> is <see langword="null" /> or is an empty string ("").  
--or-  
-The counter that is specified by <paramref name="counterName" /> already exists.  
--or-  
+        <paramref name="counterName" /> is <see langword="null" /> or is an empty string ("").
+-or-
+The counter that is specified by <paramref name="counterName" /> already exists.
+-or-
 <paramref name="counterName" /> has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="categoryName" /> is <see langword="null" />.  
--or-  
+        <paramref name="categoryName" /> is <see langword="null" />.
+-or-
 <paramref name="counterHelp" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
@@ -759,15 +759,15 @@ The counter that is specified by <paramref name="counterName" /> already exists.
       <param name="counterHelp">A description of the counter that is associated with the new custom category.</param>
       <returns>A <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> that is associated with the new system category, or performance object.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="counterName" /> is <see langword="null" /> or is an empty string ("").  
--or-  
-The counter that is specified by <paramref name="counterName" /> already exists.  
--or-  
+        <paramref name="counterName" /> is <see langword="null" /> or is an empty string ("").
+-or-
+The counter that is specified by <paramref name="counterName" /> already exists.
+-or-
 <paramref name="counterName" /> has invalid syntax. It might contain backslash characters ("\") or have length greater than 80 characters.</exception>
       <exception cref="T:System.InvalidOperationException">The category already exists on the local computer.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="categoryName" /> is <see langword="null" />.  
--or-  
+        <paramref name="categoryName" /> is <see langword="null" />.
+-or-
 <paramref name="counterHelp" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
@@ -798,14 +798,14 @@ The counter that is specified by <paramref name="counterName" /> already exists.
       <returns>
         <see langword="true" /> if the category is registered; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").  
- -or-  
- The <paramref name="machineName" /> parameter is invalid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").
+-or-
+The <paramref name="machineName" /> parameter is invalid.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.IO.IOException">The network path cannot be found.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.  
- -or-  
- Code that is executing without administrative privileges attempted to read a performance counter.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.
+-or-
+Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounterCategory.GetCategories">
       <summary>Retrieves a list of the performance counter categories that are registered on the local computer.</summary>
@@ -834,18 +834,18 @@ The counter that is specified by <paramref name="counterName" /> already exists.
       <param name="instanceName">The performance object instance for which to retrieve the list of associated counters.</param>
       <returns>An array of <see cref="T:System.Diagnostics.PerformanceCounter" /> objects indicating the counters that are associated with the specified object instance of this performance counter category.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property for this <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> instance has not been set.  
- -or-  
- The category does not contain the instance that is specified by the <paramref name="instanceName" /> parameter.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property for this <see cref="T:System.Diagnostics.PerformanceCounterCategory" /> instance has not been set.
+-or-
+The category does not contain the instance that is specified by the <paramref name="instanceName" /> parameter.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounterCategory.GetInstanceNames">
       <summary>Retrieves the list of performance object instances that are associated with this category.</summary>
       <returns>An array of strings representing the performance object instance names that are associated with this category or, if the category contains only one performance object instance, a single-entry array that contains an empty string ("").</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property is <see langword="null" />. The property might not have been set.  
- -or-  
- The category does not have an associated instance.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.PerformanceCounterCategory.CategoryName" /> property is <see langword="null" />. The property might not have been set.
+-or-
+The category does not have an associated instance.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
@@ -865,9 +865,9 @@ The counter that is specified by <paramref name="counterName" /> already exists.
       <param name="categoryName">The performance counter category to search.</param>
       <returns>
         <see langword="true" /> if the category contains the specified performance object instance; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
@@ -879,12 +879,12 @@ The counter that is specified by <paramref name="counterName" /> already exists.
       <param name="machineName">The name of the computer on which to look for the category instance pair.</param>
       <returns>
         <see langword="true" /> if the category contains the specified performance object instance; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").  
- -or-  
- The <paramref name="machineName" /> parameter is invalid.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="instanceName" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="categoryName" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="categoryName" /> parameter is an empty string ("").
+-or-
+The <paramref name="machineName" /> parameter is invalid.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">A call to an underlying system API failed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">Code that is executing without administrative privileges attempted to read a performance counter.</exception>
     </member>
@@ -928,7 +928,7 @@ The counter that is specified by <paramref name="counterName" /> already exists.
       <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.PerformanceCounterManager" /> class.</summary>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounterManager.System#Diagnostics#ICollectData#CloseData">
-      <summary>Called by the perf dll's close performance data</summary>
+      <summary>Called by the perf dll's close performance data.</summary>
     </member>
     <member name="M:System.Diagnostics.PerformanceCounterManager.System#Diagnostics#ICollectData#CollectData(System.Int32,System.IntPtr,System.IntPtr,System.Int32,System.IntPtr@)">
       <summary>Performance data collection routine. Called by the PerfCount perf dll.</summary>

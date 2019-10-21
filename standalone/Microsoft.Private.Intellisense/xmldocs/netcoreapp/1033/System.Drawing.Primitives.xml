@@ -148,7 +148,7 @@
       <returns>A <see cref="T:System.Drawing.Color" /> representing a system-defined color.</returns>
     </member>
     <member name="P:System.Drawing.Color.DarkSeaGreen">
-      <summary>Gets a system-defined color that has an ARGB value of <c>#FF8FBC8F</c>.</summary>
+      <summary>Gets a system-defined color that has an ARGB value of <c>#FF8FBC8B</c>.</summary>
       <returns>A <see cref="T:System.Drawing.Color" /> representing a system-defined color.</returns>
     </member>
     <member name="P:System.Drawing.Color.DarkSlateBlue">
@@ -1490,7 +1490,7 @@
       <returns>The y-coordinate of this <see cref="T:System.Drawing.PointF" />.</returns>
     </member>
     <member name="T:System.Drawing.Rectangle">
-      <summary>Stores a set of four integers that represent the location and size of a rectangle</summary>
+      <summary>Stores a set of four integers that represent the location and size of a rectangle.</summary>
     </member>
     <member name="M:System.Drawing.Rectangle.#ctor(System.Drawing.Point,System.Drawing.Size)">
       <summary>Initializes a new instance of the <see cref="T:System.Drawing.Rectangle" /> class with the specified location and size.</summary>

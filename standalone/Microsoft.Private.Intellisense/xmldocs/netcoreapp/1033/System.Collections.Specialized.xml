@@ -41,8 +41,8 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="maxValue" /> is less than 1.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="previous" /> includes the final bit in the <see cref="T:System.Collections.Specialized.BitVector32" />.  
--or-  
+        <paramref name="previous" /> includes the final bit in the <see cref="T:System.Collections.Specialized.BitVector32" />.
+-or-
 <paramref name="maxValue" /> is greater than the highest value that can be represented by the number of bits after <paramref name="previous" />.</exception>
     </member>
     <member name="P:System.Collections.Specialized.BitVector32.Data">
@@ -176,15 +176,15 @@
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.Specialized.HybridDictionary" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.Specialized.HybridDictionary" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Specialized.HybridDictionary.Count">
       <summary>Gets the number of key/value pairs contained in the <see cref="T:System.Collections.Specialized.HybridDictionary" />.</summary>
-      <returns>The number of key/value pairs contained in the <see cref="T:System.Collections.Specialized.HybridDictionary" />.  
- Retrieving the value of this property is an O(1) operation.</returns>
+      <returns>The number of key/value pairs contained in the <see cref="T:System.Collections.Specialized.HybridDictionary" />.
+Retrieving the value of this property is an O(1) operation.</returns>
     </member>
     <member name="M:System.Collections.Specialized.HybridDictionary.GetEnumerator">
       <summary>Returns an <see cref="T:System.Collections.IDictionaryEnumerator" /> that iterates through the <see cref="T:System.Collections.Specialized.HybridDictionary" />.</summary>
@@ -244,35 +244,35 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <param name="key">The object to use as the key of the element to add.</param>
       <param name="value">The object to use as the value of the element to add.  The value can be <see langword="null" />.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is greater than <see cref="P:System.Collections.ICollection.Count" />.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">An element with the same key already exists in the <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection.</exception>
-      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection is read-only.  
- -or-  
- The <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection is read-only.
+-or-
+The <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection has a fixed size.</exception>
     </member>
     <member name="P:System.Collections.Specialized.IOrderedDictionary.Item(System.Int32)">
       <summary>Gets or sets the element at the specified index.</summary>
       <param name="index">The zero-based index of the element to get or set.</param>
       <returns>The element at the specified index.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.ICollection.Count" />.</exception>
     </member>
     <member name="M:System.Collections.Specialized.IOrderedDictionary.RemoveAt(System.Int32)">
       <summary>Removes the element at the specified index.</summary>
       <param name="index">The zero-based index of the element to remove.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.ICollection.Count" />.</exception>
-      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection is read-only.  
- -or-  
- The <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection is read-only.
+-or-
+The <see cref="T:System.Collections.Specialized.IOrderedDictionary" /> collection has a fixed size.</exception>
     </member>
     <member name="T:System.Collections.Specialized.ListDictionary">
       <summary>Implements <see langword="IDictionary" /> using a singly linked list. Recommended for collections that typically include fewer than 10 items.</summary>
@@ -282,9 +282,9 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
     </member>
     <member name="M:System.Collections.Specialized.ListDictionary.#ctor(System.Collections.IComparer)">
       <summary>Creates an empty <see cref="T:System.Collections.Specialized.ListDictionary" /> using the specified comparer.</summary>
-      <param name="comparer">The <see cref="T:System.Collections.IComparer" /> to use to determine whether two keys are equal.  
- -or-  
- <see langword="null" /> to use the default comparer, which is each key's implementation of <see cref="M:System.Object.Equals(System.Object)" />.</param>
+      <param name="comparer">The <see cref="T:System.Collections.IComparer" /> to use to determine whether two keys are equal.
+-or-
+<see langword="null" /> to use the default comparer, which is each key's implementation of <see cref="M:System.Object.Equals(System.Object)" />.</param>
     </member>
     <member name="M:System.Collections.Specialized.ListDictionary.Add(System.Object,System.Object)">
       <summary>Adds an entry with the specified key and value into the <see cref="T:System.Collections.Specialized.ListDictionary" />.</summary>
@@ -314,8 +314,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.Specialized.ListDictionary" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.Specialized.ListDictionary" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -544,8 +544,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.Specialized.NameObjectCollectionBase.KeysCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.Specialized.NameObjectCollectionBase.KeysCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -572,8 +572,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.Specialized.NameObjectCollectionBase" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.Specialized.NameObjectCollectionBase" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -672,8 +672,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="dest" /> is multidimensional.  
--or-  
+        <paramref name="dest" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.Specialized.NameValueCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="dest" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.Specialized.NameValueCollection" /> cannot be cast automatically to the type of the destination <paramref name="dest" />.</exception>
     </member>
@@ -748,9 +748,9 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
     </member>
     <member name="M:System.Collections.Specialized.OrderedDictionary.#ctor(System.Collections.IEqualityComparer)">
       <summary>Initializes a new instance of the <see cref="T:System.Collections.Specialized.OrderedDictionary" /> class using the specified comparer.</summary>
-      <param name="comparer">The <see cref="T:System.Collections.IComparer" /> to use to determine whether two keys are equal.  
- -or-  
- <see langword="null" /> to use the default comparer, which is each key's implementation of <see cref="M:System.Object.Equals(System.Object)" />.</param>
+      <param name="comparer">The <see cref="T:System.Collections.IComparer" /> to use to determine whether two keys are equal.
+-or-
+<see langword="null" /> to use the default comparer, which is each key's implementation of <see cref="M:System.Object.Equals(System.Object)" />.</param>
     </member>
     <member name="M:System.Collections.Specialized.OrderedDictionary.#ctor(System.Int32)">
       <summary>Initializes a new instance of the <see cref="T:System.Collections.Specialized.OrderedDictionary" /> class using the specified initial capacity.</summary>
@@ -759,9 +759,9 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
     <member name="M:System.Collections.Specialized.OrderedDictionary.#ctor(System.Int32,System.Collections.IEqualityComparer)">
       <summary>Initializes a new instance of the <see cref="T:System.Collections.Specialized.OrderedDictionary" /> class using the specified initial capacity and comparer.</summary>
       <param name="capacity">The initial number of elements that the <see cref="T:System.Collections.Specialized.OrderedDictionary" /> collection can contain.</param>
-      <param name="comparer">The <see cref="T:System.Collections.IComparer" /> to use to determine whether two keys are equal.  
- -or-  
- <see langword="null" /> to use the default comparer, which is each key's implementation of <see cref="M:System.Object.Equals(System.Object)" />.</param>
+      <param name="comparer">The <see cref="T:System.Collections.IComparer" /> to use to determine whether two keys are equal.
+-or-
+<see langword="null" /> to use the default comparer, which is each key's implementation of <see cref="M:System.Object.Equals(System.Object)" />.</param>
     </member>
     <member name="M:System.Collections.Specialized.OrderedDictionary.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
       <summary>Initializes a new instance of the <see cref="T:System.Collections.Specialized.OrderedDictionary" /> class that is serializable using the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> and <see cref="T:System.Runtime.Serialization.StreamingContext" /> objects.</summary>
@@ -829,8 +829,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <returns>The value of the item at the specified index.</returns>
       <exception cref="T:System.NotSupportedException">The property is being set and the <see cref="T:System.Collections.Specialized.OrderedDictionary" /> collection is read-only.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Specialized.OrderedDictionary.Count" />.</exception>
     </member>
     <member name="P:System.Collections.Specialized.OrderedDictionary.Item(System.Object)">
@@ -860,9 +860,9 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <param name="index">The zero-based index of the entry to remove.</param>
       <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.OrderedDictionary" /> collection is read-only.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
+        <paramref name="index" /> is less than zero.
 -or-
- <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Specialized.OrderedDictionary.Count" />.</exception>
+<paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Specialized.OrderedDictionary.Count" />.</exception>
     </member>
     <member name="P:System.Collections.Specialized.OrderedDictionary.System#Collections#ICollection#IsSynchronized">
       <summary>Gets a value indicating whether access to the <see cref="T:System.Collections.Specialized.OrderedDictionary" /> object is synchronized (thread-safe).</summary>
@@ -924,8 +924,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.Specialized.StringCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.Specialized.StringCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -947,8 +947,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <param name="index">The zero-based index at which <paramref name="value" /> is inserted.</param>
       <param name="value">The string to insert. The value can be <see langword="null" />.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> greater than <see cref="P:System.Collections.Specialized.StringCollection.Count" />.</exception>
     </member>
     <member name="P:System.Collections.Specialized.StringCollection.IsReadOnly">
@@ -964,8 +964,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <param name="index">The zero-based index of the entry to get or set.</param>
       <returns>The element at the specified index.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Specialized.StringCollection.Count" />.</exception>
     </member>
     <member name="M:System.Collections.Specialized.StringCollection.Remove(System.String)">
@@ -976,8 +976,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <summary>Removes the string at the specified index of the <see cref="T:System.Collections.Specialized.StringCollection" />.</summary>
       <param name="index">The zero-based index of the string to remove.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Specialized.StringCollection.Count" />.</exception>
     </member>
     <member name="P:System.Collections.Specialized.StringCollection.SyncRoot">
@@ -993,8 +993,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.Specialized.StringCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.Specialized.StringCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -1006,9 +1006,9 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <summary>Adds an object to the end of the <see cref="T:System.Collections.Specialized.StringCollection" />.</summary>
       <param name="value">The <see cref="T:System.Object" /> to be added to the end of the <see cref="T:System.Collections.Specialized.StringCollection" />. The value can be <see langword="null" />.</param>
       <returns>The <see cref="T:System.Collections.Specialized.StringCollection" /> index at which the <paramref name="value" /> has been added.</returns>
-      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.StringCollection" /> is read-only.  
- -or-  
- The <see cref="T:System.Collections.Specialized.StringCollection" /> has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.StringCollection" /> is read-only.
+-or-
+The <see cref="T:System.Collections.Specialized.StringCollection" /> has a fixed size.</exception>
     </member>
     <member name="M:System.Collections.Specialized.StringCollection.System#Collections#IList#Contains(System.Object)">
       <summary>Determines whether an element is in the <see cref="T:System.Collections.Specialized.StringCollection" />.</summary>
@@ -1026,12 +1026,12 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <param name="index">The zero-based index at which <paramref name="value" /> should be inserted.</param>
       <param name="value">The <see cref="T:System.Object" /> to insert. The value can be <see langword="null" />.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than <see cref="P:System.Collections.Specialized.StringCollection.Count" />.</exception>
-      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.StringCollection" /> is read-only.  
- -or-  
- The <see cref="T:System.Collections.Specialized.StringCollection" /> has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.StringCollection" /> is read-only.
+-or-
+The <see cref="T:System.Collections.Specialized.StringCollection" /> has a fixed size.</exception>
     </member>
     <member name="P:System.Collections.Specialized.StringCollection.System#Collections#IList#IsFixedSize">
       <summary>Gets a value indicating whether the <see cref="T:System.Collections.Specialized.StringCollection" /> object has a fixed size.</summary>
@@ -1048,16 +1048,16 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <param name="index">The zero-based index of the element to get or set.</param>
       <returns>The element at the specified index.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Specialized.StringCollection.Count" />.</exception>
     </member>
     <member name="M:System.Collections.Specialized.StringCollection.System#Collections#IList#Remove(System.Object)">
       <summary>Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Specialized.StringCollection" />.</summary>
       <param name="value">The <see cref="T:System.Object" /> to remove from the <see cref="T:System.Collections.Specialized.StringCollection" />. The value can be <see langword="null" />.</param>
-      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.StringCollection" /> is read-only.  
- -or-  
- The <see cref="T:System.Collections.Specialized.StringCollection" /> has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Specialized.StringCollection" /> is read-only.
+-or-
+The <see cref="T:System.Collections.Specialized.StringCollection" /> has a fixed size.</exception>
     </member>
     <member name="T:System.Collections.Specialized.StringDictionary">
       <summary>Implements a hash table with the key and the value strongly typed to be strings rather than objects.</summary>
@@ -1096,8 +1096,8 @@ The number of elements in the source <see cref="T:System.Collections.Specialized
       <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the values copied from the <see cref="T:System.Collections.Specialized.StringDictionary" />.</param>
       <param name="index">The index in the array where copying begins.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the <see cref="T:System.Collections.Specialized.StringDictionary" /> is greater than the available space from <paramref name="index" /> to the end of <paramref name="array" />.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
@@ -1106,8 +1106,8 @@ The number of elements in the <see cref="T:System.Collections.Specialized.String
     </member>
     <member name="P:System.Collections.Specialized.StringDictionary.Count">
       <summary>Gets the number of key/value pairs in the <see cref="T:System.Collections.Specialized.StringDictionary" />.</summary>
-      <returns>The number of key/value pairs in the <see cref="T:System.Collections.Specialized.StringDictionary" />.  
- Retrieving the value of this property is an O(1) operation.</returns>
+      <returns>The number of key/value pairs in the <see cref="T:System.Collections.Specialized.StringDictionary" />.
+Retrieving the value of this property is an O(1) operation.</returns>
     </member>
     <member name="M:System.Collections.Specialized.StringDictionary.GetEnumerator">
       <summary>Returns an enumerator that iterates through the string dictionary.</summary>

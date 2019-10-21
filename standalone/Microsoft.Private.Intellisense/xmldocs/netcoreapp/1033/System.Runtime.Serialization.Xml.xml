@@ -412,8 +412,7 @@
       <param name="rootElementXpath">The top level element in the xpath.</param>
       <param name="namespaces">The XML namespaces and their prefixes found in the data contract.</param>
       <returns>
-        <see cref="T:System.String" />  
-
+        <see cref="T:System.String" />
 The XPath generated from the type and member data.</returns>
     </member>
     <member name="M:System.Runtime.Serialization.XPathQueryGenerator.CreateFromDataContractSerializer(System.Type,System.Reflection.MemberInfo[],System.Xml.XmlNamespaceManager@)">
@@ -422,8 +421,7 @@ The XPath generated from the type and member data.</returns>
       <param name="pathToMember">The metadata, generated using the <see cref="Overload:System.Type.GetMember" /> method of the <see cref="T:System.Type" /> class, that points to the specific data member used to generate the query.</param>
       <param name="namespaces">The XML namespaces and their prefixes found in the data contract.</param>
       <returns>
-        <see cref="T:System.String" />  
-
+        <see cref="T:System.String" />
 The XPath generated from the type and member data.</returns>
     </member>
     <member name="T:System.Runtime.Serialization.XsdDataContractExporter">

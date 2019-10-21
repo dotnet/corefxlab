@@ -107,18 +107,18 @@
       <param name="m">A <see cref="T:System.Reflection.Module" /> representing the module with which the dynamic method is to be logically associated.</param>
       <param name="skipVisibility">
         <see langword="true" /> to skip JIT visibility checks on types and members accessed by the MSIL of the dynamic method; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.  
- -or-  
- <paramref name="m" /> is a module that provides anonymous hosting for dynamic methods.</exception>
+      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.
+-or-
+<paramref name="m" /> is a module that provides anonymous hosting for dynamic methods.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="m" /> is <see langword="null" />.</exception>
       <exception cref="T:System.NotSupportedException">
-        <paramref name="attributes" /> is a combination of flags other than <see cref="F:System.Reflection.MethodAttributes.Public" /> and <see cref="F:System.Reflection.MethodAttributes.Static" />.  
--or-  
-<paramref name="callingConvention" /> is not <see cref="F:System.Reflection.CallingConventions.Standard" />.  
--or-  
+        <paramref name="attributes" /> is a combination of flags other than <see cref="F:System.Reflection.MethodAttributes.Public" /> and <see cref="F:System.Reflection.MethodAttributes.Static" />.
+-or-
+<paramref name="callingConvention" /> is not <see cref="F:System.Reflection.CallingConventions.Standard" />.
+-or-
 <paramref name="returnType" /> is a type for which <see cref="P:System.Type.IsByRef" /> returns <see langword="true" />.</exception>
     </member>
     <member name="M:System.Reflection.Emit.DynamicMethod.#ctor(System.String,System.Reflection.MethodAttributes,System.Reflection.CallingConventions,System.Type,System.Type[],System.Type,System.Boolean)">
@@ -131,18 +131,18 @@
       <param name="owner">A <see cref="T:System.Type" /> with which the dynamic method is logically associated. The dynamic method has access to all members of the type.</param>
       <param name="skipVisibility">
         <see langword="true" /> to skip JIT visibility checks on types and members accessed by the MSIL of the dynamic method; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.  
- -or-  
- <paramref name="owner" /> is an interface, an array, an open generic type, or a type parameter of a generic type or method.</exception>
+      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.
+-or-
+<paramref name="owner" /> is an interface, an array, an open generic type, or a type parameter of a generic type or method.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="owner" /> is <see langword="null" />.</exception>
       <exception cref="T:System.NotSupportedException">
-        <paramref name="attributes" /> is a combination of flags other than <see cref="F:System.Reflection.MethodAttributes.Public" /> and <see cref="F:System.Reflection.MethodAttributes.Static" />.  
--or-  
-<paramref name="callingConvention" /> is not <see cref="F:System.Reflection.CallingConventions.Standard" />.  
--or-  
+        <paramref name="attributes" /> is a combination of flags other than <see cref="F:System.Reflection.MethodAttributes.Public" /> and <see cref="F:System.Reflection.MethodAttributes.Static" />.
+-or-
+<paramref name="callingConvention" /> is not <see cref="F:System.Reflection.CallingConventions.Standard" />.
+-or-
 <paramref name="returnType" /> is a type for which <see cref="P:System.Type.IsByRef" /> returns <see langword="true" />.</exception>
     </member>
     <member name="M:System.Reflection.Emit.DynamicMethod.#ctor(System.String,System.Type,System.Type[])">
@@ -175,12 +175,12 @@
       <param name="returnType">A <see cref="T:System.Type" /> object that specifies the return type of the dynamic method, or <see langword="null" /> if the method has no return type.</param>
       <param name="parameterTypes">An array of <see cref="T:System.Type" /> objects specifying the types of the parameters of the dynamic method, or <see langword="null" /> if the method has no parameters.</param>
       <param name="m">A <see cref="T:System.Reflection.Module" /> representing the module with which the dynamic method is to be logically associated.</param>
-      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.  
- -or-  
- <paramref name="m" /> is a module that provides anonymous hosting for dynamic methods.</exception>
+      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.
+-or-
+<paramref name="m" /> is a module that provides anonymous hosting for dynamic methods.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="m" /> is <see langword="null" />.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="returnType" /> is a type for which <see cref="P:System.Type.IsByRef" /> returns <see langword="true" />.</exception>
@@ -193,12 +193,12 @@
       <param name="m">A <see cref="T:System.Reflection.Module" /> representing the module with which the dynamic method is to be logically associated.</param>
       <param name="skipVisibility">
         <see langword="true" /> to skip JIT visibility checks on types and members accessed by the MSIL of the dynamic method.</param>
-      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.  
- -or-  
- <paramref name="m" /> is a module that provides anonymous hosting for dynamic methods.</exception>
+      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.
+-or-
+<paramref name="m" /> is a module that provides anonymous hosting for dynamic methods.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="m" /> is <see langword="null" />.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="returnType" /> is a type for which <see cref="P:System.Type.IsByRef" /> returns <see langword="true" />.</exception>
@@ -209,12 +209,12 @@
       <param name="returnType">A <see cref="T:System.Type" /> object that specifies the return type of the dynamic method, or <see langword="null" /> if the method has no return type.</param>
       <param name="parameterTypes">An array of <see cref="T:System.Type" /> objects specifying the types of the parameters of the dynamic method, or <see langword="null" /> if the method has no parameters.</param>
       <param name="owner">A <see cref="T:System.Type" /> with which the dynamic method is logically associated. The dynamic method has access to all members of the type.</param>
-      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.  
- -or-  
- <paramref name="owner" /> is an interface, an array, an open generic type, or a type parameter of a generic type or method.</exception>
+      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.
+-or-
+<paramref name="owner" /> is an interface, an array, an open generic type, or a type parameter of a generic type or method.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="owner" /> is <see langword="null" />.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="returnType" /> is <see langword="null" />, or is a type for which <see cref="P:System.Type.IsByRef" /> returns <see langword="true" />.</exception>
@@ -227,12 +227,12 @@
       <param name="owner">A <see cref="T:System.Type" /> with which the dynamic method is logically associated. The dynamic method has access to all members of the type.</param>
       <param name="skipVisibility">
         <see langword="true" /> to skip JIT visibility checks on types and members accessed by the MSIL of the dynamic method; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.  
- -or-  
- <paramref name="owner" /> is an interface, an array, an open generic type, or a type parameter of a generic type or method.</exception>
+      <exception cref="T:System.ArgumentException">An element of <paramref name="parameterTypes" /> is <see langword="null" /> or <see cref="T:System.Void" />.
+-or-
+<paramref name="owner" /> is an interface, an array, an open generic type, or a type parameter of a generic type or method.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="owner" /> is <see langword="null" />.</exception>
       <exception cref="T:System.NotSupportedException">
         <paramref name="returnType" /> is <see langword="null" />, or is a type for which <see cref="P:System.Type.IsByRef" /> returns <see langword="true" />.</exception>
@@ -260,8 +260,8 @@
       <returns>A delegate of the specified type, which can be used to execute the dynamic method with the specified target object.</returns>
       <exception cref="T:System.InvalidOperationException">The dynamic method has no method body.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="target" /> is not the same type as the first parameter of the dynamic method, and is not assignable to that type.  
--or-  
+        <paramref name="target" /> is not the same type as the first parameter of the dynamic method, and is not assignable to that type.
+-or-
 <paramref name="delegateType" /> has the wrong number of parameters or the wrong parameter types.</exception>
     </member>
     <member name="P:System.Reflection.Emit.DynamicMethod.DeclaringType">
@@ -274,11 +274,11 @@
       <param name="attributes">A bitwise combination of <see cref="T:System.Reflection.ParameterAttributes" /> values that specifies the attributes of the parameter.</param>
       <param name="parameterName">The name of the parameter. The name can be a zero-length string.</param>
       <returns>Always returns <see langword="null" />.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The method has no parameters.  
- -or-  
- <paramref name="position" /> is less than 0.  
- -or-  
- <paramref name="position" /> is greater than the number of the method's parameters.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The method has no parameters.
+-or-
+<paramref name="position" /> is less than 0.
+-or-
+<paramref name="position" /> is greater than the number of the method's parameters.</exception>
     </member>
     <member name="M:System.Reflection.Emit.DynamicMethod.GetBaseDefinition">
       <summary>Returns the base implementation for the method.</summary>
@@ -336,11 +336,11 @@
       <exception cref="T:System.NotSupportedException">The <see cref="F:System.Reflection.CallingConventions.VarArgs" /> calling convention is not supported.</exception>
       <exception cref="T:System.Reflection.TargetParameterCountException">The number of elements in <paramref name="parameters" /> does not match the number of parameters in the dynamic method.</exception>
       <exception cref="T:System.ArgumentException">The type of one or more elements of <paramref name="parameters" /> does not match the type of the corresponding parameter of the dynamic method.</exception>
-      <exception cref="T:System.Reflection.TargetInvocationException">The dynamic method is associated with a module, is not anonymously hosted, and was constructed with <paramref name="skipVisibility" /> set to <see langword="false" />, but the dynamic method accesses members that are not <see langword="public" /> or <see langword="internal" /> (<see langword="Friend" /> in Visual Basic).  
- -or-  
- The dynamic method is anonymously hosted and was constructed with <paramref name="skipVisibility" /> set to <see langword="false" />, but it accesses members that are not <see langword="public" />.  
- -or-  
- The dynamic method contains unverifiable code. See the "Verification" section in Remarks for <see cref="T:System.Reflection.Emit.DynamicMethod" />.</exception>
+      <exception cref="T:System.Reflection.TargetInvocationException">The dynamic method is associated with a module, is not anonymously hosted, and was constructed with <paramref name="skipVisibility" /> set to <see langword="false" />, but the dynamic method accesses members that are not <see langword="public" /> or <see langword="internal" /> (<see langword="Friend" /> in Visual Basic).
+-or-
+The dynamic method is anonymously hosted and was constructed with <paramref name="skipVisibility" /> set to <see langword="false" />, but it accesses members that are not <see langword="public" />.
+-or-
+The dynamic method contains unverifiable code. See the "Verification" section in Remarks for <see cref="T:System.Reflection.Emit.DynamicMethod" />.</exception>
     </member>
     <member name="M:System.Reflection.Emit.DynamicMethod.IsDefined(System.Type,System.Boolean)">
       <summary>Indicates whether the specified custom attribute type is defined.</summary>

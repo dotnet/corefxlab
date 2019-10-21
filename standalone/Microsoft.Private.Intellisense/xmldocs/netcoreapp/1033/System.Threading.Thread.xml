@@ -36,9 +36,9 @@
     <member name="M:System.Threading.CompressedStack.GetCompressedStack">
       <summary>Gets the compressed stack for the current thread.</summary>
       <returns>A <see cref="T:System.Threading.CompressedStack" /> for the current thread.</returns>
-      <exception cref="T:System.Security.SecurityException">A caller in the call chain does not have permission to access unmanaged code.  
- -or-  
- The request for <see cref="T:System.Security.Permissions.StrongNameIdentityPermission" /> failed.</exception>
+      <exception cref="T:System.Security.SecurityException">A caller in the call chain does not have permission to access unmanaged code.
+-or-
+The request for <see cref="T:System.Security.Permissions.StrongNameIdentityPermission" /> failed.</exception>
     </member>
     <member name="M:System.Threading.CompressedStack.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
       <summary>Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the logical context information needed to recreate an instance of this execution context.</summary>
@@ -71,8 +71,8 @@
     <member name="M:System.Threading.Thread.#ctor(System.Threading.ParameterizedThreadStart,System.Int32)">
       <summary>Initializes a new instance of the <see cref="T:System.Threading.Thread" /> class, specifying a delegate that allows an object to be passed to the thread when the thread is started and specifying the maximum stack size for the thread.</summary>
       <param name="start">A <see cref="T:System.Threading.ParameterizedThreadStart" /> delegate that represents the methods to be invoked when this thread begins executing.</param>
-      <param name="maxStackSize">The maximum stack size, in bytes, to be used by the thread, or 0 to use the default maximum stack size specified in the header for the executable.  
- Important   For partially trusted code, <paramref name="maxStackSize" /> is ignored if it is greater than the default stack size. No exception is thrown.</param>
+      <param name="maxStackSize">The maximum stack size, in bytes, to be used by the thread, or 0 to use the default maximum stack size specified in the header for the executable.
+Important   For partially trusted code, <paramref name="maxStackSize" /> is ignored if it is greater than the default stack size. No exception is thrown.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="start" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
@@ -86,8 +86,8 @@
     <member name="M:System.Threading.Thread.#ctor(System.Threading.ThreadStart,System.Int32)">
       <summary>Initializes a new instance of the <see cref="T:System.Threading.Thread" /> class, specifying the maximum stack size for the thread.</summary>
       <param name="start">A <see cref="T:System.Threading.ThreadStart" /> delegate that represents the methods to be invoked when this thread begins executing.</param>
-      <param name="maxStackSize">The maximum stack size, in bytes, to be used by the thread, or 0 to use the default maximum stack size specified in the header for the executable.  
- Important   For partially trusted code, <paramref name="maxStackSize" /> is ignored if it is greater than the default stack size. No exception is thrown.</param>
+      <param name="maxStackSize">The maximum stack size, in bytes, to be used by the thread, or 0 to use the default maximum stack size specified in the header for the executable.
+Important   For partially trusted code, <paramref name="maxStackSize" /> is ignored if it is greater than the default stack size. No exception is thrown.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="start" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
@@ -180,7 +180,10 @@
       <returns>None.</returns>
       <exception cref="T:System.InvalidOperationException">In all cases.</exception>
     </member>
-    <member name="M:System.Threading.Thread.GetCurrentProcessorId" />
+    <member name="M:System.Threading.Thread.GetCurrentProcessorId">
+      <summary>Gets an ID used to indicate on which processor the current thread is executing.</summary>
+      <returns>An integer representing the cached processor ID.</returns>
+    </member>
     <member name="M:System.Threading.Thread.GetData(System.LocalDataStoreSlot)">
       <summary>Retrieves the value from the specified slot on the current thread, within the current thread's current domain. For better performance, use fields that are marked with the <see cref="T:System.ThreadStaticAttribute" /> attribute instead.</summary>
       <param name="slot">The <see cref="T:System.LocalDataStoreSlot" /> from which to get the value.</param>

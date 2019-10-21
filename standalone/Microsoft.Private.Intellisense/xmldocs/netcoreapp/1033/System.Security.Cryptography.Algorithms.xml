@@ -376,8 +376,8 @@ The <paramref name="tag" /> parameter length is not permitted by <see cref="P:Sy
       <param name="names">An array of names to map to the algorithm.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="algorithm" /> or <paramref name="names" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="algorithm" /> cannot be accessed from outside the assembly.  
--or-  
+        <paramref name="algorithm" /> cannot be accessed from outside the assembly.
+-or-
 One of the entries in the <paramref name="names" /> parameter is empty or <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.CryptoConfig.AddOID(System.String,System.String[])">
@@ -610,10 +610,10 @@ The algorithm-specific key import failed.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than zero.  
--or-  
-<paramref name="count" /> is less than zero.  
--or-  
+        <paramref name="offset" /> is less than zero.
+-or-
+<paramref name="count" /> is less than zero.
+-or-
 <paramref name="offset" /> + <paramref name="count" /> - 1 results in an index that is beyond the upper bound of <paramref name="data" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.DSA.SignData(System.Byte[],System.Security.Cryptography.HashAlgorithmName)">
@@ -719,8 +719,8 @@ Creating the signature otherwise failed.</exception>
       <returns>
         <see langword="true" /> if the digital signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="signature" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The implementation type only supports legacy DSA (FIPS 186-2), and the hash algorithm is not SHA-1.
 -or-
@@ -738,16 +738,16 @@ Verifying the signature otherwise failed.</exception>
       <returns>
         <see langword="true" /> if the digital signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="signature" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than zero.  
--or-  
-<paramref name="count" /> is less than zero.  
--or-  
+        <paramref name="offset" /> is less than zero.
+-or-
+<paramref name="count" /> is less than zero.
+-or-
 <paramref name="offset" /> + <paramref name="count" /> - 1 results in an index that is beyond the upper bound of <paramref name="data" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The implementation type only supports legacy DSA (FIPS 186-2), and the hash algorithm is not SHA-1.
 -or-
@@ -761,8 +761,8 @@ Verifying the signature otherwise failed.</exception>
       <returns>
         <see langword="true" /> if the digital signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="signature" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -860,8 +860,8 @@ Verifying the signature otherwise failed.</exception>
       <returns>
         <see langword="true" /> if the signature is valid for the data; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="rgbHash" /> is <see langword="null" />.  
--or-  
+        <paramref name="rgbHash" /> is <see langword="null" />.
+-or-
 <paramref name="rgbSignature" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">The DSA key is missing.</exception>
     </member>
@@ -883,9 +883,9 @@ Verifying the signature otherwise failed.</exception>
       <returns>The digital signature for the specified data.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rgbHash" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">The OID is <see langword="null" />.  
- -or-  
- The DSA key is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">The OID is <see langword="null" />.
+-or-
+The DSA key is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.DSASignatureFormatter.SetHashAlgorithm(System.String)">
       <summary>Specifies the hash algorithm for the Digital Signature Algorithm (<see cref="T:System.Security.Cryptography.DSA" />) signature formatter.</summary>
@@ -1386,11 +1386,11 @@ The algorithm-specific key import failed.</exception>
     </member>
     <member name="M:System.Security.Cryptography.ECDsa.Create(System.String)">
       <summary>Creates a new instance of the specified implementation of the Elliptic Curve Digital Signature Algorithm (ECDSA).</summary>
-      <param name="algorithm">The name of an ECDSA implementation. The following strings all refer to the same implementation, which is the only implementation currently supported in the .NET Framework:  
- - "ECDsa"  
- - "ECDsaCng"  
- - "System.Security.Cryptography.ECDsaCng"  
- You can also provide the name of a custom ECDSA implementation.</param>
+      <param name="algorithm">The name of an ECDSA implementation. The following strings all refer to the same implementation, which is the only implementation currently supported in the .NET Framework:
+- "ECDsa"
+- "ECDsaCng"
+- "System.Security.Cryptography.ECDsaCng"
+You can also provide the name of a custom ECDSA implementation.</param>
       <returns>A new instance of the specified implementation of this class. If the specified algorithm name does not map to an ECDSA implementation, this method returns <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="algorithm" /> parameter is <see langword="null" />.</exception>
     </member>
@@ -1528,10 +1528,10 @@ The algorithm-specific key import failed.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than zero.  
--or-  
-<paramref name="count" /> is less than zero.  
--or-  
+        <paramref name="offset" /> is less than zero.
+-or-
+<paramref name="count" /> is less than zero.
+-or-
 <paramref name="offset" /> + <paramref name="count" /> - 1 results in an index that is beyond the upper bound of <paramref name="data" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.ECDsa.SignData(System.Byte[],System.Security.Cryptography.HashAlgorithmName)">
@@ -1638,8 +1638,8 @@ The algorithm-specific key import failed.</exception>
       <returns>
         <see langword="true" /> if the signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="signature" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -1654,16 +1654,16 @@ The algorithm-specific key import failed.</exception>
       <returns>
         <see langword="true" /> if the signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="signature" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than zero.  
--or-  
-<paramref name="count" /> is less than zero.  
--or-  
+        <paramref name="offset" /> is less than zero.
+-or-
+<paramref name="count" /> is less than zero.
+-or-
 <paramref name="offset" /> + <paramref name="count" /> - 1 results in an index that is beyond the upper bound of <paramref name="data" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.ECDsa.VerifyData(System.IO.Stream,System.Byte[],System.Security.Cryptography.HashAlgorithmName)">
@@ -1674,8 +1674,8 @@ The algorithm-specific key import failed.</exception>
       <returns>
         <see langword="true" /> if the signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="signature" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -1913,8 +1913,8 @@ Releases the unmanaged resources used by the <see cref="T:System.Security.Crypto
       <exception cref="T:System.ArgumentNullException">
         <paramref name="data" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="count" /> or <paramref name="offset" /> is negative.  
--or-  
+        <paramref name="count" /> or <paramref name="offset" /> is negative.
+-or-
 <paramref name="count" /> is larger than the length of <paramref name="data" />.</exception>
       <exception cref="T:System.ArgumentException">The sum of <paramref name="offset" /> and <paramref name="count" /> is larger than the data length.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Security.Cryptography.IncrementalHash" /> object has already been disposed.</exception>
@@ -2179,13 +2179,13 @@ Releases the unmanaged resources used by the <see cref="T:System.Security.Crypto
       <param name="keySize">The size of the key, in bits, to derive.</param>
       <param name="rgbIV">The initialization vector (IV) to use to derive the key.</param>
       <returns>The derived key.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The <paramref name="keySize" /> parameter is incorrect.  
- -or-  
- The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- The <paramref name="algname" /> parameter is not a valid algorithm name.  
- -or-  
- The <paramref name="alghashname" /> parameter is not a valid hash algorithm name.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The <paramref name="keySize" /> parameter is incorrect.
+-or-
+The cryptographic service provider (CSP) cannot be acquired.
+-or-
+The <paramref name="algname" /> parameter is not a valid algorithm name.
+-or-
+The <paramref name="alghashname" /> parameter is not a valid hash algorithm name.</exception>
     </member>
     <member name="M:System.Security.Cryptography.Rfc2898DeriveBytes.Dispose(System.Boolean)">
       <summary>Releases the unmanaged resources used by the <see cref="T:System.Security.Cryptography.Rfc2898DeriveBytes" /> class and optionally releases the managed resources.</summary>
@@ -2248,9 +2248,9 @@ Releases the unmanaged resources used by the <see cref="T:System.Security.Crypto
       <param name="rgbKey">The secret key to be used for the symmetric algorithm. The key size must be 128, 192, or 256 bits.</param>
       <param name="rgbIV">The IV to be used for the symmetric algorithm.</param>
       <returns>A symmetric <see cref="T:System.Security.Cryptography.Rijndael" /> decryptor object.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbKey" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="rgbIV" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbKey" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="rgbIV" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is not <see cref="F:System.Security.Cryptography.CipherMode.ECB" />, <see cref="F:System.Security.Cryptography.CipherMode.CBC" />, or <see cref="F:System.Security.Cryptography.CipherMode.CFB" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.RijndaelManaged.CreateEncryptor" />
@@ -2259,9 +2259,9 @@ Releases the unmanaged resources used by the <see cref="T:System.Security.Crypto
       <param name="rgbKey">The secret key to be used for the symmetric algorithm. The key size must be 128, 192, or 256 bits.</param>
       <param name="rgbIV">The IV to be used for the symmetric algorithm.</param>
       <returns>A symmetric <see cref="T:System.Security.Cryptography.Rijndael" /> encryptor object.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbKey" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="rgbIV" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbKey" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="rgbIV" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is not <see cref="F:System.Security.Cryptography.CipherMode.ECB" />, <see cref="F:System.Security.Cryptography.CipherMode.CBC" />, or <see cref="F:System.Security.Cryptography.CipherMode.CFB" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.RijndaelManaged.GenerateIV">
@@ -2478,16 +2478,16 @@ The algorithm-specific key import failed.</exception>
       <param name="padding">The padding mode.</param>
       <returns>The RSA signature for the specified data.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than zero.  
--or-  
-<paramref name="count" /> is less than zero.  
--or-  
+        <paramref name="offset" /> is less than zero.
+-or-
+<paramref name="count" /> is less than zero.
+-or-
 <paramref name="offset" /> + <paramref name="count" /> - 1 results in an index that is beyond the upper bound of <paramref name="data" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.RSA.SignData(System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
@@ -2497,8 +2497,8 @@ The algorithm-specific key import failed.</exception>
       <param name="padding">The padding mode.</param>
       <returns>The RSA signature for the specified data.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -2510,8 +2510,8 @@ The algorithm-specific key import failed.</exception>
       <param name="padding">The padding mode.</param>
       <returns>The RSA signature for the specified data.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -2626,10 +2626,10 @@ The algorithm-specific key import failed.</exception>
       <returns>
         <see langword="true" /> if the signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
-<paramref name="signature" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
+<paramref name="signature" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -2645,18 +2645,18 @@ The algorithm-specific key import failed.</exception>
       <returns>
         <see langword="true" /> if the signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
-<paramref name="signature" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
+<paramref name="signature" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than zero.  
--or-  
-<paramref name="count" /> is less than zero.  
--or-  
+        <paramref name="offset" /> is less than zero.
+-or-
+<paramref name="count" /> is less than zero.
+-or-
 <paramref name="offset" /> + <paramref name="count" /> - 1 results in an index that is beyond the upper bound of <paramref name="data" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.RSA.VerifyData(System.IO.Stream,System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
@@ -2668,10 +2668,10 @@ The algorithm-specific key import failed.</exception>
       <returns>
         <see langword="true" /> if the signature is valid; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
-<paramref name="signature" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
+<paramref name="signature" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -2976,12 +2976,12 @@ The algorithm-specific key import failed.</exception>
       <param name="rgbSignature">The signature to be verified for <paramref name="rgbHash" />.</param>
       <returns>
         <see langword="true" /> if <paramref name="rgbSignature" /> matches the signature computed using the specified hash algorithm and key on <paramref name="rgbHash" />; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">The key is <see langword="null" />.  
- -or-  
- The hash algorithm is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">The key is <see langword="null" />.
+-or-
+The hash algorithm is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="T:System.Security.Cryptography.RSAPKCS1SignatureFormatter">
       <summary>Creates an <see cref="T:System.Security.Cryptography.RSA" /> PKCS #1 version 1.5 signature.</summary>
@@ -2999,9 +2999,9 @@ The algorithm-specific key import failed.</exception>
       <summary>Creates the <see cref="T:System.Security.Cryptography.RSA" /> PKCS #1 signature for the specified data.</summary>
       <param name="rgbHash">The data to be signed.</param>
       <returns>The digital signature for <paramref name="rgbHash" />.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">The key is <see langword="null" />.  
- -or-  
- The hash algorithm is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">The key is <see langword="null" />.
+-or-
+The hash algorithm is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.RSAPKCS1SignatureFormatter.SetHashAlgorithm(System.String)">
@@ -3067,10 +3067,10 @@ The algorithm-specific key import failed.</exception>
       <summary>Specifies the padding mode to use with RSA signature creation or verification operations.</summary>
     </member>
     <member name="F:System.Security.Cryptography.RSASignaturePaddingMode.Pkcs1">
-      <summary>PKCS #1 v1.5</summary>
+      <summary>PKCS #1 v1.5.</summary>
     </member>
     <member name="F:System.Security.Cryptography.RSASignaturePaddingMode.Pss">
-      <summary>Probabilistic Signature Scheme</summary>
+      <summary>Probabilistic Signature Scheme.</summary>
     </member>
     <member name="T:System.Security.Cryptography.SHA1">
       <summary>Computes the <see cref="T:System.Security.Cryptography.SHA1" /> hash for the input data.</summary>
@@ -3334,9 +3334,9 @@ The algorithm-specific key import failed.</exception>
       <summary>Gets or sets the secret key for the <see cref="T:System.Security.Cryptography.TripleDES" /> algorithm.</summary>
       <returns>The secret key for the <see cref="T:System.Security.Cryptography.TripleDES" /> algorithm.</returns>
       <exception cref="T:System.ArgumentNullException">An attempt was made to set the key to <see langword="null" />.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An attempt was made to set a key whose length is invalid.  
- -or-  
- An attempt was made to set a weak key (see <see cref="M:System.Security.Cryptography.TripleDES.IsWeakKey(System.Byte[])" />).</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An attempt was made to set a key whose length is invalid.
+-or-
+An attempt was made to set a weak key (see <see cref="M:System.Security.Cryptography.TripleDES.IsWeakKey(System.Byte[])" />).</exception>
     </member>
   </members>
 </doc>

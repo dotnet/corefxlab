@@ -327,10 +327,10 @@
       <param name="farPlaneDistance">The distance to the far view plane.</param>
       <returns>The perspective projection matrix.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="nearPlaneDistance" /> is less than or equal to zero.  
--or-  
-<paramref name="farPlaneDistance" /> is less than or equal to zero.  
--or-  
+        <paramref name="nearPlaneDistance" /> is less than or equal to zero.
+-or-
+<paramref name="farPlaneDistance" /> is less than or equal to zero.
+-or-
 <paramref name="nearPlaneDistance" /> is greater than or equal to <paramref name="farPlaneDistance" />.</exception>
     </member>
     <member name="M:System.Numerics.Matrix4x4.CreatePerspectiveFieldOfView(System.Single,System.Single,System.Single,System.Single)">
@@ -341,13 +341,13 @@
       <param name="farPlaneDistance">The distance to the far view plane.</param>
       <returns>The perspective projection matrix.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="fieldOfView" /> is less than or equal to zero.  
--or-  
-<paramref name="fieldOfView" /> is greater than or equal to <see cref="F:System.Math.PI" />.  
-<paramref name="nearPlaneDistance" /> is less than or equal to zero.  
--or-  
-<paramref name="farPlaneDistance" /> is less than or equal to zero.  
--or-  
+        <paramref name="fieldOfView" /> is less than or equal to zero.
+-or-
+<paramref name="fieldOfView" /> is greater than or equal to <see cref="F:System.Math.PI" />.
+<paramref name="nearPlaneDistance" /> is less than or equal to zero.
+-or-
+<paramref name="farPlaneDistance" /> is less than or equal to zero.
+-or-
 <paramref name="nearPlaneDistance" /> is greater than or equal to <paramref name="farPlaneDistance" />.</exception>
     </member>
     <member name="M:System.Numerics.Matrix4x4.CreatePerspectiveOffCenter(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
@@ -360,10 +360,10 @@
       <param name="farPlaneDistance">The distance to the far view plane.</param>
       <returns>The perspective projection matrix.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="nearPlaneDistance" /> is less than or equal to zero.  
--or-  
-<paramref name="farPlaneDistance" /> is less than or equal to zero.  
--or-  
+        <paramref name="nearPlaneDistance" /> is less than or equal to zero.
+-or-
+<paramref name="farPlaneDistance" /> is less than or equal to zero.
+-or-
 <paramref name="nearPlaneDistance" /> is greater than or equal to <paramref name="farPlaneDistance" />.</exception>
     </member>
     <member name="M:System.Numerics.Matrix4x4.CreateReflection(System.Numerics.Plane)">
@@ -1544,8 +1544,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="values" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IndexOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 The length of <paramref name="values" /> minus <paramref name="index" /> is less than <see cref="P:System.Numerics.Vector`1.Count" />.</exception>
     </member>
     <member name="M:System.Numerics.Vector`1.#ctor(System.ReadOnlySpan{`0})">
@@ -1613,8 +1613,8 @@ The length of <paramref name="values" /> minus <paramref name="index" /> is less
       <param name="index">The index of the element to return.</param>
       <returns>The element at index <paramref name="index" />.</returns>
       <exception cref="T:System.IndexOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than or equal to <see cref="P:System.Numerics.Vector`1.Count" />.</exception>
     </member>
     <member name="P:System.Numerics.Vector`1.One">
@@ -1827,8 +1827,8 @@ The length of <paramref name="values" /> minus <paramref name="index" /> is less
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The number of elements in the current instance is greater than in the array.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than or equal to the array length.</exception>
       <exception cref="T:System.RankException">
         <paramref name="array" /> is multidimensional.</exception>
@@ -2132,8 +2132,8 @@ The length of <paramref name="values" /> minus <paramref name="index" /> is less
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The number of elements in the current instance is greater than in the array.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than or equal to the array length.</exception>
       <exception cref="T:System.RankException">
         <paramref name="array" /> is multidimensional.</exception>
@@ -2445,8 +2445,8 @@ The length of <paramref name="values" /> minus <paramref name="index" /> is less
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The number of elements in the current instance is greater than in the array.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than or equal to the array length.</exception>
       <exception cref="T:System.RankException">
         <paramref name="array" /> is multidimensional.</exception>

@@ -966,7 +966,7 @@
         <see langword="true" /> if the attribute extension was parsed successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.ServiceModel.Syndication.ServiceDocumentFormatter.TryParseAttribute(System.String,System.String,System.String,System.ServiceModel.Syndication.Workspace,System.String)">
-      <summary>Attempts to parse an attribute extension</summary>
+      <summary>Attempts to parse an attribute extension.</summary>
       <param name="name">The name of the element.</param>
       <param name="ns">The namespace of the element.</param>
       <param name="value">The attribute to parse.</param>
