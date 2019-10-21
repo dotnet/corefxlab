@@ -169,6 +169,15 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected a seekable stream.
+        /// </summary>
+        public static string NonSeekableStream {
+            get {
+                return ResourceManager.GetString("NonSeekableStream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to numeric column.
         /// </summary>
         public static string NumericColumnType {

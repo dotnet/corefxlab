@@ -153,6 +153,9 @@
   <data name="MultipleMismatchedValueType" xml:space="preserve">
     <value>Expected value to be of type {0}, {1} or {2}</value>
   </data>
+  <data name="NonSeekableStream" xml:space="preserve">
+    <value>Expected a seekable stream</value>
+  </data>
   <data name="NumericColumnType" xml:space="preserve">
     <value>numeric column</value>
   </data>

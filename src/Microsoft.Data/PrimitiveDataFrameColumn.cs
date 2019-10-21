@@ -158,7 +158,7 @@ namespace Microsoft.Data
                 throw new NotImplementedException(type.ToString());
         }
 
-        public new IList<T?> this[long startIndex, int length]
+        public new IReadOnlyList<T?> this[long startIndex, int length]
         {
             get
             {
@@ -170,13 +170,21 @@ namespace Microsoft.Data
             }
         }
 
-        protected override object GetValue(long startIndex, int length)
+        protected override IReadOnlyList<object> GetValues(long startIndex, int length)
         {
             if (startIndex > Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex));
             }
-            return _columnContainer[startIndex, length];
+
+            //return _columnContainer[startIndex, length];
+            var ret = new List<object>(length);
+            long endIndex = Math.Min(Length, startIndex + length);
+            for (long i = startIndex; i < endIndex; i++)
+            {
+                ret.Add(this[i]);
+            }
+            return ret;
         }
 
         internal T? GetTypedValue(long rowIndex) => _columnContainer[rowIndex];
@@ -216,7 +224,7 @@ namespace Microsoft.Data
             // Not the most efficient implementation. Using a selection algorithm here would be O(n) instead of O(nLogn)
             if (Length == 0)
                 return 0;
-            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices() as PrimitiveDataFrameColumn<long>;
+            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
             long middle = sortIndices.Length / 2;
             double middleValue = (double)Convert.ChangeType(this[sortIndices[middle].Value].Value, typeof(double));
             if (Length % 2 == 0)
@@ -278,18 +286,27 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override DataFrameColumn FillNulls(object value, bool inPlace = false)
+        /// <summary>
+        /// Returns a new column with nulls replaced by value
+        /// </summary>
+        /// <param name="value"></param>
+        public PrimitiveDataFrameColumn<T> FillNulls(T value, bool inPlace = false)
         {
-            T Tvalue = (T)Convert.ChangeType(value, typeof(T));
             PrimitiveDataFrameColumn<T> column = inPlace ? this : Clone();
             column.ApplyElementwise((T? columnValue, long index) =>
             {
                 if (columnValue.HasValue == false)
-                    return Tvalue;
+                    return value;
                 else
                     return columnValue.Value;
             });
             return column;
+        }
+
+        protected override DataFrameColumn FillNullsImplementation(object value, bool inPlace)
+        {
+            T convertedValue = (T)Convert.ChangeType(value, typeof(T));
+            return FillNulls(convertedValue, inPlace);
         }
 
         public override DataFrame ValueCounts()
@@ -312,7 +329,7 @@ namespace Microsoft.Data
             return $"{Name}: {_columnContainer.ToString()}";
         }
 
-        public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
+        public new PrimitiveDataFrameColumn<T> Clone(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
         {
             PrimitiveDataFrameColumn<T> clone;
             if (!(mapIndices is null))
@@ -334,6 +351,11 @@ namespace Microsoft.Data
             Debug.Assert(!ReferenceEquals(clone, null));
             clone.AppendMany(null, numberOfNullsToAppend);
             return clone;
+        }
+
+        protected override DataFrameColumn CloneImplementation(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
+        {
+            return Clone(mapIndices, invertMapIndices, numberOfNullsToAppend);
         }
 
         private PrimitiveDataFrameColumn<T> Clone(PrimitiveDataFrameColumn<bool> boolColumn)
@@ -466,24 +488,66 @@ namespace Microsoft.Data
 
         public void ApplyElementwise(Func<T?, long, T?> func) => _columnContainer.ApplyElementwise(func);
 
-        public override DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false)
+        /// <summary>
+        /// Clips values beyond the specified thresholds
+        /// </summary>
+        /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
+        /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
+        public PrimitiveDataFrameColumn<T> Clip(T lower, T upper, bool inPlace = false)
+        {
+            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
+
+            Comparer<T> comparer = Comparer<T>.Default;
+            for (long i = 0; i < ret.Length; i++)
+            {
+                T? value = ret[i];
+                if (value == null)
+                    continue;
+
+                if (comparer.Compare(value.Value, lower) < 0)
+                    ret[i] = lower;
+
+                if (comparer.Compare(value.Value, upper) > 0)
+                    ret[i] = upper;
+            }
+            return ret;
+        }
+
+        protected override DataFrameColumn ClipImplementation<U>(U lower, U upper, bool inPlace)
         {
             object convertedLower = Convert.ChangeType(lower, typeof(T));
             if (typeof(T) == typeof(U) || convertedLower != null)
-            {
-                return _Clip((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)), inPlace);
-            }
+                return Clip((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)), inPlace);
             else
                 throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
         }
 
-        public override DataFrameColumn Filter<U>(U lower, U upper)
+        /// <summary>
+        /// Returns a new column filtered by the lower and upper bounds
+        /// </summary>
+        /// <param name="lower"></param>
+        /// <param name="upper"></param>
+        public PrimitiveDataFrameColumn<T> Filter(T lower, T upper)
+        {
+            PrimitiveDataFrameColumn<T> ret = new PrimitiveDataFrameColumn<T>(Name);
+            Comparer<T> comparer = Comparer<T>.Default;
+            for (long i = 0; i < Length; i++)
+            {
+                T? value = this[i];
+                if (value == null)
+                    continue;
+
+                if (comparer.Compare(value.Value, lower) >= 0 && comparer.Compare(value.Value, upper) <= 0)
+                    ret.Append(value);
+            }
+            return ret;
+        }
+
+        protected override DataFrameColumn FilterImplementation<U>(U lower, U upper)
         {
             object convertedLower = Convert.ChangeType(lower, typeof(T));
             if (typeof(T) == typeof(U) || convertedLower != null)
-            {
-                return _Filter((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)));
-            }
+                return Filter((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)));
             else
                 throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
         }
@@ -506,47 +570,6 @@ namespace Microsoft.Data
             column.Append(mean);
             ret.Columns.Insert(0, stringColumn);
             ret.Columns.Insert(1, column);
-            return ret;
-        }
-
-        private PrimitiveDataFrameColumn<T> _Filter(T lower, T upper)
-        {
-            PrimitiveDataFrameColumn<T> ret = new PrimitiveDataFrameColumn<T>(Name);
-            Comparer<T> comparer = Comparer<T>.Default;
-            for (long i = 0; i < Length; i++)
-            {
-                T? value = this[i];
-                if (value == null)
-                    continue;
-
-                if (comparer.Compare(value.Value, lower) >= 0 && comparer.Compare(value.Value, upper) <= 0)
-                {
-                    ret.Append(value);
-                }
-            }
-            return ret;
-        }
-
-        private PrimitiveDataFrameColumn<T> _Clip(T lower, T upper, bool inPlace)
-        {
-            PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();
-
-            Comparer<T> comparer = Comparer<T>.Default;
-            for (long i = 0; i < ret.Length; i++)
-            {
-                T? value = ret[i];
-                if (value == null)
-                    continue;
-
-                if (comparer.Compare(value.Value, lower) < 0)
-                {
-                    ret[i] = lower;
-                }
-                if (comparer.Compare(value.Value, upper) > 0)
-                {
-                    ret[i] = upper;
-                }
-            }
             return ret;
         }
 

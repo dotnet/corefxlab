@@ -90,9 +90,9 @@ namespace Microsoft.Data
             return _stringBuffers[bufferIndex][(int)rowIndex];
         }
 
-        protected override object GetValue(long startIndex, int length)
+        protected override IReadOnlyList<object> GetValues(long startIndex, int length)
         {
-            var ret = new List<string>();
+            var ret = new List<object>();
             int bufferIndex = GetBufferIndexContainingRowIndex(ref startIndex);
             while (ret.Count < length && bufferIndex < _stringBuffers.Count)
             {
@@ -167,13 +167,15 @@ namespace Microsoft.Data
 
         public override DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
 
-        public override DataFrameColumn Sort(bool ascending = true)
+        public override DataFrameColumn Filter<U>(U lower, U upper) => throw new NotSupportedException();
+
+        public new StringDataFrameColumn Sort(bool ascending = true)
         {
-            PrimitiveDataFrameColumn<long> columnSortIndices = GetAscendingSortIndices() as PrimitiveDataFrameColumn<long>;
+            PrimitiveDataFrameColumn<long> columnSortIndices = GetAscendingSortIndices();
             return Clone(columnSortIndices, !ascending, NullCount);
         }
 
-        internal override DataFrameColumn GetAscendingSortIndices()
+        internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()
         {
             GetSortIndices(Comparer<string>.Default, out PrimitiveDataFrameColumn<long> columnSortIndices);
             return columnSortIndices;
@@ -232,7 +234,7 @@ namespace Microsoft.Data
             PopulateColumnSortIndicesWithHeap(heapOfValueAndListOfTupleOfSortAndBufferIndex, columnSortIndices, getBufferSortIndex, getValueAtBuffer, getBufferLengthAtIndex);
         }
 
-        public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
+        public new StringDataFrameColumn Clone(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
         {
             StringDataFrameColumn clone;
             if (!(mapIndices is null))
@@ -256,6 +258,11 @@ namespace Microsoft.Data
                 clone.Append(null);
             }
             return clone;
+        }
+
+        protected override DataFrameColumn CloneImplementation(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
+        {
+            return Clone(mapIndices, invertMapIndices, numberOfNullsToAppend);
         }
 
         private StringDataFrameColumn Clone(PrimitiveDataFrameColumn<bool> boolColumn)
@@ -426,7 +433,7 @@ namespace Microsoft.Data
             }
         }
 
-        public override DataFrameColumn FillNulls(object value, bool inPlace = false)
+        public new StringDataFrameColumn FillNulls(object value, bool inPlace = false)
         {
             if (value.GetType() != typeof(string) || value == null)
                 throw new ArgumentException(nameof(value));
@@ -439,6 +446,11 @@ namespace Microsoft.Data
                     column[i] = stringValue;
             }
             return column;
+        }
+
+        protected override DataFrameColumn FillNullsImplementation(object value, bool inPlace)
+        {
+            return FillNulls(value, inPlace);
         }
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)

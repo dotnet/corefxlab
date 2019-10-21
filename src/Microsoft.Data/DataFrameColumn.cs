@@ -62,13 +62,13 @@ namespace Microsoft.Data
         }
 
         protected abstract object GetValue(long rowIndex);
-        protected abstract object GetValue(long startIndex, int length);
+        protected abstract IReadOnlyList<object> GetValues(long startIndex, int length);
 
         protected abstract void SetValue(long rowIndex, object value);
 
-        public object this[long startIndex, int length]
+        public IReadOnlyList<object> this[long startIndex, int length]
         {
-            get => GetValue(startIndex, length);
+            get => GetValues(startIndex, length);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorCore();
@@ -87,9 +87,15 @@ namespace Microsoft.Data
         /// <param name="mapIndices"></param>
         /// <param name="invertMapIndices"></param>
         /// <returns></returns>
-        public virtual DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => throw new NotImplementedException();
+        public virtual DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => CloneImplementation(mapIndices, invertMapIndices, numberOfNullsToAppend);
 
-        public virtual DataFrameColumn Sort(bool ascending = true) => throw new NotImplementedException();
+        protected virtual DataFrameColumn CloneImplementation(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend) => throw new NotImplementedException();
+
+        public virtual DataFrameColumn Sort(bool ascending = true)
+        {
+            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
+            return Clone(sortIndices, !ascending, NullCount);
+        }
 
         public virtual Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>() => throw new NotImplementedException();
 
@@ -105,7 +111,9 @@ namespace Microsoft.Data
         /// </summary>
         /// <remarks>Tries to convert value to the column's DataType</remarks>
         /// <param name="value"></param>
-        public virtual DataFrameColumn FillNulls(object value, bool inPlace = false) => throw new NotImplementedException();
+        public virtual DataFrameColumn FillNulls(object value, bool inPlace = false) => FillNullsImplementation(value, inPlace);
+
+        protected virtual DataFrameColumn FillNullsImplementation(object value, bool inPlace) => throw new NotImplementedException();
 
         // Arrow related APIs
         protected internal virtual Field GetArrowField() => throw new NotImplementedException();
@@ -138,7 +146,9 @@ namespace Microsoft.Data
         /// <typeparam name="U"></typeparam>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
-        public virtual DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotImplementedException();
+        public virtual DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => ClipImplementation(lower, upper, inPlace);
+
+        protected virtual DataFrameColumn ClipImplementation<U>(U lower, U upper, bool inPlace) => throw new NotImplementedException();
 
         /// <summary>
         /// Returns a new column filtered by the lower and upper bounds
@@ -146,7 +156,9 @@ namespace Microsoft.Data
         /// <typeparam name="U"></typeparam>
         /// <param name="lower"></param>
         /// <param name="upper"></param>
-        public virtual DataFrameColumn Filter<U>(U lower, U upper) => throw new NotImplementedException();
+        public virtual DataFrameColumn Filter<U>(U lower, U upper) => FilterImplementation(lower, upper);
+
+        protected virtual DataFrameColumn FilterImplementation<U>(U lower, U uppwe) => throw new NotImplementedException();
 
         /// <summary>
         /// Determines if the column is of a numeric type
@@ -173,7 +185,7 @@ namespace Microsoft.Data
         /// </summary>
         public virtual DataFrame Description() => throw new NotImplementedException();
 
-        internal virtual DataFrameColumn GetAscendingSortIndices() => throw new NotImplementedException();
+        internal virtual PrimitiveDataFrameColumn<long> GetAscendingSortIndices() => throw new NotImplementedException();
 
         internal delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
         internal delegate ValueTuple<T, int> GetValueAndBufferSortIndexAtBuffer<T>(int bufferIndex, int valueIndex);

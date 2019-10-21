@@ -73,10 +73,10 @@ namespace Microsoft.Data
     public class GroupBy<TKey> : GroupBy
     {
         private int _groupByColumnIndex;
-        private Dictionary<TKey, ICollection<long>> _keyToRowIndicesMap;
+        private IDictionary<TKey, ICollection<long>> _keyToRowIndicesMap;
         private DataFrame _dataFrame;
 
-        public GroupBy(DataFrame dataFrame, int groupByColumnIndex, Dictionary<TKey, ICollection<long>> keyToRowIndices)
+        public GroupBy(DataFrame dataFrame, int groupByColumnIndex, IDictionary<TKey, ICollection<long>> keyToRowIndices)
         {
             if (dataFrame.Columns.Count < groupByColumnIndex || groupByColumnIndex < 0)
                 throw new ArgumentException(nameof(groupByColumnIndex));

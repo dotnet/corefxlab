@@ -247,9 +247,9 @@ namespace Microsoft.Data
             }
         }
 
-        protected override object GetValue(long startIndex, int length)
+        protected override IReadOnlyList<object> GetValues(long startIndex, int length)
         {
-            var ret = new List<string>();
+            var ret = new List<object>();
             while (ret.Count < length)
             {
                 ret.Add(GetValueImplementation(startIndex++));
@@ -452,6 +452,10 @@ namespace Microsoft.Data
         }
 
         public override DataFrameColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
+
+        public override DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
+
+        public override DataFrameColumn Filter<U>(U lower, U upper) => throw new NotSupportedException();
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
         {
