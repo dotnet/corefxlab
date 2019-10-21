@@ -64,17 +64,73 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Returns a new DataFrame using the rows or true values in filterColumn
+        /// Returns a new DataFrame using the boolean values in <paramref name="filter"/>
         /// </summary>
-        /// <param name="filterColumn">A column of rows/bools</param>
-        /// <remarks>filterColumn must be of type long, int or bool</remarks>
-        public DataFrame this[DataFrameColumn filterColumn] => Clone(filterColumn);
+        /// <param name="filter">A column of booleans</param>
+        public DataFrame Filter(PrimitiveDataFrameColumn<bool> filter) => Clone(filter);
 
-        public DataFrame this[IEnumerable<int> filter]
+        /// <summary>
+        /// Returns a new DataFrame using the row indices in <paramref name="rowIndices"/>
+        /// </summary>
+        /// <param name="rowIndices">A column of row indices</param>
+        public DataFrame Filter(PrimitiveDataFrameColumn<int> rowIndices) => Clone(rowIndices);
+
+        /// <summary>
+        /// Returns a new DataFrame using the row indices in <paramref name="rowIndices"/>
+        /// </summary>
+        /// <param name="rowIndices">A column of row indices</param>
+        public DataFrame Filter(PrimitiveDataFrameColumn<long> rowIndices) => Clone(rowIndices);
+
+        /// <summary>
+        /// Returns a new DataFrame using the boolean values in filter
+        /// </summary>
+        /// <param name="filter">A column of booleans</param>
+        public DataFrame this[PrimitiveDataFrameColumn<bool> filter] => Filter(filter);
+
+        /// <summary>
+        /// Returns a new DataFrame using the row indices in <paramref name="rowIndices"/>
+        /// </summary>
+        /// <param name="rowIndices">A column of row indices</param>
+        public DataFrame this[PrimitiveDataFrameColumn<int> rowIndices] => Filter(rowIndices);
+
+        /// <summary>
+        /// Returns a new DataFrame using the row indices in <paramref name="rowIndices"/>
+        /// </summary>
+        /// <param name="rowIndices">A column of row indices</param>
+        public DataFrame this[PrimitiveDataFrameColumn<long> rowIndices] => Filter(rowIndices);
+
+        /// <summary>
+        /// Returns a new DataFrame using the row indices in <paramref name="rowIndices"/>
+        /// </summary>
+        public DataFrame this[IEnumerable<int> rowIndices]
         {
             get
             {
-                PrimitiveDataFrameColumn<int> filterColumn = new PrimitiveDataFrameColumn<int>("Filter", filter);
+                PrimitiveDataFrameColumn<int> filterColumn = new PrimitiveDataFrameColumn<int>("Filter", rowIndices);
+                return Clone(filterColumn);
+            }
+        }
+
+        /// <summary>
+        /// Returns a new DataFrame using the row indices in <paramref name="rowIndices"/>
+        /// </summary>
+        public DataFrame this[IEnumerable<long> rowIndices]
+        {
+            get
+            {
+                PrimitiveDataFrameColumn<long> filterColumn = new PrimitiveDataFrameColumn<long>("Filter", rowIndices);
+                return Clone(filterColumn);
+            }
+        }
+
+        /// <summary>
+        /// Returns a new DataFrame using the boolean values in <paramref name="boolFilter"/>
+        /// </summary>
+        public DataFrame this[IEnumerable<bool> boolFilter]
+        {
+            get
+            {
+                PrimitiveDataFrameColumn<bool> filterColumn = new PrimitiveDataFrameColumn<bool>("Filter", boolFilter);
                 return Clone(filterColumn);
             }
         }
@@ -126,6 +182,14 @@ namespace Microsoft.Data
         // TODO: Add strongly typed versions of these APIs
         #endregion
 
+        /// <summary>
+        /// Returns a full copy
+        /// </summary>
+        public DataFrame Clone()
+        {
+            return Clone(mapIndices: null, invertMapIndices: false);
+        }
+
         private DataFrame Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false)
         {
             List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
@@ -136,6 +200,9 @@ namespace Microsoft.Data
             return new DataFrame(newColumns);
         }
 
+        /// <summary>
+        /// Updates <paramref name="column"/>'s name with <paramref name="newName"/>
+        /// </summary>
         public void SetColumnName(DataFrameColumn column, string newName) => _columnCollection.SetColumnName(column, newName);
 
         /// <summary>
