@@ -39,7 +39,15 @@ namespace Microsoft.Data
 
         public IReadOnlyList<DataFrameColumn> Columns => _columns;
 
-        public IReadOnlyList<string> ColumnNames => _columnNames;
+        public IReadOnlyList<string> GetColumnNames()
+        {
+            var ret = new List<string>(ColumnCount);
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                ret.Add(Column(i).Name);
+            }
+            return ret;
+        }
 
         public DataFrameColumn Column(int columnIndex) => _columns[columnIndex];
 
@@ -58,6 +66,7 @@ namespace Microsoft.Data
             string currentName = column.Name;
             int currentIndex = _columnNameToIndexDictionary[currentName];
             column.SetName(newName);
+            _columnNames[currentIndex] = newName;
             _columnNameToIndexDictionary.Remove(currentName);
             _columnNameToIndexDictionary.Add(newName, currentIndex);
         }

@@ -1241,12 +1241,12 @@ namespace Microsoft.Data.Tests
         public void TestDataFrameClip()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            IReadOnlyList<string> dfColumns = df.ColumnNames;
+            IReadOnlyList<string> dfColumns = df.GetColumnNames();
 
             void VerifyDataFrameClip(DataFrame clippedColumn)
             {
 
-                IReadOnlyList<string> clippedColumns = clippedColumn.ColumnNames;
+                IReadOnlyList<string> clippedColumns = clippedColumn.GetColumnNames();
                 Assert.Equal(df.ColumnCount, clippedColumn.ColumnCount);
                 Assert.Equal(dfColumns, clippedColumns);
                 for (int c = 0; c < df.ColumnCount; c++)
@@ -1318,33 +1318,33 @@ namespace Microsoft.Data.Tests
         public void TestPrefixAndSuffix()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            IReadOnlyList<string> columnNames = df.ColumnNames;
+            IReadOnlyList<string> columnNames = df.GetColumnNames();
 
             DataFrame prefix = df.AddPrefix("Prefix_");
-            IReadOnlyList<string> prefixNames = prefix.ColumnNames;
+            IReadOnlyList<string> prefixNames = prefix.GetColumnNames();
             for (int i = 0; i < prefixNames.Count; i++)
             {
-                Assert.Equal(df.ColumnNames[i], columnNames[i]);
+                Assert.Equal(df.GetColumnNames()[i], columnNames[i]);
                 Assert.Equal(prefixNames[i], "Prefix_" + columnNames[i]);
             }
             // Inplace
             df.AddPrefix("Prefix_", true);
-            prefixNames = df.ColumnNames;
+            prefixNames = df.GetColumnNames();
             for (int i = 0; i < prefixNames.Count; i++)
             {
                 Assert.Equal("Prefix_" + columnNames[i], prefixNames[i]);
             }
 
             DataFrame suffix = df.AddSuffix("_Suffix");
-            IReadOnlyList<string> suffixNames = suffix.ColumnNames;
+            IReadOnlyList<string> suffixNames = suffix.GetColumnNames();
             for (int i = 0; i < suffixNames.Count; i++)
             {
-                Assert.Equal(df.ColumnNames[i], "Prefix_" + columnNames[i]);
+                Assert.Equal(df.GetColumnNames()[i], "Prefix_" + columnNames[i]);
                 Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
             }
             // InPlace
             df.AddSuffix("_Suffix", true);
-            suffixNames = df.ColumnNames;
+            suffixNames = df.GetColumnNames();
             for (int i = 0; i < suffixNames.Count; i++)
             {
                 Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
