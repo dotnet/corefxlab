@@ -28,7 +28,7 @@ namespace Microsoft.Data
                 var schemaBuilder = new DataViewSchema.Builder();
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    DataFrameColumn baseColumn = Column(i);
+                    DataFrameColumn baseColumn = Columns[i];
                     baseColumn.AddDataViewColumn(schemaBuilder);
                 }
                 _schema = schemaBuilder.ToSchema();
@@ -106,7 +106,7 @@ namespace Microsoft.Data
 
             private Delegate CreateGetterDelegate(int col)
             {
-                DataFrameColumn column = _dataFrame.Column(col);
+                DataFrameColumn column = _dataFrame.Columns[col];
                 return column.GetDataViewGetter(this);
             }
 

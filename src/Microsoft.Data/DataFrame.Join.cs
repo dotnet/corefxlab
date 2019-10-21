@@ -27,7 +27,7 @@ namespace Microsoft.Data
             while (index != -1)
             {
                 // Pre-existing column. Change name
-                DataFrameColumn existingColumn = dataFrame.Column(index);
+                DataFrameColumn existingColumn = dataFrame.Columns[index];
                 dataFrame._table.SetColumnName(existingColumn, existingColumn.Name + leftSuffix);
                 column.SetName(column.Name + rightSuffix);
                 index = dataFrame._table.GetColumnIndex(column.Name);
@@ -41,7 +41,7 @@ namespace Microsoft.Data
             {
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    DataFrameColumn newColumn = Column(i).Clone();
+                    DataFrameColumn newColumn = Columns[i].Clone();
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
                 long minLength = Math.Min(RowCount, other.RowCount);
@@ -55,11 +55,11 @@ namespace Microsoft.Data
                     DataFrameColumn newColumn;
                     if (other.RowCount < RowCount)
                     {
-                        newColumn = other.Column(i).Clone(numberOfNullsToAppend: RowCount - other.RowCount);
+                        newColumn = other.Columns[i].Clone(numberOfNullsToAppend: RowCount - other.RowCount);
                     }
                     else
                     {
-                        newColumn = other.Column(i).Clone(mapIndices);
+                        newColumn = other.Columns[i].Clone(mapIndices);
                     }
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
@@ -78,17 +78,17 @@ namespace Microsoft.Data
                     DataFrameColumn newColumn;
                     if (RowCount < other.RowCount)
                     {
-                        newColumn = Column(i).Clone(numberOfNullsToAppend: other.RowCount - RowCount);
+                        newColumn = Columns[i].Clone(numberOfNullsToAppend: other.RowCount - RowCount);
                     }
                     else
                     {
-                        newColumn = Column(i).Clone(mapIndices);
+                        newColumn = Columns[i].Clone(mapIndices);
                     }
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
                 for (int i = 0; i < other.ColumnCount; i++)
                 {
-                    DataFrameColumn newColumn = other.Column(i).Clone();
+                    DataFrameColumn newColumn = other.Columns[i].Clone();
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
@@ -99,13 +99,13 @@ namespace Microsoft.Data
                 long numberOfNulls = newRowCount - RowCount;
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    DataFrameColumn newColumn = Column(i).Clone(numberOfNullsToAppend: numberOfNulls);
+                    DataFrameColumn newColumn = Columns[i].Clone(numberOfNullsToAppend: numberOfNulls);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
                 numberOfNulls = newRowCount - other.RowCount;
                 for (int i = 0; i < other.ColumnCount; i++)
                 {
-                    DataFrameColumn newColumn = other.Column(i).Clone(numberOfNullsToAppend: numberOfNulls);
+                    DataFrameColumn newColumn = other.Columns[i].Clone(numberOfNullsToAppend: numberOfNulls);
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
@@ -120,12 +120,12 @@ namespace Microsoft.Data
                 }
                 for (int i = 0; i < ColumnCount; i++)
                 {
-                    DataFrameColumn newColumn = Column(i).Clone(mapIndices);
+                    DataFrameColumn newColumn = Columns[i].Clone(mapIndices);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
                 for (int i = 0; i < other.ColumnCount; i++)
                 {
-                    DataFrameColumn newColumn = other.Column(i).Clone(mapIndices);
+                    DataFrameColumn newColumn = other.Columns[i].Clone(mapIndices);
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
                     ret.InsertColumn(ret.ColumnCount, newColumn);
                 }
@@ -346,11 +346,11 @@ namespace Microsoft.Data
 
             for (int i = 0; i < leftDataFrame.ColumnCount; i++)
             {
-                ret.InsertColumn(i, leftDataFrame.Column(i).Clone(leftRowIndices));
+                ret.InsertColumn(i, leftDataFrame.Columns[i].Clone(leftRowIndices));
             }
             for (int i = 0; i < rightDataFrame.ColumnCount; i++)
             {
-                DataFrameColumn column = rightDataFrame.Column(i).Clone(rightRowIndices);
+                DataFrameColumn column = rightDataFrame.Columns[i].Clone(rightRowIndices);
                 SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
                 ret.InsertColumn(ret.ColumnCount, column);
             }

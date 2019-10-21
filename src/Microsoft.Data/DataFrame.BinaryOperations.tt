@@ -65,11 +65,11 @@ namespace Microsoft.Data
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
             for (int i = 0; i < ColumnCount; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _table.Columns[i];
 <# } else { #>
             for (int i = 0; i < ColumnCount; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _table.Columns[i];
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) {#>
                 DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(value, inPlace);

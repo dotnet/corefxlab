@@ -114,7 +114,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -125,7 +125,7 @@ namespace Microsoft.Data
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
-                DataFrameColumn column = _dataFrame.Column(columnIndex);
+                DataFrameColumn column = _dataFrame.Columns[columnIndex];
                 long count = 0;
                 foreach (long row in rowEnumerable)
                 {
@@ -157,7 +157,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
 
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
@@ -170,7 +170,7 @@ namespace Microsoft.Data
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
-                DataFrameColumn column = _dataFrame.Column(columnIndex);
+                DataFrameColumn column = _dataFrame.Columns[columnIndex];
                 foreach (long row in rowEnumerable)
                 {
                     DataFrameColumn retColumn;
@@ -199,7 +199,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
 
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
@@ -210,7 +210,7 @@ namespace Microsoft.Data
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
-                DataFrameColumn column = _dataFrame.Column(columnIndex);
+                DataFrameColumn column = _dataFrame.Columns[columnIndex];
                 long count = 0;
                 bool firstRow = true;
                 foreach (long row in rowEnumerable)
@@ -253,7 +253,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
 
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
@@ -264,7 +264,7 @@ namespace Microsoft.Data
             {
                 if (columnIndex == _groupByColumnIndex)
                     return;
-                DataFrameColumn column = _dataFrame.Column(columnIndex);
+                DataFrameColumn column = _dataFrame.Columns[columnIndex];
                 long count = 0;
                 bool firstRow = true;
                 ICollection<long> values = _keyToRowIndicesMap[key];
@@ -307,7 +307,7 @@ namespace Microsoft.Data
         {
             if (columnIndex == _groupByColumnIndex)
                 return null;
-            DataFrameColumn column = _dataFrame.Column(columnIndex);
+            DataFrameColumn column = _dataFrame.Columns[columnIndex];
             DataFrameColumn retColumn;
             if (firstGroup)
             {
@@ -327,7 +327,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -341,7 +341,7 @@ namespace Microsoft.Data
 
                 if (!(retColumn is null))
                 {
-                    retColumn[rowIndex] = _dataFrame.Column(columnIndex).Max(rowEnumerable);
+                    retColumn[rowIndex] = _dataFrame.Columns[columnIndex].Max(rowEnumerable);
                 }
             });
 
@@ -355,7 +355,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -369,7 +369,7 @@ namespace Microsoft.Data
 
                 if (!(retColumn is null))
                 {
-                    retColumn[rowIndex] = _dataFrame.Column(columnIndex).Min(rowEnumerable);
+                    retColumn[rowIndex] = _dataFrame.Columns[columnIndex].Min(rowEnumerable);
                 }
             });
 
@@ -383,7 +383,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -397,7 +397,7 @@ namespace Microsoft.Data
 
                 if (!(retColumn is null))
                 {
-                    retColumn[rowIndex] = _dataFrame.Column(columnIndex).Product(rowEnumerable);
+                    retColumn[rowIndex] = _dataFrame.Columns[columnIndex].Product(rowEnumerable);
                 }
             });
 
@@ -411,7 +411,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -425,7 +425,7 @@ namespace Microsoft.Data
 
                 if (!(retColumn is null))
                 {
-                    retColumn[rowIndex] = _dataFrame.Column(columnIndex).Sum(rowEnumerable);
+                    retColumn[rowIndex] = _dataFrame.Columns[columnIndex].Sum(rowEnumerable);
                 }
             });
 
@@ -439,7 +439,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = new DataFrame();
             PrimitiveDataFrameColumn<long> empty = new PrimitiveDataFrameColumn<long>("Empty");
-            DataFrameColumn firstColumn = _dataFrame.Column(_groupByColumnIndex).Clone(empty);
+            DataFrameColumn firstColumn = _dataFrame.Columns[_groupByColumnIndex].Clone(empty);
             ret.InsertColumn(ret.ColumnCount, firstColumn);
             GroupByColumnDelegate groupByColumnDelegate = new GroupByColumnDelegate((long rowIndex, TKey key) =>
             {
@@ -454,7 +454,7 @@ namespace Microsoft.Data
 
                 if (!(retColumn is null))
                 {
-                    retColumn[rowIndex] = (double)Convert.ChangeType(_dataFrame.Column(columnIndex).Sum(rowEnumerable), typeof(double)) / rowEnumerable.Count;
+                    retColumn[rowIndex] = (double)Convert.ChangeType(_dataFrame.Columns[columnIndex].Sum(rowEnumerable), typeof(double)) / rowEnumerable.Count;
                 }
             });
 

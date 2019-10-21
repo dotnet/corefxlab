@@ -139,7 +139,7 @@ namespace Microsoft.Data
             int columnCount = ColumnCount;
             for (int i = 0; i < columnCount; i++)
             {
-                DataFrameColumn column = Column(i);
+                DataFrameColumn column = Columns[i];
                 Field field = column.GetArrowField();
                 schemaBuilder.Field(field);
             }
@@ -156,12 +156,12 @@ namespace Microsoft.Data
             {
                 for (int i = 0; i < columnCount; i++)
                 {
-                    DataFrameColumn column = Column(i);
+                    DataFrameColumn column = Columns[i];
                     numberOfRowsInThisRecordBatch = (int)Math.Min(numberOfRowsInThisRecordBatch, column.GetMaxRecordBatchLength(numberOfRowsProcessed));
                 }
                 for (int i = 0; i < columnCount; i++)
                 {
-                    DataFrameColumn column = Column(i);
+                    DataFrameColumn column = Columns[i];
                     arrays.Add(column.ToArrowArray(numberOfRowsProcessed, numberOfRowsInThisRecordBatch));
                 }
                 numberOfRowsProcessed += numberOfRowsInThisRecordBatch;
