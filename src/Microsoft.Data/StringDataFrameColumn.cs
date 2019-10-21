@@ -316,7 +316,11 @@ namespace Microsoft.Data
                         getBufferMaxRange = (bufferIndex + 1) * maxCapacity;
                     }
                     int bufferLocalMapIndex = (int)(mapIndex - getBufferMinRange);
-                    setBuffer[(int)index] = getBuffer[bufferLocalMapIndex];
+                    string value = getBuffer[bufferLocalMapIndex];
+                    setBuffer[(int)index] = value;
+                    if (value == null)
+                        ret._nullCount++;
+
                     return mapIndex;
                 });
             }
@@ -335,7 +339,11 @@ namespace Microsoft.Data
                         ret._nullCount++;
                         return mapIndex;
                     }
-                    setBuffer[(int)index] = getBuffer[mapIndex.Value];
+                    string value = getBuffer[mapIndex.Value];
+                    setBuffer[(int)index] = value;
+                    if (value == null)
+                        ret._nullCount++;
+
                     return mapIndex;
                 });
             }

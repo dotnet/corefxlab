@@ -33,7 +33,7 @@ namespace Microsoft.Data
             for (int b = 0; b < _columnContainer.Buffers.Count; b++)
             {
                 ReadOnlyDataFrameBuffer<T> buffer = _columnContainer.Buffers[b];
-                ReadOnlySpan<byte> nullBitMapSpan = _columnContainer.NullBitMapBuffers[b].ReadOnlySpan;
+                ReadOnlySpan<byte> nullBitMapSpan = _columnContainer.NullBitMapBuffers[b].RawReadOnlySpan;
                 int[] sortIndices = new int[buffer.Length];
                 for (int i = 0; i < buffer.Length; i++)
                     sortIndices[i] = i;

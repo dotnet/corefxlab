@@ -165,6 +165,16 @@ namespace Microsoft.Data.Tests
             return dataFrame;
         }
 
+        public DataFrame SplitTrainTest(DataFrame input, float testRatio, out DataFrame Test)
+        {
+            IEnumerable<int> randomIndices = Enumerable.Range(0, (int)input.RowCount);
+            IEnumerable<int> trainIndices = randomIndices.Take((int)(input.RowCount * testRatio));
+            IEnumerable<int> testIndices = randomIndices.TakeLast((int)(input.RowCount * (1 - testRatio)));
+            Test = input[testIndices];
+            return input[trainIndices];
+        }
+
+
         [Fact]
         public void TestIndexer()
         {
@@ -667,6 +677,24 @@ namespace Microsoft.Data.Tests
             Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(8, sortedDf["Int"][1]);
             Assert.Equal(9, sortedDf["Int"][0]);
+        }
+
+        [Fact]
+        public void TestSplitAndSort()
+        {
+            DataFrame df = MakeDataFrameWithAllMutableColumnTypes(20);
+            df["Int"][0] = 100000;
+            df["Int"][df.RowCount - 1] = -1;
+            df["Int"][5] = 200000;
+            DataFrame dfTest;
+            DataFrame dfTrain = SplitTrainTest(df, 0.8f, out dfTest);
+
+            // Sort by "Int" in ascending order
+            var sortedDf = dfTrain.Sort("Int");
+            Assert.Null(sortedDf["Int"][sortedDf.RowCount - 1]);
+            Assert.Equal(1, sortedDf["Int"][0]);
+            Assert.Equal(100000, sortedDf["Int"][sortedDf.RowCount - 3]);
+            Assert.Equal(200000, sortedDf["Int"][sortedDf.RowCount - 2]);
         }
 
         [Fact]
