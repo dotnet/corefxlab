@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A formatting library for pl-PL</Description>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PackageTags>pl PL formatting globalization corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>

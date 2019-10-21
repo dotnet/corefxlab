@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Buffer Readers, Writers, and Transformations</Description>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>Span BufferReader BufferWriter corefxlab</PackageTags>
   </PropertyGroup>
@@ -11,6 +11,6 @@
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
-    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsVersion)" />
   </ItemGroup>
 </Project>

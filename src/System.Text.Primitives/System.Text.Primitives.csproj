@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Efficient parsing, formatting, and encoding APIs</Description>
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET formatting parsing encoding UTF8</PackageTags>
   </PropertyGroup>
@@ -10,6 +10,6 @@
     <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsVersion)" />
   </ItemGroup>
 </Project>
