@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Apache.Arrow;
+using Microsoft.ML;
 using Xunit;
 
 namespace Microsoft.Data.Tests
@@ -1241,12 +1242,12 @@ namespace Microsoft.Data.Tests
         public void TestDataFrameClip()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            IReadOnlyList<string> dfColumns = df.GetColumnNames();
+            IEnumerable<DataViewSchema.Column> dfColumns = ((IDataView)df).Schema;
 
             void VerifyDataFrameClip(DataFrame clippedColumn)
             {
 
-                IReadOnlyList<string> clippedColumns = clippedColumn.GetColumnNames();
+                IEnumerable<DataViewSchema.Column> clippedColumns = ((IDataView)clippedColumn).Schema;
                 Assert.Equal(df.ColumnCount, clippedColumn.ColumnCount);
                 Assert.Equal(dfColumns, clippedColumns);
                 for (int c = 0; c < df.ColumnCount; c++)
@@ -1318,36 +1319,44 @@ namespace Microsoft.Data.Tests
         public void TestPrefixAndSuffix()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            IReadOnlyList<string> columnNames = df.GetColumnNames();
+            IEnumerable<DataViewSchema.Column> columnNames = ((IDataView)df).Schema;
 
             DataFrame prefix = df.AddPrefix("Prefix_");
-            IReadOnlyList<string> prefixNames = prefix.GetColumnNames();
-            for (int i = 0; i < prefixNames.Count; i++)
+            IEnumerable<DataViewSchema.Column> prefixNames = ((IDataView)prefix).Schema;
+            foreach ((DataViewSchema.Column First, DataViewSchema.Column Second) in columnNames.Zip(((IDataView)df).Schema))
             {
-                Assert.Equal(df.GetColumnNames()[i], columnNames[i]);
-                Assert.Equal(prefixNames[i], "Prefix_" + columnNames[i]);
+                Assert.Equal(First.Name, Second.Name);
             }
+            foreach ((DataViewSchema.Column First, DataViewSchema.Column Second) in prefixNames.Zip(columnNames))
+            {
+                Assert.Equal(First.Name, "Prefix_" + Second.Name);
+            }
+
             // Inplace
             df.AddPrefix("Prefix_", true);
-            prefixNames = df.GetColumnNames();
-            for (int i = 0; i < prefixNames.Count; i++)
+            prefixNames = ((IDataView)df).Schema;
+            foreach ((DataViewSchema.Column First, DataViewSchema.Column Second) in columnNames.Zip(prefixNames))
             {
-                Assert.Equal("Prefix_" + columnNames[i], prefixNames[i]);
+                Assert.Equal("Prefix_" + First.Name, Second.Name);
             }
 
             DataFrame suffix = df.AddSuffix("_Suffix");
-            IReadOnlyList<string> suffixNames = suffix.GetColumnNames();
-            for (int i = 0; i < suffixNames.Count; i++)
+            IEnumerable<DataViewSchema.Column> suffixNames = ((IDataView)suffix).Schema;
+            foreach ((DataViewSchema.Column First, DataViewSchema.Column Second) in ((IDataView)df).Schema.Zip(columnNames))
             {
-                Assert.Equal(df.GetColumnNames()[i], "Prefix_" + columnNames[i]);
-                Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
+                Assert.Equal(First.Name, "Prefix_" + Second.Name);
             }
+            foreach ((DataViewSchema.Column First, DataViewSchema.Column Second) in columnNames.Zip(suffixNames))
+            {
+                Assert.Equal("Prefix_" + First.Name + "_Suffix", Second.Name);
+            }
+
             // InPlace
             df.AddSuffix("_Suffix", true);
-            suffixNames = df.GetColumnNames();
-            for (int i = 0; i < suffixNames.Count; i++)
+            suffixNames = ((IDataView)df).Schema;
+            foreach ((DataViewSchema.Column First, DataViewSchema.Column Second) in columnNames.Zip(suffixNames))
             {
-                Assert.Equal("Prefix_" + columnNames[i] + "_Suffix", suffixNames[i]);
+                Assert.Equal("Prefix_" + First.Name + "_Suffix", Second.Name);
             }
         }
 

@@ -44,7 +44,7 @@ namespace Microsoft.Data
             var ret = new List<string>(ColumnCount);
             for (int i = 0; i < ColumnCount; i++)
             {
-                ret.Add(Column(i).Name);
+                ret.Add(Columns[i].Name);
             }
             return ret;
         }
@@ -56,7 +56,7 @@ namespace Microsoft.Data
             var ret = new List<object>();
             for (int i = 0; i < ColumnCount; i++)
             {
-                ret.Add(Column(i)[rowIndex]);
+                ret.Add(Columns[i][rowIndex]);
             }
             return ret;
         }

@@ -47,7 +47,7 @@ namespace Microsoft.Data
 
         public IReadOnlyList<DataFrameColumn> Columns => _table.Columns;
 
-        public IReadOnlyList<string> GetColumnNames() => _table.GetColumnNames();
+        internal IReadOnlyList<string> GetColumnNames() => _table.GetColumnNames();
 
         public void InsertColumn(int columnIndex, DataFrameColumn column)
         {
