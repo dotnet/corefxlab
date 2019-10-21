@@ -5,8 +5,8 @@
 using System;
 using System.Diagnostics;
 using System.Text.Formatting;
-using System.Text.JsonLab;
 using System.Buffers;
+using System.Text.Json;
 using System.Threading;
 using System.Text.Http.Parser;
 using Microsoft.Net;
@@ -63,15 +63,15 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            var jsonWriter = new Utf8JsonWriter<TcpConnectionFormatter>(response, prettyPrint: false);
-            jsonWriter.WriteObjectStart();
-            jsonWriter.WriteArrayStart("values");
+            var jsonWriter = new Utf8JsonWriter(response);
+            jsonWriter.WriteStartObject();
+            jsonWriter.WriteStartArray("values");
             for (int i = 0; i < 5; i++)
             {
-                jsonWriter.WriteValue("hello!");
+                jsonWriter.WriteStringValue("hello!");
             }
-            jsonWriter.WriteArrayEnd();
-            jsonWriter.WriteObjectEnd();
+            jsonWriter.WriteEndArray();
+            jsonWriter.WriteEndObject();
             jsonWriter.Flush();
         }
 
@@ -80,15 +80,9 @@ namespace LowAllocationWebServer
             // read request json
             int requestedCount;
 
-            // TODO: this should not convert to span
-            JsonObject dom = JsonObject.Parse(body.First.Span);
-            try
+            using (JsonDocument dom = JsonDocument.Parse(body.First))
             {
-                requestedCount = (int)dom["Count"];
-            }
-            finally
-            {
-                dom.Dispose();
+                requestedCount = dom.RootElement.GetProperty("Count").GetInt32();
             }
 
             WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
@@ -96,15 +90,15 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            var jsonWriter = new Utf8JsonWriter<TcpConnectionFormatter>(response, prettyPrint: false);
-            jsonWriter.WriteObjectStart();
-            jsonWriter.WriteArrayStart("values");
+            var jsonWriter = new Utf8JsonWriter(response);
+            jsonWriter.WriteStartObject();
+            jsonWriter.WriteStartArray("values");
             for (int i = 0; i < requestedCount; i++)
             {
-                jsonWriter.WriteValue("hello!");
+                jsonWriter.WriteStringValue("hello!");
             }
-            jsonWriter.WriteArrayEnd();
-            jsonWriter.WriteObjectEnd();
+            jsonWriter.WriteEndArray();
+            jsonWriter.WriteEndObject();
             jsonWriter.Flush();
         }
     }
