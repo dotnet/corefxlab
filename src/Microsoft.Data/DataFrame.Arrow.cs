@@ -123,7 +123,7 @@ namespace Microsoft.Data
                     default:
                         throw new NotImplementedException(nameof(fieldType.Name));
                 }
-                ret.InsertColumn(ret.ColumnCount, dataFrameColumn);
+                ret.InsertColumn(ret.Columns.Count, dataFrameColumn);
                 fieldIndex++;
             }
             return ret;
@@ -136,7 +136,7 @@ namespace Microsoft.Data
         {
             Apache.Arrow.Schema.Builder schemaBuilder = new Apache.Arrow.Schema.Builder();
 
-            int columnCount = ColumnCount;
+            int columnCount = Columns.Count;
             for (int i = 0; i < columnCount; i++)
             {
                 DataFrameColumn column = Columns[i];

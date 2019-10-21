@@ -27,12 +27,12 @@ CMT,1,1,181,0.6,CSH,4.5";
             }
             DataFrame df = DataFrame.ReadStream(() => new StreamReader(GetStream(data)));
             Assert.Equal(4, df.RowCount);
-            Assert.Equal(7, df.ColumnCount);
+            Assert.Equal(7, df.Columns.Count);
             Assert.Equal("CMT", df["vendor_id"][3]);
 
             DataFrame reducedRows = DataFrame.ReadStream(() => new StreamReader(GetStream(data)), numberOfRowsToRead: 3);
             Assert.Equal(3, reducedRows.RowCount);
-            Assert.Equal(7, reducedRows.ColumnCount);
+            Assert.Equal(7, reducedRows.Columns.Count);
             Assert.Equal("CMT", reducedRows["vendor_id"][2]);
         }
 
@@ -50,12 +50,12 @@ CMT,1,1,181,0.6,CSH,4.5";
             }
             DataFrame df = DataFrame.ReadStream(() => new StreamReader(GetStream(data)), header: false);
             Assert.Equal(4, df.RowCount);
-            Assert.Equal(7, df.ColumnCount);
+            Assert.Equal(7, df.Columns.Count);
             Assert.Equal("CMT", df["Column0"][3]);
 
             DataFrame reducedRows = DataFrame.ReadStream(() => new StreamReader(GetStream(data)), header: false, numberOfRowsToRead: 3);
             Assert.Equal(3, reducedRows.RowCount);
-            Assert.Equal(7, reducedRows.ColumnCount);
+            Assert.Equal(7, reducedRows.Columns.Count);
             Assert.Equal("CMT", reducedRows["Column0"][2]);
         }
     }

@@ -26,7 +26,7 @@ namespace Microsoft.Data
                 }
 
                 var schemaBuilder = new DataViewSchema.Builder();
-                for (int i = 0; i < ColumnCount; i++)
+                for (int i = 0; i < Columns.Count; i++)
                 {
                     DataFrameColumn baseColumn = Columns[i];
                     baseColumn.AddDataViewColumn(schemaBuilder);

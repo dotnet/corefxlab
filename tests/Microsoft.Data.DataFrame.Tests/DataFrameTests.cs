@@ -76,7 +76,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(length, withNulls);
             DataFrameColumn arrowStringColumn = CreateArrowStringColumn(length, withNulls);
-            df.InsertColumn(df.ColumnCount, arrowStringColumn);
+            df.InsertColumn(df.Columns.Count, arrowStringColumn);
             return df;
         }
 
@@ -84,7 +84,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithNumericAndStringColumns(length, withNulls);
             DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
-            df.InsertColumn(df.ColumnCount, boolColumn);
+            df.InsertColumn(df.Columns.Count, boolColumn);
             if (withNulls)
             {
                 boolColumn[length / 2] = null;
@@ -96,7 +96,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithNumericColumns(length);
             DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
-            df.InsertColumn(df.ColumnCount, boolColumn);
+            df.InsertColumn(df.Columns.Count, boolColumn);
             boolColumn[length / 2] = null;
             return df;
         }
@@ -105,14 +105,14 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithNumericColumns(length, withNulls);
             DataFrameColumn stringColumn = new StringDataFrameColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
-            df.InsertColumn(df.ColumnCount, stringColumn);
+            df.InsertColumn(df.Columns.Count, stringColumn);
             if (withNulls)
             {
                 stringColumn[length / 2] = null;
             }
 
             DataFrameColumn charColumn = new PrimitiveDataFrameColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
-            df.InsertColumn(df.ColumnCount, charColumn);
+            df.InsertColumn(df.Columns.Count, charColumn);
             if (withNulls)
             {
                 charColumn[length / 2] = null;
@@ -138,7 +138,7 @@ namespace Microsoft.Data.Tests
 
             if (withNulls)
             {
-                for (int i = 0; i < dataFrame.ColumnCount; i++)
+                for (int i = 0; i < dataFrame.Columns.Count; i++)
                 {
                     dataFrame.Columns[i][length / 2] = null;
                 }
@@ -156,7 +156,7 @@ namespace Microsoft.Data.Tests
 
             if (withNulls)
             {
-                for (int i = 0; i < dataFrame.ColumnCount; i++)
+                for (int i = 0; i < dataFrame.Columns.Count; i++)
                 {
                     dataFrame.Columns[i][length / 2] = null;
                 }
@@ -172,7 +172,7 @@ namespace Microsoft.Data.Tests
             var foo = dataFrame[0, 0];
             Assert.Equal(0, dataFrame[0, 0]);
             Assert.Equal(11, dataFrame[1, 1]);
-            Assert.Equal(2, dataFrame.ColumnCount);
+            Assert.Equal(2, dataFrame.Columns.Count);
             Assert.Equal("Int1", dataFrame.Columns[0].Name);
 
             var headList = dataFrame.Head(5);
@@ -202,7 +202,7 @@ namespace Microsoft.Data.Tests
             dataFrame.InsertColumn(0, intColumn);
             dataFrame.InsertColumn(1, floatColumn);
             Assert.Equal(10, dataFrame.RowCount);
-            Assert.Equal(2, dataFrame.ColumnCount);
+            Assert.Equal(2, dataFrame.Columns.Count);
             Assert.Equal(10, dataFrame.Columns[0].Length);
             Assert.Equal("IntColumn", dataFrame.Columns[0].Name);
             Assert.Equal(10, dataFrame.Columns[1].Length);
@@ -214,7 +214,7 @@ namespace Microsoft.Data.Tests
             Assert.Throws<ArgumentException>(() => dataFrame.InsertColumn(2, repeatedName));
             Assert.Throws<ArgumentOutOfRangeException>(() => dataFrame.InsertColumn(10, repeatedName));
 
-            Assert.Equal(2, dataFrame.ColumnCount);
+            Assert.Equal(2, dataFrame.Columns.Count);
             DataFrameColumn intColumnCopy = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
             Assert.Throws<ArgumentException>(() => dataFrame.SetColumn(1, intColumnCopy));
 
@@ -223,7 +223,7 @@ namespace Microsoft.Data.Tests
             Assert.True(object.ReferenceEquals(differentIntColumn, dataFrame.Columns[1]));
 
             dataFrame.RemoveColumn(1);
-            Assert.Equal(1, dataFrame.ColumnCount);
+            Assert.Equal(1, dataFrame.Columns.Count);
             Assert.True(ReferenceEquals(intColumn, dataFrame.Columns[0]));
         }
 
@@ -233,8 +233,8 @@ namespace Microsoft.Data.Tests
             DataFrame dataFrame = MakeDataFrameWithAllMutableColumnTypes(10);
             DataFrameColumn intColumn = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
             DataFrameColumn charColumn = dataFrame["Char"];
-            int insertedIndex = dataFrame.ColumnCount;
-            dataFrame.InsertColumn(dataFrame.ColumnCount, intColumn);
+            int insertedIndex = dataFrame.Columns.Count;
+            dataFrame.InsertColumn(dataFrame.Columns.Count, intColumn);
             dataFrame.RemoveColumn(0);
             DataFrameColumn intColumn_1 = dataFrame["IntColumn"];
             DataFrameColumn charColumn_1 = dataFrame["Char"];
@@ -312,7 +312,7 @@ namespace Microsoft.Data.Tests
 
             DataFrameColumn newColumn;
             DataFrameColumn verify;
-            for (int i = 0; i < df1.ColumnCount; i++)
+            for (int i = 0; i < df1.Columns.Count; i++)
             {
                 newColumn = df1[df1.Columns[i].Name] + df2[df2.Columns[i].Name];
                 verify = newColumn.ElementwiseEquals(df1.Columns[i] * 2);
@@ -596,7 +596,7 @@ namespace Microsoft.Data.Tests
             Assert.Equal(100.0, df["Double"][0]);
 
             // Test that none of the numeric column types throw
-            for (int i = 0; i < df.ColumnCount; i++)
+            for (int i = 0; i < df.Columns.Count; i++)
             {
                 DataFrameColumn column = df.Columns[i];
                 if (column.DataType == typeof(bool))
@@ -744,21 +744,21 @@ namespace Microsoft.Data.Tests
             {
                 mapIndices[i] = i;
             }
-            for (int i = 0; i < join.ColumnCount; i++)
+            for (int i = 0; i < join.Columns.Count; i++)
             {
                 DataFrameColumn joinColumn = join.Columns[i];
                 DataFrameColumn isEqual;
 
                 if (joinAlgorithm == JoinAlgorithm.Left)
                 {
-                    if (i < left.ColumnCount)
+                    if (i < left.Columns.Count)
                     {
                         DataFrameColumn leftColumn = left.Columns[i];
                         isEqual = joinColumn.ElementwiseEquals(leftColumn);
                     }
                     else
                     {
-                        int columnIndex = i - left.ColumnCount;
+                        int columnIndex = i - left.Columns.Count;
                         DataFrameColumn rightColumn = right.Columns[columnIndex];
                         DataFrameColumn compareColumn = rightColumn.Length <= join.RowCount ? rightColumn.Clone(numberOfNullsToAppend: join.RowCount - rightColumn.Length) : rightColumn.Clone(mapIndices);
                         isEqual = joinColumn.ElementwiseEquals(compareColumn);
@@ -766,7 +766,7 @@ namespace Microsoft.Data.Tests
                 }
                 else if (joinAlgorithm == JoinAlgorithm.Right)
                 {
-                    if (i < left.ColumnCount)
+                    if (i < left.Columns.Count)
                     {
                         DataFrameColumn leftColumn = left.Columns[i];
                         DataFrameColumn compareColumn = leftColumn.Length <= join.RowCount ? leftColumn.Clone(numberOfNullsToAppend: join.RowCount - leftColumn.Length) : leftColumn.Clone(mapIndices);
@@ -774,35 +774,35 @@ namespace Microsoft.Data.Tests
                     }
                     else
                     {
-                        int columnIndex = i - left.ColumnCount;
+                        int columnIndex = i - left.Columns.Count;
                         DataFrameColumn rightColumn = right.Columns[columnIndex];
                         isEqual = joinColumn.ElementwiseEquals(rightColumn);
                     }
                 }
                 else if (joinAlgorithm == JoinAlgorithm.Inner)
                 {
-                    if (i < left.ColumnCount)
+                    if (i < left.Columns.Count)
                     {
                         DataFrameColumn leftColumn = left.Columns[i];
                         isEqual = joinColumn.ElementwiseEquals(leftColumn.Clone(mapIndices));
                     }
                     else
                     {
-                        int columnIndex = i - left.ColumnCount;
+                        int columnIndex = i - left.Columns.Count;
                         DataFrameColumn rightColumn = right.Columns[columnIndex];
                         isEqual = joinColumn.ElementwiseEquals(rightColumn.Clone(mapIndices));
                     }
                 }
                 else
                 {
-                    if (i < left.ColumnCount)
+                    if (i < left.Columns.Count)
                     {
                         DataFrameColumn leftColumn = left.Columns[i];
                         isEqual = joinColumn.ElementwiseEquals(leftColumn.Clone(numberOfNullsToAppend: join.RowCount - leftColumn.Length));
                     }
                     else
                     {
-                        int columnIndex = i - left.ColumnCount;
+                        int columnIndex = i - left.Columns.Count;
                         DataFrameColumn rightColumn = right.Columns[columnIndex];
                         isEqual = joinColumn.ElementwiseEquals(rightColumn.Clone(numberOfNullsToAppend: join.RowCount - rightColumn.Length));
                     }
@@ -865,14 +865,14 @@ namespace Microsoft.Data.Tests
             // Left join
             DataFrame join = left.Join(right);
             Assert.Equal(join.RowCount, left.RowCount);
-            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Null(join["Int_right"][6]);
             VerifyJoin(join, left, right, JoinAlgorithm.Left);
 
             // Right join
             join = left.Join(right, joinAlgorithm: JoinAlgorithm.Right);
             Assert.Equal(join.RowCount, right.RowCount);
-            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(join["Int_right"][3], right["Int"][3]);
             Assert.Null(join["Int_right"][2]);
             VerifyJoin(join, left, right, JoinAlgorithm.Right);
@@ -880,14 +880,14 @@ namespace Microsoft.Data.Tests
             // Outer join
             join = left.Join(right, joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(join.RowCount, left.RowCount);
-            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Null(join["Int_right"][6]);
             VerifyJoin(join, left, right, JoinAlgorithm.FullOuter);
 
             // Inner join
             join = left.Join(right, joinAlgorithm: JoinAlgorithm.Inner);
             Assert.Equal(join.RowCount, right.RowCount);
-            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(join["Int_right"][3], right["Int"][3]);
             Assert.Null(join["Int_right"][2]);
             VerifyJoin(join, left, right, JoinAlgorithm.Inner);
@@ -897,14 +897,14 @@ namespace Microsoft.Data.Tests
             right = MakeDataFrameWithAllMutableColumnTypes(15);
             join = left.Join(right);
             Assert.Equal(join.RowCount, left.RowCount);
-            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(join["Int_right"][6], right["Int"][6]);
             VerifyJoin(join, left, right, JoinAlgorithm.Left);
 
             // Right join
             join = left.Join(right, joinAlgorithm: JoinAlgorithm.Right);
             Assert.Equal(join.RowCount, right.RowCount);
-            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(join["Int_right"][2], right["Int"][2]);
             Assert.Null(join["Int_left"][12]);
             VerifyJoin(join, left, right, JoinAlgorithm.Right);
@@ -912,14 +912,14 @@ namespace Microsoft.Data.Tests
             // Outer join
             join = left.Join(right, joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(join.RowCount, right.RowCount);
-            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Null(join["Int_left"][12]);
             VerifyJoin(join, left, right, JoinAlgorithm.FullOuter);
 
             // Inner join
             join = left.Join(right, joinAlgorithm: JoinAlgorithm.Inner);
             Assert.Equal(join.RowCount, left.RowCount);
-            Assert.Equal(join.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(join.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(join["Int_right"][2], right["Int"][2]);
             VerifyJoin(join, left, right, JoinAlgorithm.Inner);
         }
@@ -934,7 +934,7 @@ namespace Microsoft.Data.Tests
             Assert.Equal((long)4, count["Decimal"][1]);
             for (int r = 0; r < count.RowCount; r++)
             {
-                for (int c = 1; c < count.ColumnCount; c++)
+                for (int c = 1; c < count.Columns.Count; c++)
                 {
                     Assert.Equal((long)(r == 0 ? 5 : 4), count.Columns[c][r]);
                 }
@@ -944,7 +944,7 @@ namespace Microsoft.Data.Tests
             Assert.Equal(2, first.RowCount);
             for (int r = 0; r < 2; r++)
             {
-                for (int c = 0; c < count.ColumnCount; c++)
+                for (int c = 0; c < count.Columns.Count; c++)
                 {
                     DataFrameColumn originalColumn = df.Columns[c];
                     DataFrameColumn firstColumn = first[originalColumn.Name];
@@ -956,14 +956,14 @@ namespace Microsoft.Data.Tests
             List<int> verify = new List<int>() { 0, 3, 1, 4, 2, 5 };
             for (int r = 0; r < 5; r++)
             {
-                for (int c = 0; c < count.ColumnCount; c++)
+                for (int c = 0; c < count.Columns.Count; c++)
                 {
                     DataFrameColumn originalColumn = df.Columns[c];
                     DataFrameColumn headColumn = head[originalColumn.Name];
                     Assert.Equal(originalColumn[r].ToString(), headColumn[verify[r]].ToString());
                 }
             }
-            for (int c = 0; c < count.ColumnCount; c++)
+            for (int c = 0; c < count.Columns.Count; c++)
             {
                 DataFrameColumn originalColumn = df.Columns[c];
                 if (originalColumn.Name == "Bool")
@@ -979,7 +979,7 @@ namespace Microsoft.Data.Tests
             List<int> tailColumnVerity = new List<int>() { 1, 2, 4, 5 };
             for (int r = 0; r < 4; r++)
             {
-                for (int c = 0; c < count.ColumnCount; c++)
+                for (int c = 0; c < count.Columns.Count; c++)
                 {
                     DataFrameColumn originalColumn = df.Columns[c];
                     DataFrameColumn tailColumn = tail[originalColumn.Name];
@@ -991,7 +991,7 @@ namespace Microsoft.Data.Tests
             Assert.Equal(2, max.RowCount);
             for (int r = 0; r < 2; r++)
             {
-                for (int c = 0; c < count.ColumnCount; c++)
+                for (int c = 0; c < count.Columns.Count; c++)
                 {
                     DataFrameColumn originalColumn = df.Columns[c];
                     if (originalColumn.Name == "Bool" || originalColumn.Name == "Char")
@@ -1014,7 +1014,7 @@ namespace Microsoft.Data.Tests
             Assert.Equal(2, mean.RowCount);
             for (int r = 0; r < 2; r++)
             {
-                for (int c = 0; c < count.ColumnCount; c++)
+                for (int c = 0; c < count.Columns.Count; c++)
                 {
                     DataFrameColumn originalColumn = df.Columns[c];
                     if (originalColumn.Name == "Bool" || originalColumn.Name == "Char")
@@ -1031,30 +1031,30 @@ namespace Microsoft.Data.Tests
             }
 
             DataFrame columnSum = df.GroupBy("Bool").Sum("Int");
-            Assert.Equal(2, columnSum.ColumnCount);
+            Assert.Equal(2, columnSum.Columns.Count);
             Assert.Equal(20, columnSum["Int"][0]);
             Assert.Equal(20, columnSum["Int"][1]);
             DataFrame columnMax = df.GroupBy("Bool").Max("Int");
-            Assert.Equal(2, columnMax.ColumnCount);
+            Assert.Equal(2, columnMax.Columns.Count);
             Assert.Equal(8, columnMax["Int"][0]);
             Assert.Equal(9, columnMax["Int"][1]);
             DataFrame columnProduct = df.GroupBy("Bool").Product("Int");
-            Assert.Equal(2, columnProduct.ColumnCount);
+            Assert.Equal(2, columnProduct.Columns.Count);
             Assert.Equal(0, columnProduct["Int"][0]);
             Assert.Equal(0, columnProduct["Int"][1]);
             DataFrame columnMin = df.GroupBy("Bool").Min("Int");
-            Assert.Equal(2, columnMin.ColumnCount);
+            Assert.Equal(2, columnMin.Columns.Count);
             Assert.Equal(0, columnMin["Int"][0]);
             Assert.Equal(0, columnMin["Int"][1]);
 
             DataFrame countIntColumn = df.GroupBy("Bool").Count("Int");
-            Assert.Equal(2, countIntColumn.ColumnCount);
+            Assert.Equal(2, countIntColumn.Columns.Count);
             Assert.Equal(2, countIntColumn.RowCount);
             Assert.Equal((long)5, countIntColumn["Int"][0]);
             Assert.Equal((long)4, countIntColumn["Int"][1]);
 
             DataFrame firstDecimalColumn = df.GroupBy("Bool").First("Decimal");
-            Assert.Equal(2, firstDecimalColumn.ColumnCount);
+            Assert.Equal(2, firstDecimalColumn.Columns.Count);
             Assert.Equal(2, firstDecimalColumn.RowCount);
             Assert.Equal((decimal)0, firstDecimalColumn["Decimal"][0]);
             Assert.Equal((decimal)1, firstDecimalColumn["Decimal"][1]);
@@ -1112,7 +1112,7 @@ namespace Microsoft.Data.Tests
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
 
             int totalValueCount = 0;
-            for (int i = 0; i < df.ColumnCount; i++)
+            for (int i = 0; i < df.Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = df.Columns[i];
                 foreach (object value in baseColumn)
@@ -1120,7 +1120,7 @@ namespace Microsoft.Data.Tests
                     totalValueCount++;
                 }
             }
-            Assert.Equal(10 * df.ColumnCount, totalValueCount);
+            Assert.Equal(10 * df.Columns.Count, totalValueCount);
 
             // spot check a few column types:
 
@@ -1248,9 +1248,9 @@ namespace Microsoft.Data.Tests
             {
 
                 IEnumerable<DataViewSchema.Column> clippedColumns = ((IDataView)clippedColumn).Schema;
-                Assert.Equal(df.ColumnCount, clippedColumn.ColumnCount);
+                Assert.Equal(df.Columns.Count, clippedColumn.Columns.Count);
                 Assert.Equal(dfColumns, clippedColumns);
-                for (int c = 0; c < df.ColumnCount; c++)
+                for (int c = 0; c < df.Columns.Count; c++)
                 {
                     DataFrameColumn column = clippedColumn.Columns[c];
                     if (column.IsNumericColumn())
@@ -1303,7 +1303,7 @@ namespace Microsoft.Data.Tests
             DataFrame filtered = df[df["Bool"].ElementwiseEquals(true)];
             List<int> verify = new List<int> { 0, 2, 4, 6, 8 };
             Assert.Equal(5, filtered.RowCount);
-            for (int i = 0; i < filtered.ColumnCount; i++)
+            for (int i = 0; i < filtered.Columns.Count; i++)
             {
                 DataFrameColumn column = filtered.Columns[i];
                 if (column.Name == "Char" || column.Name == "Bool" || column.Name == "String")
@@ -1366,7 +1366,7 @@ namespace Microsoft.Data.Tests
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
             DataFrame sampled = df.Sample(3);
             Assert.Equal(3, sampled.RowCount);
-            Assert.Equal(df.ColumnCount, sampled.ColumnCount);
+            Assert.Equal(df.Columns.Count, sampled.Columns.Count);
         }
 
         [Fact]
@@ -1379,7 +1379,7 @@ namespace Microsoft.Data.Tests
             // Left merge 
             DataFrame merge = left.Merge<int>(right, "Int", "Int");
             Assert.Equal(10, merge.RowCount);
-            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Null(merge["Int_right"][6]);
             Assert.Null(merge["Int_left"][5]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Left);
@@ -1387,7 +1387,7 @@ namespace Microsoft.Data.Tests
             // Right merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Right);
             Assert.Equal(5, merge.RowCount);
-            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(merge["Int_right"][3], right["Int"][3]);
             Assert.Null(merge["Int_right"][2]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Right);
@@ -1395,14 +1395,14 @@ namespace Microsoft.Data.Tests
             // Outer merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(merge.RowCount, left.RowCount);
-            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Null(merge["Int_right"][6]);
             VerifyMerge(merge, left, right, JoinAlgorithm.FullOuter);
 
             // Inner merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Inner);
             Assert.Equal(merge.RowCount, right.RowCount);
-            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(merge["Int_right"][2], right["Int"][3]);
             Assert.Null(merge["Int_right"][4]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Inner);
@@ -1412,14 +1412,14 @@ namespace Microsoft.Data.Tests
             right = MakeDataFrameWithAllMutableColumnTypes(15);
             merge = left.Merge<int>(right, "Int", "Int");
             Assert.Equal(merge.RowCount, left.RowCount);
-            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(merge["Int_right"][6], right["Int"][6]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Left);
 
             // Right merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Right);
             Assert.Equal(merge.RowCount, right.RowCount);
-            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(merge["Int_right"][2], right["Int"][2]);
             Assert.Null(merge["Int_left"][12]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Right);
@@ -1427,7 +1427,7 @@ namespace Microsoft.Data.Tests
             // Outer merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(16, merge.RowCount);
-            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Null(merge["Int_left"][12]);
             Assert.Null(merge["Int_left"][5]);
             VerifyMerge(merge, left, right, JoinAlgorithm.FullOuter);
@@ -1435,7 +1435,7 @@ namespace Microsoft.Data.Tests
             // Inner merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Inner);
             Assert.Equal(9, merge.RowCount);
-            Assert.Equal(merge.ColumnCount, left.ColumnCount + right.ColumnCount);
+            Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
             Assert.Equal(merge["Int_right"][2], right["Int"][2]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Inner);
         }
@@ -1451,7 +1451,7 @@ namespace Microsoft.Data.Tests
             Assert.Equal("Max", descriptionColumn[1]);
             Assert.Equal("Min", descriptionColumn[2]);
             Assert.Equal("Mean", descriptionColumn[3]);
-            for (int i = 1; i < description.ColumnCount; i++)
+            for (int i = 1; i < description.Columns.Count; i++)
             {
                 DataFrameColumn column = description.Columns[i];
                 Assert.Equal(df.Columns[i - 1].Name, column.Name);
@@ -1565,8 +1565,8 @@ namespace Microsoft.Data.Tests
             DataFrameColumn intColumn = intDf["Int1"];
             DataFrame clone = df[intColumn];
             Assert.Equal(5, clone.RowCount);
-            Assert.Equal(df.ColumnCount, clone.ColumnCount);
-            for (int i = 0; i < df.ColumnCount; i++)
+            Assert.Equal(df.Columns.Count, clone.Columns.Count);
+            for (int i = 0; i < df.Columns.Count; i++)
             {
                 DataFrameColumn dfColumn = df.Columns[i];
                 DataFrameColumn cloneColumn = clone.Columns[i];
@@ -1597,7 +1597,7 @@ namespace Microsoft.Data.Tests
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
             IReadOnlyList<DataFrameColumn> columns = df.Columns;
             int i = 0;
-            Assert.Equal(columns.Count, df.ColumnCount);
+            Assert.Equal(columns.Count, df.Columns.Count);
             foreach (DataFrameColumn dataFrameColumn in columns)
             {
                 Assert.Equal(dataFrameColumn, df.Columns[i++]);

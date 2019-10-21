@@ -41,8 +41,8 @@ namespace Microsoft.Data
 
         public IReadOnlyList<string> GetColumnNames()
         {
-            var ret = new List<string>(ColumnCount);
-            for (int i = 0; i < ColumnCount; i++)
+            var ret = new List<string>(Columns.Count);
+            for (int i = 0; i < Columns.Count; i++)
             {
                 ret.Add(Columns[i].Name);
             }
@@ -54,7 +54,7 @@ namespace Microsoft.Data
         public IList<object> GetRow(long rowIndex)
         {
             var ret = new List<object>();
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
                 ret.Add(Columns[i][rowIndex]);
             }
@@ -101,18 +101,17 @@ namespace Microsoft.Data
             RowCount = column.Length;
             _columnNames.Insert(columnIndex, column.Name);
             _columnNameToIndexDictionary[column.Name] = columnIndex;
-            for (int i = columnIndex + 1; i < ColumnCount; i++)
+            for (int i = columnIndex + 1; i < Columns.Count; i++)
             {
                 _columnNameToIndexDictionary[_columnNames[i]]++;
             }
             _columns.Insert(columnIndex, column);
-            ColumnCount++;
         }
 
         public void SetColumn(int columnIndex, DataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
-            if ((uint)columnIndex >= ColumnCount)
+            if ((uint)columnIndex >= Columns.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(columnIndex));
             }
@@ -134,13 +133,12 @@ namespace Microsoft.Data
         public void RemoveColumn(int columnIndex)
         {
             _columnNameToIndexDictionary.Remove(_columnNames[columnIndex]);
-            for (int i = columnIndex + 1; i < ColumnCount; i++)
+            for (int i = columnIndex + 1; i < Columns.Count; i++)
             {
                 _columnNameToIndexDictionary[_columnNames[i]]--;
             }
             _columnNames.RemoveAt(columnIndex);
             _columns.RemoveAt(columnIndex);
-            ColumnCount--;
         }
 
         public void RemoveColumn(string columnName)

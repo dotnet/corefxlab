@@ -43,7 +43,7 @@ namespace Microsoft.Data
 
         public long RowCount => _table.RowCount;
 
-        public int ColumnCount => _table.ColumnCount;
+        //public int Columns.Count => _table.Columns.Count;
 
         public IReadOnlyList<DataFrameColumn> Columns => _table.Columns;
 
@@ -123,7 +123,7 @@ namespace Microsoft.Data
                 newColumn.SetName(columnName);
                 if (columnIndex == -1)
                 {
-                    _table.InsertColumn(ColumnCount, newColumn);
+                    _table.InsertColumn(Columns.Count, newColumn);
                 }
                 else
                 {
@@ -156,8 +156,8 @@ namespace Microsoft.Data
 
         private DataFrame Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false)
         {
-            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(ColumnCount);
-            for (int i = 0; i < ColumnCount; i++)
+            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
+            for (int i = 0; i < Columns.Count; i++)
             {
                 newColumns.Add(Columns[i].Clone(mapIndices, invertMapIndices));
             }
@@ -172,7 +172,7 @@ namespace Microsoft.Data
         public DataFrame Description()
         {
             DataFrame ret = new DataFrame();
-            if (ColumnCount == 0)
+            if (Columns.Count == 0)
                 return ret;
             int i = 0;
             while (!Columns[i].HasDescription())
@@ -181,7 +181,7 @@ namespace Microsoft.Data
             }
             ret = Columns[i].Description();
             i++;
-            for (; i < ColumnCount; i++)
+            for (; i < Columns.Count; i++)
             {
                 DataFrameColumn column = Columns[i];
                 if (!column.HasDescription())
@@ -206,8 +206,8 @@ namespace Microsoft.Data
         {
             DataFrameColumn column = this[columnName];
             DataFrameColumn sortIndices = column.GetAscendingSortIndices();
-            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(ColumnCount);
-            for (int i = 0; i < ColumnCount; i++)
+            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
+            for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn oldColumn = Columns[i];
                 DataFrameColumn newColumn = oldColumn.Clone(sortIndices, !ascending, oldColumn.NullCount);
@@ -227,7 +227,7 @@ namespace Microsoft.Data
         {
             DataFrame ret = inPlace ? this : Clone();
 
-            for (int i = 0; i < ret.ColumnCount; i++)
+            for (int i = 0; i < ret.Columns.Count; i++)
             {
                 DataFrameColumn column = ret.Columns[i];
                 if (column.IsNumericColumn())
@@ -242,7 +242,7 @@ namespace Microsoft.Data
         public DataFrame AddPrefix(string prefix, bool inPlace = false)
         {
             DataFrame df = inPlace ? this : Clone();
-            for (int i = 0; i < df.ColumnCount; i++)
+            for (int i = 0; i < df.Columns.Count; i++)
             {
                 DataFrameColumn column = df.Columns[i];
                 df._table.SetColumnName(column, prefix + column.Name);
@@ -257,7 +257,7 @@ namespace Microsoft.Data
         public DataFrame AddSuffix(string suffix, bool inPlace = false)
         {
             DataFrame df = inPlace ? this : Clone();
-            for (int i = 0; i < df.ColumnCount; i++)
+            for (int i = 0; i < df.Columns.Count; i++)
             {
                 DataFrameColumn column = df.Columns[i];
                 df._table.SetColumnName(column, column.Name + suffix);
@@ -297,7 +297,7 @@ namespace Microsoft.Data
         internal void SetTableRowCount(long rowCount)
         {
             // Even if current RowCount == rowCount, do the validation
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
                 if (Columns[i].Length != rowCount)
                     throw new ArgumentException(String.Format("{0} {1}", Strings.MismatchedRowCount, Columns[i].Name));
@@ -317,7 +317,7 @@ namespace Microsoft.Data
             {
                 filter.AppendMany(true, RowCount);
 
-                for (int i = 0; i < ColumnCount; i++)
+                for (int i = 0; i < Columns.Count; i++)
                 {
                     DataFrameColumn column = Columns[i];
                     filter.ApplyElementwise((bool? value, long index) =>
@@ -329,7 +329,7 @@ namespace Microsoft.Data
             else
             {
                 filter.AppendMany(false, RowCount);
-                for (int i = 0; i < ColumnCount; i++)
+                for (int i = 0; i < Columns.Count; i++)
                 {
                     DataFrameColumn column = Columns[i];
                     filter.ApplyElementwise((bool? value, long index) =>
@@ -344,7 +344,7 @@ namespace Microsoft.Data
         public DataFrame FillNulls(object value, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();
-            for (int i = 0; i < ret.ColumnCount; i++)
+            for (int i = 0; i < ret.Columns.Count; i++)
             {
                 ret.Columns[i].FillNulls(value, inPlace: true);
             }
@@ -353,11 +353,11 @@ namespace Microsoft.Data
 
         public DataFrame FillNulls(IList<object> values, bool inPlace = false)
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
 
             DataFrame ret = inPlace ? this : Clone();
-            for (int i = 0; i < ret.ColumnCount; i++)
+            for (int i = 0; i < ret.Columns.Count; i++)
             {
                 Columns[i].FillNulls(values[i], inPlace: true);
             }
@@ -376,11 +376,11 @@ namespace Microsoft.Data
         {
             StringBuilder sb = new StringBuilder();
             int longestColumnName = 0;
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
                 longestColumnName = Math.Max(longestColumnName, Columns[i].Name.Length);
             }
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
                 // Left align by 10
                 sb.Append(string.Format(Columns[i].Name.PadRight(longestColumnName)));
