@@ -20,8 +20,6 @@ namespace Microsoft.Data
 
         public long RowCount { get; internal set; }
 
-        public int ColumnCount { get; private set; }
-
         public DataFrameTable()
         {
             _columns = new List<DataFrameColumn>();
@@ -48,8 +46,6 @@ namespace Microsoft.Data
             }
             return ret;
         }
-
-        public DataFrameColumn Column(int columnIndex) => _columns[columnIndex];
 
         public IList<object> GetRow(long rowIndex)
         {

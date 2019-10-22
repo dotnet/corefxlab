@@ -43,8 +43,6 @@ namespace Microsoft.Data
 
         public long RowCount => _table.RowCount;
 
-        //public int Columns.Count => _table.Columns.Count;
-
         public IReadOnlyList<DataFrameColumn> Columns => _table.Columns;
 
         internal IReadOnlyList<string> GetColumnNames() => _table.GetColumnNames();
