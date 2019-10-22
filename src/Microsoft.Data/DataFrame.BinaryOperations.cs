@@ -25,12 +25,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Add(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -41,12 +41,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Add(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -61,12 +61,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Subtract(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -77,12 +77,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Subtract(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -97,12 +97,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Multiply(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -113,12 +113,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Multiply(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -133,12 +133,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Divide(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -149,12 +149,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Divide(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -169,12 +169,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Modulo(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -185,12 +185,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Modulo(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -204,12 +204,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.And(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -219,12 +219,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.And(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -238,12 +238,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Or(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -253,12 +253,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Or(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -272,12 +272,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Xor(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -287,12 +287,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Xor(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -302,12 +302,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.LeftShift(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -317,12 +317,12 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.RightShift(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns.Set(i, newColumn);
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -337,9 +337,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseEquals(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -350,9 +350,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseEquals(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -367,9 +367,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseNotEquals(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -380,9 +380,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseNotEquals(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -397,9 +397,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThanOrEqual(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -410,9 +410,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThanOrEqual(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -427,9 +427,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseLessThanOrEqual(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -440,9 +440,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseLessThanOrEqual(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -457,9 +457,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThan(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -470,9 +470,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThan(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -487,9 +487,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseLessThan(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -500,9 +500,9 @@ namespace Microsoft.Data
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _columnCollection.Columns[i];
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseLessThan(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }

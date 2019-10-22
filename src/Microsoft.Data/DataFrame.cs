@@ -33,51 +33,27 @@ namespace Microsoft.Data
         private readonly DataFrameColumnCollection _columnCollection;
         public DataFrame()
         {
-            _columnCollection = new DataFrameColumnCollection();
+            _columnCollection = new DataFrameColumnCollection(OnColumnsChanged);
         }
 
         public DataFrame(IList<DataFrameColumn> columns)
         {
-            _columnCollection = new DataFrameColumnCollection(columns);
+            _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
         }
 
         public long RowCount => _columnCollection.RowCount;
 
-        public IReadOnlyList<DataFrameColumn> Columns => _columnCollection.Columns;
+        public DataFrameColumnCollection Columns => _columnCollection;
 
         internal IReadOnlyList<string> GetColumnNames() => _columnCollection.GetColumnNames();
-
-        public void InsertColumn(int columnIndex, DataFrameColumn column)
-        {
-            _columnCollection.InsertColumn(columnIndex, column);
-            OnColumnsChanged();
-        }
-
-        public void SetColumn(int columnIndex, DataFrameColumn column)
-        {
-            _columnCollection.SetColumn(columnIndex, column);
-            OnColumnsChanged();
-        }
-
-        public void RemoveColumn(int columnIndex)
-        {
-            _columnCollection.RemoveColumn(columnIndex);
-            OnColumnsChanged();
-        }
-
-        public void RemoveColumn(string columnName)
-        {
-            _columnCollection.RemoveColumn(columnName);
-            OnColumnsChanged();
-        }
 
         internal int GetColumnIndex(string columnName) => _columnCollection.GetColumnIndex(columnName);
 
         #region Operators
         public object this[long rowIndex, int columnIndex]
         {
-            get => _columnCollection.Columns[columnIndex][rowIndex];
-            set => _columnCollection.Columns[columnIndex][rowIndex] = value;
+            get => _columnCollection[columnIndex][rowIndex];
+            set => _columnCollection[columnIndex][rowIndex] = value;
         }
 
         public IList<object> this[long rowIndex]
@@ -112,7 +88,7 @@ namespace Microsoft.Data
                 int columnIndex = _columnCollection.GetColumnIndex(columnName);
                 if (columnIndex == -1)
                     throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
-                return _columnCollection.Columns[columnIndex];
+                return _columnCollection[columnIndex];
             }
             set
             {
@@ -121,11 +97,11 @@ namespace Microsoft.Data
                 newColumn.SetName(columnName);
                 if (columnIndex == -1)
                 {
-                    _columnCollection.InsertColumn(Columns.Count, newColumn);
+                    _columnCollection.Insert(Columns.Count, newColumn);
                 }
                 else
                 {
-                    _columnCollection.SetColumn(columnIndex, newColumn);
+                    _columnCollection.Set(columnIndex, newColumn);
                 }
             }
         }
@@ -192,7 +168,7 @@ namespace Microsoft.Data
                 int rightMergeColumn = ret._columnCollection.GetColumnIndex("Description" + "_right");
                 if (leftMergeColumn != -1 && rightMergeColumn != -1)
                 {
-                    ret.RemoveColumn("Description" + "_right");
+                    ret.Columns.Remove("Description" + "_right");
                     ret._columnCollection.SetColumnName(ret["Description_left"], "Description");
                 }
             }
@@ -287,7 +263,7 @@ namespace Microsoft.Data
             if (columnIndex == -1)
                 throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
 
-            DataFrameColumn column = _columnCollection.Columns[columnIndex];
+            DataFrameColumn column = _columnCollection[columnIndex];
             return column.GroupBy(columnIndex, this);
         }
 

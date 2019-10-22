@@ -42,7 +42,7 @@ namespace Microsoft.Data
                 for (int i = 0; i < Columns.Count; i++)
                 {
                     DataFrameColumn newColumn = Columns[i].Clone();
-                    ret.InsertColumn(ret.Columns.Count, newColumn);
+                    ret.Columns.Insert(ret.Columns.Count, newColumn);
                 }
                 long minLength = Math.Min(RowCount, other.RowCount);
                 PrimitiveDataFrameColumn<long> mapIndices = new PrimitiveDataFrameColumn<long>("mapIndices", minLength);
@@ -62,7 +62,7 @@ namespace Microsoft.Data
                         newColumn = other.Columns[i].Clone(mapIndices);
                     }
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
-                    ret.InsertColumn(ret.Columns.Count, newColumn);
+                    ret.Columns.Insert(ret.Columns.Count, newColumn);
                 }
             }
             else if (joinAlgorithm == JoinAlgorithm.Right)
@@ -84,13 +84,13 @@ namespace Microsoft.Data
                     {
                         newColumn = Columns[i].Clone(mapIndices);
                     }
-                    ret.InsertColumn(ret.Columns.Count, newColumn);
+                    ret.Columns.Insert(ret.Columns.Count, newColumn);
                 }
                 for (int i = 0; i < other.Columns.Count; i++)
                 {
                     DataFrameColumn newColumn = other.Columns[i].Clone();
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
-                    ret.InsertColumn(ret.Columns.Count, newColumn);
+                    ret.Columns.Insert(ret.Columns.Count, newColumn);
                 }
             }
             else if (joinAlgorithm == JoinAlgorithm.FullOuter)
@@ -100,14 +100,14 @@ namespace Microsoft.Data
                 for (int i = 0; i < Columns.Count; i++)
                 {
                     DataFrameColumn newColumn = Columns[i].Clone(numberOfNullsToAppend: numberOfNulls);
-                    ret.InsertColumn(ret.Columns.Count, newColumn);
+                    ret.Columns.Insert(ret.Columns.Count, newColumn);
                 }
                 numberOfNulls = newRowCount - other.RowCount;
                 for (int i = 0; i < other.Columns.Count; i++)
                 {
                     DataFrameColumn newColumn = other.Columns[i].Clone(numberOfNullsToAppend: numberOfNulls);
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
-                    ret.InsertColumn(ret.Columns.Count, newColumn);
+                    ret.Columns.Insert(ret.Columns.Count, newColumn);
                 }
             }
             else if (joinAlgorithm == JoinAlgorithm.Inner)
@@ -121,13 +121,13 @@ namespace Microsoft.Data
                 for (int i = 0; i < Columns.Count; i++)
                 {
                     DataFrameColumn newColumn = Columns[i].Clone(mapIndices);
-                    ret.InsertColumn(ret.Columns.Count, newColumn);
+                    ret.Columns.Insert(ret.Columns.Count, newColumn);
                 }
                 for (int i = 0; i < other.Columns.Count; i++)
                 {
                     DataFrameColumn newColumn = other.Columns[i].Clone(mapIndices);
                     SetSuffixForDuplicatedColumnNames(ret, newColumn, leftSuffix, rightSuffix);
-                    ret.InsertColumn(ret.Columns.Count, newColumn);
+                    ret.Columns.Insert(ret.Columns.Count, newColumn);
                 }
             }
             return ret;
@@ -346,13 +346,13 @@ namespace Microsoft.Data
 
             for (int i = 0; i < leftDataFrame.Columns.Count; i++)
             {
-                ret.InsertColumn(i, leftDataFrame.Columns[i].Clone(leftRowIndices));
+                ret.Columns.Insert(i, leftDataFrame.Columns[i].Clone(leftRowIndices));
             }
             for (int i = 0; i < rightDataFrame.Columns.Count; i++)
             {
                 DataFrameColumn column = rightDataFrame.Columns[i].Clone(rightRowIndices);
                 SetSuffixForDuplicatedColumnNames(ret, column, leftSuffix, rightSuffix);
-                ret.InsertColumn(ret.Columns.Count, column);
+                ret.Columns.Insert(ret.Columns.Count, column);
             }
             return ret;
         }

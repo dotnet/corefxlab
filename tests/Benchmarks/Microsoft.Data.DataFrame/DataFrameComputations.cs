@@ -18,7 +18,7 @@ namespace Benchmarks.Microsoft.Data
         {
             _dataFrame = new DataFrame();
             _column0 = new PrimitiveDataFrameColumn<int>("Int0", Enumerable.Range(0, 50000));
-            _dataFrame.InsertColumn(0, _column0);
+            _dataFrame.Columns.Insert(0, _column0);
         }
 
         [Benchmark]

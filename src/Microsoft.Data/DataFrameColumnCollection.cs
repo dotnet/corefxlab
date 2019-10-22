@@ -11,9 +11,9 @@ namespace Microsoft.Data
     /// <summary>
     /// A DataFrameTable is just a container that holds a number of DataFrameColumns. It mainly acts as a convenient store to allow DataFrame to implement its algorithms
     /// </summary>
-    internal class DataFrameColumnCollection : Collection<DataFrameColumn>
+    public class DataFrameColumnCollection : Collection<DataFrameColumn>
     {
-        private List<DataFrameColumn> _columns;
+        private Action ColumnsChanged;
 
         private List<string> _columnNames = new List<string>();
 
@@ -21,29 +21,27 @@ namespace Microsoft.Data
 
         public long RowCount { get; internal set; }
 
-        public DataFrameColumnCollection() : base()
+        public DataFrameColumnCollection(Action columnsChanged) : base()
         {
-            _columns = new List<DataFrameColumn>();
+            ColumnsChanged = columnsChanged;
         }
 
-        public DataFrameColumnCollection(IList<DataFrameColumn> columns) : base()
+        public DataFrameColumnCollection(IList<DataFrameColumn> columns, Action columnsChanged) : base()
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));
-            _columns = new List<DataFrameColumn>();
+            ColumnsChanged = columnsChanged;
             for (int i = 0; i < columns.Count; i++)
             {
                 Add(columns[i]);
             }
         }
 
-        public IReadOnlyList<DataFrameColumn> Columns => _columns;
-
         public IReadOnlyList<string> GetColumnNames()
         {
-            var ret = new List<string>(Columns.Count);
-            for (int i = 0; i < Columns.Count; i++)
+            var ret = new List<string>(Count);
+            for (int i = 0; i < Count; i++)
             {
-                ret.Add(Columns[i].Name);
+                ret.Add(this[i].Name);
             }
             return ret;
         }
@@ -51,9 +49,9 @@ namespace Microsoft.Data
         public IList<object> GetRow(long rowIndex)
         {
             var ret = new List<object>();
-            for (int i = 0; i < Columns.Count; i++)
+            for (int i = 0; i < Count; i++)
             {
-                ret.Add(Columns[i][rowIndex]);
+                ret.Add(this[i][rowIndex]);
             }
             return ret;
         }
@@ -66,27 +64,19 @@ namespace Microsoft.Data
             _columnNames[currentIndex] = newName;
             _columnNameToIndexDictionary.Remove(currentName);
             _columnNameToIndexDictionary.Add(newName, currentIndex);
+            ColumnsChanged?.Invoke();
         }
 
-        public void InsertColumn<T>(int columnIndex, IEnumerable<T> column, string columnName)
+        public void Insert<T>(int columnIndex, IEnumerable<T> column, string columnName)
             where T : unmanaged
         {
-            column = column ?? throw new ArgumentNullException(nameof(column));
-            if ((uint)columnIndex > _columns.Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(columnIndex));
-            }
             DataFrameColumn newColumn = new PrimitiveDataFrameColumn<T>(columnName, column);
-            InsertItem(columnIndex, newColumn);
+            Insert(columnIndex, newColumn); // calls InsertItem internally
         }
 
         protected override void InsertItem(int columnIndex, DataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
-            if ((uint)columnIndex > _columns.Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(columnIndex));
-            }
             if (RowCount > 0 && column.Length != RowCount)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
@@ -98,20 +88,22 @@ namespace Microsoft.Data
             RowCount = column.Length;
             _columnNames.Insert(columnIndex, column.Name);
             _columnNameToIndexDictionary[column.Name] = columnIndex;
-            for (int i = columnIndex + 1; i < Columns.Count; i++)
+            for (int i = columnIndex + 1; i < Count; i++)
             {
                 _columnNameToIndexDictionary[_columnNames[i]]++;
             }
-            _columns.Insert(columnIndex, column);
+            base.InsertItem(columnIndex, column);
+            ColumnsChanged?.Invoke();
         }
 
-        public void SetColumn(int columnIndex, DataFrameColumn column)
+        public void Set(int columnIndex, DataFrameColumn column)
+        {
+            this[columnIndex] = column; // calls SetItem internally
+        }
+
+        protected override void SetItem(int columnIndex, DataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
-            if ((uint)columnIndex >= Columns.Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(columnIndex));
-            }
             if (RowCount > 0 && column.Length != RowCount)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
@@ -124,26 +116,28 @@ namespace Microsoft.Data
             _columnNameToIndexDictionary.Remove(_columnNames[columnIndex]);
             _columnNames[columnIndex] = column.Name;
             _columnNameToIndexDictionary[column.Name] = columnIndex;
-            _columns[columnIndex] = column;
+            base.SetItem(columnIndex, column);
+            ColumnsChanged?.Invoke();
         }
 
-        public void RemoveColumn(int columnIndex)
+        protected override void RemoveItem(int columnIndex)
         {
             _columnNameToIndexDictionary.Remove(_columnNames[columnIndex]);
-            for (int i = columnIndex + 1; i < Columns.Count; i++)
+            for (int i = columnIndex + 1; i < Count; i++)
             {
                 _columnNameToIndexDictionary[_columnNames[i]]--;
             }
             _columnNames.RemoveAt(columnIndex);
-            _columns.RemoveAt(columnIndex);
+            base.RemoveItem(columnIndex);
+            ColumnsChanged?.Invoke();
         }
 
-        public void RemoveColumn(string columnName)
+        public void Remove(string columnName)
         {
             int columnIndex = GetColumnIndex(columnName);
             if (columnIndex != -1)
             {
-                RemoveColumn(columnIndex);
+                RemoveAt(columnIndex); // calls RemoveItem internally
             }
         }
 
@@ -159,21 +153,9 @@ namespace Microsoft.Data
         protected override void ClearItems()
         {
             base.ClearItems();
-        }
-
-        protected override void InsertItem(int index, DataFrameColumn item)
-        {
-            base.InsertItem(index, item);
-        }
-
-        protected override void RemoveItem(int index)
-        {
-            base.RemoveItem(index);
-        }
-
-        protected override void SetItem(int index, DataFrameColumn item)
-        {
-            base.SetItem(index, item);
+            ColumnsChanged?.Invoke();
+            _columnNames.Clear();
+            _columnNameToIndexDictionary.Clear();
         }
     }
 }

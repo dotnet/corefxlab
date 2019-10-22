@@ -123,7 +123,7 @@ namespace Microsoft.Data
                     default:
                         throw new NotImplementedException(nameof(fieldType.Name));
                 }
-                ret.InsertColumn(ret.Columns.Count, dataFrameColumn);
+                ret.Columns.Insert(ret.Columns.Count, dataFrameColumn);
                 fieldIndex++;
             }
             return ret;

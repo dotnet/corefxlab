@@ -24,8 +24,8 @@ namespace Microsoft.Data.Tests
                 dataFrameColumn2[length / 2] = null;
             }
             Data.DataFrame dataFrame = new Data.DataFrame();
-            dataFrame.InsertColumn(0, dataFrameColumn1);
-            dataFrame.InsertColumn(1, dataFrameColumn2);
+            dataFrame.Columns.Insert(0, dataFrameColumn1);
+            dataFrame.Columns.Insert(1, dataFrameColumn2);
             return dataFrame;
         }
 
@@ -76,7 +76,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(length, withNulls);
             DataFrameColumn arrowStringColumn = CreateArrowStringColumn(length, withNulls);
-            df.InsertColumn(df.Columns.Count, arrowStringColumn);
+            df.Columns.Insert(df.Columns.Count, arrowStringColumn);
             return df;
         }
 
@@ -84,7 +84,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithNumericAndStringColumns(length, withNulls);
             DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
-            df.InsertColumn(df.Columns.Count, boolColumn);
+            df.Columns.Insert(df.Columns.Count, boolColumn);
             if (withNulls)
             {
                 boolColumn[length / 2] = null;
@@ -96,7 +96,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithNumericColumns(length);
             DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, length).Select(x => x % 2 == 0));
-            df.InsertColumn(df.Columns.Count, boolColumn);
+            df.Columns.Insert(df.Columns.Count, boolColumn);
             boolColumn[length / 2] = null;
             return df;
         }
@@ -105,14 +105,14 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithNumericColumns(length, withNulls);
             DataFrameColumn stringColumn = new StringDataFrameColumn("String", Enumerable.Range(0, length).Select(x => x.ToString()));
-            df.InsertColumn(df.Columns.Count, stringColumn);
+            df.Columns.Insert(df.Columns.Count, stringColumn);
             if (withNulls)
             {
                 stringColumn[length / 2] = null;
             }
 
             DataFrameColumn charColumn = new PrimitiveDataFrameColumn<char>("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
-            df.InsertColumn(df.Columns.Count, charColumn);
+            df.Columns.Insert(df.Columns.Count, charColumn);
             if (withNulls)
             {
                 charColumn[length / 2] = null;
@@ -199,8 +199,8 @@ namespace Microsoft.Data.Tests
             DataFrameColumn intColumn = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
             DataFrameColumn floatColumn = new PrimitiveDataFrameColumn<float>("FloatColumn", Enumerable.Range(0, 10).Select(x => (float)x));
             DataFrame dataFrame = new DataFrame();
-            dataFrame.InsertColumn(0, intColumn);
-            dataFrame.InsertColumn(1, floatColumn);
+            dataFrame.Columns.Insert(0, intColumn);
+            dataFrame.Columns.Insert(1, floatColumn);
             Assert.Equal(10, dataFrame.RowCount);
             Assert.Equal(2, dataFrame.Columns.Count);
             Assert.Equal(10, dataFrame.Columns[0].Length);
@@ -210,20 +210,20 @@ namespace Microsoft.Data.Tests
 
             DataFrameColumn bigColumn = new PrimitiveDataFrameColumn<float>("BigColumn", Enumerable.Range(0, 11).Select(x => (float)x));
             DataFrameColumn repeatedName = new PrimitiveDataFrameColumn<float>("FloatColumn", Enumerable.Range(0, 10).Select(x => (float)x));
-            Assert.Throws<ArgumentException>(() => dataFrame.InsertColumn(2, bigColumn));
-            Assert.Throws<ArgumentException>(() => dataFrame.InsertColumn(2, repeatedName));
-            Assert.Throws<ArgumentOutOfRangeException>(() => dataFrame.InsertColumn(10, repeatedName));
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.Insert(2, bigColumn));
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.Insert(2, repeatedName));
+            Assert.Throws<ArgumentOutOfRangeException>(() => dataFrame.Columns.Insert(10, repeatedName));
 
             Assert.Equal(2, dataFrame.Columns.Count);
             DataFrameColumn intColumnCopy = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
-            Assert.Throws<ArgumentException>(() => dataFrame.SetColumn(1, intColumnCopy));
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.Set(1, intColumnCopy));
 
             DataFrameColumn differentIntColumn = new PrimitiveDataFrameColumn<int>("IntColumn1", Enumerable.Range(0, 10).Select(x => x));
-            dataFrame.SetColumn(1, differentIntColumn);
+            dataFrame.Columns.Set(1, differentIntColumn);
             Assert.True(object.ReferenceEquals(differentIntColumn, dataFrame.Columns[1]));
 
-            dataFrame.RemoveColumn(1);
-            Assert.Equal(1, dataFrame.Columns.Count);
+            dataFrame.Columns.RemoveAt(1);
+            Assert.Single(dataFrame.Columns);
             Assert.True(ReferenceEquals(intColumn, dataFrame.Columns[0]));
         }
 
@@ -234,8 +234,8 @@ namespace Microsoft.Data.Tests
             DataFrameColumn intColumn = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
             DataFrameColumn charColumn = dataFrame["Char"];
             int insertedIndex = dataFrame.Columns.Count;
-            dataFrame.InsertColumn(dataFrame.Columns.Count, intColumn);
-            dataFrame.RemoveColumn(0);
+            dataFrame.Columns.Insert(dataFrame.Columns.Count, intColumn);
+            dataFrame.Columns.RemoveAt(0);
             DataFrameColumn intColumn_1 = dataFrame["IntColumn"];
             DataFrameColumn charColumn_1 = dataFrame["Char"];
             Assert.True(ReferenceEquals(intColumn, intColumn_1));
@@ -375,7 +375,7 @@ namespace Microsoft.Data.Tests
             Assert.Throws<NotSupportedException>(() => df.Add(true));
 
             var dataFrameColumn1 = new PrimitiveDataFrameColumn<double>("Double1", Enumerable.Range(0, 10).Select(x => (double)x));
-            df.SetColumn(0, dataFrameColumn1);
+            df.Columns.Set(0, dataFrameColumn1);
             // Double + comparison ops should throw
             Assert.Throws<NotSupportedException>(() => df.And(true));
         }
@@ -386,8 +386,8 @@ namespace Microsoft.Data.Tests
             var df = new DataFrame();
             var dataFrameColumn1 = new PrimitiveDataFrameColumn<bool>("Bool1", Enumerable.Range(0, 10).Select(x => true));
             var dataFrameColumn2 = new PrimitiveDataFrameColumn<bool>("Bool2", Enumerable.Range(0, 10).Select(x => true));
-            df.InsertColumn(0, dataFrameColumn1);
-            df.InsertColumn(1, dataFrameColumn2);
+            df.Columns.Insert(0, dataFrameColumn1);
+            df.Columns.Insert(1, dataFrameColumn2);
 
             // bool + int should throw
             Assert.Throws<NotSupportedException>(() => df.Add(5));
@@ -417,7 +417,7 @@ namespace Microsoft.Data.Tests
         {
             var df = new DataFrame();
             DataFrameColumn stringColumn = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
-            df.InsertColumn(0, stringColumn);
+            df.Columns.Insert(0, stringColumn);
 
             DataFrameColumn newCol = stringColumn.ElementwiseEquals(5);
             Assert.Equal(true, newCol[5]);

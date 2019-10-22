@@ -504,8 +504,8 @@ namespace Microsoft.Data
             column.Append(max);
             column.Append(min);
             column.Append(mean);
-            ret.InsertColumn(0, stringColumn);
-            ret.InsertColumn(1, column);
+            ret.Columns.Insert(0, stringColumn);
+            ret.Columns.Insert(1, column);
             return ret;
         }
 
