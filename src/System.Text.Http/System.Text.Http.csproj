@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Non-allocating HTTP parser</Description>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PackageTags>HTTP parser parsing .NET non-allocating corefxlab</PackageTags>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>

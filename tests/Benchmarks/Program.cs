@@ -14,7 +14,7 @@ namespace Benchmarks
         /// </summary>
         public static void Main(string[] args)
             => BenchmarkSwitcher
-                .FromAssembly(typeof(Program).Assembly).With(JsonBenchmarks.SerializerBenchmarks.GetTypes())         
+                .FromAssembly(typeof(Program).Assembly)
                 .Run(args);
     }
 }

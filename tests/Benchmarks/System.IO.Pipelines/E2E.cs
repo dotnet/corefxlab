@@ -6,7 +6,7 @@ using System.Buffers.Text;
 using System.IO.Pipelines.Samples;
 using System.Text;
 using System.Text.Formatting;
-using System.Text.JsonLab;
+using System.Text.Json;
 using BenchmarkDotNet.Attributes;
 
 namespace System.IO.Pipelines.Benchmarks
@@ -56,10 +56,10 @@ namespace System.IO.Pipelines.Benchmarks
                 formatter.Append("\r\n\r\n");
 
                 // write body
-                var writer = new Utf8JsonWriter<BufferWriterFormatter<PipeWriter>>(formatter);
-                writer.WriteObjectStart();
-                writer.WriteAttribute("message", "Hello, World!");
-                writer.WriteObjectEnd();
+                var writer = new Utf8JsonWriter(formatter);
+                writer.WriteStartObject();
+                writer.WriteString("message", "Hello, World!");
+                writer.WriteEndObject();
                 writer.Flush();
             });
         }

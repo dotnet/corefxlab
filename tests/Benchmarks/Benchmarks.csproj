@@ -36,7 +36,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Jil" Version="2.16.0" />
     <PackageReference Include="Utf8Json" Version="1.3.7" />
-    <PackageReference Include="System.Text.Json" Version="2.0.0.11" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0" />
     <PackageReference Include="fastJSON" Version="2.1.34" />
     <PackageReference Include="jayrock-json" Version="0.9.16530.1" />
     <PackageReference Include="LitJson" Version="0.13.0" />
@@ -56,24 +56,10 @@
     <ProjectReference Include="..\..\src\System.Text.CaseFolding\System.Text.CaseFolding.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Encodings.Web.Utf8\System.Text.Encodings.Web.Utf8.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
-    <ProjectReference Include="..\..\src\System.Text.JsonLab\System.Text.JsonLab.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Utf8String\System.Text.Utf8String.csproj" />
     <ProjectReference Include="..\ALCProxy.TestInterface\ALCProxy.TestInterface.csproj" />
     <ProjectReference Include="..\System.Binary.Base64.Tests\System.Binary.Base64.Tests.csproj" />
     <ProjectReference Include="..\System.Text.Primitives.Tests\System.Text.Primitives.Tests.csproj" />
     <ProjectReference Include="..\System.Buffers.ReaderWriter.Tests\System.Buffers.ReaderWriter.Tests.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="JsonStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>JsonStrings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="JsonStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>JsonStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>

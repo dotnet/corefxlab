@@ -13,9 +13,11 @@
     <None Remove="LowAllocationWebServerLibrary\obj\**" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="$(SystemTextJsonVersion)" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj" />
-    <ProjectReference Include="..\..\src\System.Text.JsonLab\System.Text.JsonLab.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />

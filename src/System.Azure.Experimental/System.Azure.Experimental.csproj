@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <Description>Set of building blocks for Azure SDK</Description>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>BCL for Azure SDK </PackageTags>
     <!-- disable automatic compile item inclusion so that we can set the correct metadata on TextTemplate-generated sources -->
