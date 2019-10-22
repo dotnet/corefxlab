@@ -23,8 +23,8 @@
       <param name="frequency">The frequency of the beep, ranging from 37 to 32767 hertz.</param>
       <param name="duration">The duration of the beep measured in milliseconds.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="frequency" /> is less than 37 or more than 32767 hertz.  
--or-  
+        <paramref name="frequency" /> is less than 37 or more than 32767 hertz.
+-or-
 <paramref name="duration" /> is less than or equal to zero.</exception>
       <exception cref="T:System.Security.HostProtectionException">This method was executed on a server, such as SQL Server, that does not permit access to the console.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Windows.</exception>
@@ -32,11 +32,11 @@
     <member name="P:System.Console.BufferHeight">
       <summary>Gets or sets the height of the buffer area.</summary>
       <returns>The current height, in rows, of the buffer area.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than or equal to zero.  
- -or-  
- The value in a set operation is greater than or equal to <see cref="F:System.Int16.MaxValue" />.  
- -or-  
- The value in a set operation is less than <see cref="P:System.Console.WindowTop" /> + <see cref="P:System.Console.WindowHeight" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than or equal to zero.
+-or-
+The value in a set operation is greater than or equal to <see cref="F:System.Int16.MaxValue" />.
+-or-
+The value in a set operation is less than <see cref="P:System.Console.WindowTop" /> + <see cref="P:System.Console.WindowHeight" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The set operation is invoked on an operating system other than Windows.</exception>
@@ -44,11 +44,11 @@
     <member name="P:System.Console.BufferWidth">
       <summary>Gets or sets the width of the buffer area.</summary>
       <returns>The current width, in columns, of the buffer area.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than or equal to zero.  
- -or-  
- The value in a set operation is greater than or equal to <see cref="F:System.Int16.MaxValue" />.  
- -or-  
- The value in a set operation is less than <see cref="P:System.Console.WindowLeft" /> + <see cref="P:System.Console.WindowWidth" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than or equal to zero.
+-or-
+The value in a set operation is greater than or equal to <see cref="F:System.Int16.MaxValue" />.
+-or-
+The value in a set operation is less than <see cref="P:System.Console.WindowLeft" /> + <see cref="P:System.Console.WindowWidth" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The set operation is invoked on an operating system other than Windows.</exception>
@@ -69,9 +69,9 @@
     <member name="P:System.Console.CursorLeft">
       <summary>Gets or sets the column position of the cursor within the buffer area.</summary>
       <returns>The current position, in columns, of the cursor.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than zero.  
- -or-  
- The value in a set operation is greater than or equal to <see cref="P:System.Console.BufferWidth" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than zero.
+-or-
+The value in a set operation is greater than or equal to <see cref="P:System.Console.BufferWidth" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     </member>
@@ -86,9 +86,9 @@
     <member name="P:System.Console.CursorTop">
       <summary>Gets or sets the row position of the cursor within the buffer area.</summary>
       <returns>The current position, in rows, of the cursor.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than zero.  
- -or-  
- The value in a set operation is greater than or equal to <see cref="P:System.Console.BufferHeight" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than zero.
+-or-
+The value in a set operation is greater than or equal to <see cref="P:System.Console.BufferHeight" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     </member>
@@ -160,15 +160,15 @@
       <param name="sourceHeight">The number of rows in the source area.</param>
       <param name="targetLeft">The leftmost column of the destination area.</param>
       <param name="targetTop">The topmost row of the destination area.</param>
-      <exception cref="T:System.ArgumentOutOfRangeException">One or more of the parameters is less than zero.  
- -or-  
- <paramref name="sourceLeft" /> or <paramref name="targetLeft" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.  
- -or-  
- <paramref name="sourceTop" /> or <paramref name="targetTop" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.  
- -or-  
- <paramref name="sourceTop" /> + <paramref name="sourceHeight" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.  
- -or-  
- <paramref name="sourceLeft" /> + <paramref name="sourceWidth" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">One or more of the parameters is less than zero.
+-or-
+<paramref name="sourceLeft" /> or <paramref name="targetLeft" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.
+-or-
+<paramref name="sourceTop" /> or <paramref name="targetTop" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.
+-or-
+<paramref name="sourceTop" /> + <paramref name="sourceHeight" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.
+-or-
+<paramref name="sourceLeft" /> + <paramref name="sourceWidth" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The current operating system is not Windows.</exception>
@@ -184,15 +184,15 @@
       <param name="sourceChar">The character used to fill the source area.</param>
       <param name="sourceForeColor">The foreground color used to fill the source area.</param>
       <param name="sourceBackColor">The background color used to fill the source area.</param>
-      <exception cref="T:System.ArgumentOutOfRangeException">One or more of the parameters is less than zero.  
- -or-  
- <paramref name="sourceLeft" /> or <paramref name="targetLeft" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.  
- -or-  
- <paramref name="sourceTop" /> or <paramref name="targetTop" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.  
- -or-  
- <paramref name="sourceTop" /> + <paramref name="sourceHeight" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.  
- -or-  
- <paramref name="sourceLeft" /> + <paramref name="sourceWidth" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">One or more of the parameters is less than zero.
+-or-
+<paramref name="sourceLeft" /> or <paramref name="targetLeft" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.
+-or-
+<paramref name="sourceTop" /> or <paramref name="targetTop" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.
+-or-
+<paramref name="sourceTop" /> + <paramref name="sourceHeight" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.
+-or-
+<paramref name="sourceLeft" /> + <paramref name="sourceWidth" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.</exception>
       <exception cref="T:System.ArgumentException">One or both of the color parameters is not a member of the <see cref="T:System.ConsoleColor" /> enumeration.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
@@ -281,12 +281,12 @@
       <param name="width">The width of the buffer area measured in columns.</param>
       <param name="height">The height of the buffer area measured in rows.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="height" /> or <paramref name="width" /> is less than or equal to zero.  
--or-  
-<paramref name="height" /> or <paramref name="width" /> is greater than or equal to <see cref="F:System.Int16.MaxValue" />.  
--or-  
-<paramref name="width" /> is less than <see cref="P:System.Console.WindowLeft" /> + <see cref="P:System.Console.WindowWidth" />.  
--or-  
+        <paramref name="height" /> or <paramref name="width" /> is less than or equal to zero.
+-or-
+<paramref name="height" /> or <paramref name="width" /> is greater than or equal to <see cref="F:System.Int16.MaxValue" />.
+-or-
+<paramref name="width" /> is less than <see cref="P:System.Console.WindowLeft" /> + <see cref="P:System.Console.WindowWidth" />.
+-or-
 <paramref name="height" /> is less than <see cref="P:System.Console.WindowTop" /> + <see cref="P:System.Console.WindowHeight" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
@@ -297,10 +297,10 @@
       <param name="left">The column position of the cursor. Columns are numbered from left to right starting at 0.</param>
       <param name="top">The row position of the cursor. Rows are numbered from top to bottom starting at 0.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="left" /> or <paramref name="top" /> is less than zero.  
--or-  
-<paramref name="left" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.  
--or-  
+        <paramref name="left" /> or <paramref name="top" /> is less than zero.
+-or-
+<paramref name="left" /> is greater than or equal to <see cref="P:System.Console.BufferWidth" />.
+-or-
 <paramref name="top" /> is greater than or equal to <see cref="P:System.Console.BufferHeight" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
@@ -331,10 +331,10 @@
       <param name="left">The column position of the upper left  corner of the console window.</param>
       <param name="top">The row position of the upper left corner of the console window.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="left" /> or <paramref name="top" /> is less than zero.  
--or-  
-<paramref name="left" /> + <see cref="P:System.Console.WindowWidth" /> is greater than <see cref="P:System.Console.BufferWidth" />.  
--or-  
+        <paramref name="left" /> or <paramref name="top" /> is less than zero.
+-or-
+<paramref name="left" /> + <see cref="P:System.Console.WindowWidth" /> is greater than <see cref="P:System.Console.BufferWidth" />.
+-or-
 <paramref name="top" /> + <see cref="P:System.Console.WindowHeight" /> is greater than <see cref="P:System.Console.BufferHeight" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
@@ -345,10 +345,10 @@
       <param name="width">The width of the console window measured in columns.</param>
       <param name="height">The height of the console window measured in rows.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="width" /> or <paramref name="height" /> is less than or equal to zero.  
--or-  
-<paramref name="width" /> plus <see cref="P:System.Console.WindowLeft" /> or <paramref name="height" /> plus <see cref="P:System.Console.WindowTop" /> is greater than or equal to <see cref="F:System.Int16.MaxValue" />.  
--or-  
+        <paramref name="width" /> or <paramref name="height" /> is less than or equal to zero.
+-or-
+<paramref name="width" /> plus <see cref="P:System.Console.WindowLeft" /> or <paramref name="height" /> plus <see cref="P:System.Console.WindowTop" /> is greater than or equal to <see cref="F:System.Int16.MaxValue" />.
+-or-
 <paramref name="width" /> or <paramref name="height" /> is greater than the largest possible window width or height for the current screen resolution and console font.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
@@ -372,40 +372,40 @@
     <member name="P:System.Console.WindowHeight">
       <summary>Gets or sets the height of the console window area.</summary>
       <returns>The height of the console window measured in rows.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <see cref="P:System.Console.WindowWidth" /> property or the value of the <see cref="P:System.Console.WindowHeight" /> property is less than or equal to 0.  
- -or-  
- The value of the <see cref="P:System.Console.WindowHeight" /> property plus the value of the <see cref="P:System.Console.WindowTop" /> property is greater than or equal to <see cref="F:System.Int16.MaxValue" />.  
- -or-  
- The value of the <see cref="P:System.Console.WindowWidth" /> property or the value of the <see cref="P:System.Console.WindowHeight" /> property is greater than the largest possible window width or height for the current screen resolution and console font.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <see cref="P:System.Console.WindowWidth" /> property or the value of the <see cref="P:System.Console.WindowHeight" /> property is less than or equal to 0.
+-or-
+The value of the <see cref="P:System.Console.WindowHeight" /> property plus the value of the <see cref="P:System.Console.WindowTop" /> property is greater than or equal to <see cref="F:System.Int16.MaxValue" />.
+-or-
+The value of the <see cref="P:System.Console.WindowWidth" /> property or the value of the <see cref="P:System.Console.WindowHeight" /> property is greater than the largest possible window width or height for the current screen resolution and console font.</exception>
       <exception cref="T:System.IO.IOException">Error reading or writing information.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The set operation is invoked on an operating system other than Windows.</exception>
     </member>
     <member name="P:System.Console.WindowLeft">
       <summary>Gets or sets the leftmost position of the console window area relative to the screen buffer.</summary>
       <returns>The leftmost console window position measured in columns.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">In a set operation, the value to be assigned is less than zero.  
- -or-  
- As a result of the assignment, <see cref="P:System.Console.WindowLeft" /> plus <see cref="P:System.Console.WindowWidth" /> would exceed <see cref="P:System.Console.BufferWidth" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">In a set operation, the value to be assigned is less than zero.
+-or-
+As a result of the assignment, <see cref="P:System.Console.WindowLeft" /> plus <see cref="P:System.Console.WindowWidth" /> would exceed <see cref="P:System.Console.BufferWidth" />.</exception>
       <exception cref="T:System.IO.IOException">Error reading or writing information.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The set operation is invoked on an operating system other than Windows.</exception>
     </member>
     <member name="P:System.Console.WindowTop">
       <summary>Gets or sets the top position of the console window area relative to the screen buffer.</summary>
       <returns>The uppermost console window position measured in rows.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">In a set operation, the value to be assigned is less than zero.  
- -or-  
- As a result of the assignment, <see cref="P:System.Console.WindowTop" /> plus <see cref="P:System.Console.WindowHeight" /> would exceed <see cref="P:System.Console.BufferHeight" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">In a set operation, the value to be assigned is less than zero.
+-or-
+As a result of the assignment, <see cref="P:System.Console.WindowTop" /> plus <see cref="P:System.Console.WindowHeight" /> would exceed <see cref="P:System.Console.BufferHeight" />.</exception>
       <exception cref="T:System.IO.IOException">Error reading or writing information.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The set operation is invoked on an operating system other than Windows.</exception>
     </member>
     <member name="P:System.Console.WindowWidth">
       <summary>Gets or sets the width of the console window.</summary>
       <returns>The width of the console window measured in columns.</returns>
-      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <see cref="P:System.Console.WindowWidth" /> property or the value of the <see cref="P:System.Console.WindowHeight" /> property is less than or equal to 0.  
- -or-  
- The value of the <see cref="P:System.Console.WindowHeight" /> property plus the value of the <see cref="P:System.Console.WindowTop" /> property is greater than or equal to <see cref="F:System.Int16.MaxValue" />.  
- -or-  
- The value of the <see cref="P:System.Console.WindowWidth" /> property or the value of the <see cref="P:System.Console.WindowHeight" /> property is greater than the largest possible window width or height for the current screen resolution and console font.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of the <see cref="P:System.Console.WindowWidth" /> property or the value of the <see cref="P:System.Console.WindowHeight" /> property is less than or equal to 0.
+-or-
+The value of the <see cref="P:System.Console.WindowHeight" /> property plus the value of the <see cref="P:System.Console.WindowTop" /> property is greater than or equal to <see cref="F:System.Int16.MaxValue" />.
+-or-
+The value of the <see cref="P:System.Console.WindowWidth" /> property or the value of the <see cref="P:System.Console.WindowHeight" /> property is greater than the largest possible window width or height for the current screen resolution and console font.</exception>
       <exception cref="T:System.IO.IOException">Error reading or writing information.</exception>
       <exception cref="T:System.PlatformNotSupportedException">The set operation is invoked on an operating system other than Windows.</exception>
     </member>

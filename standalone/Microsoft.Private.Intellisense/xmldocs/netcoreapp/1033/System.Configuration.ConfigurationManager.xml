@@ -133,13 +133,13 @@
       <param name="type">The type of the object to return.</param>
       <returns>The value of the specified key.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="key" /> is <see langword="null" />.  
+        <paramref name="key" /> is <see langword="null" />.
 -or-
- <paramref name="type" /> is <see langword="null" />.</exception>
+<paramref name="type" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="key" /> does not exist in the <see langword="&lt;appSettings&gt;" /> configuration section.  
+        <paramref name="key" /> does not exist in the <see langword="&lt;appSettings&gt;" /> configuration section.
 -or-
- The value in the <see langword="&lt;appSettings&gt;" /> configuration section for <paramref name="key" /> is not of type <paramref name="type" />.</exception>
+The value in the <see langword="&lt;appSettings&gt;" /> configuration section for <paramref name="key" /> is not of type <paramref name="type" />.</exception>
     </member>
     <member name="T:System.Configuration.AppSettingsSection">
       <summary>Provides configuration system support for the <see langword="appSettings" /> configuration section. This class cannot be inherited.</summary>
@@ -331,40 +331,40 @@
     </member>
     <member name="M:System.Configuration.Configuration.Save">
       <summary>Writes the configuration settings contained within this <see cref="T:System.Configuration.Configuration" /> object to the current XML configuration file.</summary>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.
 -or-
- The configuration file has changed.</exception>
+The configuration file has changed.</exception>
     </member>
     <member name="M:System.Configuration.Configuration.Save(System.Configuration.ConfigurationSaveMode)">
       <summary>Writes the configuration settings contained within this <see cref="T:System.Configuration.Configuration" /> object to the current XML configuration file.</summary>
       <param name="saveMode">A <see cref="T:System.Configuration.ConfigurationSaveMode" /> value that determines which property values to save.</param>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.
 -or-
- The configuration file has changed.</exception>
+The configuration file has changed.</exception>
     </member>
     <member name="M:System.Configuration.Configuration.Save(System.Configuration.ConfigurationSaveMode,System.Boolean)">
       <summary>Writes the configuration settings contained within this <see cref="T:System.Configuration.Configuration" /> object to the current XML configuration file.</summary>
       <param name="saveMode">A <see cref="T:System.Configuration.ConfigurationSaveMode" /> value that determines which property values to save.</param>
       <param name="forceSaveAll">
         <see langword="true" /> to save even if the configuration was not modified; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.
 -or-
- The configuration file has changed.</exception>
+The configuration file has changed.</exception>
     </member>
     <member name="M:System.Configuration.Configuration.SaveAs(System.String)">
       <summary>Writes the configuration settings contained within this <see cref="T:System.Configuration.Configuration" /> object to the specified XML configuration file.</summary>
       <param name="filename">The path and file name to save the configuration file to.</param>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.
 -or-
- The configuration file has changed.</exception>
+The configuration file has changed.</exception>
     </member>
     <member name="M:System.Configuration.Configuration.SaveAs(System.String,System.Configuration.ConfigurationSaveMode)">
       <summary>Writes the configuration settings contained within this <see cref="T:System.Configuration.Configuration" /> object to the specified XML configuration file.</summary>
       <param name="filename">The path and file name to save the configuration file to.</param>
       <param name="saveMode">A <see cref="T:System.Configuration.ConfigurationSaveMode" /> value that determines which property values to save.</param>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration file could not be written to.
 -or-
- The configuration file has changed.</exception>
+The configuration file has changed.</exception>
     </member>
     <member name="M:System.Configuration.Configuration.SaveAs(System.String,System.Configuration.ConfigurationSaveMode,System.Boolean)">
       <summary>Writes the configuration settings contained within this <see cref="T:System.Configuration.Configuration" /> object to the specified XML configuration file.</summary>
@@ -485,11 +485,11 @@
       <param name="reader">The <see cref="T:System.Xml.XmlReader" /> that reads from the configuration file.</param>
       <param name="serializeCollectionKey">
         <see langword="true" /> to serialize only the collection key properties; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The element to read is locked.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The element to read is locked.
 -or-
- An attribute of the current node is not recognized.  
+An attribute of the current node is not recognized.
 -or-
- The lock status of the current node cannot be determined.</exception>
+The lock status of the current node cannot be determined.</exception>
     </member>
     <member name="P:System.Configuration.ConfigurationElement.ElementInformation">
       <summary>Gets an <see cref="T:System.Configuration.ElementInformation" /> object that contains the non-customizable information and functionality of the <see cref="T:System.Configuration.ConfigurationElement" /> object.</summary>
@@ -573,7 +573,7 @@
       <returns>The <see cref="T:System.Configuration.ConfigurationLockCollection" /> of locked elements.</returns>
     </member>
     <member name="P:System.Configuration.ConfigurationElement.LockAttributes">
-      <summary>Gets the collection of locked attributes</summary>
+      <summary>Gets the collection of locked attributes.</summary>
       <returns>The <see cref="T:System.Configuration.ConfigurationLockCollection" /> of locked attributes (properties) for the element.</returns>
     </member>
     <member name="P:System.Configuration.ConfigurationElement.LockElements">
@@ -599,19 +599,19 @@
       <param name="reader">The <see cref="T:System.Xml.XmlReader" /> being used for deserialization.</param>
       <returns>
         <see langword="true" /> when an unknown element is encountered while deserializing; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The element identified by <paramref name="elementName" /> is locked.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The element identified by <paramref name="elementName" /> is locked.
 -or-
- One or more of the element's attributes is locked.  
+One or more of the element's attributes is locked.
 -or-
- <paramref name="elementName" /> is unrecognized, or the element has an unrecognized attribute.  
+<paramref name="elementName" /> is unrecognized, or the element has an unrecognized attribute.
 -or-
- The element has a Boolean attribute with an invalid value.  
+The element has a Boolean attribute with an invalid value.
 -or-
- An attempt was made to deserialize a property more than once.  
+An attempt was made to deserialize a property more than once.
 -or-
- An attempt was made to deserialize a property that is not a valid member of the element.  
+An attempt was made to deserialize a property that is not a valid member of the element.
 -or-
- The element cannot contain a CDATA or text element.</exception>
+The element cannot contain a CDATA or text element.</exception>
     </member>
     <member name="M:System.Configuration.ConfigurationElement.OnRequiredPropertyNotFound(System.String)">
       <summary>Throws an exception when a required property is not found.</summary>
@@ -706,18 +706,18 @@
     </member>
     <member name="M:System.Configuration.ConfigurationElementCollection.BaseClear">
       <summary>Removes all configuration element objects from the collection.</summary>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration is read-only.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration is read-only.
 -or-
- A collection item has been locked in a higher-level configuration.</exception>
+A collection item has been locked in a higher-level configuration.</exception>
     </member>
     <member name="M:System.Configuration.ConfigurationElementCollection.BaseGet(System.Int32)">
       <summary>Gets the configuration element at the specified index location.</summary>
       <param name="index">The index location of the <see cref="T:System.Configuration.ConfigurationElement" /> to return.</param>
       <returns>The <see cref="T:System.Configuration.ConfigurationElement" /> at the specified index.</returns>
       <exception cref="T:System.Configuration.ConfigurationErrorsException">
-        <paramref name="index" /> is less than <see langword="0" />.  
+        <paramref name="index" /> is less than <see langword="0" />.
 -or-
- There is no <see cref="T:System.Configuration.ConfigurationElement" /> at the specified <paramref name="index" />.</exception>
+There is no <see cref="T:System.Configuration.ConfigurationElement" /> at the specified <paramref name="index" />.</exception>
     </member>
     <member name="M:System.Configuration.ConfigurationElementCollection.BaseGet(System.Object)">
       <summary>Returns the configuration element with the specified key.</summary>
@@ -733,9 +733,9 @@
       <param name="index">The index location for the <see cref="T:System.Configuration.ConfigurationElement" />.</param>
       <returns>The key for the specified <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
       <exception cref="T:System.Configuration.ConfigurationErrorsException">
-        <paramref name="index" /> is less than <see langword="0" />.  
+        <paramref name="index" /> is less than <see langword="0" />.
 -or-
- There is no <see cref="T:System.Configuration.ConfigurationElement" /> at the specified <paramref name="index" />.</exception>
+There is no <see cref="T:System.Configuration.ConfigurationElement" /> at the specified <paramref name="index" />.</exception>
     </member>
     <member name="M:System.Configuration.ConfigurationElementCollection.BaseIndexOf(System.Configuration.ConfigurationElement)">
       <summary>Indicates the index of the specified <see cref="T:System.Configuration.ConfigurationElement" />.</summary>
@@ -756,17 +756,17 @@
     <member name="M:System.Configuration.ConfigurationElementCollection.BaseRemoveAt(System.Int32)">
       <summary>Removes the <see cref="T:System.Configuration.ConfigurationElement" /> at the specified index location.</summary>
       <param name="index">The index location of the <see cref="T:System.Configuration.ConfigurationElement" /> to remove.</param>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration is read-only.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The configuration is read-only.
 -or-
- <paramref name="index" /> is less than <see langword="0" /> or greater than the number of <see cref="T:System.Configuration.ConfigurationElement" /> objects in the collection.  
+<paramref name="index" /> is less than <see langword="0" /> or greater than the number of <see cref="T:System.Configuration.ConfigurationElement" /> objects in the collection.
 -or-
- The <see cref="T:System.Configuration.ConfigurationElement" /> object has already been removed.  
+The <see cref="T:System.Configuration.ConfigurationElement" /> object has already been removed.
 -or-
- The value of the <see cref="T:System.Configuration.ConfigurationElement" /> object has been locked at a higher level.  
+The value of the <see cref="T:System.Configuration.ConfigurationElement" /> object has been locked at a higher level.
 -or-
- The <see cref="T:System.Configuration.ConfigurationElement" /> object was inherited.  
+The <see cref="T:System.Configuration.ConfigurationElement" /> object was inherited.
 -or-
- The value of the <see cref="T:System.Configuration.ConfigurationElement" /> object's <see cref="P:System.Configuration.ConfigurationProperty.Type" /> is not <see cref="F:System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap" /> or <see cref="F:System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMapAlternate" />.</exception>
+The value of the <see cref="T:System.Configuration.ConfigurationElement" /> object's <see cref="P:System.Configuration.ConfigurationProperty.Type" /> is not <see cref="F:System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap" /> or <see cref="F:System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMapAlternate" />.</exception>
     </member>
     <member name="P:System.Configuration.ConfigurationElementCollection.ClearElementName">
       <summary>Gets or sets the name for the <see cref="T:System.Configuration.ConfigurationElement" /> to associate with the clear operation in the <see cref="T:System.Configuration.ConfigurationElementCollection" /> when overridden in a derived class.</summary>
@@ -1647,9 +1647,9 @@
       <summary>Forces the declaration for this <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object.</summary>
       <param name="force">
         <see langword="true" /> if the <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object must be written to the file; otherwise, <see langword="false" />.</param>
-      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object is the root section group.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object is the root section group.
 -or-
- The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object has a location.</exception>
+The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object has a location.</exception>
     </member>
     <member name="P:System.Configuration.ConfigurationSectionGroup.IsDeclarationRequired">
       <summary>Gets a value that indicates whether this <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object declaration is required.</summary>
@@ -1686,9 +1686,9 @@
     <member name="P:System.Configuration.ConfigurationSectionGroup.Type">
       <summary>Gets or sets the type for this <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object.</summary>
       <returns>The type of this <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object.</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object is the root section group.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object is the root section group.
 -or-
- The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object has a location.</exception>
+The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object has a location.</exception>
       <exception cref="T:System.Configuration.ConfigurationErrorsException">The section or group is already defined at another level.</exception>
     </member>
     <member name="T:System.Configuration.ConfigurationSectionGroupCollection">
@@ -1743,14 +1743,14 @@
     <member name="P:System.Configuration.ConfigurationSectionGroupCollection.Item(System.Int32)">
       <summary>Gets the <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object whose index is specified from the collection.</summary>
       <param name="index">The index of the <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object to be returned.</param>
-      <returns>The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object at the specified index.  
- In C#, this property is the indexer for the <see cref="T:System.Configuration.ConfigurationSectionCollection" /> class.</returns>
+      <returns>The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object at the specified index.
+In C#, this property is the indexer for the <see cref="T:System.Configuration.ConfigurationSectionCollection" /> class.</returns>
     </member>
     <member name="P:System.Configuration.ConfigurationSectionGroupCollection.Item(System.String)">
       <summary>Gets the <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object whose name is specified from the collection.</summary>
       <param name="name">The name of the <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object to be returned.</param>
-      <returns>The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object with the specified name.  
- In C#, this property is the indexer for the <see cref="T:System.Configuration.ConfigurationSectionCollection" /> class.</returns>
+      <returns>The <see cref="T:System.Configuration.ConfigurationSectionGroup" /> object with the specified name.
+In C#, this property is the indexer for the <see cref="T:System.Configuration.ConfigurationSectionCollection" /> class.</returns>
     </member>
     <member name="P:System.Configuration.ConfigurationSectionGroupCollection.Keys">
       <summary>Gets the keys to all <see cref="T:System.Configuration.ConfigurationSectionGroup" /> objects contained in this <see cref="T:System.Configuration.ConfigurationSectionGroupCollection" /> object.</summary>
@@ -1774,9 +1774,9 @@
     <member name="M:System.Configuration.ConfigurationSettings.GetConfig(System.String)">
       <summary>Returns the <see cref="T:System.Configuration.ConfigurationSection" /> object for the passed configuration section name and path.</summary>
       <param name="sectionName">A configuration name and path, such as "system.net/settings".</param>
-      <returns>The <see cref="T:System.Configuration.ConfigurationSection" /> object for the passed configuration section name and path.  
-   
- The <see cref="T:System.Configuration.ConfigurationSettings" /> class provides backward compatibility only. You should use the <see cref="T:System.Configuration.ConfigurationManager" /> class or <see cref="T:System.Web.Configuration.WebConfigurationManager" /> class instead.</returns>
+      <returns>The <see cref="T:System.Configuration.ConfigurationSection" /> object for the passed configuration section name and path.
+
+The <see cref="T:System.Configuration.ConfigurationSettings" /> class provides backward compatibility only. You should use the <see cref="T:System.Configuration.ConfigurationManager" /> class or <see cref="T:System.Web.Configuration.WebConfigurationManager" /> class instead.</returns>
       <exception cref="T:System.Configuration.ConfigurationException">Unable to retrieve the requested section.</exception>
     </member>
     <member name="T:System.Configuration.ConfigurationUserLevel">
@@ -2064,11 +2064,11 @@
       <param name="encryptedNode">The <see cref="T:System.Xml.XmlNode" /> object to decrypt.</param>
       <returns>A decrypted <see cref="T:System.Xml.XmlNode" /> object.</returns>
       <exception cref="T:System.Configuration.ConfigurationErrorsException">
-        <paramref name="encryptedNode" /> does not have <see cref="P:System.Xml.XmlNode.Name" /> set to "EncryptedData" and <see cref="T:System.Xml.XmlNodeType" /> set to <see cref="F:System.Xml.XmlNodeType.Element" />.  
+        <paramref name="encryptedNode" /> does not have <see cref="P:System.Xml.XmlNode.Name" /> set to "EncryptedData" and <see cref="T:System.Xml.XmlNodeType" /> set to <see cref="F:System.Xml.XmlNodeType.Element" />.
 -or-
- <paramref name="encryptedNode" /> does not have a child node named "CipherData" with a child node named "CipherValue".  
+<paramref name="encryptedNode" /> does not have a child node named "CipherData" with a child node named "CipherValue".
 -or-
- The child node named "CipherData" is an empty node.</exception>
+The child node named "CipherData" is an empty node.</exception>
     </member>
     <member name="M:System.Configuration.DpapiProtectedConfigurationProvider.Encrypt(System.Xml.XmlNode)">
       <summary>Encrypts the passed <see cref="T:System.Xml.XmlNode" /> object.</summary>
@@ -2091,7 +2091,7 @@
       <summary>Contains meta-information about an individual element within the configuration. This class cannot be inherited.</summary>
     </member>
     <member name="P:System.Configuration.ElementInformation.Errors">
-      <summary>Gets the errors for the associated element and subelements</summary>
+      <summary>Gets the errors for the associated element and subelements.</summary>
       <returns>The collection containing the errors for the associated element and subelements</returns>
     </member>
     <member name="P:System.Configuration.ElementInformation.IsCollection">
@@ -2182,11 +2182,11 @@
       <param name="data">The <see cref="T:System.String" /> object to convert.</param>
       <returns>The <see cref="T:System.Enum" /> type that represents the <paramref name="data" /> parameter.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="data" /> is null or an empty string ("").  
+        <paramref name="data" /> is null or an empty string ("").
 -or-
- <paramref name="data" /> starts with a numeric character.  
+<paramref name="data" /> starts with a numeric character.
 -or-
- <paramref name="data" /> includes white space.</exception>
+<paramref name="data" /> includes white space.</exception>
     </member>
     <member name="M:System.Configuration.GenericEnumConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
       <summary>Converts an <see cref="T:System.Enum" /> type to a <see cref="T:System.String" /> value.</summary>
@@ -2328,9 +2328,9 @@
       <param name="rangeIsExclusive">A <see cref="T:System.Boolean" /> value that specifies whether the validation range is exclusive.</param>
       <param name="resolution">An <see cref="T:System.Int32" /> object that specifies a value that must be matched.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="resolution" /> is less than <see langword="0" />.  
+        <paramref name="resolution" /> is less than <see langword="0" />.
 -or-
- <paramref name="minValue" /> is greater than <paramref name="maxValue" />.</exception>
+<paramref name="minValue" /> is greater than <paramref name="maxValue" />.</exception>
     </member>
     <member name="M:System.Configuration.IntegerValidator.CanValidate(System.Type)">
       <summary>Determines whether the type of the object can be validated.</summary>
@@ -3288,17 +3288,17 @@
       <summary>Sets the values of the specified group of property settings.</summary>
       <param name="context">A <see cref="T:System.Configuration.SettingsContext" /> describing the current application usage.</param>
       <param name="values">A <see cref="T:System.Configuration.SettingsPropertyValueCollection" /> representing the group of property settings to set.</param>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">A user-scoped setting was encountered but the current configuration only supports application-scoped settings.  
- -or-  
- There was a general failure saving the settings to the configuration file.</exception>
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">A user-scoped setting was encountered but the current configuration only supports application-scoped settings.
+-or-
+There was a general failure saving the settings to the configuration file.</exception>
     </member>
     <member name="M:System.Configuration.LocalFileSettingsProvider.Upgrade(System.Configuration.SettingsContext,System.Configuration.SettingsPropertyCollection)">
       <summary>Attempts to migrate previous user-scoped settings from a previous version of the same application.</summary>
       <param name="context">A <see cref="T:System.Configuration.SettingsContext" /> describing the current application usage.</param>
       <param name="properties">A <see cref="T:System.Configuration.SettingsPropertyCollection" /> containing the settings property group whose values are to be retrieved.</param>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">A user-scoped setting was encountered but the current configuration only supports application-scoped settings.  
- -or-  
- The previous version of the configuration file could not be accessed.</exception>
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">A user-scoped setting was encountered but the current configuration only supports application-scoped settings.
+-or-
+The previous version of the configuration file could not be accessed.</exception>
     </member>
     <member name="T:System.Configuration.LongValidator">
       <summary>Provides validation of an <see cref="T:System.Int64" /> value.</summary>
@@ -3321,9 +3321,9 @@
       <param name="rangeIsExclusive">A <see cref="T:System.Boolean" /> value that specifies whether the validation range is exclusive.</param>
       <param name="resolution">An <see cref="T:System.Int64" /> value that specifies a specific value that must be matched.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="resolution" /> is equal to or less than <see langword="0" />.  
+        <paramref name="resolution" /> is equal to or less than <see langword="0" />.
 -or-
- <paramref name="maxValue" /> is less than <paramref name="minValue" />.</exception>
+<paramref name="maxValue" /> is less than <paramref name="minValue" />.</exception>
     </member>
     <member name="M:System.Configuration.LongValidator.CanValidate(System.Type)">
       <summary>Determines whether the type of the object can be validated.</summary>
@@ -3418,9 +3418,9 @@
       <param name="configContext">The configuration context object.</param>
       <param name="section">The section XML node.</param>
       <returns>A configuration object.</returns>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The file specified in the <see langword="file" /> attribute of <paramref name="section" /> exists but cannot be loaded.  
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The file specified in the <see langword="file" /> attribute of <paramref name="section" /> exists but cannot be loaded.
 -or-
- The <see langword="name" /> attribute of <paramref name="section" /> does not match the root element of the file specified in the <see langword="file" /> attribute.</exception>
+The <see langword="name" /> attribute of <paramref name="section" /> does not match the root element of the file specified in the <see langword="file" /> attribute.</exception>
     </member>
     <member name="T:System.Configuration.NameValueSectionHandler">
       <summary>Provides name/value-pair configuration information from a configuration section.</summary>
@@ -3642,9 +3642,9 @@
         <paramref name="provider" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="provider" /> is not a <see cref="T:System.Configuration.ProtectedConfigurationProvider" /> object.</exception>
-      <exception cref="T:System.Configuration.ConfigurationException">The <see cref="T:System.Configuration.ProtectedConfigurationProvider" /> object to add already exists in the collection.  
+      <exception cref="T:System.Configuration.ConfigurationException">The <see cref="T:System.Configuration.ProtectedConfigurationProvider" /> object to add already exists in the collection.
 -or-
- The collection is read-only.</exception>
+The collection is read-only.</exception>
     </member>
     <member name="P:System.Configuration.ProtectedConfigurationProviderCollection.Item(System.String)">
       <summary>Gets a <see cref="T:System.Configuration.ProtectedConfigurationProvider" /> object in the collection with the specified name.</summary>
@@ -3713,9 +3713,9 @@
       <exception cref="T:System.NotSupportedException">The collection is read-only.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="provider" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Configuration.Provider.ProviderBase.Name" /> of <paramref name="provider" /> is <see langword="null" />.  
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Configuration.Provider.ProviderBase.Name" /> of <paramref name="provider" /> is <see langword="null" />.
 -or-
- The length of the <see cref="P:System.Configuration.Provider.ProviderBase.Name" /> of <paramref name="provider" /> is less than 1.</exception>
+The length of the <see cref="P:System.Configuration.Provider.ProviderBase.Name" /> of <paramref name="provider" /> is less than 1.</exception>
     </member>
     <member name="M:System.Configuration.Provider.ProviderCollection.Clear">
       <summary>Removes all items from the collection.</summary>
@@ -3909,12 +3909,12 @@
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, such as being on an unmapped drive.</exception>
       <exception cref="T:System.IO.IOException">An error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is read-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is read-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path" /> was not found.</exception>
       <exception cref="T:System.NotSupportedException">
@@ -3934,12 +3934,12 @@ The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, such as being on an unmapped drive.</exception>
       <exception cref="T:System.IO.IOException">An error occurred while opening the file.</exception>
       <exception cref="T:System.UnauthorizedAccessException">
-        <paramref name="path" /> specified a file that is write-only.  
--or-  
-This operation is not supported on the current platform.  
--or-  
-<paramref name="path" /> specified a directory.  
--or-  
+        <paramref name="path" /> specified a file that is write-only.
+-or-
+This operation is not supported on the current platform.
+-or-
+<paramref name="path" /> specified a directory.
+-or-
 The caller does not have the required permission.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path" /> was not found.</exception>
       <exception cref="T:System.NotSupportedException">
@@ -4008,9 +4008,9 @@ The caller does not have the required permission.</exception>
       <summary>Gets an item at the specified index in the <see cref="T:System.Configuration.SchemeSettingElementCollection" /> collection.</summary>
       <param name="index">The index of the <see cref="T:System.Configuration.SchemeSettingElement" /> to return.</param>
       <returns>The specified <see cref="T:System.Configuration.SchemeSettingElement" />.</returns>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The <paramref name="index" /> parameter is less than zero.  
- -or-  
- The item specified by the parameter is <see langword="null" /> or has been removed.</exception>
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The <paramref name="index" /> parameter is less than zero.
+-or-
+The item specified by the parameter is <see langword="null" /> or has been removed.</exception>
     </member>
     <member name="P:System.Configuration.SchemeSettingElementCollection.Item(System.String)">
       <summary>Gets an item from the <see cref="T:System.Configuration.SchemeSettingElementCollection" /> collection.</summary>
@@ -4058,9 +4058,9 @@ The caller does not have the required permission.</exception>
     <member name="P:System.Configuration.SectionInformation.ForceSave">
       <summary>Gets or sets a value that indicates whether the associated configuration section will be saved even if it has not been modified.</summary>
       <returns>
-        <see langword="true" /> if the associated <see cref="T:System.Configuration.ConfigurationSection" /> object will be saved even if it has not been modified; otherwise, <see langword="false" />. The default is <see langword="false" />.  
-   
- If the configuration file is saved (even if there are no modifications), ASP.NET restarts the application.</returns>
+        <see langword="true" /> if the associated <see cref="T:System.Configuration.ConfigurationSection" /> object will be saved even if it has not been modified; otherwise, <see langword="false" />. The default is <see langword="false" />.
+
+If the configuration file is saved (even if there are no modifications), ASP.NET restarts the application.</returns>
     </member>
     <member name="M:System.Configuration.SectionInformation.GetParentSection">
       <summary>Gets the configuration section that contains the configuration section associated with this object.</summary>
@@ -4122,9 +4122,9 @@ The caller does not have the required permission.</exception>
     <member name="M:System.Configuration.SectionInformation.ProtectSection(System.String)">
       <summary>Marks a configuration section for protection.</summary>
       <param name="protectionProvider">The name of the protection provider to use.</param>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Configuration.SectionInformation.AllowLocation" /> property is set to <see langword="false" />.  
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Configuration.SectionInformation.AllowLocation" /> property is set to <see langword="false" />.
 -or-
- The target section is already a protected data section.</exception>
+The target section is already a protected data section.</exception>
     </member>
     <member name="P:System.Configuration.SectionInformation.RequirePermission">
       <summary>Gets a value that indicates whether the associated configuration section requires access permissions.</summary>
@@ -4595,10 +4595,10 @@ The caller does not have the required permission.</exception>
     </member>
     <member name="P:System.Configuration.SettingsPropertyValue.PropertyValue">
       <summary>Gets or sets the value of the <see cref="T:System.Configuration.SettingsProperty" /> object.</summary>
-      <returns>The value of the <see cref="T:System.Configuration.SettingsProperty" /> object. When this value is set, the <see cref="P:System.Configuration.SettingsPropertyValue.IsDirty" /> property is set to <see langword="true" /> and <see cref="P:System.Configuration.SettingsPropertyValue.UsingDefaultValue" /> is set to <see langword="false" />.  
- When a value is first accessed from the <see cref="P:System.Configuration.SettingsPropertyValue.PropertyValue" /> property, and if the value was initially stored into the <see cref="T:System.Configuration.SettingsPropertyValue" /> object as a serialized representation using the <see cref="P:System.Configuration.SettingsPropertyValue.SerializedValue" /> property, the <see cref="P:System.Configuration.SettingsPropertyValue.PropertyValue" /> property will trigger deserialization of the underlying value.  As a side effect, the <see cref="P:System.Configuration.SettingsPropertyValue.Deserialized" /> property will be set to <see langword="true" />.  
- If this chain of events occurs in ASP.NET, and if an error occurs during the deserialization process, the error is logged using the health-monitoring feature of ASP.NET. By default, this means that deserialization errors will show up in the Application Event Log when running under ASP.NET. If this process occurs outside of ASP.NET, and if an error occurs during deserialization, the error is suppressed, and the remainder of the logic during deserialization occurs. If there is no serialized value to deserialize when the deserialization is attempted, then <see cref="T:System.Configuration.SettingsPropertyValue" /> object will instead attempt to return a default value if one was configured as defined on the associated <see cref="T:System.Configuration.SettingsProperty" /> instance. In this case, if the <see cref="P:System.Configuration.SettingsProperty.DefaultValue" /> property was set to either <see langword="null" />, or to the string "[null]", then the <see cref="T:System.Configuration.SettingsPropertyValue" /> object will initialize the <see cref="P:System.Configuration.SettingsPropertyValue.PropertyValue" /> property to either <see langword="null" /> for reference types, or to the default value for the associated value type.  On the other hand, if <see cref="P:System.Configuration.SettingsProperty.DefaultValue" /> property holds a valid object reference or string value (other than "[null]"), then the <see cref="P:System.Configuration.SettingsProperty.DefaultValue" /> property is returned instead.  
- If there is no serialized value to deserialize when the deserialization is attempted, and no default value was specified, then an empty string will be returned for string types. For all other types, a default instance will be returned by calling <see cref="M:System.Activator.CreateInstance(System.Type)" /> - for reference types this means an attempt will be made to create an object instance using the parameterless constructor.  If this attempt fails, then <see langword="null" /> is returned.</returns>
+      <returns>The value of the <see cref="T:System.Configuration.SettingsProperty" /> object. When this value is set, the <see cref="P:System.Configuration.SettingsPropertyValue.IsDirty" /> property is set to <see langword="true" /> and <see cref="P:System.Configuration.SettingsPropertyValue.UsingDefaultValue" /> is set to <see langword="false" />.
+When a value is first accessed from the <see cref="P:System.Configuration.SettingsPropertyValue.PropertyValue" /> property, and if the value was initially stored into the <see cref="T:System.Configuration.SettingsPropertyValue" /> object as a serialized representation using the <see cref="P:System.Configuration.SettingsPropertyValue.SerializedValue" /> property, the <see cref="P:System.Configuration.SettingsPropertyValue.PropertyValue" /> property will trigger deserialization of the underlying value.  As a side effect, the <see cref="P:System.Configuration.SettingsPropertyValue.Deserialized" /> property will be set to <see langword="true" />.
+If this chain of events occurs in ASP.NET, and if an error occurs during the deserialization process, the error is logged using the health-monitoring feature of ASP.NET. By default, this means that deserialization errors will show up in the Application Event Log when running under ASP.NET. If this process occurs outside of ASP.NET, and if an error occurs during deserialization, the error is suppressed, and the remainder of the logic during deserialization occurs. If there is no serialized value to deserialize when the deserialization is attempted, then <see cref="T:System.Configuration.SettingsPropertyValue" /> object will instead attempt to return a default value if one was configured as defined on the associated <see cref="T:System.Configuration.SettingsProperty" /> instance. In this case, if the <see cref="P:System.Configuration.SettingsProperty.DefaultValue" /> property was set to either <see langword="null" />, or to the string "[null]", then the <see cref="T:System.Configuration.SettingsPropertyValue" /> object will initialize the <see cref="P:System.Configuration.SettingsPropertyValue.PropertyValue" /> property to either <see langword="null" /> for reference types, or to the default value for the associated value type.  On the other hand, if <see cref="P:System.Configuration.SettingsProperty.DefaultValue" /> property holds a valid object reference or string value (other than "[null]"), then the <see cref="P:System.Configuration.SettingsProperty.DefaultValue" /> property is returned instead.
+If there is no serialized value to deserialize when the deserialization is attempted, and no default value was specified, then an empty string will be returned for string types. For all other types, a default instance will be returned by calling <see cref="M:System.Activator.CreateInstance(System.Type)" /> - for reference types this means an attempt will be made to create an object instance using the parameterless constructor.  If this attempt fails, then <see langword="null" /> is returned.</returns>
       <exception cref="T:System.ArgumentException">While attempting to use the default value from the <see cref="P:System.Configuration.SettingsProperty.DefaultValue" /> property, an error occurred.  Either the attempt to convert <see cref="P:System.Configuration.SettingsProperty.DefaultValue" /> property to a valid type failed, or the resulting value was not compatible with the type defined by <see cref="P:System.Configuration.SettingsProperty.PropertyType" />.</exception>
     </member>
     <member name="P:System.Configuration.SettingsPropertyValue.SerializedValue">
@@ -4729,11 +4729,11 @@ The caller does not have the required permission.</exception>
     <member name="M:System.Configuration.SettingsProviderCollection.Add(System.Configuration.Provider.ProviderBase)">
       <summary>Adds a new settings provider to the collection.</summary>
       <param name="provider">A <see cref="T:System.Configuration.Provider.ProviderBase" /> to add to the collection.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="provider" /> parameter is not of type <see cref="T:System.Configuration.SettingsProvider" />.  
- -or-  
- The <see cref="P:System.Configuration.Provider.ProviderBase.Name" /> property of the provider parameter is null or an empty string.  
- -or-  
- A settings provider with the same <see cref="P:System.Configuration.Provider.ProviderBase.Name" /> already exists in the collection.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="provider" /> parameter is not of type <see cref="T:System.Configuration.SettingsProvider" />.
+-or-
+The <see cref="P:System.Configuration.Provider.ProviderBase.Name" /> property of the provider parameter is null or an empty string.
+-or-
+A settings provider with the same <see cref="P:System.Configuration.Provider.ProviderBase.Name" /> already exists in the collection.</exception>
       <exception cref="T:System.NotSupportedException">The collection is read-only.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="provider" /> parameter is <see langword="null" />.</exception>
     </member>
@@ -4856,9 +4856,9 @@ The caller does not have the required permission.</exception>
       <summary>Determines whether the value of an object is valid.</summary>
       <param name="value">The object value.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="value" /> is less than <paramref name="minValue" /> or greater than <paramref name="maxValue" /> as defined in the constructor.  
+        <paramref name="value" /> is less than <paramref name="minValue" /> or greater than <paramref name="maxValue" /> as defined in the constructor.
 -or-
- <paramref name="value" /> contains invalid characters.</exception>
+<paramref name="value" /> contains invalid characters.</exception>
     </member>
     <member name="T:System.Configuration.StringValidatorAttribute">
       <summary>Declaratively instructs the .NET Framework to perform string validation on a configuration property. This class cannot be inherited.</summary>
@@ -5027,9 +5027,9 @@ The caller does not have the required permission.</exception>
       <param name="rangeIsExclusive">A <see cref="T:System.Boolean" /> value that specifies whether the validation range is exclusive.</param>
       <param name="resolutionInSeconds">An <see cref="T:System.Int64" /> value that specifies a number of seconds.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="resolutionInSeconds" /> is less than <see langword="0" />.  
+        <paramref name="resolutionInSeconds" /> is less than <see langword="0" />.
 -or-
- <paramref name="minValue" /> is greater than <paramref name="maxValue" />.</exception>
+<paramref name="minValue" /> is greater than <paramref name="maxValue" />.</exception>
     </member>
     <member name="M:System.Configuration.TimeSpanValidator.CanValidate(System.Type)">
       <summary>Determines whether the type of the object can be validated.</summary>

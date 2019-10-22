@@ -33,9 +33,9 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
     </member>
@@ -47,9 +47,9 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <returns>A  structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
     </member>
@@ -79,9 +79,9 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
     </member>
@@ -93,9 +93,9 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
     </member>
@@ -108,11 +108,11 @@
       <param name="localFinally">The delegate that performs a final action on the local state of each task.</param>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A  structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.For``1(System.Int32,System.Int32,System.Threading.Tasks.ParallelOptions,System.Func{``0},System.Func{System.Int32,System.Threading.Tasks.ParallelLoopState,``0,``0},System.Action{``0})">
@@ -125,13 +125,13 @@
       <param name="localFinally">The delegate that performs a final action on the local state of each task.</param>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
@@ -145,11 +145,11 @@
       <param name="localFinally">The delegate that performs a final action on the local state of each task.</param>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.For``1(System.Int64,System.Int64,System.Threading.Tasks.ParallelOptions,System.Func{``0},System.Func{System.Int64,System.Threading.Tasks.ParallelLoopState,``0,``0},System.Action{``0})">
@@ -162,13 +162,13 @@
       <param name="localFinally">The delegate that performs a final action on the local state of each thread.</param>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
@@ -179,14 +179,14 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <typeparam name="TSource">The type of the elements in <paramref name="source" />.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> orderable partitioner returns <see langword="false" />.  
- -or-  
- The <see cref="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysNormalized" /> property in the source orderable partitioner returns <see langword="false" />.  
- -or-  
- Any methods in the source orderable partitioner return <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> orderable partitioner returns <see langword="false" />.
+-or-
+The <see cref="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysNormalized" /> property in the source orderable partitioner returns <see langword="false" />.
+-or-
+Any methods in the source orderable partitioner return <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception thrown from one of the specified delegates.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Concurrent.OrderablePartitioner{``0},System.Threading.Tasks.ParallelOptions,System.Action{``0,System.Threading.Tasks.ParallelLoopState,System.Int64})">
@@ -197,17 +197,17 @@
       <typeparam name="TSource">The type of the elements in <paramref name="source" />.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is  <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is  <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> orderable partitioner returns <see langword="false" />.  
- -or-  
- The <see cref="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysNormalized" /> property in the <paramref name="source" /> orderable partitioner returns <see langword="false" />.  
- -or-  
- The exception that is thrown when any methods in the <paramref name="source" /> orderable partitioner return <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> orderable partitioner returns <see langword="false" />.
+-or-
+The <see cref="P:System.Collections.Concurrent.OrderablePartitioner`1.KeysNormalized" /> property in the <paramref name="source" /> orderable partitioner returns <see langword="false" />.
+-or-
+The exception that is thrown when any methods in the <paramref name="source" /> orderable partitioner return <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that is thrown to contain an exception thrown from one of the specified delegates.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Concurrent.Partitioner{``0},System.Action{``0,System.Threading.Tasks.ParallelLoopState})">
@@ -216,14 +216,14 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <typeparam name="TSource">The type of the elements in <paramref name="source" />.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> partitioner returns <see langword="false" />.  
- -or-  
- A method in the <paramref name="source" /> partitioner returns <see langword="null" />.  
- -or-  
- The <see cref="M:System.Collections.Concurrent.Partitioner`1.GetPartitions(System.Int32)" /> method in the <paramref name="source" /> partitioner does not return the correct number of partitions.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> partitioner returns <see langword="false" />.
+-or-
+A method in the <paramref name="source" /> partitioner returns <see langword="null" />.
+-or-
+The <see cref="M:System.Collections.Concurrent.Partitioner`1.GetPartitions(System.Int32)" /> method in the <paramref name="source" /> partitioner does not return the correct number of partitions.</exception>
       <exception cref="T:System.AggregateException">The exception that is thrown to contain an exception thrown from one of the specified delegates.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Concurrent.Partitioner{``0},System.Action{``0})">
@@ -232,14 +232,14 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <typeparam name="TSource">The type of the elements in <paramref name="source" />.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is  <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> partitioner returns <see langword="false" />.  
- -or-  
- The exception that is thrown when any methods in the <paramref name="source" /> partitioner return <see langword="null" />.  
- -or-  
- The <see cref="M:System.Collections.Concurrent.Partitioner`1.GetPartitions(System.Int32)" /> method in the <paramref name="source" /> partitioner does not return the correct number of partitions.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is  <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> partitioner returns <see langword="false" />.
+-or-
+The exception that is thrown when any methods in the <paramref name="source" /> partitioner return <see langword="null" />.
+-or-
+The <see cref="M:System.Collections.Concurrent.Partitioner`1.GetPartitions(System.Int32)" /> method in the <paramref name="source" /> partitioner does not return the correct number of partitions.</exception>
       <exception cref="T:System.AggregateException">The exception that is thrown to contain an exception thrown from one of the specified delegates.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Concurrent.Partitioner{``0},System.Threading.Tasks.ParallelOptions,System.Action{``0,System.Threading.Tasks.ParallelLoopState})">
@@ -251,14 +251,14 @@
       <returns>A  structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> partitioner returns <see langword="false" />.  
- -or-  
- The exception that is thrown when any methods in the <paramref name="source" /> partitioner return <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> partitioner returns <see langword="false" />.
+-or-
+The exception that is thrown when any methods in the <paramref name="source" /> partitioner return <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that is thrown to contain an exception thrown from one of the specified delegates.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Concurrent.Partitioner{``0},System.Threading.Tasks.ParallelOptions,System.Action{``0})">
@@ -270,14 +270,14 @@
       <returns>A structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> partitioner returns <see langword="false" />.  
- -or-  
- The exception that is thrown when any methods in the <paramref name="source" /> partitioner return <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /> partitioner returns <see langword="false" />.
+-or-
+The exception that is thrown when any methods in the <paramref name="source" /> partitioner return <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that is thrown to contain an exception thrown from one of the specified delegates.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Threading.Tasks.ParallelLoopState,System.Int64})">
@@ -286,9 +286,9 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Threading.Tasks.ParallelLoopState})">
@@ -297,9 +297,9 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
@@ -308,9 +308,9 @@
       <param name="body">The delegate that is invoked once per iteration.</param>
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Threading.Tasks.ParallelOptions,System.Action{``0,System.Threading.Tasks.ParallelLoopState,System.Int64})">
@@ -321,11 +321,11 @@
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
     </member>
@@ -337,11 +337,11 @@
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
     </member>
@@ -353,11 +353,11 @@
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
     </member>
@@ -370,13 +370,13 @@
       <typeparam name="TSource">The type of the elements in <paramref name="source" />.</typeparam>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /><see cref="T:System.Collections.Concurrent.Partitioner" /> returns <see langword="false" /> or the partitioner returns <see langword="null" /> partitions.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
@@ -390,13 +390,13 @@
       <typeparam name="TSource">The type of the elements in <paramref name="source" />.</typeparam>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> or <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> or <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /><see cref="T:System.Collections.Concurrent.Partitioner" /> returns <see langword="false" /> or the partitioner returns <see langword="null" /> partitions.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
@@ -411,13 +411,13 @@
       <typeparam name="TSource">The type of the elements in <paramref name="source" />.</typeparam>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /><see cref="T:System.Collections.Concurrent.Partitioner" /> returns <see langword="false" /> or the partitioner returns <see langword="null" /> partitions.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
@@ -431,15 +431,15 @@
       <typeparam name="TSource">The type of the elements in <paramref name="source" />.</typeparam>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Collections.Concurrent.Partitioner`1.SupportsDynamicPartitions" /> property in the <paramref name="source" /><see cref="T:System.Collections.Concurrent.Partitioner" /> returns <see langword="false" /> or the partitioner returns <see langword="null" /> partitions.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
@@ -454,13 +454,13 @@
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``2(System.Collections.Generic.IEnumerable{``0},System.Func{``1},System.Func{``0,System.Threading.Tasks.ParallelLoopState,System.Int64,``1,``1},System.Action{``1})">
@@ -472,13 +472,13 @@
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
     </member>
     <member name="M:System.Threading.Tasks.Parallel.ForEach``2(System.Collections.Generic.IEnumerable{``0},System.Threading.Tasks.ParallelOptions,System.Func{``1},System.Func{``0,System.Threading.Tasks.ParallelLoopState,``1,``1},System.Action{``1})">
@@ -491,15 +491,15 @@
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
@@ -514,15 +514,15 @@
       <typeparam name="TSource">The type of the data in the source.</typeparam>
       <typeparam name="TLocal">The type of the thread-local data.</typeparam>
       <returns>A structure that contains information about which portion of the loop completed.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="body" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localInit" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="source" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="body" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localInit" /> argument is <see langword="null" />.
+-or-
+The <paramref name="localFinally" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> argument is canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>
       <exception cref="T:System.AggregateException">The exception that contains all the individual exceptions thrown on all threads.</exception>
@@ -539,9 +539,9 @@
       <param name="parallelOptions">An object that configures the behavior of this operation.</param>
       <param name="actions">An array of actions to execute.</param>
       <exception cref="T:System.OperationCanceledException">The <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> is set.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="actions" /> argument is <see langword="null" />.  
- -or-  
- The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="actions" /> argument is <see langword="null" />.
+-or-
+The <paramref name="parallelOptions" /> argument is <see langword="null" />.</exception>
       <exception cref="T:System.AggregateException">The exception that is thrown when any action in the <paramref name="actions" /> array throws an exception.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="actions" /> array contains a <see langword="null" /> element.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.CancellationTokenSource" /> associated with the <see cref="T:System.Threading.CancellationToken" /> in the <paramref name="parallelOptions" /> has been disposed.</exception>

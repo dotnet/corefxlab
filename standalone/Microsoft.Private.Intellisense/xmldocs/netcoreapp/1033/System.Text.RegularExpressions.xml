@@ -33,8 +33,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="arrayIndex" /> is outside the bounds of <paramref name="array" />.  
--or-  
+        <paramref name="arrayIndex" /> is outside the bounds of <paramref name="array" />.
+-or-
 <paramref name="arrayIndex" /> plus <see cref="P:System.Text.RegularExpressions.CaptureCollection.Count" /> is outside the bounds of <paramref name="array" />.</exception>
     </member>
     <member name="M:System.Text.RegularExpressions.CaptureCollection.CopyTo(System.Text.RegularExpressions.Capture[],System.Int32)">
@@ -359,8 +359,8 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="array" /> is a multi-dimensional array.</exception>
       <exception cref="T:System.IndexOutOfRangeException">
-        <paramref name="arrayIndex" /> is outside the bounds of <paramref name="array" />.  
--or-  
+        <paramref name="arrayIndex" /> is outside the bounds of <paramref name="array" />.
+-or-
 <paramref name="arrayIndex" /> plus <see cref="P:System.Text.RegularExpressions.MatchCollection.Count" /> is outside the bounds of <paramref name="array" />.</exception>
       <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">A time-out occurred.</exception>
     </member>
@@ -494,8 +494,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="pattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="options" /> is not a valid <see cref="T:System.Text.RegularExpressions.RegexOptions" /> value.  
--or-  
+        <paramref name="options" /> is not a valid <see cref="T:System.Text.RegularExpressions.RegexOptions" /> value.
+-or-
 <paramref name="matchTimeout" /> is negative, zero, or greater than approximately 24 days.</exception>
     </member>
     <member name="P:System.Text.RegularExpressions.Regex.CacheSize">
@@ -529,9 +529,9 @@
       <summary>Compiles one or more specified <see cref="T:System.Text.RegularExpressions.Regex" /> objects to a named assembly.</summary>
       <param name="regexinfos">An array that describes the regular expressions to compile.</param>
       <param name="assemblyname">The file name of the assembly.</param>
-      <exception cref="T:System.ArgumentException">The value of the <paramref name="assemblyname" /> parameter's <see cref="P:System.Reflection.AssemblyName.Name" /> property is an empty or null string.  
- -or-  
- The regular expression pattern of one or more objects in <paramref name="regexinfos" /> contains invalid syntax.</exception>
+      <exception cref="T:System.ArgumentException">The value of the <paramref name="assemblyname" /> parameter's <see cref="P:System.Reflection.AssemblyName.Name" /> property is an empty or null string.
+-or-
+The regular expression pattern of one or more objects in <paramref name="regexinfos" /> contains invalid syntax.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="assemblyname" /> or <paramref name="regexinfos" /> is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">.NET Core only: Creating an assembly of compiled regular expressions is not supported.</exception>
@@ -541,9 +541,9 @@
       <param name="regexinfos">An array that describes the regular expressions to compile.</param>
       <param name="assemblyname">The file name of the assembly.</param>
       <param name="attributes">An array that defines the attributes to apply to the assembly.</param>
-      <exception cref="T:System.ArgumentException">The value of the <paramref name="assemblyname" /> parameter's <see cref="P:System.Reflection.AssemblyName.Name" /> property is an empty or null string.  
- -or-  
- The regular expression pattern of one or more objects in <paramref name="regexinfos" /> contains invalid syntax.</exception>
+      <exception cref="T:System.ArgumentException">The value of the <paramref name="assemblyname" /> parameter's <see cref="P:System.Reflection.AssemblyName.Name" /> property is an empty or null string.
+-or-
+The regular expression pattern of one or more objects in <paramref name="regexinfos" /> contains invalid syntax.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="assemblyname" /> or <paramref name="regexinfos" /> is <see langword="null" />.</exception>
       <exception cref="T:System.PlatformNotSupportedException">.NET Core only: Creating an assembly of compiled regular expressions is not supported.</exception>
@@ -554,9 +554,9 @@
       <param name="assemblyname">The file name of the assembly.</param>
       <param name="attributes">An array that defines the attributes to apply to the assembly.</param>
       <param name="resourceFile">The name of the Win32 resource file to include in the assembly.</param>
-      <exception cref="T:System.ArgumentException">The value of the <paramref name="assemblyname" /> parameter's <see cref="P:System.Reflection.AssemblyName.Name" /> property is an empty or null string.  
- -or-  
- The regular expression pattern of one or more objects in <paramref name="regexinfos" /> contains invalid syntax.</exception>
+      <exception cref="T:System.ArgumentException">The value of the <paramref name="assemblyname" /> parameter's <see cref="P:System.Reflection.AssemblyName.Name" /> property is an empty or null string.
+-or-
+The regular expression pattern of one or more objects in <paramref name="regexinfos" /> contains invalid syntax.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="assemblyname" /> or <paramref name="regexinfos" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Runtime.InteropServices.COMException">The <paramref name="resourceFile" /> parameter designates an invalid Win32 resource file.</exception>
@@ -661,8 +661,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="input" /> or <paramref name="pattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="options" /> is not a valid <see cref="T:System.Text.RegularExpressions.RegexOptions" /> value.  
--or-  
+        <paramref name="options" /> is not a valid <see cref="T:System.Text.RegularExpressions.RegexOptions" /> value.
+-or-
 <paramref name="matchTimeout" /> is negative, zero, or greater than approximately 24 days.</exception>
       <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">A time-out occurred.</exception>
     </member>
@@ -694,10 +694,10 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="input" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="beginning" /> is less than zero or greater than the length of <paramref name="input" />.  
--or-  
-<paramref name="length" /> is less than zero or greater than the length of <paramref name="input" />.  
--or-  
+        <paramref name="beginning" /> is less than zero or greater than the length of <paramref name="input" />.
+-or-
+<paramref name="length" /> is less than zero or greater than the length of <paramref name="input" />.
+-or-
 <paramref name="beginning" /><see langword="+" /><paramref name="length" /><see langword="-1" /> identifies a position that is outside the range of <paramref name="input" />.</exception>
       <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">A time-out occurred. For more information about time-outs, see the Remarks section.</exception>
     </member>
@@ -735,8 +735,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="input" /> or <paramref name="pattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.  
--or-  
+        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.
+-or-
 <paramref name="matchTimeout" /> is negative, zero, or greater than approximately 24 days.</exception>
       <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">A time-out occurred. For more information about time-outs, see the Remarks section.</exception>
     </member>
@@ -789,8 +789,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="input" /> or <paramref name="pattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.  
--or-  
+        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.
+-or-
 <paramref name="matchTimeout" /> is negative, zero, or greater than approximately 24 days.</exception>
     </member>
     <member name="P:System.Text.RegularExpressions.Regex.MatchTimeout">
@@ -873,8 +873,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="input" />, <paramref name="pattern" />, or <paramref name="replacement" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.  
--or-  
+        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.
+-or-
 <paramref name="matchTimeout" /> is negative, zero, or greater than approximately 24 days.</exception>
       <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">A time-out occurred. For more information about time-outs, see the Remarks section.</exception>
     </member>
@@ -915,8 +915,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="input" />, <paramref name="pattern" />, or <paramref name="evaluator" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.  
--or-  
+        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.
+-or-
 <paramref name="matchTimeout" /> is negative, zero, or greater than approximately 24 days.</exception>
       <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">A time-out occurred. For more information about time-outs, see the Remarks section.</exception>
     </member>
@@ -1023,8 +1023,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="input" /> or <paramref name="pattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.  
--or-  
+        <paramref name="options" /> is not a valid bitwise combination of <see cref="T:System.Text.RegularExpressions.RegexOptions" /> values.
+-or-
 <paramref name="matchTimeout" /> is negative, zero, or greater than approximately 24 days.</exception>
       <exception cref="T:System.Text.RegularExpressions.RegexMatchTimeoutException">A time-out occurred. For more information about time-outs, see the Remarks section.</exception>
     </member>
@@ -1075,10 +1075,10 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="name" /> is <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pattern" /> is <see langword="null" />.  
--or-  
-<paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="pattern" /> is <see langword="null" />.
+-or-
+<paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="fullnamespace" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Text.RegularExpressions.RegexCompilationInfo.#ctor(System.String,System.Text.RegularExpressions.RegexOptions,System.String,System.String,System.Boolean,System.TimeSpan)">
@@ -1093,10 +1093,10 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="name" /> is <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pattern" /> is <see langword="null" />.  
--or-  
-<paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="pattern" /> is <see langword="null" />.
+-or-
+<paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="fullnamespace" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="matchTimeout" /> is negative, zero, or greater than approximately 24 days.</exception>
@@ -1183,8 +1183,8 @@
       <summary>Specifies that cultural differences in language is ignored. For more information, see the "Comparison Using the Invariant Culture" section in the Regular Expression Options topic.</summary>
     </member>
     <member name="F:System.Text.RegularExpressions.RegexOptions.ECMAScript">
-      <summary>Enables ECMAScript-compliant behavior for the expression. This value can be used only in conjunction with the <see cref="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase" />, <see cref="F:System.Text.RegularExpressions.RegexOptions.Multiline" />, and <see cref="F:System.Text.RegularExpressions.RegexOptions.Compiled" /> values. The use of this value with any other values results in an exception.  
- For more information on the <see cref="F:System.Text.RegularExpressions.RegexOptions.ECMAScript" /> option, see the "ECMAScript Matching Behavior" section in the Regular Expression Options topic.</summary>
+      <summary>Enables ECMAScript-compliant behavior for the expression. This value can be used only in conjunction with the <see cref="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase" />, <see cref="F:System.Text.RegularExpressions.RegexOptions.Multiline" />, and <see cref="F:System.Text.RegularExpressions.RegexOptions.Compiled" /> values. The use of this value with any other values results in an exception.
+For more information on the <see cref="F:System.Text.RegularExpressions.RegexOptions.ECMAScript" /> option, see the "ECMAScript Matching Behavior" section in the Regular Expression Options topic.</summary>
     </member>
     <member name="F:System.Text.RegularExpressions.RegexOptions.ExplicitCapture">
       <summary>Specifies that the only valid captures are explicitly named or numbered groups of the form (?&lt;name&gt;...). This allows unnamed parentheses to act as noncapturing groups without the syntactic clumsiness of the expression (?:...). For more information, see the "Explicit Captures Only" section in the Regular Expression Options topic.</summary>

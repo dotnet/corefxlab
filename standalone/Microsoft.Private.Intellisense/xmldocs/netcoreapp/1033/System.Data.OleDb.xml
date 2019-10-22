@@ -61,11 +61,11 @@
     <member name="M:System.Data.OleDb.OleDbCommand.ExecuteNonQuery">
       <summary>Executes an SQL statement against the <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> and returns the number of rows affected.</summary>
       <returns>The number of rows affected.</returns>
-      <exception cref="T:System.InvalidOperationException">The connection does not exist.  
- -or-  
- The connection is not open.  
- -or-  
- Cannot execute a command within a transaction context that differs from the context in which the connection was originally enlisted.</exception>
+      <exception cref="T:System.InvalidOperationException">The connection does not exist.
+-or-
+The connection is not open.
+-or-
+Cannot execute a command within a transaction context that differs from the context in which the connection was originally enlisted.</exception>
     </member>
     <member name="M:System.Data.OleDb.OleDbCommand.ExecuteReader">
       <summary>Sends the <see cref="P:System.Data.OleDb.OleDbCommand.CommandText" /> to the <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> and builds an <see cref="T:System.Data.OleDb.OleDbDataReader" />.</summary>
@@ -89,9 +89,9 @@
     </member>
     <member name="M:System.Data.OleDb.OleDbCommand.Prepare">
       <summary>Creates a prepared (or compiled) version of the command on the data source.</summary>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not set.  
- -or-  
- The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not open.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not set.
+-or-
+The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not open.</exception>
     </member>
     <member name="M:System.Data.OleDb.OleDbCommand.ResetCommandTimeout">
       <summary>Resets the <see cref="P:System.Data.OleDb.OleDbCommand.CommandTimeout" /> property to the default value.</summary>
@@ -250,9 +250,9 @@
       <returns>A <see cref="T:System.Data.DataTable" /> that contains the requested schema information.</returns>
       <exception cref="T:System.Data.OleDb.OleDbException">The specified set of restrictions is invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Data.OleDb.OleDbConnection" /> is closed.</exception>
-      <exception cref="T:System.ArgumentException">The specified schema rowset is not supported by the OLE DB provider.  
- -or-  
- The <paramref name="schema" /> parameter contains a value of <see cref="F:System.Data.OleDb.OleDbSchemaGuid.DbInfoLiterals" /> and the <paramref name="restrictions" /> parameter contains one or more restrictions.</exception>
+      <exception cref="T:System.ArgumentException">The specified schema rowset is not supported by the OLE DB provider.
+-or-
+The <paramref name="schema" /> parameter contains a value of <see cref="F:System.Data.OleDb.OleDbSchemaGuid.DbInfoLiterals" /> and the <paramref name="restrictions" /> parameter contains one or more restrictions.</exception>
     </member>
     <member name="M:System.Data.OleDb.OleDbConnection.GetSchema">
       <summary>Returns schema information for the data source of this <see cref="T:System.Data.OleDb.OleDbConnection" />.</summary>
@@ -850,10 +850,10 @@
       <summary>The escape character, if any, used to suffix the character returned for the DBLITERAL_LIKE_PERCENT literal. For example, if a percent sign (%) is used to match zero or more characters and percent signs are escaped by enclosing in open and close square brackets, DBLITERAL_ESCAPE_PERCENT_PREFIX is "[", DBLITERAL_ESCAPE_PERCENT_SUFFIX is "]", and the characters "abc[%]%" match all character values that start with "abc%". Providers that do not use a suffix character to escape the DBLITERAL_ESCAPE_PERCENT character do not return this literal value and can set the lt member of the DBLITERAL structure to DBLITERAL_INVALID if requested. Maps to DBLITERAL_ESCAPE_PERCENT_SUFFIX.</summary>
     </member>
     <member name="F:System.Data.OleDb.OleDbLiteral.Escape_Underscore_Prefix">
-      <summary>The character used in a LIKE clause to escape the character returned for the DBLITERAL_LIKE_UNDERSCORE literal. For example, if an underscore (_) is used to match exactly one character and this is a backslash (\), the characters "abc\_ " match all character values that are five characters long and start with "abc\". Some SQL dialects support a clause (the ESCAPE clause) that can be used to override this value. Maps to DBLITERAL_ESCAPE_UNDERSCORE_PREFIX.</summary>
+      <summary>The character used in a LIKE clause to escape the character returned for the DBLITERAL_LIKE_UNDERSCORE literal. For example, if an underscore (_) is used to match exactly one character and this is a backslash (\), the characters "abc\_ _" match all character values that are five characters long and start with "abc_". Some SQL dialects support a clause (the ESCAPE clause) that can be used to override this value. Maps to DBLITERAL_ESCAPE_UNDERSCORE_PREFIX.</summary>
     </member>
     <member name="F:System.Data.OleDb.OleDbLiteral.Escape_Underscore_Suffix">
-      <summary>The character used in a LIKE clause to escape the character returned for the DBLITERAL_LIKE_UNDERSCORE literal. For example, if an underscore (_) is used to match exactly one character and this is a backslash (\), the characters "abc\_ " match all character values that are five characters long and start with "abc\". Some SQL dialects support a clause (the ESCAPE clause) that can be used to override this value. Maps to DBLITERAL_ESCAPE_UNDERSCORE_SUFFIX.</summary>
+      <summary>The character used in a LIKE clause to escape the character returned for the DBLITERAL_LIKE_UNDERSCORE literal. For example, if an underscore (_) is used to match exactly one character and this is a backslash (\), the characters "abc\_ _" match all character values that are five characters long and start with "abc_". Some SQL dialects support a clause (the ESCAPE clause) that can be used to override this value. Maps to DBLITERAL_ESCAPE_UNDERSCORE_SUFFIX.</summary>
     </member>
     <member name="F:System.Data.OleDb.OleDbLiteral.Hierarchy_Name">
       <summary>The name of the hierarchy. If the dimension does not contain a hierarchy or has only one hierarchy, the current column contains a null value.</summary>
@@ -871,7 +871,7 @@
       <summary>The character used in a LIKE clause to match zero or more characters. For example, if this is a percent sign (%), the characters "abc%" match all character values that start with "abc". Maps to DBLITERAL_LIKE_PERCENT.</summary>
     </member>
     <member name="F:System.Data.OleDb.OleDbLiteral.Like_Underscore">
-      <summary>The character used in a LIKE clause to match exactly one character. For example, if this is an underscore (), the characters "abc\" match all character values that are four characters long and start with "abc". Maps to DBLITERAL_LIKE_UNDERSCORE.</summary>
+      <summary>The character used in a LIKE clause to match exactly one character. For example, if this is an underscore (_), the characters "abc_" match all character values that are four characters long and start with "abc". Maps to DBLITERAL_LIKE_UNDERSCORE.</summary>
     </member>
     <member name="F:System.Data.OleDb.OleDbLiteral.Member_Name">
       <summary>The name of the member.</summary>
@@ -1422,9 +1422,9 @@
     <member name="M:System.Data.OleDb.OleDbTransaction.Commit">
       <summary>Commits the database transaction.</summary>
       <exception cref="T:System.Exception">An error occurred while trying to commit the transaction.</exception>
-      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.  
- -or-  
- The connection is broken.</exception>
+      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.
+-or-
+The connection is broken.</exception>
     </member>
     <member name="P:System.Data.OleDb.OleDbTransaction.Connection">
       <summary>Gets the <see cref="T:System.Data.OleDb.OleDbConnection" /> object associated with the transaction, or <see langword="null" /> if the transaction is no longer valid.</summary>
@@ -1437,9 +1437,9 @@
     <member name="M:System.Data.OleDb.OleDbTransaction.Rollback">
       <summary>Rolls back a transaction from a pending state.</summary>
       <exception cref="T:System.Exception">An error occurred while trying to commit the transaction.</exception>
-      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.  
- -or-  
- The connection is broken.</exception>
+      <exception cref="T:System.InvalidOperationException">The transaction has already been committed or rolled back.
+-or-
+The connection is broken.</exception>
     </member>
     <member name="T:System.Data.OleDb.OleDbType">
       <summary>Specifies the data type of a field, a property, for use in an <see cref="T:System.Data.OleDb.OleDbParameter" />.</summary>
@@ -1500,7 +1500,8 @@ This data type is not currently supported by ADO.NET. Its usage may cause unpred
       <summary>A 32-bit signed integer (DBTYPE_I4). This maps to <see cref="T:System.Int32" />.</summary>
     </member>
     <member name="F:System.Data.OleDb.OleDbType.IUnknown">
-      <summary>A pointer to an <see langword="IUnknown" /> interface (DBTYPE_UNKNOWN). This maps to <see cref="T:System.Object" />.This data type is not currently supported by ADO.NET. Its usage may cause unpredictable results.</summary>
+      <summary>A pointer to an <see langword="IUnknown" /> interface (DBTYPE_UNKNOWN). This maps to <see cref="T:System.Object" />.
+This data type is not currently supported by ADO.NET. Its usage may cause unpredictable results.</summary>
     </member>
     <member name="F:System.Data.OleDb.OleDbType.LongVarBinary">
       <summary>A long binary value (<see cref="T:System.Data.OleDb.OleDbParameter" /> only). This maps to an <see cref="T:System.Array" /> of type <see cref="T:System.Byte" />.</summary>

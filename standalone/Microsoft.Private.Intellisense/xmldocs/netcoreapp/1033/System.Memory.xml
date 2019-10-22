@@ -1586,7 +1586,7 @@
         <paramref name="start" />, <paramref name="length" />, or <paramref name="start" /> + <paramref name="length" /> is not in the range of <paramref name="segment" />.</exception>
     </member>
     <member name="M:System.MemoryExtensions.AsSpan``1(System.ArraySegment{``0},System.Range)">
-      <summary>Creates a new span over a portion of a target array segment using the range start and end indexes</summary>
+      <summary>Creates a new span over a portion of a target array segment using the range start and end indexes.</summary>
       <param name="segment">The target array segment.</param>
       <param name="range">The range which has start and end indexes to use for slicing the array.</param>
       <typeparam name="T">The type of the array segment.</typeparam>

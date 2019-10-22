@@ -11,9 +11,9 @@
       <summary>Provides access to information on the specified drive.</summary>
       <param name="driveName">A valid drive path or drive letter. This can be either uppercase or lowercase, 'a' to 'z'. A null value is not valid.</param>
       <exception cref="T:System.ArgumentNullException">The drive letter cannot be <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The first letter of <paramref name="driveName" /> is not an uppercase or lowercase letter from 'a' to 'z'.  
- -or-  
- <paramref name="driveName" /> does not refer to a valid drive.</exception>
+      <exception cref="T:System.ArgumentException">The first letter of <paramref name="driveName" /> is not an uppercase or lowercase letter from 'a' to 'z'.
+-or-
+<paramref name="driveName" /> does not refer to a valid drive.</exception>
     </member>
     <member name="P:System.IO.DriveInfo.AvailableFreeSpace">
       <summary>Indicates the amount of available free space on a drive, in bytes.</summary>
@@ -80,9 +80,9 @@
       <exception cref="T:System.IO.IOException">An I/O error occurred (for example, a disk error or a drive was not ready).</exception>
       <exception cref="T:System.IO.DriveNotFoundException">The drive is not mapped or does not exist.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The volume label is being set on a network or CD-ROM drive.  
- -or-  
- Access to the drive information is denied.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The volume label is being set on a network or CD-ROM drive.
+-or-
+Access to the drive information is denied.</exception>
     </member>
     <member name="T:System.IO.DriveNotFoundException">
       <summary>The exception that is thrown when trying to access a drive or share that is not available.</summary>

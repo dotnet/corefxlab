@@ -457,9 +457,9 @@
     <member name="M:System.ComponentModel.IContainer.Add(System.ComponentModel.IComponent,System.String)">
       <summary>Adds the specified <see cref="T:System.ComponentModel.IComponent" /> to the <see cref="T:System.ComponentModel.IContainer" /> at the end of the list, and assigns a name to the component.</summary>
       <param name="component">The <see cref="T:System.ComponentModel.IComponent" /> to add.</param>
-      <param name="name">The unique, case-insensitive name to assign to the component.  
- -or-  
- <see langword="null" /> that leaves the component unnamed.</param>
+      <param name="name">The unique, case-insensitive name to assign to the component.
+-or-
+<see langword="null" /> that leaves the component unnamed.</param>
     </member>
     <member name="P:System.ComponentModel.IContainer.Components">
       <summary>Gets all the components in the <see cref="T:System.ComponentModel.IContainer" />.</summary>
@@ -763,7 +763,7 @@
         <see langword="true" /> if the property is displayed with parentheses; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="T:System.ComponentModel.ReadOnlyAttribute">
-      <summary>Specifies whether the property this attribute is bound to is read-only or read/write. This class cannot be inherited</summary>
+      <summary>Specifies whether the property this attribute is bound to is read-only or read/write. This class cannot be inherited.</summary>
     </member>
     <member name="M:System.ComponentModel.ReadOnlyAttribute.#ctor(System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.ReadOnlyAttribute" /> class.</summary>

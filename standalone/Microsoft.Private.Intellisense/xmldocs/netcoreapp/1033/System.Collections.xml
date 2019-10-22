@@ -68,8 +68,8 @@
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.BitArray" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.BitArray" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -82,8 +82,8 @@ The number of elements in the source <see cref="T:System.Collections.BitArray" /
       <param name="index">The zero-based index of the value to get.</param>
       <returns>The value of the bit at position <paramref name="index" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than or equal to the number of elements in the <see cref="T:System.Collections.BitArray" />.</exception>
     </member>
     <member name="M:System.Collections.BitArray.GetEnumerator">
@@ -103,8 +103,8 @@ The number of elements in the source <see cref="T:System.Collections.BitArray" /
       <param name="index">The zero-based index of the value to get or set.</param>
       <returns>The value of the bit at position <paramref name="index" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.BitArray.Count" />.</exception>
     </member>
     <member name="M:System.Collections.BitArray.LeftShift(System.Int32)">
@@ -136,8 +136,8 @@ The number of elements in the source <see cref="T:System.Collections.BitArray" /
       <param name="index">The zero-based index of the bit to set.</param>
       <param name="value">The Boolean value to assign to the bit.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than or equal to the number of elements in the <see cref="T:System.Collections.BitArray" />.</exception>
     </member>
     <member name="M:System.Collections.BitArray.SetAll(System.Boolean)">
@@ -196,21 +196,21 @@ The number of elements in the source <see cref="T:System.Collections.BitArray" /
       <summary>When overridden in a derived class, performs a comparison of two objects of the same type and returns a value indicating whether one object is less than, equal to, or greater than the other.</summary>
       <param name="x">The first object to compare.</param>
       <param name="y">The second object to compare.</param>
-      <returns>A signed integer that indicates the relative values of <paramref name="x" /> and <paramref name="y" />, as shown in the following table.  
+      <returns>A signed integer that indicates the relative values of <paramref name="x" /> and <paramref name="y" />, as shown in the following table.
   Value  
-
+  
   Meaning  
-
+  
   Less than zero  
-
+  
  <paramref name="x" /> is less than <paramref name="y" />.  
-
+  
   Zero  
-
+  
  <paramref name="x" /> equals <paramref name="y" />.  
-
+  
   Greater than zero  
-
+  
  <paramref name="x" /> is greater than <paramref name="y" />.</returns>
       <exception cref="T:System.ArgumentException">Type <paramref name="T" /> does not implement either the <see cref="T:System.IComparable`1" /> generic interface or the <see cref="T:System.IComparable" /> interface.</exception>
     </member>
@@ -227,25 +227,25 @@ The number of elements in the source <see cref="T:System.Collections.BitArray" /
       <summary>Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.</summary>
       <param name="x">The first object to compare.</param>
       <param name="y">The second object to compare.</param>
-      <returns>A signed integer that indicates the relative values of <paramref name="x" /> and <paramref name="y" />, as shown in the following table.  
+      <returns>A signed integer that indicates the relative values of <paramref name="x" /> and <paramref name="y" />, as shown in the following table.
   Value  
-
+  
   Meaning  
-
+  
   Less than zero  
-
+  
  <paramref name="x" /> is less than <paramref name="y" />.  
-
+  
   Zero  
-
+  
  <paramref name="x" /> equals <paramref name="y" />.  
-
+  
   Greater than zero  
-
+  
  <paramref name="x" /> is greater than <paramref name="y" />.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="x" /> or <paramref name="y" /> is of a type that cannot be cast to type <paramref name="T" />.  
--or-  
+        <paramref name="x" /> or <paramref name="y" /> is of a type that cannot be cast to type <paramref name="T" />.
+-or-
 <paramref name="x" /> and <paramref name="y" /> do not implement either the <see cref="T:System.IComparable`1" /> generic interface or the <see cref="T:System.IComparable" /> interface.</exception>
     </member>
     <member name="T:System.Collections.Generic.Dictionary`2">
@@ -426,8 +426,8 @@ The number of elements in the source <see cref="T:System.Collections.BitArray" /
     </member>
     <member name="P:System.Collections.Generic.Dictionary`2.KeyCollection.Count">
       <summary>Gets the number of elements contained in the <see cref="T:System.Collections.Generic.Dictionary`2.KeyCollection" />.</summary>
-      <returns>The number of elements contained in the <see cref="T:System.Collections.Generic.Dictionary`2.KeyCollection" />.  
- Retrieving the value of this property is an O(1) operation.</returns>
+      <returns>The number of elements contained in the <see cref="T:System.Collections.Generic.Dictionary`2.KeyCollection" />.
+Retrieving the value of this property is an O(1) operation.</returns>
     </member>
     <member name="T:System.Collections.Generic.Dictionary`2.KeyCollection.Enumerator">
       <summary>Enumerates the elements of a <see cref="T:System.Collections.Generic.Dictionary`2.KeyCollection" />.</summary>
@@ -500,12 +500,12 @@ The number of elements in the source <see cref="T:System.Collections.BitArray" /
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.Dictionary`2.KeyCollection.System#Collections#ICollection#IsSynchronized">
@@ -604,12 +604,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.Generic.ICollection`1" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.Dictionary`2.System#Collections#ICollection#IsSynchronized">
@@ -628,10 +628,10 @@ The type of the source <see cref="T:System.Collections.Generic.ICollection`1" />
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.Dictionary`2" />.  
--or-  
-<paramref name="value" /> is of a type that is not assignable to <paramref name="TValue" />, the type of values in the <see cref="T:System.Collections.Generic.Dictionary`2" />.  
--or-  
+        <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.Dictionary`2" />.
+-or-
+<paramref name="value" /> is of a type that is not assignable to <paramref name="TValue" />, the type of values in the <see cref="T:System.Collections.Generic.Dictionary`2" />.
+-or-
 A value with the same key already exists in the <see cref="T:System.Collections.Generic.Dictionary`2" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Contains(System.Object)">
@@ -662,9 +662,9 @@ A value with the same key already exists in the <see cref="T:System.Collections.
       <returns>The value associated with the specified key, or <see langword="null" /> if <paramref name="key" /> is not in the dictionary or <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.Dictionary`2" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">A value is being assigned, and <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.Dictionary`2" />.  
- -or-  
- A value is being assigned, and <paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.Generic.Dictionary`2" />.</exception>
+      <exception cref="T:System.ArgumentException">A value is being assigned, and <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.Dictionary`2" />.
+-or-
+A value is being assigned, and <paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.Generic.Dictionary`2" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Keys">
       <summary>Gets an <see cref="T:System.Collections.ICollection" /> containing the keys of the <see cref="T:System.Collections.IDictionary" />.</summary>
@@ -807,12 +807,12 @@ A value with the same key already exists in the <see cref="T:System.Collections.
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.Dictionary`2.ValueCollection.System#Collections#ICollection#IsSynchronized">
@@ -869,9 +869,9 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <summary>Returns a hash code for the specified object.</summary>
       <param name="obj">The <see cref="T:System.Object" /> for which a hash code is to be returned.</param>
       <returns>A hash code for the specified object.</returns>
-      <exception cref="T:System.ArgumentNullException">The type of <paramref name="obj" /> is a reference type and <paramref name="obj" /> is <see langword="null" />.  
- -or-  
- <paramref name="obj" /> is of a type that cannot be cast to type <typeparamref name="T" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The type of <paramref name="obj" /> is a reference type and <paramref name="obj" /> is <see langword="null" />.
+-or-
+<paramref name="obj" /> is of a type that cannot be cast to type <typeparamref name="T" />.</exception>
     </member>
     <member name="T:System.Collections.Generic.HashSet`1">
       <summary>Represents a set of values.</summary>
@@ -955,12 +955,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="arrayIndex" /> is less than 0.  
--or-  
+        <paramref name="arrayIndex" /> is less than 0.
+-or-
 <paramref name="count" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="arrayIndex" /> is greater than the length of the destination <paramref name="array" />.  
--or-  
+        <paramref name="arrayIndex" /> is greater than the length of the destination <paramref name="array" />.
+-or-
 <paramref name="count" /> is greater than the available space from the <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.HashSet`1.Count">
@@ -1089,7 +1089,7 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <summary>Determines whether a <see cref="T:System.Collections.Generic.HashSet`1" /> object and the specified collection contain the same elements.</summary>
       <param name="other">The collection to compare to the current <see cref="T:System.Collections.Generic.HashSet`1" /> object.</param>
       <returns>
-        <see langword="true" /> if the <see cref="T:System.Collections.Generic.HashSet`1" /> object is equal to <paramref name="other" />; otherwise, false.</returns>
+        <see langword="true" /> if the <see cref="T:System.Collections.Generic.HashSet`1" /> object is equal to <paramref name="other" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="other" /> is <see langword="null" />.</exception>
     </member>
@@ -1165,12 +1165,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <param name="node">The <see cref="T:System.Collections.Generic.LinkedListNode`1" /> after which to insert <paramref name="newNode" />.</param>
       <param name="newNode">The new <see cref="T:System.Collections.Generic.LinkedListNode`1" /> to add to the <see cref="T:System.Collections.Generic.LinkedList`1" />.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="node" /> is <see langword="null" />.  
--or-  
+        <paramref name="node" /> is <see langword="null" />.
+-or-
 <paramref name="newNode" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="node" /> is not in the current <see cref="T:System.Collections.Generic.LinkedList`1" />.  
--or-  
+        <paramref name="node" /> is not in the current <see cref="T:System.Collections.Generic.LinkedList`1" />.
+-or-
 <paramref name="newNode" /> belongs to another <see cref="T:System.Collections.Generic.LinkedList`1" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.LinkedList`1.AddBefore(System.Collections.Generic.LinkedListNode{`0},`0)">
@@ -1188,12 +1188,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <param name="node">The <see cref="T:System.Collections.Generic.LinkedListNode`1" /> before which to insert <paramref name="newNode" />.</param>
       <param name="newNode">The new <see cref="T:System.Collections.Generic.LinkedListNode`1" /> to add to the <see cref="T:System.Collections.Generic.LinkedList`1" />.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="node" /> is <see langword="null" />.  
--or-  
+        <paramref name="node" /> is <see langword="null" />.
+-or-
 <paramref name="newNode" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="node" /> is not in the current <see cref="T:System.Collections.Generic.LinkedList`1" />.  
--or-  
+        <paramref name="node" /> is not in the current <see cref="T:System.Collections.Generic.LinkedList`1" />.
+-or-
 <paramref name="newNode" /> belongs to another <see cref="T:System.Collections.Generic.LinkedList`1" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.LinkedList`1.AddFirst(`0)">
@@ -1361,12 +1361,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.LinkedList`1.System#Collections#ICollection#IsSynchronized">
@@ -1448,9 +1448,9 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
     <member name="M:System.Collections.Generic.List`1.BinarySearch(`0,System.Collections.Generic.IComparer{`0})">
       <summary>Searches the entire sorted <see cref="T:System.Collections.Generic.List`1" /> for an element using the specified comparer and returns the zero-based index of the element.</summary>
       <param name="item">The object to locate. The value can be <see langword="null" /> for reference types.</param>
-      <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing elements.  
- -or-  
- <see langword="null" /> to use the default comparer <see cref="P:System.Collections.Generic.Comparer`1.Default" />.</param>
+      <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing elements.
+-or-
+<see langword="null" /> to use the default comparer <see cref="P:System.Collections.Generic.Comparer`1.Default" />.</param>
       <returns>The zero-based index of <paramref name="item" /> in the sorted <see cref="T:System.Collections.Generic.List`1" />, if <paramref name="item" /> is found; otherwise, a negative number that is the bitwise complement of the index of the next element that is larger than <paramref name="item" /> or, if there is no larger element, the bitwise complement of <see cref="P:System.Collections.Generic.List`1.Count" />.</returns>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="comparer" /> is <see langword="null" />, and the default comparer <see cref="P:System.Collections.Generic.Comparer`1.Default" /> cannot find an implementation of the <see cref="T:System.IComparable`1" /> generic interface or the <see cref="T:System.IComparable" /> interface for type <paramref name="T" />.</exception>
@@ -1463,8 +1463,8 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing elements, or <see langword="null" /> to use the default comparer <see cref="P:System.Collections.Generic.Comparer`1.Default" />.</param>
       <returns>The zero-based index of <paramref name="item" /> in the sorted <see cref="T:System.Collections.Generic.List`1" />, if <paramref name="item" /> is found; otherwise, a negative number that is the bitwise complement of the index of the next element that is larger than <paramref name="item" /> or, if there is no larger element, the bitwise complement of <see cref="P:System.Collections.Generic.List`1.Count" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="count" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in the <see cref="T:System.Collections.Generic.List`1" />.</exception>
@@ -1521,14 +1521,14 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
-<paramref name="arrayIndex" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
+<paramref name="arrayIndex" /> is less than 0.
+-or-
 <paramref name="count" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="index" /> is equal to or greater than the <see cref="P:System.Collections.Generic.List`1.Count" /> of the source <see cref="T:System.Collections.Generic.List`1" />.  
--or-  
+        <paramref name="index" /> is equal to or greater than the <see cref="P:System.Collections.Generic.List`1.Count" /> of the source <see cref="T:System.Collections.Generic.List`1" />.
+-or-
 The number of elements from <paramref name="index" /> to the end of the source <see cref="T:System.Collections.Generic.List`1" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.List`1.Count">
@@ -1592,10 +1592,10 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <exception cref="T:System.ArgumentNullException">
         <paramref name="match" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="startIndex" /> is outside the range of valid indexes for the <see cref="T:System.Collections.Generic.List`1" />.  
--or-  
-<paramref name="count" /> is less than 0.  
--or-  
+        <paramref name="startIndex" /> is outside the range of valid indexes for the <see cref="T:System.Collections.Generic.List`1" />.
+-or-
+<paramref name="count" /> is less than 0.
+-or-
 <paramref name="startIndex" /> and <paramref name="count" /> do not specify a valid section in the <see cref="T:System.Collections.Generic.List`1" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.List`1.FindIndex(System.Int32,System.Predicate{`0})">
@@ -1631,10 +1631,10 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <exception cref="T:System.ArgumentNullException">
         <paramref name="match" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="startIndex" /> is outside the range of valid indexes for the <see cref="T:System.Collections.Generic.List`1" />.  
--or-  
-<paramref name="count" /> is less than 0.  
--or-  
+        <paramref name="startIndex" /> is outside the range of valid indexes for the <see cref="T:System.Collections.Generic.List`1" />.
+-or-
+<paramref name="count" /> is less than 0.
+-or-
 <paramref name="startIndex" /> and <paramref name="count" /> do not specify a valid section in the <see cref="T:System.Collections.Generic.List`1" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.List`1.FindLastIndex(System.Int32,System.Predicate{`0})">
@@ -1671,8 +1671,8 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <param name="count">The number of elements in the range.</param>
       <returns>A shallow copy of a range of elements in the source <see cref="T:System.Collections.Generic.List`1" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="count" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="index" /> and <paramref name="count" /> do not denote a valid range of elements in the <see cref="T:System.Collections.Generic.List`1" />.</exception>
@@ -1697,10 +1697,10 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <param name="count">The number of elements in the section to search.</param>
       <returns>The zero-based index of the first occurrence of <paramref name="item" /> within the range of elements in the <see cref="T:System.Collections.Generic.List`1" /> that starts at <paramref name="index" /> and contains <paramref name="count" /> number of elements, if found; otherwise, -1.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is outside the range of valid indexes for the <see cref="T:System.Collections.Generic.List`1" />.  
--or-  
-<paramref name="count" /> is less than 0.  
--or-  
+        <paramref name="index" /> is outside the range of valid indexes for the <see cref="T:System.Collections.Generic.List`1" />.
+-or-
+<paramref name="count" /> is less than 0.
+-or-
 <paramref name="index" /> and <paramref name="count" /> do not specify a valid section in the <see cref="T:System.Collections.Generic.List`1" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.List`1.Insert(System.Int32,`0)">
@@ -1708,8 +1708,8 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
       <param name="item">The object to insert. The value can be <see langword="null" /> for reference types.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is greater than <see cref="P:System.Collections.Generic.List`1.Count" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.List`1.InsertRange(System.Int32,System.Collections.Generic.IEnumerable{`0})">
@@ -1719,8 +1719,8 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <exception cref="T:System.ArgumentNullException">
         <paramref name="collection" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is greater than <see cref="P:System.Collections.Generic.List`1.Count" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.List`1.Item(System.Int32)">
@@ -1728,8 +1728,8 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <param name="index">The zero-based index of the element to get or set.</param>
       <returns>The element at the specified index.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Generic.List`1.Count" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.List`1.LastIndexOf(`0)">
@@ -1752,10 +1752,10 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <param name="count">The number of elements in the section to search.</param>
       <returns>The zero-based index of the last occurrence of <paramref name="item" /> within the range of elements in the <see cref="T:System.Collections.Generic.List`1" /> that contains <paramref name="count" /> number of elements and ends at <paramref name="index" />, if found; otherwise, -1.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is outside the range of valid indexes for the <see cref="T:System.Collections.Generic.List`1" />.  
--or-  
-<paramref name="count" /> is less than 0.  
--or-  
+        <paramref name="index" /> is outside the range of valid indexes for the <see cref="T:System.Collections.Generic.List`1" />.
+-or-
+<paramref name="count" /> is less than 0.
+-or-
 <paramref name="index" /> and <paramref name="count" /> do not specify a valid section in the <see cref="T:System.Collections.Generic.List`1" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.List`1.Remove(`0)">
@@ -1775,8 +1775,8 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <summary>Removes the element at the specified index of the <see cref="T:System.Collections.Generic.List`1" />.</summary>
       <param name="index">The zero-based index of the element to remove.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Generic.List`1.Count" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.List`1.RemoveRange(System.Int32,System.Int32)">
@@ -1784,8 +1784,8 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <param name="index">The zero-based starting index of the range of elements to remove.</param>
       <param name="count">The number of elements to remove.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="count" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="index" /> and <paramref name="count" /> do not denote a valid range of elements in the <see cref="T:System.Collections.Generic.List`1" />.</exception>
@@ -1798,8 +1798,8 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <param name="index">The zero-based starting index of the range to reverse.</param>
       <param name="count">The number of elements in the range to reverse.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="count" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="index" /> and <paramref name="count" /> do not denote a valid range of elements in the <see cref="T:System.Collections.Generic.List`1" />.</exception>
@@ -1828,12 +1828,12 @@ The number of elements from <paramref name="index" /> to the end of the source <
       <param name="count">The length of the range to sort.</param>
       <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing elements, or <see langword="null" /> to use the default comparer <see cref="P:System.Collections.Generic.Comparer`1.Default" />.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="count" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="index" /> and <paramref name="count" /> do not specify a valid range in the <see cref="T:System.Collections.Generic.List`1" />.  
--or-  
+        <paramref name="index" /> and <paramref name="count" /> do not specify a valid range in the <see cref="T:System.Collections.Generic.List`1" />.
+-or-
 The implementation of <paramref name="comparer" /> caused an error during the sort. For example, <paramref name="comparer" /> might not return 0 when comparing an item with itself.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="comparer" /> is <see langword="null" />, and the default comparer <see cref="P:System.Collections.Generic.Comparer`1.Default" /> cannot find implementation of the <see cref="T:System.IComparable`1" /> generic interface or the <see cref="T:System.IComparable" /> interface for type <paramref name="T" />.</exception>
@@ -1856,12 +1856,12 @@ The implementation of <paramref name="comparer" /> caused an error during the so
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="arrayIndex" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.List`1.System#Collections#ICollection#IsSynchronized">
@@ -2045,12 +2045,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.Queue`1.System#Collections#ICollection#IsSynchronized">
@@ -2301,12 +2301,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.SortedDictionary`2.KeyCollection.System#Collections#ICollection#IsSynchronized">
@@ -2387,12 +2387,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.Generic.ICollection`1" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.SortedDictionary`2.System#Collections#ICollection#IsSynchronized">
@@ -2411,10 +2411,10 @@ The type of the source <see cref="T:System.Collections.Generic.ICollection`1" />
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.IDictionary" />.  
--or-  
-<paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.IDictionary" />.  
--or-  
+        <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.IDictionary" />.
+-or-
+<paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.IDictionary" />.
+-or-
 An element with the same key already exists in the <see cref="T:System.Collections.IDictionary" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.SortedDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
@@ -2445,9 +2445,9 @@ An element with the same key already exists in the <see cref="T:System.Collectio
       <returns>The element with the specified key, or <see langword="null" /> if <paramref name="key" /> is not in the dictionary or <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.SortedDictionary`2" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">A value is being assigned, and <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.SortedDictionary`2" />.  
- -or-  
- A value is being assigned, and <paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.Generic.SortedDictionary`2" />.</exception>
+      <exception cref="T:System.ArgumentException">A value is being assigned, and <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.SortedDictionary`2" />.
+-or-
+A value is being assigned, and <paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.Generic.SortedDictionary`2" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.SortedDictionary`2.System#Collections#IDictionary#Keys">
       <summary>Gets an <see cref="T:System.Collections.ICollection" /> containing the keys of the <see cref="T:System.Collections.IDictionary" />.</summary>
@@ -2477,7 +2477,7 @@ An element with the same key already exists in the <see cref="T:System.Collectio
         <paramref name="key" /> is <see langword="null" />.</exception>
     </member>
     <member name="T:System.Collections.Generic.SortedDictionary`2.ValueCollection">
-      <summary>Represents the collection of values in a <see cref="T:System.Collections.Generic.SortedDictionary`2" />. This class cannot be inherited</summary>
+      <summary>Represents the collection of values in a <see cref="T:System.Collections.Generic.SortedDictionary`2" />. This class cannot be inherited.</summary>
       <typeparam name="TKey" />
       <typeparam name="TValue" />
     </member>
@@ -2572,12 +2572,12 @@ An element with the same key already exists in the <see cref="T:System.Collectio
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.SortedDictionary`2.ValueCollection.System#Collections#ICollection#IsSynchronized">
@@ -2607,9 +2607,9 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
     </member>
     <member name="M:System.Collections.Generic.SortedList`2.#ctor(System.Collections.Generic.IComparer{`0})">
       <summary>Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2" /> class that is empty, has the default initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1" />.</summary>
-      <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing keys.  
- -or-  
- <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.Comparer`1" /> for the type of the key.</param>
+      <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing keys.
+-or-
+<see langword="null" /> to use the default <see cref="T:System.Collections.Generic.Comparer`1" /> for the type of the key.</param>
     </member>
     <member name="M:System.Collections.Generic.SortedList`2.#ctor(System.Collections.Generic.IDictionary{`0,`1})">
       <summary>Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2" /> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2" />, has sufficient capacity to accommodate the number of elements copied, and uses the default <see cref="T:System.Collections.Generic.IComparer`1" />.</summary>
@@ -2622,9 +2622,9 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
     <member name="M:System.Collections.Generic.SortedList`2.#ctor(System.Collections.Generic.IDictionary{`0,`1},System.Collections.Generic.IComparer{`0})">
       <summary>Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2" /> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2" />, has sufficient capacity to accommodate the number of elements copied, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1" />.</summary>
       <param name="dictionary">The <see cref="T:System.Collections.Generic.IDictionary`2" /> whose elements are copied to the new <see cref="T:System.Collections.Generic.SortedList`2" />.</param>
-      <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing keys.  
- -or-  
- <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.Comparer`1" /> for the type of the key.</param>
+      <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing keys.
+-or-
+<see langword="null" /> to use the default <see cref="T:System.Collections.Generic.Comparer`1" /> for the type of the key.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="dictionary" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
@@ -2639,9 +2639,9 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
     <member name="M:System.Collections.Generic.SortedList`2.#ctor(System.Int32,System.Collections.Generic.IComparer{`0})">
       <summary>Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2" /> class that is empty, has the specified initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1" />.</summary>
       <param name="capacity">The initial number of elements that the <see cref="T:System.Collections.Generic.SortedList`2" /> can contain.</param>
-      <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing keys.  
- -or-  
- <see langword="null" /> to use the default <see cref="T:System.Collections.Generic.Comparer`1" /> for the type of the key.</param>
+      <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing keys.
+-or-
+<see langword="null" /> to use the default <see cref="T:System.Collections.Generic.Comparer`1" /> for the type of the key.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="capacity" /> is less than zero.</exception>
     </member>
@@ -2725,8 +2725,8 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <summary>Removes the element at the specified index of the <see cref="T:System.Collections.Generic.SortedList`2" />.</summary>
       <param name="index">The zero-based index of the element to remove.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is equal to or greater than <see cref="P:System.Collections.Generic.SortedList`2.Count" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.SortedList`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey@TValue}}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
@@ -2789,12 +2789,12 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="arrayIndex" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.SortedList`2.System#Collections#ICollection#IsSynchronized">
@@ -2813,10 +2813,10 @@ The type of the source <see cref="T:System.Collections.ICollection" /> cannot be
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.IDictionary" />.  
--or-  
-<paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.IDictionary" />.  
--or-  
+        <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.IDictionary" />.
+-or-
+<paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.IDictionary" />.
+-or-
 An element with the same key already exists in the <see cref="T:System.Collections.IDictionary" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.SortedList`2.System#Collections#IDictionary#Contains(System.Object)">
@@ -2847,9 +2847,9 @@ An element with the same key already exists in the <see cref="T:System.Collectio
       <returns>The element with the specified key, or <see langword="null" /> if <paramref name="key" /> is not in the dictionary or <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.SortedList`2" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">A value is being assigned, and <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.SortedList`2" />.  
- -or-  
- A value is being assigned, and <paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.Generic.SortedList`2" />.</exception>
+      <exception cref="T:System.ArgumentException">A value is being assigned, and <paramref name="key" /> is of a type that is not assignable to the key type <paramref name="TKey" /> of the <see cref="T:System.Collections.Generic.SortedList`2" />.
+-or-
+A value is being assigned, and <paramref name="value" /> is of a type that is not assignable to the value type <paramref name="TValue" /> of the <see cref="T:System.Collections.Generic.SortedList`2" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.SortedList`2.System#Collections#IDictionary#Keys">
       <summary>Gets an <see cref="T:System.Collections.ICollection" /> containing the keys of the <see cref="T:System.Collections.IDictionary" />.</summary>
@@ -2959,8 +2959,8 @@ An element with the same key already exists in the <see cref="T:System.Collectio
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="count" /> is less than zero.</exception>
     </member>
     <member name="P:System.Collections.Generic.SortedSet`1.Count">
@@ -3120,7 +3120,7 @@ An element with the same key already exists in the <see cref="T:System.Collectio
       <summary>Determines whether the current <see cref="T:System.Collections.Generic.SortedSet`1" /> object and the specified collection contain the same elements.</summary>
       <param name="other">The collection to compare to the current <see cref="T:System.Collections.Generic.SortedSet`1" /> object.</param>
       <returns>
-        <see langword="true" /> if the current <see cref="T:System.Collections.Generic.SortedSet`1" /> object is equal to <paramref name="other" />; otherwise, false.</returns>
+        <see langword="true" /> if the current <see cref="T:System.Collections.Generic.SortedSet`1" /> object is equal to <paramref name="other" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="other" /> is <see langword="null" />.</exception>
     </member>
@@ -3291,12 +3291,12 @@ An element with the same key already exists in the <see cref="T:System.Collectio
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="arrayIndex" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-<paramref name="array" /> does not have zero-based indexing.  
--or-  
-The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+<paramref name="array" /> does not have zero-based indexing.
+-or-
+The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.Generic.Stack`1.System#Collections#ICollection#IsSynchronized">

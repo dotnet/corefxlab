@@ -565,9 +565,9 @@
     <member name="M:System.Printing.LocalPrintServer.Commit">
       <summary>Writes any changes that your application made to the properties of the <see cref="T:System.Printing.LocalPrintServer" /> to the actual print server that the object represents.</summary>
       <exception cref="T:System.Printing.PrintServerException">Some properties are not committed.</exception>
-      <exception cref="T:System.Printing.PrintCommitAttributesException">Some of the properties could not be committed.  
+      <exception cref="T:System.Printing.PrintCommitAttributesException">Some of the properties could not be committed.
 -or-
- The <see cref="T:System.Printing.LocalPrintServer" /> object was not created with sufficient rights.</exception>
+The <see cref="T:System.Printing.LocalPrintServer" /> object was not created with sufficient rights.</exception>
     </member>
     <member name="M:System.Printing.LocalPrintServer.ConnectToPrintQueue(System.Printing.PrintQueue)">
       <summary>Connects the local print server to the specified <see cref="T:System.Printing.PrintQueue" />.</summary>
@@ -936,9 +936,9 @@
     <member name="M:System.Printing.PrintQueue.Commit">
       <summary>Writes the current properties of the <see cref="T:System.Printing.PrintQueue" /> object to the actual print queue on the print server.</summary>
       <exception cref="T:System.Printing.PrintSystemException">Some of the properties could not be committed.</exception>
-      <exception cref="T:System.Printing.PrintCommitAttributesException">Some of the properties could not be committed.  
+      <exception cref="T:System.Printing.PrintCommitAttributesException">Some of the properties could not be committed.
 -or-
- The <see cref="T:System.Printing.PrintQueue" /> object was not created with sufficient rights.</exception>
+The <see cref="T:System.Printing.PrintQueue" /> object was not created with sufficient rights.</exception>
     </member>
     <member name="M:System.Printing.PrintQueue.CreateXpsDocumentWriter(System.Double@,System.Double@)">
       <summary>Creates an <see cref="T:System.Windows.Xps.XpsDocumentWriter" /> object with the specified dimensions.</summary>
@@ -1738,9 +1738,9 @@
     <member name="M:System.Printing.PrintServer.Commit">
       <summary>Commits any changes that your program made to the properties of the print server object by writing them to the print server that the object represents.</summary>
       <exception cref="T:System.Printing.PrintSystemException">Some of the properties are not committed.</exception>
-      <exception cref="T:System.Printing.PrintCommitAttributesException">Some of the properties could not be committed.  
+      <exception cref="T:System.Printing.PrintCommitAttributesException">Some of the properties could not be committed.
 -or-
- The <see cref="T:System.Printing.PrintServer" /> object was not created with sufficient rights.</exception>
+The <see cref="T:System.Printing.PrintServer" /> object was not created with sufficient rights.</exception>
     </member>
     <member name="P:System.Printing.PrintServer.DefaultPortThreadPriority">
       <summary>Do not use.</summary>
@@ -2350,20 +2350,24 @@
       <returns>The new <see cref="T:System.Windows.Xps.VisualsToXpsDocument" /> that writes <see cref="T:System.Windows.Media.Visual" /> elements with <see cref="T:System.Printing.PrintTicket" /> settings to the <see cref="T:System.Windows.Xps.Packaging.XpsDocument" />.</returns>
     </member>
     <member name="M:System.Windows.Xps.XpsDocumentWriter.raise_WritingCancelled(System.Object,System.Windows.Documents.Serialization.WritingCancelledEventArgs)">
-      <param name="sender" />
-      <param name="args" />
+      <summary>Raises the <see cref="E:System.Windows.Xps.XpsDocumentWriter.WritingCancelled" /> event.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="args">The event data.</param>
     </member>
     <member name="M:System.Windows.Xps.XpsDocumentWriter.raise_WritingCompleted(System.Object,System.Windows.Documents.Serialization.WritingCompletedEventArgs)">
-      <param name="sender" />
-      <param name="e" />
+      <summary>Raises the <see cref="E:System.Windows.Xps.XpsDocumentWriter.WritingCompleted" /> event.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">The event data.</param>
     </member>
     <member name="M:System.Windows.Xps.XpsDocumentWriter.raise_WritingPrintTicketRequired(System.Object,System.Windows.Documents.Serialization.WritingPrintTicketRequiredEventArgs)">
-      <param name="sender" />
-      <param name="e" />
+      <summary>Raises the <see cref="E:System.Windows.Xps.XpsDocumentWriter.WritingPrintTicketRequired" /> event.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">The event data.</param>
     </member>
     <member name="M:System.Windows.Xps.XpsDocumentWriter.raise_WritingProgressChanged(System.Object,System.Windows.Documents.Serialization.WritingProgressChangedEventArgs)">
-      <param name="sender" />
-      <param name="e" />
+      <summary>Raises the <see cref="E:System.Windows.Xps.XpsDocumentWriter.WritingProgressChanged" /> event.</summary>
+      <param name="sender">The source of the event.</param>
+      <param name="e">The event data.</param>
     </member>
     <member name="M:System.Windows.Xps.XpsDocumentWriter.Write(System.String)">
       <summary>Synchronously writes a specified XPS document to the target <see cref="T:System.Windows.Xps.Packaging.XpsDocument" /> or <see cref="T:System.Printing.PrintQueue" />.</summary>

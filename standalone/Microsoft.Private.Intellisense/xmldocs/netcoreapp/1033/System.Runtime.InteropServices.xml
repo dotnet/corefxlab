@@ -70,8 +70,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> or <paramref name="capacity" /> is less than zero.  
--or-  
+        <paramref name="offset" /> or <paramref name="capacity" /> is less than zero.
+-or-
 <paramref name="access" /> is not a valid <see cref="T:System.IO.MemoryMappedFiles.MemoryMappedFileAccess" /> enumeration value.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="offset" /> plus <paramref name="capacity" /> would wrap around the high end of the address space.</exception>
@@ -109,8 +109,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> or <paramref name="capacity" /> is less than zero.  
--or-  
+        <paramref name="offset" /> or <paramref name="capacity" /> is less than zero.
+-or-
 <paramref name="access" /> is not a valid <see cref="T:System.IO.MemoryMappedFiles.MemoryMappedFileAccess" /> enumeration value.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="offset" /> plus <paramref name="capacity" /> would wrap around the high end of the address space.</exception>
@@ -125,9 +125,9 @@
       <param name="position">The position in the accessor at which to begin reading.</param>
       <param name="structure">The structure to contain the read data.</param>
       <typeparam name="T">The type of structure.</typeparam>
-      <exception cref="T:System.ArgumentException">There are not enough bytes after <paramref name="position" /> to read in a structure of type <paramref name="T" />.  
- -or-  
- <see langword="T" /> is a value type that contains one or more reference types.</exception>
+      <exception cref="T:System.ArgumentException">There are not enough bytes after <paramref name="position" /> to read in a structure of type <paramref name="T" />.
+-or-
+<see langword="T" /> is a value type that contains one or more reference types.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="position" /> is less than zero or greater than the capacity of the accessor.</exception>
       <exception cref="T:System.NotSupportedException">The accessor does not support reading.</exception>
@@ -185,9 +185,9 @@
       <summary>Reads a decimal value from the accessor.</summary>
       <param name="position">The number of bytes into the accessor at which to begin reading.</param>
       <returns>The value that was read.</returns>
-      <exception cref="T:System.ArgumentException">There are not enough bytes after <paramref name="position" /> to read a value.  
- -or-  
- The decimal to read is invalid.</exception>
+      <exception cref="T:System.ArgumentException">There are not enough bytes after <paramref name="position" /> to read a value.
+-or-
+The decimal to read is invalid.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="position" /> is less than zero or greater than the capacity of the accessor.</exception>
       <exception cref="T:System.NotSupportedException">The accessor does not support reading.</exception>
@@ -317,9 +317,9 @@
       <summary>Writes a decimal value into the accessor.</summary>
       <param name="position">The number of bytes into the accessor at which to begin writing.</param>
       <param name="value">The value to write.</param>
-      <exception cref="T:System.ArgumentException">There are not enough bytes after <paramref name="position" /> to write a value.  
- -or-  
- The decimal is invalid.</exception>
+      <exception cref="T:System.ArgumentException">There are not enough bytes after <paramref name="position" /> to write a value.
+-or-
+The decimal is invalid.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="position" /> is less than zero or greater than the capacity of the accessor.</exception>
       <exception cref="T:System.NotSupportedException">The accessor does not support writing.</exception>
@@ -435,8 +435,8 @@
       <typeparam name="T">The type of structure.</typeparam>
       <exception cref="T:System.ArgumentException">There are not enough bytes in the accessor after <paramref name="position" /> to write the number of structures specified by <paramref name="count" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="position" /> is less than zero or greater than the capacity of the accessor.  
--or-  
+        <paramref name="position" /> is less than zero or greater than the capacity of the accessor.
+-or-
 <paramref name="offset" /> or <paramref name="count" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
@@ -456,9 +456,9 @@
       <param name="length">The length of the memory to use.</param>
       <exception cref="T:System.Security.SecurityException">The user does not have the required permission.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="pointer" /> value is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="length" /> value is less than zero.  
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="length" /> value is less than zero.
 -or-
- The <paramref name="length" /> is large enough to cause an overflow.</exception>
+The <paramref name="length" /> is large enough to cause an overflow.</exception>
     </member>
     <member name="M:System.IO.UnmanagedMemoryStream.#ctor(System.Byte*,System.Int64,System.Int64,System.IO.FileAccess)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.UnmanagedMemoryStream" /> class using the specified location, memory length, total amount of memory, and file access values.</summary>
@@ -468,11 +468,11 @@
       <param name="access">One of the <see cref="T:System.IO.FileAccess" /> values.</param>
       <exception cref="T:System.Security.SecurityException">The user does not have the required permission.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="pointer" /> value is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="length" /> value is less than zero.  
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="length" /> value is less than zero.
 -or-
- The <paramref name="capacity" /> value is less than zero.  
+The <paramref name="capacity" /> value is less than zero.
 -or-
- The <paramref name="length" /> value is greater than the <paramref name="capacity" /> value.</exception>
+The <paramref name="length" /> value is greater than the <paramref name="capacity" /> value.</exception>
     </member>
     <member name="M:System.IO.UnmanagedMemoryStream.#ctor(System.Runtime.InteropServices.SafeBuffer,System.Int64,System.Int64)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.UnmanagedMemoryStream" /> class in a safe buffer with a specified offset and length.</summary>
@@ -529,11 +529,11 @@
       <param name="access">One of the <see cref="T:System.IO.FileAccess" /> values.</param>
       <exception cref="T:System.Security.SecurityException">The user does not have the required permission.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="pointer" /> value is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="length" /> value is less than zero.  
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="length" /> value is less than zero.
 -or-
- The <paramref name="capacity" /> value is less than zero.  
+The <paramref name="capacity" /> value is less than zero.
 -or-
- The <paramref name="length" /> value is large enough to cause an overflow.</exception>
+The <paramref name="length" /> value is large enough to cause an overflow.</exception>
     </member>
     <member name="M:System.IO.UnmanagedMemoryStream.Initialize(System.Runtime.InteropServices.SafeBuffer,System.Int64,System.Int64,System.IO.FileAccess)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.UnmanagedMemoryStream" /> class in a safe buffer with a specified offset, length, and file access.</summary>
@@ -568,13 +568,13 @@
       <param name="count">The maximum number of bytes to read from the current stream.</param>
       <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.</returns>
       <exception cref="T:System.ObjectDisposedException">The stream is closed.</exception>
-      <exception cref="T:System.NotSupportedException">The underlying memory does not support reading.  
+      <exception cref="T:System.NotSupportedException">The underlying memory does not support reading.
 -or-
- The <see cref="P:System.IO.UnmanagedMemoryStream.CanRead" /> property is set to <see langword="false" />.</exception>
+The <see cref="P:System.IO.UnmanagedMemoryStream.CanRead" /> property is set to <see langword="false" />.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> parameter is set to <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than zero.  
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than zero.
 -or-
- The <paramref name="count" /> parameter is less than zero.</exception>
+The <paramref name="count" /> parameter is less than zero.</exception>
       <exception cref="T:System.ArgumentException">The length of the buffer array minus the <paramref name="offset" /> parameter is less than the <paramref name="count" /> parameter.</exception>
     </member>
     <member name="M:System.IO.UnmanagedMemoryStream.Read(System.Span{System.Byte})">
@@ -600,9 +600,9 @@
       <summary>Reads a byte from a stream and advances the position within the stream by one byte, or returns -1 if at the end of the stream.</summary>
       <returns>The unsigned byte cast to an <see cref="T:System.Int32" /> object, or -1 if at the end of the stream.</returns>
       <exception cref="T:System.ObjectDisposedException">The stream is closed.</exception>
-      <exception cref="T:System.NotSupportedException">The underlying memory does not support reading.  
+      <exception cref="T:System.NotSupportedException">The underlying memory does not support reading.
 -or-
- The current position is at the end of the stream.</exception>
+The current position is at the end of the stream.</exception>
     </member>
     <member name="M:System.IO.UnmanagedMemoryStream.Seek(System.Int64,System.IO.SeekOrigin)">
       <summary>Sets the current position of the current stream to the given value.</summary>
@@ -620,12 +620,12 @@
       <param name="value">The length of the stream.</param>
       <exception cref="T:System.IO.IOException">An I/O error has occurred.</exception>
       <exception cref="T:System.ObjectDisposedException">The stream is closed.</exception>
-      <exception cref="T:System.NotSupportedException">The underlying memory does not support writing.  
+      <exception cref="T:System.NotSupportedException">The underlying memory does not support writing.
 -or-
- An attempt is made to write to the stream and the <see cref="P:System.IO.UnmanagedMemoryStream.CanWrite" /> property is <see langword="false" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The specified <paramref name="value" /> exceeds the capacity of the stream.  
+An attempt is made to write to the stream and the <see cref="P:System.IO.UnmanagedMemoryStream.CanWrite" /> property is <see langword="false" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The specified <paramref name="value" /> exceeds the capacity of the stream.
 -or-
- The specified <paramref name="value" /> is negative.</exception>
+The specified <paramref name="value" /> is negative.</exception>
     </member>
     <member name="M:System.IO.UnmanagedMemoryStream.Write(System.Byte[],System.Int32,System.Int32)">
       <summary>Writes a block of bytes to the current stream using data from a buffer.</summary>
@@ -633,13 +633,13 @@
       <param name="offset">The offset in the buffer at which to begin copying bytes to the current stream.</param>
       <param name="count">The number of bytes to write to the current stream.</param>
       <exception cref="T:System.ObjectDisposedException">The stream is closed.</exception>
-      <exception cref="T:System.NotSupportedException">The underlying memory does not support writing.  
+      <exception cref="T:System.NotSupportedException">The underlying memory does not support writing.
 -or-
- An attempt is made to write to the stream and the <see cref="P:System.IO.UnmanagedMemoryStream.CanWrite" /> property is <see langword="false" />.  
+An attempt is made to write to the stream and the <see cref="P:System.IO.UnmanagedMemoryStream.CanWrite" /> property is <see langword="false" />.
 -or-
- The <paramref name="count" /> value is greater than the capacity of the stream.  
+The <paramref name="count" /> value is greater than the capacity of the stream.
 -or-
- The position is at the end of the stream capacity.</exception>
+The position is at the end of the stream capacity.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">One of the specified parameters is less than zero.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="offset" /> parameter minus the length of the <paramref name="buffer" /> parameter is less than the <paramref name="count" /> parameter.</exception>
@@ -667,11 +667,11 @@
       <summary>Writes a byte to the current position in the file stream.</summary>
       <param name="value">A byte value written to the stream.</param>
       <exception cref="T:System.ObjectDisposedException">The stream is closed.</exception>
-      <exception cref="T:System.NotSupportedException">The underlying memory does not support writing.  
+      <exception cref="T:System.NotSupportedException">The underlying memory does not support writing.
 -or-
- An attempt is made to write to the stream and the <see cref="P:System.IO.UnmanagedMemoryStream.CanWrite" /> property is <see langword="false" />.  
+An attempt is made to write to the stream and the <see cref="P:System.IO.UnmanagedMemoryStream.CanWrite" /> property is <see langword="false" />.
 -or-
- The current position is at the end of the capacity of the stream.</exception>
+The current position is at the end of the capacity of the stream.</exception>
       <exception cref="T:System.IO.IOException">The supplied <paramref name="value" /> causes the stream exceed its maximum capacity.</exception>
     </member>
     <member name="T:System.Runtime.CompilerServices.IDispatchConstantAttribute">
@@ -964,18 +964,20 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
       <exception cref="T:System.InvalidOperationException">The event does not have a public <see langword="remove" /> accessor.</exception>
       <exception cref="T:System.ArgumentException">The handler that was passed in cannot be used.</exception>
       <exception cref="T:System.Reflection.TargetException">In the .NET for Windows Store apps or the Portable Class Library, catch <see cref="T:System.Exception" /> instead.  
-
+  
 
             
-
+  
  The <paramref name="target" /> parameter is <see langword="null" /> and the event is not static.  
+  
  -or-  
+  
  The <see cref="T:System.Reflection.EventInfo" /> is not declared on the target.</exception>
       <exception cref="T:System.MethodAccessException">In the .NET for Windows Store apps or the Portable Class Library, catch the base class exception, <see cref="T:System.MemberAccessException" />, instead.  
-
+  
 
             
-
+  
  The caller does not have access permission to the member.</exception>
     </member>
     <member name="T:System.Runtime.InteropServices.ComCompatibleVersionAttribute">
@@ -1288,7 +1290,7 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
       <summary>Represents the count of arguments.</summary>
     </member>
     <member name="F:System.Runtime.InteropServices.ComTypes.DISPPARAMS.cNamedArgs">
-      <summary>Represents the count of named arguments</summary>
+      <summary>Represents the count of named arguments.</summary>
     </member>
     <member name="F:System.Runtime.InteropServices.ComTypes.DISPPARAMS.rgdispidNamedArgs">
       <summary>Represents the dispatch IDs of named arguments.</summary>
@@ -1598,29 +1600,29 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
       <param name="advf">One of the <see cref="T:System.Runtime.InteropServices.ComTypes.ADVF" /> values that specifies a group of flags for controlling the advisory connection.</param>
       <param name="adviseSink">A pointer to the <see cref="T:System.Runtime.InteropServices.ComTypes.IAdviseSink" /> interface on the advisory sink that will receive the change notification.</param>
       <param name="connection">When this method returns, contains a pointer to a DWORD token that identifies this connection. You can use this token later to delete the advisory connection by passing it to <see cref="M:System.Runtime.InteropServices.ComTypes.IDataObject.DUnadvise(System.Int32)" />. If this value is zero, the connection was not established. This parameter is passed uninitialized.</param>
-      <returns>This method supports the standard return values E_INVALIDARG, E_UNEXPECTED, and E_OUTOFMEMORY, as well as the following:  
+      <returns>This method supports the standard return values E_INVALIDARG, E_UNEXPECTED, and E_OUTOFMEMORY, as well as the following:
   Value  
-
+  
   Description  
-
+  
   S_OK  
-
+  
   The advisory connection was created.  
-
+  
   E_NOTIMPL  
-
+  
   This method is not implemented on the data object.  
-
+  
   DV_E_LINDEX  
-
+  
   There is an invalid value for <see cref="F:System.Runtime.InteropServices.ComTypes.FORMATETC.lindex" />; currently, only -1 is supported.  
-
+  
   DV_E_FORMATETC  
-
+  
   There is an invalid value for the <paramref name="pFormatetc" /> parameter.  
-
+  
   OLE_E_ADVISENOTSUPPORTED  
-
+  
   The data object does not support change notification.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.ComTypes.IDataObject.DUnadvise(System.Int32)">
@@ -1630,66 +1632,66 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
     <member name="M:System.Runtime.InteropServices.ComTypes.IDataObject.EnumDAdvise(System.Runtime.InteropServices.ComTypes.IEnumSTATDATA@)">
       <summary>Creates an object that can be used to enumerate the current advisory connections.</summary>
       <param name="enumAdvise">When this method returns, contains an <see cref="T:System.Runtime.InteropServices.ComTypes.IEnumSTATDATA" /> that receives the interface pointer to the new enumerator object. If the implementation sets <paramref name="enumAdvise" /> to <see langword="null" />, there are no connections to advisory sinks at this time. This parameter is passed uninitialized.</param>
-      <returns>This method supports the standard return value E_OUTOFMEMORY, as well as the following:  
+      <returns>This method supports the standard return value E_OUTOFMEMORY, as well as the following:
   Value  
-
+  
   Description  
-
+  
   S_OK  
-
+  
   The enumerator object is successfully instantiated or there are no connections.  
-
+  
   OLE_E_ADVISENOTSUPPORTED  
-
+  
   This object does not support advisory notifications.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.ComTypes.IDataObject.EnumFormatEtc(System.Runtime.InteropServices.ComTypes.DATADIR)">
       <summary>Creates an object for enumerating the <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structures for a data object. These structures are used in calls to <see cref="M:System.Runtime.InteropServices.ComTypes.IDataObject.GetData(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.STGMEDIUM@)" /> or <see cref="M:System.Runtime.InteropServices.ComTypes.IDataObject.SetData(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.STGMEDIUM@,System.Boolean)" />.</summary>
       <param name="direction">One of the <see cref="T:System.Runtime.InteropServices.ComTypes.DATADIR" /> values that specifies the direction of the data.</param>
-      <returns>This method supports the standard return values E_INVALIDARG and E_OUTOFMEMORY, as well as the following:  
+      <returns>This method supports the standard return values E_INVALIDARG and E_OUTOFMEMORY, as well as the following:
   Value  
-
+  
   Description  
-
+  
   S_OK  
-
+  
   The enumerator object was successfully created.  
-
+  
   E_NOTIMPL  
-
+  
   The direction specified by the <paramref name="direction" /> parameter is not supported.  
-
+  
   OLE_S_USEREG  
-
+  
   Requests that OLE enumerate the formats from the registry.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.ComTypes.IDataObject.GetCanonicalFormatEtc(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.FORMATETC@)">
       <summary>Provides a standard <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structure that is logically equivalent to a more complex structure. Use this method to determine whether two different <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structures would return the same data, removing the need for duplicate rendering.</summary>
       <param name="formatIn">A pointer to a <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structure, passed by reference, that defines the format, medium, and target device that the caller would like to use to retrieve data in a subsequent call such as <see cref="M:System.Runtime.InteropServices.ComTypes.IDataObject.GetData(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.STGMEDIUM@)" />. The <see cref="T:System.Runtime.InteropServices.ComTypes.TYMED" /> member is not significant in this case and should be ignored.</param>
       <param name="formatOut">When this method returns, contains a pointer to a <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structure that contains the most general information possible for a specific rendering, making it canonically equivalent to <c>formatetcIn</c>. The caller must allocate this structure and the <see cref="M:System.Runtime.InteropServices.ComTypes.IDataObject.GetCanonicalFormatEtc(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.FORMATETC@)" /> method must fill in the data. To retrieve data in a subsequent call such as <see cref="M:System.Runtime.InteropServices.ComTypes.IDataObject.GetData(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.STGMEDIUM@)" />, the caller uses the supplied value of <paramref name="formatOut" />, unless the value supplied is <see langword="null" />. This value is <see langword="null" /> if the method returns <see langword="DATA_S_SAMEFORMATETC" />. The <see cref="T:System.Runtime.InteropServices.ComTypes.TYMED" /> member is not significant in this case and should be ignored. This parameter is passed uninitialized.</param>
-      <returns>This method supports the standard return values E_INVALIDARG, E_UNEXPECTED, and E_OUTOFMEMORY, as well as the following:  
+      <returns>This method supports the standard return values E_INVALIDARG, E_UNEXPECTED, and E_OUTOFMEMORY, as well as the following:
   Value  
-
+  
   Description  
-
+  
   S_OK  
-
+  
   The returned <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structure is different from the one that was passed.  
-
+  
   DATA_S_SAMEFORMATETC  
-
+  
   The <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structures are the same and <see langword="null" /> is returned in the <paramref name="formatOut" /> parameter.  
-
+  
   DV_E_LINDEX  
-
+  
   There is an invalid value for <see cref="F:System.Runtime.InteropServices.ComTypes.FORMATETC.lindex" />; currently, only -1 is supported.  
-
+  
   DV_E_FORMATETC  
-
+  
   There is an invalid value for the <paramref name="pFormatetc" /> parameter.  
-
+  
   OLE_E_NOTRUNNING  
-
+  
   The application is not running.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.ComTypes.IDataObject.GetData(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.STGMEDIUM@)">
@@ -1705,33 +1707,33 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
     <member name="M:System.Runtime.InteropServices.ComTypes.IDataObject.QueryGetData(System.Runtime.InteropServices.ComTypes.FORMATETC@)">
       <summary>Determines whether the data object is capable of rendering the data described in the <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structure. Objects attempting a paste or drop operation can call this method before calling <see cref="M:System.Runtime.InteropServices.ComTypes.IDataObject.GetData(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.STGMEDIUM@)" /> to get an indication of whether the operation may be successful.</summary>
       <param name="format">A pointer to a <see cref="T:System.Runtime.InteropServices.ComTypes.FORMATETC" /> structure, passed by reference, that defines the format, medium, and target device to use for the query.</param>
-      <returns>This method supports the standard return values E_INVALIDARG, E_UNEXPECTED, and E_OUTOFMEMORY, as well as the following:  
+      <returns>This method supports the standard return values E_INVALIDARG, E_UNEXPECTED, and E_OUTOFMEMORY, as well as the following:
   Value  
-
+  
   Description  
-
+  
   S_OK  
-
+  
   A subsequent call to <see cref="M:System.Runtime.InteropServices.ComTypes.IDataObject.GetData(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.STGMEDIUM@)" /> would probably be successful.  
-
+  
   DV_E_LINDEX  
-
+  
   An invalid value for <see cref="F:System.Runtime.InteropServices.ComTypes.FORMATETC.lindex" />; currently, only -1 is supported.  
-
+  
   DV_E_FORMATETC  
-
+  
   An invalid value for the <paramref name="pFormatetc" /> parameter.  
-
+  
   DV_E_TYMED  
-
+  
   An invalid <see cref="F:System.Runtime.InteropServices.ComTypes.FORMATETC.tymed" /> value.  
-
+  
   DV_E_DVASPECT  
-
+  
   An invalid <see cref="F:System.Runtime.InteropServices.ComTypes.FORMATETC.dwAspect" /> value.  
-
+  
   OLE_E_NOTRUNNING  
-
+  
   The application is not running.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.ComTypes.IDataObject.SetData(System.Runtime.InteropServices.ComTypes.FORMATETC@,System.Runtime.InteropServices.ComTypes.STGMEDIUM@,System.Boolean)">
@@ -2541,8 +2543,8 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
       <param name="lHashVal">A hash value to speed up the search, computed by the <see langword="LHashValOfNameSys" /> function. If <paramref name="lHashVal" /> is 0, a value is computed.</param>
       <param name="ppTInfo">When this method returns, contains an array of pointers to the type descriptions that contain the name specified in <paramref name="szNameBuf" />. This parameter is passed uninitialized.</param>
       <param name="rgMemId">An array of the <see langword="MEMBERID" /> 's of the found items; <paramref name="rgMemId" /> [i] is the <see langword="MEMBERID" /> that indexes into the type description specified by <paramref name="ppTInfo" /> [i]. Cannot be <see langword="null" />.</param>
-      <param name="pcFound">On entry, indicates how many instances to look for. For example, <paramref name="pcFound" /> = 1 can be called to find the first occurrence. The search stops when one instance is found.  
- On exit, indicates the number of instances that were found. If the <see langword="in" /> and <see langword="out" /> values of <paramref name="pcFound" /> are identical, there might be more type descriptions that contain the name.</param>
+      <param name="pcFound">On entry, indicates how many instances to look for. For example, <paramref name="pcFound" /> = 1 can be called to find the first occurrence. The search stops when one instance is found.
+On exit, indicates the number of instances that were found. If the <see langword="in" /> and <see langword="out" /> values of <paramref name="pcFound" /> are identical, there might be more type descriptions that contain the name.</param>
     </member>
     <member name="M:System.Runtime.InteropServices.ComTypes.ITypeLib.GetDocumentation(System.Int32,System.String@,System.String@,System.Int32@,System.String@)">
       <summary>Retrieves the library's documentation string, the complete Help file name and path, and the context identifier for the library Help topic in the Help file.</summary>
@@ -2599,8 +2601,8 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
       <param name="lHashVal">A hash value to speed up the search, computed by the <see langword="LHashValOfNameSys" /> function. If <paramref name="lHashVal" /> is 0, a value is computed.</param>
       <param name="ppTInfo">When this method returns, contains an array of pointers to the type descriptions that contain the name specified in <paramref name="szNameBuf" />. This parameter is passed uninitialized.</param>
       <param name="rgMemId">When this method returns, contains an array of the <see langword="MEMBERID" />s of the found items; <paramref name="rgMemId" /> [i] is the <see langword="MEMBERID" /> that indexes into the type description specified by <paramref name="ppTInfo" /> [i]. This parameter cannot be <see langword="null" />. This parameter is passed uninitialized.</param>
-      <param name="pcFound">On entry, a value, passed by reference, that indicates how many instances to look for. For example, <paramref name="pcFound" /> = 1 can be called to find the first occurrence. The search stops when one instance is found.  
- On exit, indicates the number of instances that were found. If the <see langword="in" /> and <see langword="out" /> values of <paramref name="pcFound" /> are identical, there might be more type descriptions that contain the name.</param>
+      <param name="pcFound">On entry, a value, passed by reference, that indicates how many instances to look for. For example, <paramref name="pcFound" /> = 1 can be called to find the first occurrence. The search stops when one instance is found.
+On exit, indicates the number of instances that were found. If the <see langword="in" /> and <see langword="out" /> values of <paramref name="pcFound" /> are identical, there might be more type descriptions that contain the name.</param>
     </member>
     <member name="M:System.Runtime.InteropServices.ComTypes.ITypeLib2.GetAllCustData(System.IntPtr)">
       <summary>Gets all custom data items for the library.</summary>
@@ -3163,12 +3165,12 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
       <summary>Initializes a new instance of the <see cref="T:System.Runtime.InteropServices.DispatchWrapper" /> class with the object being wrapped.</summary>
       <param name="obj">The object to be wrapped and converted to <see cref="F:System.Runtime.InteropServices.VarEnum.VT_DISPATCH" />.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="obj" /> is not a class or an array.  
--or-  
+        <paramref name="obj" /> is not a class or an array.
+-or-
 <paramref name="obj" /> does not support <see langword="IDispatch" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The <paramref name="obj" /> parameter was marked with a <see cref="T:System.Runtime.InteropServices.ComVisibleAttribute" /> attribute that was passed a value of <see langword="false" />.  
- -or-  
- The <paramref name="obj" /> parameter inherits from a type marked with a <see cref="T:System.Runtime.InteropServices.ComVisibleAttribute" /> attribute that was passed a value of <see langword="false" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The <paramref name="obj" /> parameter was marked with a <see cref="T:System.Runtime.InteropServices.ComVisibleAttribute" /> attribute that was passed a value of <see langword="false" />.
+-or-
+The <paramref name="obj" /> parameter inherits from a type marked with a <see cref="T:System.Runtime.InteropServices.ComVisibleAttribute" /> attribute that was passed a value of <see langword="false" />.</exception>
     </member>
     <member name="P:System.Runtime.InteropServices.DispatchWrapper.WrappedObject">
       <summary>Gets the object wrapped by the <see cref="T:System.Runtime.InteropServices.DispatchWrapper" />.</summary>
@@ -3296,9 +3298,9 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
       <param name="name">A name for the collector.  This parameter allows you to name collectors that track handle types separately.</param>
       <param name="initialThreshold">A value that specifies the point at which collections should begin.</param>
       <param name="maximumThreshold">A value that specifies the point at which collections must occur. This should be set to the maximum number of available handles.</param>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="initialThreshold" /> parameter is less than 0.  
- -or-  
- The <paramref name="maximumThreshold" /> parameter is less than 0.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="initialThreshold" /> parameter is less than 0.
+-or-
+The <paramref name="maximumThreshold" /> parameter is less than 0.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="maximumThreshold" /> parameter is less than the <paramref name="initialThreshold" /> parameter.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.HandleCollector.Add">
@@ -3489,10 +3491,10 @@ This is the default setting for <see cref="T:System.Runtime.InteropServices.Clas
       <param name="classType">The class that contains the required stub method.</param>
       <param name="methodName">The name of the stub method.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="methodName" /> cannot be found.  
--or-  
-The method is not static or non-generic.  
--or-  
+        <paramref name="methodName" /> cannot be found.
+-or-
+The method is not static or non-generic.
+-or-
 The method's parameter list does not match the expected parameter list for the stub.</exception>
       <exception cref="T:System.MethodAccessException">The interface that contains the managed interop method has no access to the stub method, because the stub method has private or protected accessibility, or because of a security issue.</exception>
     </member>
@@ -3717,8 +3719,8 @@ The method's parameter list does not match the expected parameter list for the s
         <paramref name="o" /> is a Windows Runtime object.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.CreateAggregatedObject``1(System.IntPtr,``0)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Aggregates a managed object of the specified type with the specified COM object.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Aggregates a managed object of the specified type with the specified COM object.</summary>
       <param name="pOuter">The outer IUnknown pointer.</param>
       <param name="o">The managed object to aggregate.</param>
       <typeparam name="T">The type of the managed object to aggregate.</typeparam>
@@ -3732,23 +3734,23 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="t">The type of wrapper to create.</param>
       <returns>The newly wrapped object that is an instance of the desired type.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="t" /> must derive from <see langword="__ComObject" />.  
--or-  
+        <paramref name="t" /> must derive from <see langword="__ComObject" />.
+-or-
 <paramref name="t" /> is a Windows Runtime type.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="t" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidCastException">
         <paramref name="o" /> cannot be converted to the destination type because it does not support all required interfaces.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.CreateWrapperOfType``2(``0)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Wraps the specified COM object in an object of the specified type.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Wraps the specified COM object in an object of the specified type.</summary>
       <param name="o">The object to be wrapped.</param>
       <typeparam name="T">The type of object to wrap.</typeparam>
       <typeparam name="TWrapper">The type of object to return.</typeparam>
       <returns>The newly wrapped object.</returns>
       <exception cref="T:System.ArgumentException">
-        <typeparamref name="T" /> must derive from <see langword="__ComObject" />.  
--or-  
+        <typeparamref name="T" /> must derive from <see langword="__ComObject" />.
+-or-
 <typeparamref name="T" /> is a Windows Runtime type.</exception>
       <exception cref="T:System.InvalidCastException">
         <paramref name="o" /> cannot be converted to the <paramref name="TWrapper" /> because it does not support all required interfaces.</exception>
@@ -3761,8 +3763,8 @@ The method's parameter list does not match the expected parameter list for the s
         <paramref name="structureType" /> has an automatic layout. Use sequential or explicit instead.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.DestroyStructure``1(System.IntPtr)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Frees all substructures of a specified type that the specified unmanaged memory block points to.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Frees all substructures of a specified type that the specified unmanaged memory block points to.</summary>
       <param name="ptr">A pointer to an unmanaged block of memory.</param>
       <typeparam name="T">The type of the formatted structure. This provides the layout information necessary to delete the buffer in the <paramref name="ptr" /> parameter.</typeparam>
       <exception cref="T:System.ArgumentException">
@@ -3806,15 +3808,15 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="o">The object that provides the interface.</param>
       <param name="T">The type of interface that is requested.</param>
       <returns>The interface pointer that represents the specified interface for the object.</returns>
-      <exception cref="T:System.ArgumentException">The <typeparamref name="T" /> parameter is not an interface.  
- -or-  
- The type is not visible to COM.  
- -or-  
- The <typeparamref name="T" /> parameter is a generic type definition.</exception>
+      <exception cref="T:System.ArgumentException">The <typeparamref name="T" /> parameter is not an interface.
+-or-
+The type is not visible to COM.
+-or-
+The <typeparamref name="T" /> parameter is a generic type definition.</exception>
       <exception cref="T:System.InvalidCastException">The <paramref name="o" /> parameter does not support the requested interface.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="o" /> parameter is <see langword="null" />.  
- -or-  
- The <typeparamref name="T" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="o" /> parameter is <see langword="null" />.
+-or-
+The <typeparamref name="T" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetComInterfaceForObject(System.Object,System.Type,System.Runtime.InteropServices.CustomQueryInterfaceMode)">
       <summary>Returns a pointer to an IUnknown interface that represents the specified interface on the specified object. Custom query interface access is controlled by the specified customization mode.</summary>
@@ -3822,28 +3824,28 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="T">The type of interface that is requested.</param>
       <param name="mode">One of the enumeration values that indicates whether to apply an <see langword="IUnknown::QueryInterface" /> customization that is supplied by an <see cref="T:System.Runtime.InteropServices.ICustomQueryInterface" />.</param>
       <returns>The interface pointer that represents the interface for the object.</returns>
-      <exception cref="T:System.ArgumentException">The <typeparamref name="T" /> parameter is not an interface.  
- -or-  
- The type is not visible to COM.  
- -or-  
- The <typeparamref name="T" /> parameter is a generic type definition.</exception>
+      <exception cref="T:System.ArgumentException">The <typeparamref name="T" /> parameter is not an interface.
+-or-
+The type is not visible to COM.
+-or-
+The <typeparamref name="T" /> parameter is a generic type definition.</exception>
       <exception cref="T:System.InvalidCastException">The object <paramref name="o" /> does not support the requested interface.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="o" /> parameter is <see langword="null" />.  
- -or-  
- The <typeparamref name="T" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="o" /> parameter is <see langword="null" />.
+-or-
+The <typeparamref name="T" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetComInterfaceForObject``2(``0)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Returns a pointer to an IUnknown interface that represents the specified interface on an object of the specified type. Custom query interface access is enabled by default.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Returns a pointer to an IUnknown interface that represents the specified interface on an object of the specified type. Custom query interface access is enabled by default.</summary>
       <param name="o">The object that provides the interface.</param>
       <typeparam name="T">The type of <paramref name="o" />.</typeparam>
       <typeparam name="TInterface">The type of interface to return.</typeparam>
       <returns>The interface pointer that represents the <paramref name="TInterface" /> interface.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="TInterface" /> parameter is not an interface.  
- -or-  
- The type is not visible to COM.  
- -or-  
- The <typeparamref name="T" /> parameter is an open generic type.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="TInterface" /> parameter is not an interface.
+-or-
+The type is not visible to COM.
+-or-
+The <typeparamref name="T" /> parameter is an open generic type.</exception>
       <exception cref="T:System.InvalidCastException">The <paramref name="o" /> parameter does not support the <paramref name="TInterface" /> interface.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="o" /> parameter is <see langword="null" />.</exception>
     </member>
@@ -3853,12 +3855,12 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="key">The key in the internal hash table of <paramref name="obj" /> to retrieve the data from.</param>
       <returns>The data represented by the <paramref name="key" /> parameter in the internal hash table of the <paramref name="obj" /> parameter.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="obj" /> is <see langword="null" />.  
--or-  
+        <paramref name="obj" /> is <see langword="null" />.
+-or-
 <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="obj" /> is not a COM object.  
--or-  
+        <paramref name="obj" /> is not a COM object.
+-or-
 <paramref name="obj" /> is a Windows Runtime object.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer(System.IntPtr,System.Type)">
@@ -3867,13 +3869,13 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="t">The type of the delegate to be returned.</param>
       <returns>A delegate instance that can be cast to the appropriate delegate type.</returns>
       <exception cref="T:System.ArgumentException">The <paramref name="t" /> parameter is not a delegate or is generic.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="ptr" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="t" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="ptr" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="t" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer``1(System.IntPtr)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Converts an unmanaged function pointer to a delegate of a specified type.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Converts an unmanaged function pointer to a delegate of a specified type.</summary>
       <param name="ptr">The unmanaged function pointer to convert.</param>
       <typeparam name="TDelegate">The type of the delegate to return.</typeparam>
       <returns>A instance of the specified delegate type.</returns>
@@ -3912,8 +3914,8 @@ The method's parameter list does not match the expected parameter list for the s
       <exception cref="T:System.ArgumentNullException">The <paramref name="d" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate``1(``0)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Converts a delegate of a specified type to a function pointer that is callable from unmanaged code.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Converts a delegate of a specified type to a function pointer that is callable from unmanaged code.</summary>
       <param name="d">The delegate to be passed to unmanaged code.</param>
       <typeparam name="TDelegate">The type of delegate to convert.</typeparam>
       <returns>A value that can be passed to unmanaged code, which, in turn, can use it to call the underlying managed delegate.</returns>
@@ -3958,8 +3960,8 @@ The method's parameter list does not match the expected parameter list for the s
       <exception cref="T:System.ArgumentException">The <paramref name="obj" /> parameter is an instance of a generic type.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetNativeVariantForObject``1(``0,System.IntPtr)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Converts an object of a specified type to a COM VARIANT.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Converts an object of a specified type to a COM VARIANT.</summary>
       <param name="obj">The object for which to get a COM VARIANT.</param>
       <param name="pDstNativeVariant">A pointer to receive the VARIANT that corresponds to the <paramref name="obj" /> parameter.</param>
       <typeparam name="T">The type of the object to convert.</typeparam>
@@ -3981,8 +3983,8 @@ The method's parameter list does not match the expected parameter list for the s
         <paramref name="pSrcNativeVariant" /> has an unsupported type.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetObjectForNativeVariant``1(System.IntPtr)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Converts a COM VARIANT to an object of a specified type.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Converts a COM VARIANT to an object of a specified type.</summary>
       <param name="pSrcNativeVariant">A pointer to a COM VARIANT.</param>
       <typeparam name="T">The type to which to convert the COM VARIANT.</typeparam>
       <returns>An object of the specified type that corresponds to the <paramref name="pSrcNativeVariant" /> parameter.</returns>
@@ -4000,8 +4002,8 @@ The method's parameter list does not match the expected parameter list for the s
         <paramref name="cVars" /> is a negative number.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetObjectsForNativeVariants``1(System.IntPtr,System.Int32)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Converts an array of COM VARIANTs to an array of a specified type.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Converts an array of COM VARIANTs to an array of a specified type.</summary>
       <param name="aSrcNativeVariant">A pointer to the first element of an array of COM VARIANTs.</param>
       <param name="cVars">The count of COM VARIANTs in <paramref name="aSrcNativeVariant" />.</param>
       <typeparam name="T">The type of the array to return.</typeparam>
@@ -4022,8 +4024,8 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="t">The type of the requested managed class.</param>
       <returns>An instance of the class corresponding to the <see cref="T:System.Type" /> object that represents the requested unmanaged COM object.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="t" /> is not attributed with <see cref="T:System.Runtime.InteropServices.ComImportAttribute" />.  
--or-  
+        <paramref name="t" /> is not attributed with <see cref="T:System.Runtime.InteropServices.ComImportAttribute" />.
+-or-
 <paramref name="t" /> is a Windows Runtime type.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetTypeFromCLSID(System.Guid)">
@@ -4066,8 +4068,8 @@ The method's parameter list does not match the expected parameter list for the s
       <exception cref="T:System.ArgumentNullException">The <paramref name="t" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.OffsetOf``1(System.String)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Returns the field offset of the unmanaged form of a specified managed class.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Returns the field offset of the unmanaged form of a specified managed class.</summary>
       <param name="fieldName">The name of the field in the <paramref name="T" /> type.</param>
       <typeparam name="T">A managed value type or formatted reference type. You must apply the <see cref="T:System.Runtime.InteropServices.StructLayoutAttribute" /> attribute to the class.</typeparam>
       <returns>The offset, in bytes, for the <paramref name="fieldName" /> parameter within the specified class that is declared by platform invoke.</returns>
@@ -4098,16 +4100,16 @@ The method's parameter list does not match the expected parameter list for the s
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.PtrToStringAuto(System.IntPtr)">
       <summary>Allocates a managed <see cref="T:System.String" /> and copies all characters up to the first null character from a string stored in unmanaged memory into it.</summary>
-      <param name="ptr">For Unicode platforms, the address of the first Unicode character.  
- -or-  
- For ANSI platforms, the address of the first ANSI character.</param>
+      <param name="ptr">For Unicode platforms, the address of the first Unicode character.
+-or-
+For ANSI platforms, the address of the first ANSI character.</param>
       <returns>A managed string that holds a copy of the unmanaged string if the value of the <paramref name="ptr" /> parameter is not <see langword="null" />; otherwise, this method returns <see langword="null" />.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.PtrToStringAuto(System.IntPtr,System.Int32)">
       <summary>Allocates a managed <see cref="T:System.String" /> and copies the specified number of characters from a string stored in unmanaged memory into it.</summary>
-      <param name="ptr">For Unicode platforms, the address of the first Unicode character.  
- -or-  
- For ANSI platforms, the address of the first ANSI character.</param>
+      <param name="ptr">For Unicode platforms, the address of the first Unicode character.
+-or-
+For ANSI platforms, the address of the first ANSI character.</param>
       <param name="len">The number of characters to copy.</param>
       <returns>A managed string that holds a copy of the native string if the value of the <paramref name="ptr" /> parameter is not <see langword="null" />; otherwise, this method returns <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentException">
@@ -4142,25 +4144,25 @@ The method's parameter list does not match the expected parameter list for the s
       <summary>Marshals data from an unmanaged block of memory to a managed object.</summary>
       <param name="ptr">A pointer to an unmanaged block of memory.</param>
       <param name="structure">The object to which the data is to be copied. This must be an instance of a formatted class.</param>
-      <exception cref="T:System.ArgumentException">Structure layout is not sequential or explicit.  
- -or-  
- Structure is a boxed value type.</exception>
+      <exception cref="T:System.ArgumentException">Structure layout is not sequential or explicit.
+-or-
+Structure is a boxed value type.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.PtrToStructure(System.IntPtr,System.Type)">
       <summary>Marshals data from an unmanaged block of memory to a newly allocated managed object of the specified type.</summary>
       <param name="ptr">A pointer to an unmanaged block of memory.</param>
       <param name="structureType">The type of object to be created. This object must represent a formatted class or a structure.</param>
       <returns>A managed object containing the data pointed to by the <paramref name="ptr" /> parameter.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="structureType" /> parameter layout is not sequential or explicit.  
- -or-  
- The <paramref name="structureType" /> parameter is a generic type definition.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="structureType" /> parameter layout is not sequential or explicit.
+-or-
+The <paramref name="structureType" /> parameter is a generic type definition.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="structureType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.MissingMethodException">The class specified by <paramref name="structureType" /> does not have an accessible parameterless constructor.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.PtrToStructure``1(System.IntPtr)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Marshals data from an unmanaged block of memory to a newly allocated managed object of the type specified by a generic type parameter.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Marshals data from an unmanaged block of memory to a newly allocated managed object of the type specified by a generic type parameter.</summary>
       <param name="ptr">A pointer to an unmanaged block of memory.</param>
       <typeparam name="T">The type of the object to which the data is to be copied. This must be a formatted class or a structure.</typeparam>
       <returns>A managed object that contains the data that the <paramref name="ptr" /> parameter points to.</returns>
@@ -4168,8 +4170,8 @@ The method's parameter list does not match the expected parameter list for the s
       <exception cref="T:System.MissingMethodException">The class specified by <typeparamref name="T" /> does not have an accessible parameterless constructor.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.PtrToStructure``1(System.IntPtr,``0)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Marshals data from an unmanaged block of memory to a managed object of the specified type.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Marshals data from an unmanaged block of memory to a managed object of the specified type.</summary>
       <param name="ptr">A pointer to an unmanaged block of memory.</param>
       <param name="structure">The object to which the data is to be copied.</param>
       <typeparam name="T">The type of <paramref name="structure" />. This must be a formatted class.</typeparam>
@@ -4187,10 +4189,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory from which to read.</param>
       <returns>The byte read from unmanaged memory.</returns>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.ReadByte(System.IntPtr,System.Int32)">
@@ -4214,10 +4216,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory from which to read.</param>
       <returns>The 16-bit signed integer read from unmanaged memory.</returns>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.ReadInt16(System.IntPtr,System.Int32)">
@@ -4241,10 +4243,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory from which to read.</param>
       <returns>The 32-bit signed integer read from unmanaged memory.</returns>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.ReadInt32(System.IntPtr,System.Int32)">
@@ -4268,10 +4270,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory from which to read.</param>
       <returns>The 64-bit signed integer read from unmanaged memory.</returns>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.ReadInt64(System.IntPtr,System.Int32)">
@@ -4295,10 +4297,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory from which to read.</param>
       <returns>The integer read from unmanaged memory. A 32 bit integer is returned on 32 bit machines and a 64 bit integer is returned on 64 bit machines.</returns>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.ReadIntPtr(System.IntPtr,System.Int32)">
@@ -4393,12 +4395,12 @@ The method's parameter list does not match the expected parameter list for the s
       <returns>
         <see langword="true" /> if the data was set successfully; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="obj" /> is <see langword="null" />.  
--or-  
+        <paramref name="obj" /> is <see langword="null" />.
+-or-
 <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="obj" /> is not a COM object.  
--or-  
+        <paramref name="obj" /> is not a COM object.
+-or-
 <paramref name="obj" /> is a Windows Runtime object.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.SizeOf(System.Object)">
@@ -4415,14 +4417,14 @@ The method's parameter list does not match the expected parameter list for the s
       <exception cref="T:System.ArgumentNullException">The <paramref name="t" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.SizeOf``1">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Returns the size of an unmanaged type in bytes.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Returns the size of an unmanaged type in bytes.</summary>
       <typeparam name="T">The type whose size is to be returned.</typeparam>
       <returns>The size, in bytes, of the type that is specified by the <typeparamref name="T" /> generic type parameter.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.SizeOf``1(``0)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Returns the unmanaged size of an object of a specified type in bytes.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Returns the unmanaged size of an object of a specified type in bytes.</summary>
       <param name="structure">The object whose size is to be returned.</param>
       <typeparam name="T">The type of the <paramref name="structure" /> parameter.</typeparam>
       <returns>The size, in bytes, of the specified object in unmanaged code.</returns>
@@ -4486,13 +4488,13 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="fDeleteOld">
         <see langword="true" /> to call the <see cref="M:System.Runtime.InteropServices.Marshal.DestroyStructure(System.IntPtr,System.Type)" /> method on the <paramref name="ptr" /> parameter before this method copies the data. The block must contain valid data. Note that passing <see langword="false" /> when the memory block already contains data can lead to a memory leak.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="structure" /> is a reference type that is not a formatted class.  
--or-  
+        <paramref name="structure" /> is a reference type that is not a formatted class.
+-or-
 <paramref name="structure" /> is an instance of a generic type (in the .NET Framework 4.5 and earlier versions only).</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.StructureToPtr``1(``0,System.IntPtr,System.Boolean)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Marshals data from a managed object of a specified type to an unmanaged block of memory.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Marshals data from a managed object of a specified type to an unmanaged block of memory.</summary>
       <param name="structure">A managed object that holds the data to be marshaled. The object must be a structure or an instance of a formatted class.</param>
       <param name="ptr">A pointer to an unmanaged block of memory, which must be allocated before this method is called.</param>
       <param name="fDeleteOld">
@@ -4523,8 +4525,8 @@ The method's parameter list does not match the expected parameter list for the s
       <returns>The address of <paramref name="index" /> inside <paramref name="arr" />.</returns>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement``1(``0[],System.Int32)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Gets the address of the element at the specified index in an array of a specified type.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Gets the address of the element at the specified index in an array of a specified type.</summary>
       <param name="arr">The array that contains the desired element.</param>
       <param name="index">The index of the desired element in the <paramref name="arr" /> array.</param>
       <typeparam name="T">The type of the array.</typeparam>
@@ -4535,10 +4537,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory to write to.</param>
       <param name="val">The value to write.</param>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.WriteByte(System.IntPtr,System.Int32,System.Byte)">
@@ -4562,10 +4564,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory to write to.</param>
       <param name="val">The value to write.</param>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.WriteInt16(System.IntPtr,System.Int16)">
@@ -4573,10 +4575,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory to write to.</param>
       <param name="val">The value to write.</param>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.WriteInt16(System.IntPtr,System.Int32,System.Char)">
@@ -4616,10 +4618,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory to write to.</param>
       <param name="val">The value to write.</param>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.WriteInt32(System.IntPtr,System.Int32,System.Int32)">
@@ -4650,10 +4652,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory to write to.</param>
       <param name="val">The value to write.</param>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.WriteInt64(System.Object,System.Int32,System.Int64)">
@@ -4677,10 +4679,10 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="ptr">The address in unmanaged memory to write to.</param>
       <param name="val">The value to write.</param>
       <exception cref="T:System.AccessViolationException">
-        <paramref name="ptr" /> is not a recognized format.  
--or-  
-<paramref name="ptr" /> is <see langword="null" />.  
--or-  
+        <paramref name="ptr" /> is not a recognized format.
+-or-
+<paramref name="ptr" /> is <see langword="null" />.
+-or-
 <paramref name="ptr" /> is invalid.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.WriteIntPtr(System.Object,System.Int32,System.IntPtr)">
@@ -4783,12 +4785,12 @@ The method's parameter list does not match the expected parameter list for the s
       <summary>Provides APIs for managing native libraries.</summary>
     </member>
     <member name="M:System.Runtime.InteropServices.NativeLibrary.Free(System.IntPtr)">
-      <summary>Frees a given a loaded library handle, or takes no action if the input handle is <see cref="F:System.IntPtr.Zero" />.</summary>
-      <param name="handle">The native library handle to be freed.</param>
+      <summary>Frees a loaded library with the specified OS handle, or takes no action if the input handle is <see cref="F:System.IntPtr.Zero" />.</summary>
+      <param name="handle">The native library OS handle to be freed.</param>
     </member>
     <member name="M:System.Runtime.InteropServices.NativeLibrary.GetExport(System.IntPtr,System.String)">
       <summary>Gets the address of an exported symbol.</summary>
-      <param name="handle">The native library handle.</param>
+      <param name="handle">The native library OS handle.</param>
       <param name="name">The name of the exported symbol.</param>
       <returns>The address of the symbol.</returns>
       <exception cref="T:System.ArgumentNullException">
@@ -4798,7 +4800,7 @@ The method's parameter list does not match the expected parameter list for the s
     <member name="M:System.Runtime.InteropServices.NativeLibrary.Load(System.String)">
       <summary>Provides a simple API for loading a native library that wraps the OS loader and uses default flags.</summary>
       <param name="libraryPath">The name of the native library to be loaded.</param>
-      <returns>The handle for the loaded native library.</returns>
+      <returns>The OS handle for the loaded native library.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="libraryPath" /> is <see langword="null" />.</exception>
       <exception cref="T:System.DllNotFoundException">The library can't be found.</exception>
@@ -4809,7 +4811,7 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="libraryName">The name of the native library to be loaded.</param>
       <param name="assembly">The assembly loading the native library.</param>
       <param name="searchPath">The search path.</param>
-      <returns>The handle for the loaded library.</returns>
+      <returns>The OS handle for the loaded library.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="libraryName" /> or <paramref name="assembly" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
@@ -4827,7 +4829,7 @@ The method's parameter list does not match the expected parameter list for the s
     </member>
     <member name="M:System.Runtime.InteropServices.NativeLibrary.TryGetExport(System.IntPtr,System.String,System.IntPtr@)">
       <summary>Gets the address of an exported symbol and returns a value that indicates whether the method call succeeded.</summary>
-      <param name="handle">The  native library handle.</param>
+      <param name="handle">The native library OS handle.</param>
       <param name="name">The name of the exported symbol.</param>
       <param name="address">When the method returns, contains the symbol address, if it exists.</param>
       <returns>
@@ -4838,7 +4840,7 @@ The method's parameter list does not match the expected parameter list for the s
     <member name="M:System.Runtime.InteropServices.NativeLibrary.TryLoad(System.String,System.IntPtr@)">
       <summary>Provides a simple API for loading a native library and returns a value that indicates whether the operation succeeded.</summary>
       <param name="libraryPath">The name of the native library to be loaded.</param>
-      <param name="handle">When the method returns, the handle of the loaded native library.</param>
+      <param name="handle">When the method returns, the OS handle of the loaded native library.</param>
       <returns>
         <see langword="true" /> if the native library was loaded successful; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
@@ -4849,7 +4851,7 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="libraryName">The name of the native library to be loaded.</param>
       <param name="assembly">The assembly loading the native library.</param>
       <param name="searchPath">The search path.</param>
-      <param name="handle">When the method returns, the handle of the loaded native library.</param>
+      <param name="handle">When the method returns, the OS handle of the loaded native library.</param>
       <returns>
         <see langword="true" /> if the load operation was successful; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
@@ -4998,18 +5000,18 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="numElements">The number of elements in the buffer.</param>
       <param name="sizeOfEachElement">The size of each element in the buffer.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="numElements" /> is less than zero.  
--or-  
-<paramref name="sizeOfEachElement" /> is less than zero.  
--or-  
+        <paramref name="numElements" /> is less than zero.
+-or-
+<paramref name="sizeOfEachElement" /> is less than zero.
+-or-
 <paramref name="numElements" /> multiplied by <paramref name="sizeOfEachElement" /> is greater than the available address space.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.SafeBuffer.Initialize(System.UInt64)">
       <summary>Defines the allocation size of the memory region in bytes. You must call this method before you use the <see cref="T:System.Runtime.InteropServices.SafeBuffer" /> instance.</summary>
       <param name="numBytes">The number of bytes in the buffer.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="numBytes" /> is less than zero.  
--or-  
+        <paramref name="numBytes" /> is less than zero.
+-or-
 <paramref name="numBytes" /> is greater than the available address space.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.SafeBuffer.Initialize``1(System.UInt32)">
@@ -5017,8 +5019,8 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="numElements">The number of elements of the value type to allocate memory for.</param>
       <typeparam name="T">The value type to allocate memory for.</typeparam>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="numElements" /> is less than zero.  
--or-  
+        <paramref name="numElements" /> is less than zero.
+-or-
 <paramref name="numElements" /> multiplied by the size of each element is greater than the available address space.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.SafeBuffer.Read``1(System.UInt64)">
@@ -5036,8 +5038,8 @@ The method's parameter list does not match the expected parameter list for the s
       <param name="count">The number of value types to read from the input array and to write to the output array.</param>
       <typeparam name="T">The value type to read.</typeparam>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="count" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
@@ -5627,8 +5629,8 @@ The method's parameter list does not match the expected parameter list for the s
       <exception cref="T:System.NotSupportedException">This operation is not supported on this platform.</exception>
     </member>
     <member name="M:System.Security.SecureString.#ctor(System.Char*,System.Int32)">
-      <summary>Initializes a new instance of the <see cref="T:System.Security.SecureString" /> class from a subarray of <see cref="T:System.Char" /> objects.  
- This constructor is not CLS-compliant. The CLS-compliant alternative is <see cref="M:System.Security.SecureString.#ctor" />.</summary>
+      <summary>Initializes a new instance of the <see cref="T:System.Security.SecureString" /> class from a subarray of <see cref="T:System.Char" /> objects.
+This constructor is not CLS-compliant. The CLS-compliant alternative is <see cref="M:System.Security.SecureString.#ctor" />.</summary>
       <param name="value">A pointer to an array of <see cref="T:System.Char" /> objects.</param>
       <param name="length">The number of elements of <paramref name="value" /> to include in the new instance.</param>
       <exception cref="T:System.ArgumentNullException">
@@ -5667,8 +5669,8 @@ The method's parameter list does not match the expected parameter list for the s
       <exception cref="T:System.ObjectDisposedException">This secure string has already been disposed.</exception>
       <exception cref="T:System.InvalidOperationException">This secure string is read-only.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero, or greater than the length of this secure string.  
--or-  
+        <paramref name="index" /> is less than zero, or greater than the length of this secure string.
+-or-
 Performing this operation would make the length of this secure string greater than 65,536 characters.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">An error occurred while protecting or unprotecting the value of this secure string.</exception>
     </member>

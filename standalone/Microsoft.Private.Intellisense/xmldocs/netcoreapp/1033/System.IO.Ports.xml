@@ -168,26 +168,25 @@
       <summary>Gets the underlying <see cref="T:System.IO.Stream" /> object for a <see cref="T:System.IO.Ports.SerialPort" /> object.</summary>
       <returns>A <see cref="T:System.IO.Stream" /> object.</returns>
       <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="M:System.IO.Ports.SerialPort.Open" /> method has not been called or the <see cref="M:System.IO.Ports.SerialPort.Close" /> method has been called.</exception>
-      <exception cref="T:System.NotSupportedException">The stream is in a .NET Compact Framework application and one of the following methods was called:  
- <see cref="M:System.IO.Stream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /><see cref="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /><see cref="M:System.IO.Stream.EndRead(System.IAsyncResult)" /><see cref="M:System.IO.Stream.EndWrite(System.IAsyncResult)" />  
-
- The .NET Compact Framework does not support the asynchronous model with base streams.</exception>
+      <exception cref="T:System.NotSupportedException">The stream is in a .NET Compact Framework application and one of the following methods was called:
+<see cref="M:System.IO.Stream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /><see cref="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /><see cref="M:System.IO.Stream.EndRead(System.IAsyncResult)" /><see cref="M:System.IO.Stream.EndWrite(System.IAsyncResult)" />
+The .NET Compact Framework does not support the asynchronous model with base streams.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.BaudRate">
       <summary>Gets or sets the serial baud rate.</summary>
       <returns>The baud rate.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">The baud rate specified is less than or equal to zero, or is greater than the maximum allowable baud rate for the device.</exception>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.BreakState">
       <summary>Gets or sets the break signal state.</summary>
       <returns>
         <see langword="true" /> if the port is in a break state; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="M:System.IO.Ports.SerialPort.Open" /> method has not been called or the <see cref="M:System.IO.Ports.SerialPort.Close" /> method has been called.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.BytesToRead">
@@ -205,32 +204,32 @@
       <summary>Gets the state of the Carrier Detect line for the port.</summary>
       <returns>
         <see langword="true" /> if the carrier is detected; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="M:System.IO.Ports.SerialPort.Open" /> method has not been called or the <see cref="M:System.IO.Ports.SerialPort.Close" /> method has been called.</exception>
     </member>
     <member name="M:System.IO.Ports.SerialPort.Close">
       <summary>Closes the port connection, sets the <see cref="P:System.IO.Ports.SerialPort.IsOpen" /> property to <see langword="false" />, and disposes of the internal <see cref="T:System.IO.Stream" /> object.</summary>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.CtsHolding">
       <summary>Gets the state of the Clear-to-Send line.</summary>
       <returns>
         <see langword="true" /> if the Clear-to-Send line is detected; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="M:System.IO.Ports.SerialPort.Open" /> method has not been called or the <see cref="M:System.IO.Ports.SerialPort.Close" /> method has been called.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.DataBits">
       <summary>Gets or sets the standard length of data bits per byte.</summary>
       <returns>The data bits length.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The data bits value is less than 5 or more than 8.</exception>
     </member>
     <member name="E:System.IO.Ports.SerialPort.DataReceived">
@@ -238,51 +237,51 @@
     </member>
     <member name="M:System.IO.Ports.SerialPort.DiscardInBuffer">
       <summary>Discards data from the serial driver's receive buffer.</summary>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="M:System.IO.Ports.SerialPort.Open" /> method has not been called or the <see cref="M:System.IO.Ports.SerialPort.Close" /> method has been called.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.DiscardNull">
       <summary>Gets or sets a value indicating whether null bytes are ignored when transmitted between the port and the receive buffer.</summary>
       <returns>
         <see langword="true" /> if null bytes are ignored; otherwise <see langword="false" />. The default is <see langword="false" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="M:System.IO.Ports.SerialPort.Open" /> method has not been called or the <see cref="M:System.IO.Ports.SerialPort.Close" /> method has been called.</exception>
     </member>
     <member name="M:System.IO.Ports.SerialPort.DiscardOutBuffer">
       <summary>Discards data from the serial driver's transmit buffer.</summary>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="M:System.IO.Ports.SerialPort.Open" /> method has not been called or the <see cref="M:System.IO.Ports.SerialPort.Close" /> method has been called.</exception>
     </member>
     <member name="M:System.IO.Ports.SerialPort.Dispose(System.Boolean)">
       <summary>Releases the unmanaged resources used by the <see cref="T:System.IO.Ports.SerialPort" /> and optionally releases the managed resources.</summary>
       <param name="disposing">
         <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.DsrHolding">
       <summary>Gets the state of the Data Set Ready (DSR) signal.</summary>
       <returns>
         <see langword="true" /> if a Data Set Ready signal has been sent to the port; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The stream is closed. This can occur because the <see cref="M:System.IO.Ports.SerialPort.Open" /> method has not been called or the <see cref="M:System.IO.Ports.SerialPort.Close" /> method has been called.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.DtrEnable">
       <summary>Gets or sets a value that enables the Data Terminal Ready (DTR) signal during serial communication.</summary>
       <returns>
         <see langword="true" /> to enable Data Terminal Ready (DTR); otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.Encoding">
       <summary>Gets or sets the byte encoding for pre- and post-transmission conversion of text.</summary>
@@ -301,9 +300,9 @@
     <member name="P:System.IO.Ports.SerialPort.Handshake">
       <summary>Gets or sets the handshaking protocol for serial port transmission of data using a value from <see cref="T:System.IO.Ports.Handshake" />.</summary>
       <returns>One of the <see cref="T:System.IO.Ports.Handshake" /> values. The default is <see langword="None" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The value passed is not a valid value in the <see cref="T:System.IO.Ports.Handshake" /> enumeration.</exception>
     </member>
     <member name="F:System.IO.Ports.SerialPort.InfiniteTimeout">
@@ -324,32 +323,32 @@
     </member>
     <member name="M:System.IO.Ports.SerialPort.Open">
       <summary>Opens a new serial port connection.</summary>
-      <exception cref="T:System.UnauthorizedAccessException">Access is denied to the port.  
+      <exception cref="T:System.UnauthorizedAccessException">Access is denied to the port.
 -or-
- The current process, or another process on the system, already has the specified COM port open either by a <see cref="T:System.IO.Ports.SerialPort" /> instance or in unmanaged code.</exception>
+The current process, or another process on the system, already has the specified COM port open either by a <see cref="T:System.IO.Ports.SerialPort" /> instance or in unmanaged code.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">One or more of the properties for this instance are invalid. For example, the <see cref="P:System.IO.Ports.SerialPort.Parity" />, <see cref="P:System.IO.Ports.SerialPort.DataBits" />, or <see cref="P:System.IO.Ports.SerialPort.Handshake" /> properties are not valid values; the <see cref="P:System.IO.Ports.SerialPort.BaudRate" /> is less than or equal to zero; the <see cref="P:System.IO.Ports.SerialPort.ReadTimeout" /> or <see cref="P:System.IO.Ports.SerialPort.WriteTimeout" /> property is less than zero and is not <see cref="F:System.IO.Ports.SerialPort.InfiniteTimeout" />.</exception>
-      <exception cref="T:System.ArgumentException">The port name does not begin with "COM".  
+      <exception cref="T:System.ArgumentException">The port name does not begin with "COM".
 -or-
- The file type of the port is not supported.</exception>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+The file type of the port is not supported.</exception>
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.InvalidOperationException">The specified port on the current instance of the <see cref="T:System.IO.Ports.SerialPort" /> is already open.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.Parity">
       <summary>Gets or sets the parity-checking protocol.</summary>
       <returns>One of the enumeration values that represents the parity-checking protocol. The default is <see cref="F:System.IO.Ports.Parity.None" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.IO.Ports.SerialPort.Parity" /> value passed is not a valid value in the <see cref="T:System.IO.Ports.Parity" /> enumeration.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.ParityReplace">
       <summary>Gets or sets the byte that replaces invalid bytes in a data stream when a parity error occurs.</summary>
       <returns>A byte that replaces invalid bytes.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
     </member>
     <member name="E:System.IO.Ports.SerialPort.PinChanged">
       <summary>Indicates that a non-data signal event has occurred on the port represented by the <see cref="T:System.IO.Ports.SerialPort" /> object.</summary>
@@ -357,11 +356,11 @@
     <member name="P:System.IO.Ports.SerialPort.PortName">
       <summary>Gets or sets the port for communications, including but not limited to all available COM ports.</summary>
       <returns>The communications port. The default is COM1.</returns>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.IO.Ports.SerialPort.PortName" /> property was set to a value with a length of zero.  
- -or-  
- The <see cref="P:System.IO.Ports.SerialPort.PortName" /> property was set to a value that starts with "\\".  
- -or-  
- The port name was not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.IO.Ports.SerialPort.PortName" /> property was set to a value with a length of zero.
+-or-
+The <see cref="P:System.IO.Ports.SerialPort.PortName" /> property was set to a value that starts with "\\".
+-or-
+The port name was not valid.</exception>
       <exception cref="T:System.ArgumentNullException">The <see cref="P:System.IO.Ports.SerialPort.PortName" /> property was set to <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The specified port is open.</exception>
     </member>
@@ -385,9 +384,9 @@
       <param name="count">The maximum number of characters to read. Fewer characters are read if <paramref name="count" /> is greater than the number of characters in the input buffer.</param>
       <returns>The number of characters read.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="offset" /> plus <paramref name="count" /> is greater than the length of the buffer.  
+        <paramref name="offset" /> plus <paramref name="count" /> is greater than the length of the buffer.
 -or-
- <paramref name="count" /> is 1 and there is a surrogate character in the buffer.</exception>
+<paramref name="count" /> is 1 and there is a surrogate character in the buffer.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> passed is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> or <paramref name="count" /> parameters are outside a valid region of the <paramref name="buffer" /> being passed. Either <paramref name="offset" /> or <paramref name="count" /> is less than zero.</exception>
       <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
@@ -404,17 +403,17 @@
       <summary>Synchronously reads one byte from the <see cref="T:System.IO.Ports.SerialPort" /> input buffer.</summary>
       <returns>The byte, cast to an <see cref="T:System.Int32" />, or -1 if the end of the stream has been read.</returns>
       <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
-      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.  
+      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.
 -or-
- No byte was read.</exception>
+No byte was read.</exception>
     </member>
     <member name="M:System.IO.Ports.SerialPort.ReadChar">
       <summary>Synchronously reads one character from the <see cref="T:System.IO.Ports.SerialPort" /> input buffer.</summary>
       <returns>The character that was read.</returns>
       <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
-      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.  
+      <exception cref="T:System.ServiceProcess.TimeoutException">The operation did not complete before the time-out period ended.
 -or-
- No character was available in the allotted time-out period.</exception>
+No character was available in the allotted time-out period.</exception>
     </member>
     <member name="M:System.IO.Ports.SerialPort.ReadExisting">
       <summary>Reads all immediately available bytes, based on the encoding, in both the stream and the input buffer of the <see cref="T:System.IO.Ports.SerialPort" /> object.</summary>
@@ -425,16 +424,16 @@
       <summary>Reads up to the <see cref="P:System.IO.Ports.SerialPort.NewLine" /> value in the input buffer.</summary>
       <returns>The contents of the input buffer up to the first occurrence of a <see cref="P:System.IO.Ports.SerialPort.NewLine" /> value.</returns>
       <exception cref="T:System.InvalidOperationException">The specified port is not open.</exception>
-      <exception cref="T:System.TimeoutException">The operation did not complete before the time-out period ended.  
+      <exception cref="T:System.TimeoutException">The operation did not complete before the time-out period ended.
 -or-
- No bytes were read.</exception>
+No bytes were read.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.ReadTimeout">
       <summary>Gets or sets the number of milliseconds before a time-out occurs when a read operation does not finish.</summary>
       <returns>The number of milliseconds before a time-out occurs when a read operation does not finish.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The read time-out value is less than zero and not equal to <see cref="F:System.IO.Ports.SerialPort.InfiniteTimeout" />.</exception>
     </member>
     <member name="M:System.IO.Ports.SerialPort.ReadTo(System.String)">
@@ -456,17 +455,17 @@
       <returns>
         <see langword="true" /> to enable Request to Transmit (RTS); otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
       <exception cref="T:System.InvalidOperationException">The value of the <see cref="P:System.IO.Ports.SerialPort.RtsEnable" /> property was set or retrieved while the <see cref="P:System.IO.Ports.SerialPort.Handshake" /> property is set to the <see cref="F:System.IO.Ports.Handshake.RequestToSend" /> value or the <see cref="F:System.IO.Ports.Handshake.RequestToSendXOnXOff" /> value.</exception>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
     </member>
     <member name="P:System.IO.Ports.SerialPort.StopBits">
       <summary>Gets or sets the standard number of stopbits per byte.</summary>
       <returns>One of the <see cref="T:System.IO.Ports.StopBits" /> values.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.IO.Ports.SerialPort.StopBits" /> value is  <see cref="F:System.IO.Ports.StopBits.None" />.</exception>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
     </member>
     <member name="M:System.IO.Ports.SerialPort.Write(System.Byte[],System.Int32,System.Int32)">
       <summary>Writes a specified number of bytes to the serial port using data from a buffer.</summary>
@@ -517,9 +516,9 @@
     <member name="P:System.IO.Ports.SerialPort.WriteTimeout">
       <summary>Gets or sets the number of milliseconds before a time-out occurs when a write operation does not finish.</summary>
       <returns>The number of milliseconds before a time-out occurs. The default is <see cref="F:System.IO.Ports.SerialPort.InfiniteTimeout" />.</returns>
-      <exception cref="T:System.IO.IOException">The port is in an invalid state.  
+      <exception cref="T:System.IO.IOException">The port is in an invalid state.
 -or-
- An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
+An attempt to set the state of the underlying port failed. For example, the parameters passed from this <see cref="T:System.IO.Ports.SerialPort" /> object were invalid.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <see cref="P:System.IO.Ports.SerialPort.WriteTimeout" /> value is less than zero and not equal to <see cref="F:System.IO.Ports.SerialPort.InfiniteTimeout" />.</exception>
     </member>
     <member name="T:System.IO.Ports.StopBits">

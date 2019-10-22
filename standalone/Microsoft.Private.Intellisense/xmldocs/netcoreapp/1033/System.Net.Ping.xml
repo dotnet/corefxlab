@@ -132,8 +132,8 @@
       <returns>A <see cref="T:System.Net.NetworkInformation.PingReply" /> object that provides information about the ICMP echo reply message, if one was received, or provides the reason for the failure, if no message was received. The method will return <see cref="F:System.Net.NetworkInformation.IPStatus.PacketTooBig" /> if the packet exceeds the Maximum Transmission Unit (MTU).</returns>
       <exception cref="T:System.ArgumentException">The size of <paramref name="buffer" /> exceeds 65500 bytes.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="address" /> is <see langword="null" />.  
--or-  
+        <paramref name="address" /> is <see langword="null" />.
+-or-
 <paramref name="buffer" /> is <see langword="null" />, or the <paramref name="buffer" /> size is greater than 65500 bytes.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -152,8 +152,8 @@
       <returns>A <see cref="T:System.Net.NetworkInformation.PingReply" /> object that provides information about the ICMP echo reply message, if one was received, or provides the reason for the failure, if no message was received. The method will return <see cref="F:System.Net.NetworkInformation.IPStatus.PacketTooBig" /> if the packet exceeds the Maximum Transmission Unit (MTU).</returns>
       <exception cref="T:System.ArgumentException">The size of <paramref name="buffer" /> exceeds 65500 bytes.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="address" /> is <see langword="null" />.  
--or-  
+        <paramref name="address" /> is <see langword="null" />.
+-or-
 <paramref name="buffer" /> is <see langword="null" />, or the <paramref name="buffer" /> size is greater than 65500 bytes.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -196,8 +196,8 @@
       <returns>A <see cref="T:System.Net.NetworkInformation.PingReply" /> object that provides information about the ICMP echo reply message if one was received, or provides the reason for the failure if no message was received.</returns>
       <exception cref="T:System.ArgumentException">The size of <paramref name="buffer" /> exceeds 65500 bytes.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="hostNameOrAddress" /> is <see langword="null" /> or is an empty string ("").  
--or-  
+        <paramref name="hostNameOrAddress" /> is <see langword="null" /> or is an empty string ("").
+-or-
 <paramref name="buffer" /> is <see langword="null" />, or the <paramref name="buffer" /> size is greater than 65500 bytes.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -214,8 +214,8 @@
       <returns>A <see cref="T:System.Net.NetworkInformation.PingReply" /> object that provides information about the ICMP echo reply message if one was received, or provides the reason for the failure if no message was received.</returns>
       <exception cref="T:System.ArgumentException">The size of <paramref name="buffer" /> exceeds 65500 bytes.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="hostNameOrAddress" /> is <see langword="null" /> or is a zero length string.  
--or-  
+        <paramref name="hostNameOrAddress" /> is <see langword="null" /> or is a zero-length string.
+-or-
 <paramref name="buffer" /> is <see langword="null" />, or the <paramref name="buffer" /> size is greater than 65500 bytes.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -233,8 +233,8 @@
       <param name="options">A <see cref="T:System.Net.NetworkInformation.PingOptions" /> object used to control fragmentation and Time-to-Live values for the ICMP echo message packet.</param>
       <param name="userToken">An object that is passed to the method invoked when the asynchronous operation completes.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="address" /> is <see langword="null" />.  
--or-  
+        <paramref name="address" /> is <see langword="null" />.
+-or-
 <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -254,8 +254,8 @@
       <param name="buffer">A <see cref="T:System.Byte" /> array that contains data to be sent with the ICMP echo message and returned in the ICMP echo reply message. The array cannot contain more than 65,500 bytes.</param>
       <param name="userToken">An object that is passed to the method invoked when the asynchronous operation completes.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="address" /> is <see langword="null" />.  
--or-  
+        <paramref name="address" /> is <see langword="null" />.
+-or-
 <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -307,8 +307,8 @@
       <param name="options">A <see cref="T:System.Net.NetworkInformation.PingOptions" /> object used to control fragmentation and Time-to-Live values for the ICMP echo message packet.</param>
       <param name="userToken">An object that is passed to the method invoked when the asynchronous operation completes.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="hostNameOrAddress" /> is <see langword="null" /> or is an empty string ("").  
--or-  
+        <paramref name="hostNameOrAddress" /> is <see langword="null" /> or is an empty string ("").
+-or-
 <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -328,8 +328,8 @@
       <param name="buffer">A <see cref="T:System.Byte" /> array that contains data to be sent with the ICMP echo message and returned in the ICMP echo reply message. The array cannot contain more than 65,500 bytes.</param>
       <param name="userToken">An object that is passed to the method invoked when the asynchronous operation completes.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="hostNameOrAddress" /> is <see langword="null" /> or is an empty string ("").  
--or-  
+        <paramref name="hostNameOrAddress" /> is <see langword="null" /> or is an empty string ("").
+-or-
 <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -401,8 +401,8 @@
       <param name="buffer">A <see cref="T:System.Byte" /> array that contains data to be sent with the ICMP echo message and returned in the ICMP echo reply message. The array cannot contain more than 65,500 bytes.</param>
       <returns>The task object representing the asynchronous operation.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="address" /> is <see langword="null" />.  
--or-  
+        <paramref name="address" /> is <see langword="null" />.
+-or-
 <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>
@@ -421,8 +421,8 @@
       <param name="options">A <see cref="T:System.Net.NetworkInformation.PingOptions" /> object used to control fragmentation and Time-to-Live values for the ICMP echo message packet.</param>
       <returns>The task object representing the asynchronous operation.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="address" /> is <see langword="null" />.  
--or-  
+        <paramref name="address" /> is <see langword="null" />.
+-or-
 <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="timeout" /> is less than zero.</exception>

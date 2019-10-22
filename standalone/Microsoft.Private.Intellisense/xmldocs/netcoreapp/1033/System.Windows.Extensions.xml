@@ -43,8 +43,8 @@
       <summary>Creates an object of this type by using a specified set of property values for the object.</summary>
       <param name="context">A type descriptor through which additional context can be provided.</param>
       <param name="propertyValues">A dictionary of new property values. The dictionary contains a series of name-value pairs, one for each property returned from the <see cref="Overload:System.Drawing.FontConverter.GetProperties" /> method.</param>
-      <returns>The newly created object, or <see langword="null" /> if the object could not be created. The default implementation returns <see langword="null" />.  
- <see cref="M:System.Drawing.FontConverter.CreateInstance(System.ComponentModel.ITypeDescriptorContext,System.Collections.IDictionary)" /> useful for creating non-changeable objects that have changeable properties.</returns>
+      <returns>The newly created object, or <see langword="null" /> if the object could not be created. The default implementation returns <see langword="null" />.
+<see cref="M:System.Drawing.FontConverter.CreateInstance(System.ComponentModel.ITypeDescriptorContext,System.Collections.IDictionary)" /> useful for creating non-changeable objects that have changeable properties.</returns>
     </member>
     <member name="T:System.Drawing.FontConverter.FontNameConverter">
       <summary>
@@ -108,8 +108,8 @@
       <param name="context">A type descriptor through which additional context can be provided.</param>
       <param name="value">The value of the object to get the properties for.</param>
       <param name="attributes">An array of <see cref="T:System.Attribute" /> objects that describe the properties.</param>
-      <returns>The set of properties that should be exposed for this data type. If no properties should be exposed, this may return <see langword="null" />. The default implementation always returns <see langword="null" />.  
- An easy implementation of this method can call the <see cref="Overload:System.ComponentModel.TypeConverter.GetProperties" /> method for the correct data type.</returns>
+      <returns>The set of properties that should be exposed for this data type. If no properties should be exposed, this may return <see langword="null" />. The default implementation always returns <see langword="null" />.
+An easy implementation of this method can call the <see cref="Overload:System.ComponentModel.TypeConverter.GetProperties" /> method for the correct data type.</returns>
     </member>
     <member name="M:System.Drawing.FontConverter.GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext)">
       <summary>Determines whether this object supports properties. The default is <see langword="false" />.</summary>
@@ -511,8 +511,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="assemblyQualifiedTypeName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="assemblyQualifiedTypeName" /> is not a valid assembly-qualified type name.  
--or-  
+        <paramref name="assemblyQualifiedTypeName" /> is not a valid assembly-qualified type name.
+-or-
 Assembly name within <paramref name="assemblyQualifiedTypeName" /> is not a valid assembly name.</exception>
     </member>
     <member name="M:System.Xaml.Permissions.XamlAccessLevel.PrivateAccessTo(System.Type)">

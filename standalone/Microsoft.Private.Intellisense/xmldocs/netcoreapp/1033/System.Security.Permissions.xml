@@ -643,12 +643,12 @@ The <see langword="version" /> attribute for the given <paramref name="securityE
       <param name="machineName">The server on which the category of the performance counter resides.</param>
       <param name="categoryName">The name of the performance counter category (performance object) with which this performance counter is associated.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="categoryName" /> is <see langword="null" />.  
--or-  
+        <paramref name="categoryName" /> is <see langword="null" />.
+-or-
 <paramref name="machineName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="permissionAccess" /> is not a valid <see cref="T:System.Diagnostics.PerformanceCounterPermissionAccess" /> value.  
--or-  
+        <paramref name="permissionAccess" /> is not a valid <see cref="T:System.Diagnostics.PerformanceCounterPermissionAccess" /> value.
+-or-
 <paramref name="machineName" /> is not a valid computer name.</exception>
     </member>
     <member name="P:System.Diagnostics.PerformanceCounterPermissionEntry.CategoryName">
@@ -952,8 +952,8 @@ The <see langword="version" /> attribute for the given <paramref name="securityE
       <summary>Sets the state of the permission using the specified XML encoding.</summary>
       <param name="securityElement">The XML encoding to use to set the state of the current permission.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="securityElement" /> does not describe an <see cref="T:System.Net.Mail.SmtpPermission" /> object.  
--or-  
+        <paramref name="securityElement" /> does not describe an <see cref="T:System.Net.Mail.SmtpPermission" /> object.
+-or-
 <paramref name="securityElement" /> does not contain the required state information to reconstruct the permission.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="securityElement" /> is <see langword="null" />.</exception>
@@ -1056,10 +1056,10 @@ The <see langword="version" /> attribute for the given <paramref name="securityE
       <exception cref="T:System.ArgumentNullException">
         <paramref name="securityElement" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="securityElement" /> is not a permission encoding.  
--or-  
-<paramref name="securityElement" /> is not an encoding of a <see cref="T:System.Net.NetworkInformation.NetworkInformationPermission" />.  
--or-  
+        <paramref name="securityElement" /> is not a permission encoding.
+-or-
+<paramref name="securityElement" /> is not an encoding of a <see cref="T:System.Net.NetworkInformation.NetworkInformationPermission" />.
+-or-
 <paramref name="securityElement" /> has invalid <see cref="T:System.Net.NetworkInformation.NetworkInformationAccess" /> values.</exception>
     </member>
     <member name="M:System.Net.NetworkInformation.NetworkInformationPermission.Intersect(System.Security.IPermission)">
@@ -1118,9 +1118,9 @@ The <see langword="version" /> attribute for the given <paramref name="securityE
     <member name="M:System.Net.PeerToPeer.Collaboration.PeerCollaborationPermission.FromXml(System.Security.SecurityElement)">
       <summary>Represents the XML object model for encoding security objects.</summary>
       <param name="e">The XML encoding to use to reconstruct the permission.</param>
-      <exception cref="T:System.ArgumentException">The parameter is not a valid permission element.  
+      <exception cref="T:System.ArgumentException">The parameter is not a valid permission element.
 
-The parameter does not contain a valid type or class.  
+The parameter does not contain a valid type or class.
 
 The parameter's version number is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">The parameter is a <see langword="null" /> reference (<see langword="Nothing" /> in Visual Basic).</exception>
@@ -1174,7 +1174,7 @@ The parameter's version number is not supported.</exception>
     <member name="M:System.Net.PeerToPeer.PnrpPermission.Copy">
       <summary>Creates and returns an identical copy of the current <see cref="T:System.Net.PeerToPeer.PnrpPermission" />.</summary>
       <returns>An object with an IPermission interface, whose instance contains a copy of the current instance of <see cref="T:System.Net.PeerToPeer.PnrpPermission" />.</returns>
-      <exception cref="T:System.ArgumentException">The parameter is not a valid <see cref="T:System.Net.PeerToPeer.PnrpPermission" /> element.  
+      <exception cref="T:System.ArgumentException">The parameter is not a valid <see cref="T:System.Net.PeerToPeer.PnrpPermission" /> element.
 
 The parameter's version number is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">The parameter is a <see langword="null" /> reference (<see langword="Nothing" /> in Visual Basic).</exception>
@@ -1182,7 +1182,7 @@ The parameter's version number is not supported.</exception>
     <member name="M:System.Net.PeerToPeer.PnrpPermission.FromXml(System.Security.SecurityElement)">
       <summary>Reconstructs a security object with a specified state from an XML encoding.</summary>
       <param name="e">The XML encoding to use to reconstruct the permission.</param>
-      <exception cref="T:System.ArgumentException">The parameter is not a valid <see cref="T:System.Net.PeerToPeer.PnrpPermission" /> element.  
+      <exception cref="T:System.ArgumentException">The parameter is not a valid <see cref="T:System.Net.PeerToPeer.PnrpPermission" /> element.
 
 The parameter's version number is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">The parameter is a <see langword="null" /> reference (<see langword="Nothing" /> in Visual Basic).</exception>
@@ -1504,9 +1504,9 @@ The parameter's version number is not supported.</exception>
     </member>
     <member name="M:System.Security.CodeAccessPermission.Assert">
       <summary>Declares that the calling code can access the resource protected by a permission demand through the code that calls this method, even if callers higher in the stack have not been granted permission to access the resource. Using <see cref="M:System.Security.CodeAccessPermission.Assert" /> can create security issues.</summary>
-      <exception cref="T:System.Security.SecurityException">The calling code does not have <see cref="F:System.Security.Permissions.SecurityPermissionFlag.Assertion" />.  
- -or-  
- There is already an active <see cref="M:System.Security.CodeAccessPermission.Assert" /> for the current frame.</exception>
+      <exception cref="T:System.Security.SecurityException">The calling code does not have <see cref="F:System.Security.Permissions.SecurityPermissionFlag.Assertion" />.
+-or-
+There is already an active <see cref="M:System.Security.CodeAccessPermission.Assert" /> for the current frame.</exception>
     </member>
     <member name="M:System.Security.CodeAccessPermission.Copy">
       <summary>When implemented by a derived class, creates and returns an identical copy of the current permission object.</summary>
@@ -1514,9 +1514,9 @@ The parameter's version number is not supported.</exception>
     </member>
     <member name="M:System.Security.CodeAccessPermission.Demand">
       <summary>Forces a <see cref="T:System.Security.SecurityException" /> at run time if all callers higher in the call stack have not been granted the permission specified by the current instance.</summary>
-      <exception cref="T:System.Security.SecurityException">A caller higher in the call stack does not have the permission specified by the current instance.  
- -or-  
- A caller higher in the call stack has called <see cref="M:System.Security.CodeAccessPermission.Deny" /> on the current permission object.</exception>
+      <exception cref="T:System.Security.SecurityException">A caller higher in the call stack does not have the permission specified by the current instance.
+-or-
+A caller higher in the call stack has called <see cref="M:System.Security.CodeAccessPermission.Deny" /> on the current permission object.</exception>
     </member>
     <member name="M:System.Security.CodeAccessPermission.Deny">
       <summary>Prevents callers higher in the call stack from using the code that calls this method to access the resource specified by the current instance.</summary>
@@ -1532,9 +1532,9 @@ The parameter's version number is not supported.</exception>
       <summary>When overridden in a derived class, reconstructs a security object with a specified state from an XML encoding.</summary>
       <param name="elem">The XML encoding to use to reconstruct the security object.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="elem" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="elem" /> parameter does not contain the XML encoding for an instance of the same type as the current instance.  
- -or-  
- The version number of the <paramref name="elem" /> parameter is not supported.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="elem" /> parameter does not contain the XML encoding for an instance of the same type as the current instance.
+-or-
+The version number of the <paramref name="elem" /> parameter is not supported.</exception>
     </member>
     <member name="M:System.Security.CodeAccessPermission.GetHashCode">
       <summary>Gets a hash code for the <see cref="T:System.Security.CodeAccessPermission" /> object that is suitable for use in hashing algorithms and data structures such as a hash table.</summary>
@@ -1641,9 +1641,9 @@ The parameter's version number is not supported.</exception>
       <returns>An object that contains trust information about the application.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="applicationEvidence" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">An <see cref="T:System.Runtime.Hosting.ActivationArguments" /> object could not be found in the application evidence.  
- -or-  
- The <see cref="P:System.Runtime.Hosting.ActivationArguments.ActivationContext" /> property in the activation arguments is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">An <see cref="T:System.Runtime.Hosting.ActivationArguments" /> object could not be found in the application evidence.
+-or-
+The <see cref="P:System.Runtime.Hosting.ActivationArguments.ActivationContext" /> property in the activation arguments is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Security.Policy.ApplicationTrust" /> grant set does not contain the minimum request set specified by the <see cref="T:System.ActivationContext" />.</exception>
     </member>
     <member name="P:System.Security.HostSecurityManager.DomainPolicy">
@@ -1831,8 +1831,8 @@ The parameter's version number is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="securityElement" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="securityElement" /> is not a valid permission element.  
--or-  
+        <paramref name="securityElement" /> is not a valid permission element.
+-or-
 The version number of <paramref name="securityElement" /> is not supported.</exception>
     </member>
     <member name="M:System.Security.Permissions.DataProtectionPermission.Intersect(System.Security.IPermission)">
@@ -1952,17 +1952,17 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.EnvironmentPermission.GetPathList(System.Security.Permissions.EnvironmentPermissionAccess)">
       <summary>Gets all environment variables with the specified <see cref="T:System.Security.Permissions.EnvironmentPermissionAccess" />.</summary>
       <param name="flag">One of the <see cref="T:System.Security.Permissions.EnvironmentPermissionAccess" /> values that represents a single type of environment variable access.</param>
       <returns>A list of environment variables (semicolon-separated) for the selected flag.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="flag" /> is not a valid value of <see cref="T:System.Security.Permissions.EnvironmentPermissionAccess" />.  
--or-  
+        <paramref name="flag" /> is not a valid value of <see cref="T:System.Security.Permissions.EnvironmentPermissionAccess" />.
+-or-
 <paramref name="flag" /> is <see cref="F:System.Security.Permissions.EnvironmentPermissionAccess.AllAccess" />, which represents more than one type of environment variable access, or <see cref="F:System.Security.Permissions.EnvironmentPermissionAccess.NoAccess" />, which does not represent any type of environment variable access.</exception>
     </member>
     <member name="M:System.Security.Permissions.EnvironmentPermission.Intersect(System.Security.IPermission)">
@@ -2067,9 +2067,9 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding used to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The version number of the <paramref name="esd" /> parameter is not supported.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The version number of the <paramref name="esd" /> parameter is not supported.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileDialogPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -2143,38 +2143,38 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <param name="access">A bitwise combination of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> enumeration values.</param>
       <param name="actions">A bitwise combination of the <see cref="T:System.Security.AccessControl.AccessControlActions" /> enumeration values.</param>
       <param name="path">The absolute path of the file or directory.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
- -or-  
- The <paramref name="path" /> parameter is not a valid string.  
- -or-  
- The <paramref name="path" /> parameter does not specify the absolute path to the file or directory.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
+The <paramref name="path" /> parameter is not a valid string.
+-or-
+The <paramref name="path" /> parameter does not specify the absolute path to the file or directory.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileIOPermission.#ctor(System.Security.Permissions.FileIOPermissionAccess,System.Security.AccessControl.AccessControlActions,System.String[])">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Permissions.FileIOPermission" /> class with the specified access to the designated files and directories and the specified access rights to file control information.</summary>
       <param name="access">A bitwise combination of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> enumeration values.</param>
       <param name="actions">A bitwise combination of the <see cref="T:System.Security.AccessControl.AccessControlActions" /> enumeration values.</param>
       <param name="pathList">An array containing the absolute paths of the files and directories.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
- -or-  
- An entry in the <paramref name="pathList" /> array is not a valid string.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
+An entry in the <paramref name="pathList" /> array is not a valid string.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileIOPermission.#ctor(System.Security.Permissions.FileIOPermissionAccess,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Permissions.FileIOPermission" /> class with the specified access to the designated file or directory.</summary>
       <param name="access">A bitwise combination of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> enumeration values.</param>
       <param name="path">The absolute path of the file or directory.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
- -or-  
- The <paramref name="path" /> parameter is not a valid string.  
- -or-  
- The <paramref name="path" /> parameter does not specify the absolute path to the file or directory.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
+The <paramref name="path" /> parameter is not a valid string.
+-or-
+The <paramref name="path" /> parameter does not specify the absolute path to the file or directory.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileIOPermission.#ctor(System.Security.Permissions.FileIOPermissionAccess,System.String[])">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Permissions.FileIOPermission" /> class with the specified access to the designated files and directories.</summary>
       <param name="access">A bitwise combination of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> enumeration values.</param>
       <param name="pathList">An array containing the absolute paths of the files and directories.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
- -or-  
- An entry in the <paramref name="pathList" /> array is not a valid string.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
+An entry in the <paramref name="pathList" /> array is not a valid string.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileIOPermission.#ctor(System.Security.Permissions.PermissionState)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Permissions.FileIOPermission" /> class with fully restricted or unrestricted permission as specified.</summary>
@@ -2185,11 +2185,11 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <summary>Adds access for the specified file or directory to the existing state of the permission.</summary>
       <param name="access">A bitwise combination of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> values.</param>
       <param name="path">The absolute path of a file or directory.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
- -or-  
- The <paramref name="path" /> parameter is not a valid string.  
- -or-  
- The <paramref name="path" /> parameter did not specify the absolute path to the file or directory.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
+The <paramref name="path" /> parameter is not a valid string.
+-or-
+The <paramref name="path" /> parameter did not specify the absolute path to the file or directory.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="path" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.NotSupportedException">The <paramref name="path" /> parameter has an invalid format.</exception>
     </member>
@@ -2197,9 +2197,9 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <summary>Adds access for the specified files and directories to the existing state of the permission.</summary>
       <param name="access">A bitwise combination of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> values.</param>
       <param name="pathList">An array containing the absolute paths of the files and directories.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
- -or-  
- An entry in the <paramref name="pathList" /> array is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
+An entry in the <paramref name="pathList" /> array is not valid.</exception>
       <exception cref="T:System.NotSupportedException">An entry in the <paramref name="pathList" /> array has an invalid format.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="pathList" /> parameter is <see langword="null" />.</exception>
     </member>
@@ -2225,9 +2225,9 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding used to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not compatible.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not compatible.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileIOPermission.GetHashCode">
       <summary>Gets a hash code for the <see cref="T:System.Security.Permissions.FileIOPermission" /> object that is suitable for use in hashing algorithms and data structures such as a hash table.</summary>
@@ -2238,8 +2238,8 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <param name="access">One of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> values that represents a single type of file access.</param>
       <returns>An array containing the paths of the files and directories to which access specified by the <paramref name="access" /> parameter is granted.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="access" /> is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
--or-  
+        <paramref name="access" /> is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
 <paramref name="access" /> is <see cref="F:System.Security.Permissions.FileIOPermissionAccess.AllAccess" />, which represents more than one type of file access, or <see cref="F:System.Security.Permissions.FileIOPermissionAccess.NoAccess" />, which does not represent any type of file access.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileIOPermission.Intersect(System.Security.IPermission)">
@@ -2264,19 +2264,19 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <summary>Sets the specified access to the specified file or directory, replacing the existing state of the permission.</summary>
       <param name="access">A bitwise combination of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> values.</param>
       <param name="path">The absolute path of the file or directory.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
- -or-  
- The <paramref name="path" /> parameter is not a valid string.  
- -or-  
- The <paramref name="path" /> parameter did not specify the absolute path to the file or directory.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
+The <paramref name="path" /> parameter is not a valid string.
+-or-
+The <paramref name="path" /> parameter did not specify the absolute path to the file or directory.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileIOPermission.SetPathList(System.Security.Permissions.FileIOPermissionAccess,System.String[])">
       <summary>Sets the specified access to the specified files and directories, replacing the current state for the specified access with the new set of paths.</summary>
       <param name="access">A bitwise combination of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> values.</param>
       <param name="pathList">An array containing the absolute paths of the files and directories.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.  
- -or-  
- An entry in the <paramref name="pathList" /> parameter is not a valid string.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.FileIOPermissionAccess" />.
+-or-
+An entry in the <paramref name="pathList" /> parameter is not a valid string.</exception>
     </member>
     <member name="M:System.Security.Permissions.FileIOPermission.ToXml">
       <summary>Creates an XML encoding of the permission and its current state.</summary>
@@ -2388,8 +2388,8 @@ For performance reasons, <see langword="PathDiscovery" /> should only be granted
       <exception cref="T:System.ArgumentNullException">
         <paramref name="securityElement" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="securityElement" /> is not a valid permission element.  
--or-  
+        <paramref name="securityElement" /> is not a valid permission element.
+-or-
 The version number of <paramref name="securityElement" /> is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.GacIdentityPermission.Intersect(System.Security.IPermission)">
@@ -2628,9 +2628,9 @@ The version number of <paramref name="securityElement" /> is not valid.</excepti
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.IsolatedStoragePermission.IsUnrestricted">
       <summary>Returns a value indicating whether the current permission is unrestricted.</summary>
@@ -2714,8 +2714,8 @@ The version number of <paramref name="securityElement" /> is not valid.</excepti
       <exception cref="T:System.ArgumentNullException">
         <paramref name="securityElement" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="securityElement" /> is not a valid permission element.  
--or-  
+        <paramref name="securityElement" /> is not a valid permission element.
+-or-
 The version number of <paramref name="securityElement" /> is not supported.</exception>
     </member>
     <member name="M:System.Security.Permissions.KeyContainerPermission.Intersect(System.Security.IPermission)">
@@ -2840,8 +2840,8 @@ The version number of <paramref name="securityElement" /> is not supported.</exc
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than the lower bound of <paramref name="array" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the collection is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Security.Permissions.KeyContainerPermissionAccessEntryCollection.Count">
@@ -2892,9 +2892,9 @@ The number of elements in the collection is greater than the available space fro
     <member name="P:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.Current">
       <summary>Gets the current entry in the collection.</summary>
       <returns>The current <see cref="T:System.Security.Permissions.KeyContainerPermissionAccessEntry" /> object in the collection.</returns>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.Current" /> property is accessed before first calling the <see cref="M:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.MoveNext" /> method. The cursor is located before the first object in the collection.  
- -or-  
- The <see cref="P:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.Current" /> property is accessed after a call to the <see cref="M:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.MoveNext" /> method returns <see langword="false" />, which indicates that the cursor is located after the last object in the collection.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.Current" /> property is accessed before first calling the <see cref="M:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.MoveNext" /> method. The cursor is located before the first object in the collection.
+-or-
+The <see cref="P:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.Current" /> property is accessed after a call to the <see cref="M:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.MoveNext" /> method returns <see langword="false" />, which indicates that the cursor is located after the last object in the collection.</exception>
     </member>
     <member name="M:System.Security.Permissions.KeyContainerPermissionAccessEntryEnumerator.MoveNext">
       <summary>Moves to the next element in the collection.</summary>
@@ -3189,9 +3189,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
     </member>
     <member name="M:System.Security.Permissions.PrincipalPermission.Demand">
       <summary>Determines at run time whether the current principal matches the principal specified by the current permission.</summary>
-      <exception cref="T:System.Security.SecurityException">The current principal does not pass the security check for the principal specified by the current permission.  
- -or-  
- The current <see cref="T:System.Security.Principal.IPrincipal" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.SecurityException">The current principal does not pass the security check for the principal specified by the current permission.
+-or-
+The current <see cref="T:System.Security.Principal.IPrincipal" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Permissions.PrincipalPermission.Equals(System.Object)">
       <summary>Determines whether the specified <see cref="T:System.Security.Permissions.PrincipalPermission" /> object is equal to the current <see cref="T:System.Security.Permissions.PrincipalPermission" />.</summary>
@@ -3203,9 +3203,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="elem">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="elem" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="elem" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="elem" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="elem" /> parameter is not a valid permission element.
+-or-
+The <paramref name="elem" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.PrincipalPermission.GetHashCode">
       <summary>Gets a hash code for the <see cref="T:System.Security.Permissions.PrincipalPermission" /> object that is suitable for use in hashing algorithms and data structures such as a hash table.</summary>
@@ -3296,9 +3296,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.PublisherIdentityPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -3321,9 +3321,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Creates a permission that is the union of the current permission and the specified permission.</summary>
       <param name="target">A permission to combine with the current permission. It must be of the same type as the current permission.</param>
       <returns>A new permission that represents the union of the current permission and the specified permission.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.  
- -or-  
- The two permissions are not equal.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.
+-or-
+The two permissions are not equal.</exception>
     </member>
     <member name="T:System.Security.Permissions.PublisherIdentityPermissionAttribute">
       <summary>Allows security actions for <see cref="T:System.Security.Permissions.PublisherIdentityPermission" /> to be applied to code using declarative security. This class cannot be inherited.</summary>
@@ -3374,9 +3374,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.ReflectionPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -3477,34 +3477,34 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <param name="access">One of the <see cref="T:System.Security.Permissions.RegistryPermissionAccess" /> values.</param>
       <param name="control">A bitwise combination of the <see cref="T:System.Security.AccessControl.AccessControlActions" /> values.</param>
       <param name="pathList">A list of registry variables (semicolon-separated) to which access is granted.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.  
- -or-  
- The <paramref name="pathList" /> parameter is not a valid string.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.
+-or-
+The <paramref name="pathList" /> parameter is not a valid string.</exception>
     </member>
     <member name="M:System.Security.Permissions.RegistryPermission.#ctor(System.Security.Permissions.RegistryPermissionAccess,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Permissions.RegistryPermission" /> class with the specified access to the specified registry variables.</summary>
       <param name="access">One of the <see cref="T:System.Security.Permissions.RegistryPermissionAccess" /> values.</param>
       <param name="pathList">A list of registry variables (semicolon-separated) to which access is granted.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.  
- -or-  
- The <paramref name="pathList" /> parameter is not a valid string.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.
+-or-
+The <paramref name="pathList" /> parameter is not a valid string.</exception>
     </member>
     <member name="M:System.Security.Permissions.RegistryPermission.AddPathList(System.Security.Permissions.RegistryPermissionAccess,System.Security.AccessControl.AccessControlActions,System.String)">
       <summary>Adds access for the specified registry variables to the existing state of the permission, specifying registry permission access and access control actions.</summary>
       <param name="access">One of the <see cref="T:System.Security.Permissions.RegistryPermissionAccess" /> values.</param>
       <param name="actions">One of the <see cref="T:System.Security.AccessControl.AccessControlActions" /> values.</param>
       <param name="pathList">A list of registry variables (separated by semicolons).</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.  
- -or-  
- The <paramref name="pathList" /> parameter is not a valid string.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.
+-or-
+The <paramref name="pathList" /> parameter is not a valid string.</exception>
     </member>
     <member name="M:System.Security.Permissions.RegistryPermission.AddPathList(System.Security.Permissions.RegistryPermissionAccess,System.String)">
       <summary>Adds access for the specified registry variables to the existing state of the permission.</summary>
       <param name="access">One of the <see cref="T:System.Security.Permissions.RegistryPermissionAccess" /> values.</param>
       <param name="pathList">A list of registry variables (semicolon-separated).</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.  
- -or-  
- The <paramref name="pathList" /> parameter is not a valid string.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.
+-or-
+The <paramref name="pathList" /> parameter is not a valid string.</exception>
     </member>
     <member name="M:System.Security.Permissions.RegistryPermission.Copy">
       <summary>Creates and returns an identical copy of the current permission.</summary>
@@ -3514,17 +3514,17 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="elem">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="elem" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="elem" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="elem" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="elem" /> parameter is not a valid permission element.
+-or-
+The <paramref name="elem" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.RegistryPermission.GetPathList(System.Security.Permissions.RegistryPermissionAccess)">
       <summary>Gets paths for all registry variables with the specified <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.</summary>
       <param name="access">One of the <see cref="T:System.Security.Permissions.RegistryPermissionAccess" /> values that represents a single type of registry variable access.</param>
       <returns>A list of the registry variables (semicolon-separated) with the specified <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="access" /> is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.  
--or-  
+        <paramref name="access" /> is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.
+-or-
 <paramref name="access" /> is <see cref="F:System.Security.Permissions.RegistryPermissionAccess.AllAccess" />, which represents more than one type of registry variable access, or <see cref="F:System.Security.Permissions.RegistryPermissionAccess.NoAccess" />, which does not represent any type of registry variable access.</exception>
     </member>
     <member name="M:System.Security.Permissions.RegistryPermission.Intersect(System.Security.IPermission)">
@@ -3549,9 +3549,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Sets new access for the specified registry variable names to the existing state of the permission.</summary>
       <param name="access">One of the <see cref="T:System.Security.Permissions.RegistryPermissionAccess" /> values.</param>
       <param name="pathList">A list of registry variables (semicolon-separated).</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.  
- -or-  
- The <paramref name="pathList" /> parameter is not a valid string.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="access" /> parameter is not a valid value of <see cref="T:System.Security.Permissions.RegistryPermissionAccess" />.
+-or-
+The <paramref name="pathList" /> parameter is not a valid string.</exception>
     </member>
     <member name="M:System.Security.Permissions.RegistryPermission.ToXml">
       <summary>Creates an XML encoding of the permission and its current state.</summary>
@@ -3639,9 +3639,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Adds a permission entry to the permission.</summary>
       <param name="entry">The <see cref="T:System.Security.Permissions.ResourcePermissionBaseEntry" /> to add.</param>
       <exception cref="T:System.ArgumentNullException">The specified <see cref="T:System.Security.Permissions.ResourcePermissionBaseEntry" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The number of elements in the <see cref="P:System.Security.Permissions.ResourcePermissionBaseEntry.PermissionAccessPath" /> property is not equal to the number of elements in the <see cref="P:System.Security.Permissions.ResourcePermissionBase.TagNames" /> property.  
- -or-  
- The <see cref="T:System.Security.Permissions.ResourcePermissionBaseEntry" /> is already included in the permission.</exception>
+      <exception cref="T:System.InvalidOperationException">The number of elements in the <see cref="P:System.Security.Permissions.ResourcePermissionBaseEntry.PermissionAccessPath" /> property is not equal to the number of elements in the <see cref="P:System.Security.Permissions.ResourcePermissionBase.TagNames" /> property.
+-or-
+The <see cref="T:System.Security.Permissions.ResourcePermissionBaseEntry" /> is already included in the permission.</exception>
     </member>
     <member name="F:System.Security.Permissions.ResourcePermissionBase.Any">
       <summary>Specifies the character to be used to represent the any wildcard character.</summary>
@@ -3656,9 +3656,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
     <member name="M:System.Security.Permissions.ResourcePermissionBase.FromXml(System.Security.SecurityElement)">
       <summary>Reconstructs a security object with a specified state from an XML encoding.</summary>
       <param name="securityElement">The XML encoding to use to reconstruct the security object.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="securityElement" /> parameter is not a valid permission element.  
- -or-  
- The version number of the <paramref name="securityElement" /> parameter is not supported.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="securityElement" /> parameter is not a valid permission element.
+-or-
+The version number of the <paramref name="securityElement" /> parameter is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="securityElement" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Permissions.ResourcePermissionBase.GetPermissionEntries">
@@ -3695,9 +3695,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Removes a permission entry from the permission.</summary>
       <param name="entry">The <see cref="T:System.Security.Permissions.ResourcePermissionBaseEntry" /> to remove.</param>
       <exception cref="T:System.ArgumentNullException">The specified <see cref="T:System.Security.Permissions.ResourcePermissionBaseEntry" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The number of elements in the <see cref="P:System.Security.Permissions.ResourcePermissionBaseEntry.PermissionAccessPath" /> property is not equal to the number of elements in the <see cref="P:System.Security.Permissions.ResourcePermissionBase.TagNames" /> property.  
- -or-  
- The <see cref="T:System.Security.Permissions.ResourcePermissionBaseEntry" /> is not in the permission.</exception>
+      <exception cref="T:System.InvalidOperationException">The number of elements in the <see cref="P:System.Security.Permissions.ResourcePermissionBaseEntry.PermissionAccessPath" /> property is not equal to the number of elements in the <see cref="P:System.Security.Permissions.ResourcePermissionBase.TagNames" /> property.
+-or-
+The <see cref="T:System.Security.Permissions.ResourcePermissionBaseEntry" /> is not in the permission.</exception>
     </member>
     <member name="P:System.Security.Permissions.ResourcePermissionBase.TagNames">
       <summary>Gets or sets an array of strings that identify the resource you are protecting.</summary>
@@ -3761,9 +3761,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not supported.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not supported.</exception>
     </member>
     <member name="M:System.Security.Permissions.SecurityPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -3814,9 +3814,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.SiteIdentityPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -3844,9 +3844,9 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <summary>Creates a permission that is the union of the current permission and the specified permission.</summary>
       <param name="target">A permission to combine with the current permission. It must be of the same type as the current permission.</param>
       <returns>A new permission that represents the union of the current permission and the specified permission.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.  
- -or-  
- The permissions are not equal and one is not a subset of the other.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.
+-or-
+The permissions are not equal and one is not a subset of the other.</exception>
     </member>
     <member name="T:System.Security.Permissions.SiteIdentityPermissionAttribute">
       <summary>Allows security actions for <see cref="T:System.Security.Permissions.SiteIdentityPermission" /> to be applied to code using declarative security. This class cannot be inherited.</summary>
@@ -3893,8 +3893,8 @@ The ability to sign a file is potentially harmful because it can allow a user to
       <exception cref="T:System.ArgumentNullException">
         <paramref name="securityElement" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="securityElement" /> is not a valid permission element.  
--or-  
+        <paramref name="securityElement" /> is not a valid permission element.
+-or-
 The version number in <paramref name="securityElement" /> is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.StorePermission.Intersect(System.Security.IPermission)">
@@ -4039,9 +4039,9 @@ This ability should be granted only to highly trusted code because removing a ce
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="e">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="e" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="e" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="e" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="e" /> parameter is not a valid permission element.
+-or-
+The <paramref name="e" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.StrongNameIdentityPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -4076,9 +4076,9 @@ This ability should be granted only to highly trusted code because removing a ce
       <summary>Creates a permission that is the union of the current permission and the specified permission.</summary>
       <param name="target">A permission to combine with the current permission. It must be of the same type as the current permission.</param>
       <returns>A new permission that represents the union of the current permission and the specified permission.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.  
- -or-  
- The two permissions are not equal and one is a subset of the other.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.
+-or-
+The two permissions are not equal and one is a subset of the other.</exception>
     </member>
     <member name="P:System.Security.Permissions.StrongNameIdentityPermission.Version">
       <summary>Gets or sets the version number of the identity.</summary>
@@ -4232,9 +4232,9 @@ This ability should be granted only to highly trusted code because removing a ce
       <summary>Initializes a new instance of the <see cref="T:System.Security.Permissions.UIPermission" /> class with the specified permissions for windows and the Clipboard.</summary>
       <param name="windowFlag">One of the enumeration values.</param>
       <param name="clipboardFlag">One of the enumeration values.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="windowFlag" /> parameter is not a valid <see cref="T:System.Security.Permissions.UIPermissionWindow" /> value.  
- -or-  
- The <paramref name="clipboardFlag" /> parameter is not a valid <see cref="T:System.Security.Permissions.UIPermissionClipboard" /> value.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="windowFlag" /> parameter is not a valid <see cref="T:System.Security.Permissions.UIPermissionWindow" /> value.
+-or-
+The <paramref name="clipboardFlag" /> parameter is not a valid <see cref="T:System.Security.Permissions.UIPermissionClipboard" /> value.</exception>
     </member>
     <member name="P:System.Security.Permissions.UIPermission.Clipboard">
       <summary>Gets or sets the Clipboard access represented by the permission.</summary>
@@ -4248,9 +4248,9 @@ This ability should be granted only to highly trusted code because removing a ce
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding used to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.UIPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -4353,26 +4353,26 @@ This ability should be granted only to highly trusted code because removing a ce
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.UrlIdentityPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
       <param name="target">A permission to intersect with the current permission. It must be of the same type as the current permission.</param>
       <returns>A new permission that represents the intersection of the current permission and the specified permission. This new permission is <see langword="null" /> if the intersection is empty.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.  
- -or-  
- The Url property is not a valid URL.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.
+-or-
+The Url property is not a valid URL.</exception>
     </member>
     <member name="M:System.Security.Permissions.UrlIdentityPermission.IsSubsetOf(System.Security.IPermission)">
       <summary>Determines whether the current permission is a subset of the specified permission.</summary>
       <param name="target">A permission that is to be tested for the subset relationship. This permission must be of the same type as the current permission.</param>
       <returns>
         <see langword="true" /> if the current permission is a subset of the specified permission; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.  
- -or-  
- The Url property is not a valid URL.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.
+-or-
+The Url property is not a valid URL.</exception>
     </member>
     <member name="M:System.Security.Permissions.UrlIdentityPermission.ToXml">
       <summary>Creates an XML encoding of the permission and its current state.</summary>
@@ -4382,11 +4382,11 @@ This ability should be granted only to highly trusted code because removing a ce
       <summary>Creates a permission that is the union of the current permission and the specified permission.</summary>
       <param name="target">A permission to combine with the current permission. It must be of the same type as the current permission.</param>
       <returns>A new permission that represents the union of the current permission and the specified permission.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.  
- -or-  
- The <see cref="P:System.Security.Permissions.UrlIdentityPermission.Url" /> property is not a valid URL.  
- -or-  
- The two permissions are not equal and one is not a subset of the other.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.
+-or-
+The <see cref="P:System.Security.Permissions.UrlIdentityPermission.Url" /> property is not a valid URL.
+-or-
+The two permissions are not equal and one is not a subset of the other.</exception>
       <exception cref="T:System.NotSupportedException">The operation is ambiguous because the permission represents multiple identities.</exception>
     </member>
     <member name="P:System.Security.Permissions.UrlIdentityPermission.Url">
@@ -4507,9 +4507,9 @@ This ability should be granted only to highly trusted code because removing a ce
       <summary>Reconstructs a permission with a specified state from an XML encoding.</summary>
       <param name="esd">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="esd" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.  
- -or-  
- The <paramref name="esd" /> parameter's version number is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="esd" /> parameter is not a valid permission element.
+-or-
+The <paramref name="esd" /> parameter's version number is not valid.</exception>
     </member>
     <member name="M:System.Security.Permissions.ZoneIdentityPermission.Intersect(System.Security.IPermission)">
       <summary>Creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -4537,9 +4537,9 @@ This ability should be granted only to highly trusted code because removing a ce
       <summary>Creates a permission that is the union of the current permission and the specified permission.</summary>
       <param name="target">A permission to combine with the current permission. It must be of the same type as the current permission.</param>
       <returns>A new permission that represents the union of the current permission and the specified permission.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.  
- -or-  
- The two permissions are not equal and the current permission does not represent the <see cref="F:System.Security.SecurityZone.NoZone" /> security zone.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="target" /> parameter is not <see langword="null" /> and is not of the same type as the current permission.
+-or-
+The two permissions are not equal and the current permission does not represent the <see cref="F:System.Security.SecurityZone.NoZone" /> security zone.</exception>
     </member>
     <member name="T:System.Security.Permissions.ZoneIdentityPermissionAttribute">
       <summary>Allows security actions for <see cref="T:System.Security.Permissions.ZoneIdentityPermission" /> to be applied to code using declarative security. This class cannot be inherited.</summary>
@@ -4783,8 +4783,8 @@ This ability should be granted only to highly trusted code because removing a ce
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than the lower bound of <paramref name="array" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the <see cref="T:System.Security.Policy.ApplicationTrustCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Security.Policy.ApplicationTrustCollection.Count">
@@ -4857,8 +4857,8 @@ The number of elements in the <see cref="T:System.Security.Policy.ApplicationTru
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
     </member>
     <member name="M:System.Security.Policy.ApplicationTrustCollection.System#Collections#IEnumerable#GetEnumerator">
@@ -4901,14 +4901,14 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="allowScheme">The URI scheme represented by the current instance.</param>
       <param name="allowPort">The port represented by the current instance.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="allowScheme" /> is <see langword="null" />.  
--or-  
-<paramref name="allowScheme" /> is an empty string ("").  
--or-  
-<paramref name="allowScheme" /> contains characters that are not permitted in schemes.  
--or-  
-<paramref name="allowPort" /> is less than 0.  
--or-  
+        <paramref name="allowScheme" /> is <see langword="null" />.
+-or-
+<paramref name="allowScheme" /> is an empty string ("").
+-or-
+<paramref name="allowScheme" /> contains characters that are not permitted in schemes.
+-or-
+<paramref name="allowPort" /> is less than 0.
+-or-
 <paramref name="allowPort" /> is greater than 65,535.</exception>
     </member>
     <member name="F:System.Security.Policy.CodeConnectAccess.AnyScheme">
@@ -4919,8 +4919,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="allowPort">The port represented by the returned instance.</param>
       <returns>A <see cref="T:System.Security.Policy.CodeConnectAccess" /> instance for the specified port.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="allowPort" /> is less than 0.  
--or-  
+        <paramref name="allowPort" /> is less than 0.
+-or-
 <paramref name="allowPort" /> is greater than 65,535.</exception>
     </member>
     <member name="M:System.Security.Policy.CodeConnectAccess.CreateOriginSchemeAccess(System.Int32)">
@@ -4928,8 +4928,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="allowPort">The port represented by the returned instance.</param>
       <returns>A <see cref="T:System.Security.Policy.CodeConnectAccess" /> instance for the specified port.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="allowPort" /> is less than 0.  
--or-  
+        <paramref name="allowPort" /> is less than 0.
+-or-
 <paramref name="allowPort" /> is greater than 65,535.</exception>
     </member>
     <member name="F:System.Security.Policy.CodeConnectAccess.DefaultPort">
@@ -4967,9 +4967,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="membershipCondition">A membership condition that tests evidence to determine whether this code group applies policy.</param>
       <param name="policy">The policy statement for the code group in the form of a permission set and attributes to grant code that matches the membership condition.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="membershipCondition" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The type of the <paramref name="membershipCondition" /> parameter is not valid.  
- -or-  
- The type of the <paramref name="policy" /> parameter is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The type of the <paramref name="membershipCondition" /> parameter is not valid.
+-or-
+The type of the <paramref name="policy" /> parameter is not valid.</exception>
     </member>
     <member name="M:System.Security.Policy.CodeGroup.AddChild(System.Security.Policy.CodeGroup)">
       <summary>Adds a child code group to the current code group.</summary>
@@ -5225,9 +5225,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="membershipCondition">A membership condition that tests evidence to determine whether this code group applies policy.</param>
       <param name="access">One of the <see cref="T:System.Security.Permissions.FileIOPermissionAccess" /> values. This value is used to construct the <see cref="T:System.Security.Permissions.FileIOPermission" /> that is granted.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="membershipCondition" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The type of the <paramref name="membershipCondition" /> parameter is not valid.  
- -or-  
- The type of the <paramref name="access" /> parameter is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The type of the <paramref name="membershipCondition" /> parameter is not valid.
+-or-
+The type of the <paramref name="access" /> parameter is not valid.</exception>
     </member>
     <member name="P:System.Security.Policy.FileCodeGroup.AttributeString">
       <summary>Gets a string representation of the attributes of the policy statement for the code group.</summary>
@@ -5260,9 +5260,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="evidence">The evidence for the assembly.</param>
       <returns>A policy statement consisting of the permissions granted by the code group with optional attributes, or <see langword="null" /> if the code group does not apply (the membership condition does not match the specified evidence).</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="evidence" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.Security.Policy.PolicyException">The current policy is <see langword="null" />.  
- -or-  
- More than one code group (including the parent code group and all child code groups) is marked <see cref="F:System.Security.Policy.PolicyStatementAttribute.Exclusive" />.</exception>
+      <exception cref="T:System.Security.Policy.PolicyException">The current policy is <see langword="null" />.
+-or-
+More than one code group (including the parent code group and all child code groups) is marked <see cref="F:System.Security.Policy.PolicyStatementAttribute.Exclusive" />.</exception>
     </member>
     <member name="M:System.Security.Policy.FileCodeGroup.ResolveMatchingCodeGroups(System.Security.Policy.Evidence)">
       <summary>Resolves matching code groups.</summary>
@@ -5277,9 +5277,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <summary>Initializes a new instance of the <see cref="T:System.Security.Policy.FirstMatchCodeGroup" /> class.</summary>
       <param name="membershipCondition">A membership condition that tests evidence to determine whether this code group applies policy.</param>
       <param name="policy">The policy statement for the code group in the form of a permission set and attributes to grant code that matches the membership condition.</param>
-      <exception cref="T:System.ArgumentException">The type of the <paramref name="membershipCondition" /> parameter is not valid.  
- -or-  
- The type of the <paramref name="policy" /> parameter is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The type of the <paramref name="membershipCondition" /> parameter is not valid.
+-or-
+The type of the <paramref name="policy" /> parameter is not valid.</exception>
     </member>
     <member name="M:System.Security.Policy.FirstMatchCodeGroup.Copy">
       <summary>Makes a deep copy of the code group.</summary>
@@ -5450,9 +5450,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <summary>Initializes a new instance of the <see cref="T:System.Security.Policy.HashMembershipCondition" /> class with the hash algorithm and hash value that determine membership.</summary>
       <param name="hashAlg">The hash algorithm to use to compute the hash value for the assembly.</param>
       <param name="value">The hash value for which to test.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="hashAlg" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="value" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="hashAlg" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="value" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="hashAlg" /> parameter is not a valid hash algorithm.</exception>
     </member>
     <member name="M:System.Security.Policy.HashMembershipCondition.Check(System.Security.Policy.Evidence)">
@@ -5568,8 +5568,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <exception cref="T:System.ArgumentNullException">
         <paramref name="originScheme" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="originScheme" /> contains characters that are not permitted in schemes.  
--or-  
+        <paramref name="originScheme" /> contains characters that are not permitted in schemes.
+-or-
 <paramref name="originScheme" /> = <see cref="F:System.Security.Policy.NetCodeGroup.AbsentOriginScheme" /> and <paramref name="connectAccess" /> specifies <see cref="F:System.Security.Policy.CodeConnectAccess.OriginScheme" /> as its scheme.</exception>
     </member>
     <member name="F:System.Security.Policy.NetCodeGroup.AnyOtherOriginScheme">
@@ -5696,12 +5696,12 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="name">The name of the <see cref="T:System.Security.NamedPermissionSet" /> to replace.</param>
       <param name="pSet">The <see cref="T:System.Security.PermissionSet" /> that replaces the <see cref="T:System.Security.NamedPermissionSet" /> specified by the <paramref name="name" /> parameter.</param>
       <returns>A copy of the <see cref="T:System.Security.NamedPermissionSet" /> that was replaced.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="pSet" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="name" /> parameter is equal to the name of a reserved permission set.  
- -or-  
- The <see cref="T:System.Security.PermissionSet" /> specified by the <paramref name="pSet" /> parameter cannot be found.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="pSet" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="name" /> parameter is equal to the name of a reserved permission set.
+-or-
+The <see cref="T:System.Security.PermissionSet" /> specified by the <paramref name="pSet" /> parameter cannot be found.</exception>
     </member>
     <member name="M:System.Security.Policy.PolicyLevel.CreateAppDomainLevel">
       <summary>Creates a new policy level for use at the application domain policy level.</summary>
@@ -5758,9 +5758,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <summary>Removes the <see cref="T:System.Security.NamedPermissionSet" /> with the specified name from the current policy level.</summary>
       <param name="name">The name of the <see cref="T:System.Security.NamedPermissionSet" /> to remove.</param>
       <returns>The <see cref="T:System.Security.NamedPermissionSet" /> that was removed.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="name" /> parameter is equal to the name of a reserved permission set.  
- -or-  
- A <see cref="T:System.Security.NamedPermissionSet" /> with the specified name cannot be found.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="name" /> parameter is equal to the name of a reserved permission set.
+-or-
+A <see cref="T:System.Security.NamedPermissionSet" /> with the specified name cannot be found.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="name" /> parameter is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Policy.PolicyLevel.Reset">
@@ -5990,9 +5990,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <summary>Creates a new <see cref="T:System.Security.Policy.Site" /> object from the specified URL.</summary>
       <param name="url">The URL from which to create the new <see cref="T:System.Security.Policy.Site" /> object.</param>
       <returns>A new site object.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="url" /> parameter is not a valid URL.  
- -or-  
- The <paramref name="url" /> parameter is a file name.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="url" /> parameter is not a valid URL.
+-or-
+The <paramref name="url" /> parameter is a file name.</exception>
     </member>
     <member name="M:System.Security.Policy.Site.CreateIdentityPermission(System.Security.Policy.Evidence)">
       <summary>Creates an identity permission that corresponds to the current <see cref="T:System.Security.Policy.Site" /> object.</summary>
@@ -6093,11 +6093,11 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="blob">The <see cref="T:System.Security.Permissions.StrongNamePublicKeyBlob" /> of the software publisher.</param>
       <param name="name">The simple name section of the strong name.</param>
       <param name="version">The <see cref="T:System.Version" /> of the strong name.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="blob" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="name" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="version" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="blob" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="name" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="version" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="name" /> parameter is an empty string ("").</exception>
     </member>
     <member name="M:System.Security.Policy.StrongName.Copy">
@@ -6144,9 +6144,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="name">The simple name section of the strong name.</param>
       <param name="version">The version number of the strong name.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="blob" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="name" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="name" /> parameter is an empty string ("").</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="name" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="name" /> parameter is an empty string ("").</exception>
     </member>
     <member name="M:System.Security.Policy.StrongNameMembershipCondition.Check(System.Security.Policy.Evidence)">
       <summary>Determines whether the specified evidence satisfies the membership condition.</summary>
@@ -6184,9 +6184,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
     <member name="P:System.Security.Policy.StrongNameMembershipCondition.Name">
       <summary>Gets or sets the simple name of the <see cref="T:System.Security.Policy.StrongName" /> for which the membership condition tests.</summary>
       <returns>The simple name of the <see cref="T:System.Security.Policy.StrongName" /> for which the membership condition tests.</returns>
-      <exception cref="T:System.ArgumentException">The value is <see langword="null" />.  
- -or-  
- The value is an empty string ("").</exception>
+      <exception cref="T:System.ArgumentException">The value is <see langword="null" />.
+-or-
+The value is an empty string ("").</exception>
     </member>
     <member name="P:System.Security.Policy.StrongNameMembershipCondition.PublicKey">
       <summary>Gets or sets the <see cref="T:System.Security.Permissions.StrongNamePublicKeyBlob" /> of the <see cref="T:System.Security.Policy.StrongName" /> for which the membership condition tests.</summary>
@@ -6267,9 +6267,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <summary>Initializes a new instance of the <see cref="T:System.Security.Policy.UnionCodeGroup" /> class.</summary>
       <param name="membershipCondition">A membership condition that tests evidence to determine whether this code group applies policy.</param>
       <param name="policy">The policy statement for the code group in the form of a permission set and attributes to grant code that matches the membership condition.</param>
-      <exception cref="T:System.ArgumentException">The type of the <paramref name="membershipCondition" /> parameter is not valid.  
- -or-  
- The type of the <paramref name="policy" /> parameter is not valid.</exception>
+      <exception cref="T:System.ArgumentException">The type of the <paramref name="membershipCondition" /> parameter is not valid.
+-or-
+The type of the <paramref name="policy" /> parameter is not valid.</exception>
     </member>
     <member name="M:System.Security.Policy.UnionCodeGroup.Copy">
       <summary>Makes a deep copy of the current code group.</summary>
@@ -6561,10 +6561,10 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="callback">The delegate that represents the method to run in the specified security context.</param>
       <param name="state">The object to pass to the callback method.</param>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="securityContext" /> is <see langword="null" />.  
--or-  
-<paramref name="securityContext" /> was not acquired through a capture operation.  
--or-  
+        <paramref name="securityContext" /> is <see langword="null" />.
+-or-
+<paramref name="securityContext" /> was not acquired through a capture operation.
+-or-
 <paramref name="securityContext" /> has already been used as the argument to a <see cref="M:System.Security.SecurityContext.Run(System.Security.SecurityContext,System.Threading.ContextCallback,System.Object)" /> method call.</exception>
     </member>
     <member name="M:System.Security.SecurityContext.SuppressFlow">
@@ -6624,13 +6624,13 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <returns>The loaded policy level.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="path" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The file indicated by the <paramref name="path" /> parameter does not exist.</exception>
-      <exception cref="T:System.Security.SecurityException">The code that calls this method does not have <see cref="F:System.Security.Permissions.SecurityPermissionFlag.ControlPolicy" />.  
- -or-  
- The code that calls this method does not have <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" />.  
- -or-  
- The code that calls this method does not have <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.  
- -or-  
- The code that calls this method does not have <see cref="F:System.Security.Permissions.FileIOPermissionAccess.PathDiscovery" />.</exception>
+      <exception cref="T:System.Security.SecurityException">The code that calls this method does not have <see cref="F:System.Security.Permissions.SecurityPermissionFlag.ControlPolicy" />.
+-or-
+The code that calls this method does not have <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Read" />.
+-or-
+The code that calls this method does not have <see cref="F:System.Security.Permissions.FileIOPermissionAccess.Write" />.
+-or-
+The code that calls this method does not have <see cref="F:System.Security.Permissions.FileIOPermissionAccess.PathDiscovery" />.</exception>
       <exception cref="T:System.NotSupportedException">This method uses code access security (CAS) policy, which is obsolete in the .NET Framework 4. To enable CAS policy for compatibility with earlier versions of the .NET Framework, use the &lt;legacyCasPolicy&gt; element.</exception>
     </member>
     <member name="M:System.Security.SecurityManager.LoadPolicyLevelFromString(System.String,System.Security.PolicyLevelType)">
@@ -6838,8 +6838,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <exception cref="T:System.ArgumentNullException">
         <paramref name="serviceName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="machineName" /> is not valid.  
--or-  
+        <paramref name="machineName" /> is not valid.
+-or-
 <paramref name="serviceName" /> is not valid.</exception>
     </member>
     <member name="P:System.ServiceProcess.ServiceControllerPermissionEntry.MachineName">
@@ -7001,9 +7001,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="securityElement">The <see cref="T:System.Security.SecurityElement" /> containing the XML encoding to use to reconstruct the permission object.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="securityElement" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <see cref="P:System.Security.SecurityElement.Tag" /> property of <paramref name="securityElement" /> is not equal to "IPermission".  
--or-  
- The class <see cref="M:System.Security.SecurityElement.Attribute(System.String)" /> of <paramref name="securityElement" /> is <see langword="null" /> or an empty string ("").</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="P:System.Security.SecurityElement.Tag" /> property of <paramref name="securityElement" /> is not equal to "IPermission".
+-or-
+The class <see cref="M:System.Security.SecurityElement.Attribute(System.String)" /> of <paramref name="securityElement" /> is <see langword="null" /> or an empty string ("").</exception>
     </member>
     <member name="M:System.Web.AspNetHostingPermission.Intersect(System.Security.IPermission)">
       <summary>When implemented by a derived class, creates and returns a permission that is the intersection of the current permission and the specified permission.</summary>
@@ -7106,8 +7106,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <exception cref="T:System.ArgumentNullException">
         <paramref name="assemblyQualifiedTypeName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="assemblyQualifiedTypeName" /> is not a valid assembly-qualified type name.  
--or-  
+        <paramref name="assemblyQualifiedTypeName" /> is not a valid assembly-qualified type name.
+-or-
 Assembly name within <paramref name="assemblyQualifiedTypeName" /> is not a valid assembly name.</exception>
     </member>
     <member name="M:System.Xaml.Permissions.XamlAccessLevel.PrivateAccessTo(System.Type)">
@@ -7159,8 +7159,8 @@ Assembly name within <paramref name="assemblyQualifiedTypeName" /> is not a vali
       <exception cref="T:System.ArgumentNullException">
         <paramref name="elem" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="elem" /> does not contain the XML encoding for a <see cref="T:System.Xaml.Permissions.XamlLoadPermission" />.  
--or-  
+        <paramref name="elem" /> does not contain the XML encoding for a <see cref="T:System.Xaml.Permissions.XamlLoadPermission" />.
+-or-
 The version attribute within <paramref name="elem" /> is not supported.</exception>
     </member>
     <member name="M:System.Xaml.Permissions.XamlLoadPermission.GetHashCode" />

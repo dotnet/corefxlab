@@ -554,8 +554,8 @@
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog" /> class with the specified assembly.</summary>
       <param name="assembly">The assembly that contains the attributed <see cref="T:System.Type" /> objects to add to the <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog" /> object.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="assembly" /> is <see langword="null" />.  
--or-  
+        <paramref name="assembly" /> is <see langword="null" />.
+-or-
 <paramref name="assembly" /> was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.AssemblyCatalog.#ctor(System.Reflection.Assembly,System.ComponentModel.Composition.Primitives.ICompositionElement)">
@@ -563,8 +563,8 @@
       <param name="assembly">The assembly that contains the attributed <see cref="T:System.Type" /> objects to add to the <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog" /> object.</param>
       <param name="definitionOrigin">The element used by diagnostics to identify the sources of parts.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="assembly" /> or <paramref name="definitionOrigin" /> is <see langword="null" />.  
--or-  
+        <paramref name="assembly" /> or <paramref name="definitionOrigin" /> is <see langword="null" />.
+-or-
 <paramref name="assembly" /> was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.AssemblyCatalog.#ctor(System.Reflection.Assembly,System.Reflection.ReflectionContext)">
@@ -572,8 +572,8 @@
       <param name="assembly">The assembly that contains the attributed <see cref="T:System.Type" /> objects to add to the <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog" /> object.</param>
       <param name="reflectionContext">The context used by the catalog to interpret types.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="assembly" /> or <paramref name="reflectionContext" /> is <see langword="null" />.  
--or-  
+        <paramref name="assembly" /> or <paramref name="reflectionContext" /> is <see langword="null" />.
+-or-
 <paramref name="assembly" /> was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.AssemblyCatalog.#ctor(System.Reflection.Assembly,System.Reflection.ReflectionContext,System.ComponentModel.Composition.Primitives.ICompositionElement)">
@@ -582,21 +582,21 @@
       <param name="reflectionContext">The context used by the catalog to interpret types.</param>
       <param name="definitionOrigin">The element used by diagnostics to identify the sources of parts.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="assembly" />, <paramref name="definitionOrigin" />, or <paramref name="reflectionContext" /> is <see langword="null" />.  
--or-  
+        <paramref name="assembly" />, <paramref name="definitionOrigin" />, or <paramref name="reflectionContext" /> is <see langword="null" />.
+-or-
 <paramref name="assembly" /> was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.AssemblyCatalog.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog" /> class with the specified code base.</summary>
       <param name="codeBase">A string that specifies the code base of the assembly (that is, the path to the assembly file) that contains the attributed <see cref="T:System.Type" /> objects to add to the <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog" /> object.</param>
       <exception cref="T:System.BadImageFormatException">
-        <paramref name="codeBase" /> is not a valid assembly.  
--or-  
+        <paramref name="codeBase" /> is not a valid assembly.
+-or-
 Version 2.0 or earlier of the common language runtime is currently loaded and <paramref name="codeBase" /> was compiled with a later version.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have path discovery permission.</exception>
       <exception cref="T:System.IO.FileLoadException">
-        <paramref name="codeBase" /> could not be loaded.  
--or-  
+        <paramref name="codeBase" /> could not be loaded.
+-or-
 <paramref name="codeBase" /> specified a directory.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="codeBase" /> is <see langword="null" />.</exception>
@@ -611,13 +611,13 @@ Version 2.0 or earlier of the common language runtime is currently loaded and <p
       <param name="codeBase">A string that specifies the code base of the assembly (that is, the path to the assembly file) that contains the attributed <see cref="T:System.Type" /> objects to add to the <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog" /> object.</param>
       <param name="definitionOrigin">The element used by diagnostics to identify the sources of parts.</param>
       <exception cref="T:System.BadImageFormatException">
-        <paramref name="codeBase" /> is not a valid assembly.  
--or-  
+        <paramref name="codeBase" /> is not a valid assembly.
+-or-
 Version 2.0 or later of the common language runtime is currently loaded and <paramref name="codeBase" /> was compiled with a later version.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have path discovery permission.</exception>
       <exception cref="T:System.IO.FileLoadException">
-        <paramref name="codeBase" /> could not be loaded.  
--or-  
+        <paramref name="codeBase" /> could not be loaded.
+-or-
 <paramref name="codeBase" /> specified a directory.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="codebase" /> or <paramref name="definitionOrigin" /> is <see langword="null" />.</exception>
@@ -632,13 +632,13 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <param name="codeBase">A string that specifies the code base of the assembly (that is, the path to the assembly file) that contains the attributed <see cref="T:System.Type" /> objects to add to the <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog" /> object.</param>
       <param name="reflectionContext">The context used by the catalog to interpret types.</param>
       <exception cref="T:System.BadImageFormatException">
-        <paramref name="codeBase" /> is not a valid assembly.  
--or-  
+        <paramref name="codeBase" /> is not a valid assembly.
+-or-
 Version 2.0 or later of the common language runtime is currently loaded and <paramref name="codeBase" /> was compiled with a later version.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have path discovery permission.</exception>
       <exception cref="T:System.IO.FileLoadException">
-        <paramref name="codeBase" /> could not be loaded.  
--or-  
+        <paramref name="codeBase" /> could not be loaded.
+-or-
 <paramref name="codeBase" /> specified a directory.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="codebase" /> or <paramref name="reflectionContext" /> is <see langword="null" />.</exception>
@@ -654,13 +654,13 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <param name="reflectionContext">The context used by the catalog to interpret types.</param>
       <param name="definitionOrigin">The element used by diagnostics to identify the sources of parts.</param>
       <exception cref="T:System.BadImageFormatException">
-        <paramref name="codeBase" /> is not a valid assembly.  
--or-  
+        <paramref name="codeBase" /> is not a valid assembly.
+-or-
 Version 2.0 or later of the common language runtime is currently loaded and <paramref name="codeBase" /> was compiled with a later version.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have path discovery permission.</exception>
       <exception cref="T:System.IO.FileLoadException">
-        <paramref name="codeBase" /> could not be loaded.  
--or-  
+        <paramref name="codeBase" /> could not be loaded.
+-or-
 <paramref name="codeBase" /> specified a directory.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="codebase" />, <paramref name="definitionOrigin" /> or <paramref name="reflectionContext" /> is <see langword="null" />.</exception>
@@ -804,9 +804,9 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Hosting.CatalogExportProvider" /> has been disposed of.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="value" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">This property has already been set.  
- -or-  
- The methods on the <see cref="T:System.ComponentModel.Composition.Hosting.CatalogExportProvider" /> object have already been accessed.</exception>
+      <exception cref="T:System.InvalidOperationException">This property has already been set.
+-or-
+The methods on the <see cref="T:System.ComponentModel.Composition.Hosting.CatalogExportProvider" /> object have already been accessed.</exception>
     </member>
     <member name="T:System.ComponentModel.Composition.Hosting.CatalogExtensions">
       <summary>Provides extension methods for constructing composition services.</summary>
@@ -875,14 +875,14 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
     </member>
     <member name="P:System.ComponentModel.Composition.Hosting.ComposablePartExportProvider.SourceProvider">
       <summary>Gets or sets the export provider that provides access to additional <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects.</summary>
-      <returns>A provider that provides the <see cref="T:System.ComponentModel.Composition.Hosting.ComposablePartExportProvider" /> access to <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects.  
- The default is <see langword="null" />.</returns>
+      <returns>A provider that provides the <see cref="T:System.ComponentModel.Composition.Hosting.ComposablePartExportProvider" /> access to <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects.
+The default is <see langword="null" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Hosting.ComposablePartExportProvider" /> has been disposed of.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="value" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">This property has already been set.  
- -or-  
- The methods on the <see cref="T:System.ComponentModel.Composition.Hosting.ComposablePartExportProvider" /> have already been accessed.</exception>
+      <exception cref="T:System.InvalidOperationException">This property has already been set.
+-or-
+The methods on the <see cref="T:System.ComponentModel.Composition.Hosting.ComposablePartExportProvider" /> have already been accessed.</exception>
     </member>
     <member name="T:System.ComponentModel.Composition.Hosting.CompositionBatch">
       <summary>Represents a set of <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePart" /> objects which will be added or removed from the container in a single transactional composition.</summary>
@@ -895,8 +895,8 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <param name="partsToAdd">A collection of <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePart" /> objects to add.</param>
       <param name="partsToRemove">A collection of <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePart" /> objects to remove.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="partsToAdd" /> is <see langword="null" />.  
--or-  
+        <paramref name="partsToAdd" /> is <see langword="null" />.
+-or-
 <paramref name="partsToRemove" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.CompositionBatch.AddExport(System.ComponentModel.Composition.Primitives.Export)">
@@ -1151,8 +1151,8 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.DirectoryCatalog.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.DirectoryCatalog" /> class by using <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePartDefinition" /> objects based on all the DLL files in the specified directory path.</summary>
-      <param name="path">The path to the directory to scan for assemblies to add to the catalog.  
- The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
+      <param name="path">The path to the directory to scan for assemblies to add to the catalog.
+The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified <paramref name="path" /> is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
@@ -1163,8 +1163,8 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.DirectoryCatalog.#ctor(System.String,System.ComponentModel.Composition.Primitives.ICompositionElement)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.DirectoryCatalog" /> class by using <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePartDefinition" /> objects based on all the DLL files in the specified directory path with the specified source for parts.</summary>
-      <param name="path">The path to the directory to scan for assemblies to add to the catalog.  
- The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
+      <param name="path">The path to the directory to scan for assemblies to add to the catalog.
+The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
       <param name="definitionOrigin">The element used by diagnostics to identify the source for parts.</param>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified <paramref name="path" /> is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1176,8 +1176,8 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.DirectoryCatalog.#ctor(System.String,System.Reflection.ReflectionContext)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.DirectoryCatalog" /> class by using <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePartDefinition" /> objects based on all the DLL files in the specified directory path, in the specified reflection context.</summary>
-      <param name="path">The path to the directory to scan for assemblies to add to the catalog.  
- The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
+      <param name="path">The path to the directory to scan for assemblies to add to the catalog.
+The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
       <param name="reflectionContext">The context used to create parts.</param>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified <paramref name="path" /> is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1189,8 +1189,8 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.DirectoryCatalog.#ctor(System.String,System.Reflection.ReflectionContext,System.ComponentModel.Composition.Primitives.ICompositionElement)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.DirectoryCatalog" /> class by  using <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePartDefinition" /> objects based on all the DLL files in the specified directory path, in the specified reflection context.</summary>
-      <param name="path">The path to the directory to scan for assemblies to add to the catalog.  
- The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
+      <param name="path">The path to the directory to scan for assemblies to add to the catalog.
+The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
       <param name="reflectionContext">The context used to create parts.</param>
       <param name="definitionOrigin">The element used by diagnostics to identify the source for parts.</param>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified <paramref name="path" /> is invalid (for example, it is on an unmapped drive).</exception>
@@ -1203,23 +1203,23 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.DirectoryCatalog.#ctor(System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.DirectoryCatalog" /> class by using <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePartDefinition" /> objects that match a specified search pattern in the specified directory path.</summary>
-      <param name="path">The path to the directory to scan for assemblies to add to the catalog.  
- The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
+      <param name="path">The path to the directory to scan for assemblies to add to the catalog.
+The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
       <param name="searchPattern">The search string. The format of the string should be the same as specified for the <see cref="M:System.IO.Directory.GetFiles(System.String,System.String)" /> method.</param>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified <paramref name="path" /> is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> or <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more implementation-specific invalid characters.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more implementation-specific invalid characters.
+-or-
 <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified <paramref name="path" />, file name, or both exceed the system-defined maximum length.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.DirectoryCatalog.#ctor(System.String,System.String,System.ComponentModel.Composition.Primitives.ICompositionElement)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.DirectoryCatalog" /> class by using <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePartDefinition" /> objects based on the specified search pattern in the specified directory path with the specified source for parts.</summary>
-      <param name="path">The path to the directory to scan for assemblies to add to the catalog.  
- The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
+      <param name="path">The path to the directory to scan for assemblies to add to the catalog.
+The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
       <param name="searchPattern">The search string. The format of the string should be the same as specified for the <see cref="M:System.IO.Directory.GetFiles(System.String,System.String)" /> method.</param>
       <param name="definitionOrigin">The element used by diagnostics to identify the source for parts.</param>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified <paramref name="path" /> is invalid (for example, it is on an unmapped drive).</exception>
@@ -1227,15 +1227,15 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
         <paramref name="path" /> or <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more implementation-specific invalid characters.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more implementation-specific invalid characters.
+-or-
 <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified <paramref name="path" />, file name, or both exceed the system-defined maximum length.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.DirectoryCatalog.#ctor(System.String,System.String,System.Reflection.ReflectionContext)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.DirectoryCatalog" /> class by using <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePartDefinition" /> objects based on the specified search pattern in the specified directory path, using the specified reflection context.</summary>
-      <param name="path">The path to the directory to scan for assemblies to add to the catalog.  
- The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
+      <param name="path">The path to the directory to scan for assemblies to add to the catalog.
+The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
       <param name="searchPattern">The search string. The format of the string should be the same as specified for the <see cref="M:System.IO.Directory.GetFiles(System.String,System.String)" /> method.</param>
       <param name="reflectionContext">The context used to create parts.</param>
       <exception cref="T:System.IO.DirectoryNotFoundException">The specified <paramref name="path" /> is invalid (for example, it is on an unmapped drive).</exception>
@@ -1243,15 +1243,15 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
         <paramref name="path" /> or <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more implementation-specific invalid characters.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more implementation-specific invalid characters.
+-or-
 <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified <paramref name="path" />, file name, or both exceed the system-defined maximum length.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.DirectoryCatalog.#ctor(System.String,System.String,System.Reflection.ReflectionContext,System.ComponentModel.Composition.Primitives.ICompositionElement)">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.Hosting.DirectoryCatalog" /> class by using <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePartDefinition" /> objects based on the specified search pattern in the specified directory path, using the specified reflection context.</summary>
-      <param name="path">The path to the directory to scan for assemblies to add to the catalog.  
- The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
+      <param name="path">The path to the directory to scan for assemblies to add to the catalog.
+The path must be absolute or relative to <see cref="P:System.AppDomain.BaseDirectory" />.</param>
       <param name="searchPattern">The search string. The format of the string should be the same as specified for the <see cref="M:System.IO.Directory.GetFiles(System.String,System.String)" /> method.</param>
       <param name="reflectionContext">The context used to create parts.</param>
       <param name="definitionOrigin">The element used by diagnostics to identify the source for parts.</param>
@@ -1260,8 +1260,8 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
         <paramref name="path" /> or <paramref name="searchPattern" /> is <see langword="null" />.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more implementation-specific invalid characters.  
--or-  
+        <paramref name="path" /> is a zero-length string, contains only white space, or contains one or more implementation-specific invalid characters.
+-or-
 <paramref name="searchPattern" /> does not contain a valid pattern.</exception>
       <exception cref="T:System.IO.PathTooLongException">The specified <paramref name="path" />, file name, or both exceed the system-defined maximum length.</exception>
     </member>
@@ -1344,9 +1344,9 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <summary>Returns the export with the contract name derived from the specified type parameter. If there is not exactly one matching export, an exception is thrown.</summary>
       <typeparam name="T">The type parameter of the <see cref="T:System.Lazy`1" /> object to return. The contract name is also derived from this type parameter.</typeparam>
       <returns>The export with the contract name derived from the specified type parameter.</returns>
-      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero <see cref="T:System.Lazy`1" /> objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.  
- -or-  
- There is more than one <see cref="T:System.Lazy`1" /> object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.</exception>
+      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero <see cref="T:System.Lazy`1" /> objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.
+-or-
+There is more than one <see cref="T:System.Lazy`1" /> object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object has been disposed of.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.ExportProvider.GetExport``1(System.String)">
@@ -1354,9 +1354,9 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <param name="contractName">The contract name of the <see cref="T:System.Lazy`1" /> object to return, or <see langword="null" /> or an empty string ("") to use the default contract name.</param>
       <typeparam name="T">The type parameter of the <see cref="T:System.Lazy`1" /> object to return.</typeparam>
       <returns>The export with the specified contract name.</returns>
-      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero <see cref="T:System.Lazy`1" /> objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.  
- -or-  
- There is more than one <see cref="T:System.Lazy`1" /> object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.</exception>
+      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero <see cref="T:System.Lazy`1" /> objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.
+-or-
+There is more than one <see cref="T:System.Lazy`1" /> object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object has been disposed of.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.ExportProvider.GetExport``2">
@@ -1364,9 +1364,9 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <typeparam name="T">The type parameter of the <see cref="T:System.Lazy`2" /> object to return. The contract name is also derived from this type parameter.</typeparam>
       <typeparam name="TMetadataView">The type of the metadata view of the <see cref="T:System.Lazy`2" /> object to return.</typeparam>
       <returns>System.Lazy`2</returns>
-      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero <see cref="T:System.Lazy`2" /> objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.  
- -or-  
- There is more than one <see cref="T:System.Lazy`2" /> object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.</exception>
+      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero <see cref="T:System.Lazy`2" /> objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.
+-or-
+There is more than one <see cref="T:System.Lazy`2" /> object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object has been disposed of.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="TMetadataView" /> is not a valid metadata view type.</exception>
@@ -1377,9 +1377,9 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <typeparam name="T">The type parameter of the <see cref="T:System.Lazy`2" /> object to return.</typeparam>
       <typeparam name="TMetadataView">The type of the metadata view of the <see cref="T:System.Lazy`2" /> object to return.</typeparam>
       <returns>The export with the specified contract name.</returns>
-      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero <see cref="T:System.Lazy`2" /> objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.  
- -or-  
- There is more than one <see cref="T:System.Lazy`2" /> object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.</exception>
+      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero <see cref="T:System.Lazy`2" /> objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.
+-or-
+There is more than one <see cref="T:System.Lazy`2" /> object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object has been disposed of.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="TMetadataView" /> is not a valid metadata view type.</exception>
@@ -1388,9 +1388,9 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <summary>Returns the exported object with the contract name derived from the specified type parameter. If there is not exactly one matching exported object, an exception is thrown.</summary>
       <typeparam name="T">The type of the exported object to return. The contract name is also derived from this type parameter.</typeparam>
       <returns>The exported object with the contract name derived from the specified type parameter.</returns>
-      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero exported objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.  
- -or-  
- There is more than one exported object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.</exception>
+      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero exported objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.
+-or-
+There is more than one exported object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object has been disposed of.</exception>
       <exception cref="T:System.ComponentModel.Composition.CompositionContractMismatchException">The underlying exported object cannot be cast to <paramref name="T" />.</exception>
       <exception cref="T:System.ComponentModel.Composition.CompositionException">An error occurred during composition. <see cref="P:System.ComponentModel.Composition.CompositionException.Errors" /> will contain a collection of errors that occurred.</exception>
@@ -1400,9 +1400,9 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <param name="contractName">The contract name of the exported object to return, or <see langword="null" /> or an empty string ("") to use the default contract name.</param>
       <typeparam name="T">The type of the exported object to return.</typeparam>
       <returns>The exported object with the specified contract name.</returns>
-      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero exported objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.  
- -or-  
- There is more than one exported object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.</exception>
+      <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">There are zero exported objects with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.
+-or-
+There is more than one exported object with the contract name derived from <paramref name="T" /> in the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" /> object has been disposed of.</exception>
       <exception cref="T:System.ComponentModel.Composition.CompositionContractMismatchException">The underlying exported object cannot be cast to <paramref name="T" />.</exception>
       <exception cref="T:System.ComponentModel.Composition.CompositionException">An error occurred during composition. <see cref="P:System.ComponentModel.Composition.CompositionException.Errors" /> will contain a collection of errors that occurred.</exception>
@@ -1448,8 +1448,8 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <param name="definition">The object that defines the conditions of the <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects to get.</param>
       <returns>A collection of all the <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects matching the condition specified by <paramref name="definition" />.</returns>
       <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">
-        <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" /> and there are zero <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects that match the conditions of the specified <see cref="T:System.ComponentModel.Composition.Primitives.ImportDefinition" />.  
--or-  
+        <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" /> and there are zero <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects that match the conditions of the specified <see cref="T:System.ComponentModel.Composition.Primitives.ImportDefinition" />.
+-or-
 <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ZeroOrOne" /> or <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" /> and there is more than one <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> object that matches the conditions of the specified <see cref="T:System.ComponentModel.Composition.Primitives.ImportDefinition" />.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="definition" /> is <see langword="null" />.</exception>
@@ -1460,12 +1460,12 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
       <param name="atomicComposition">The transactional container for the composition.</param>
       <returns>A collection of all the <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects matching the condition specified by <paramref name="definition" /> and <paramref name="atomicComposition" />.</returns>
       <exception cref="T:System.ComponentModel.Composition.ImportCardinalityMismatchException">
-        <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" /> and there are zero <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects that match the conditions of the specified <see cref="T:System.ComponentModel.Composition.Primitives.ImportDefinition" />.  
--or-  
+        <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" /> and there are zero <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects that match the conditions of the specified <see cref="T:System.ComponentModel.Composition.Primitives.ImportDefinition" />.
+-or-
 <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ZeroOrOne" /> or <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" /> and there is more than one <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> object that matches the conditions of the specified <see cref="T:System.ComponentModel.Composition.Primitives.ImportDefinition" />.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="definition" /> is <see langword="null" />.  
--or-  
+        <paramref name="definition" /> is <see langword="null" />.
+-or-
 <paramref name="atomicComposition" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.ExportProvider.GetExports(System.Type,System.Type,System.String)">
@@ -1746,8 +1746,8 @@ contain a collection of errors that occurred.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="types" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="types" /> contains an element that is <see langword="null" />.  
--or-  
+        <paramref name="types" /> contains an element that is <see langword="null" />.
+-or-
 <paramref name="types" /> contains an element that was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.TypeCatalog.#ctor(System.Collections.Generic.IEnumerable{System.Type},System.ComponentModel.Composition.Primitives.ICompositionElement)">
@@ -1757,8 +1757,8 @@ contain a collection of errors that occurred.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="types" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="types" /> contains an element that is <see langword="null" />.  
--or-  
+        <paramref name="types" /> contains an element that is <see langword="null" />.
+-or-
 <paramref name="types" /> contains an element that was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.TypeCatalog.#ctor(System.Collections.Generic.IEnumerable{System.Type},System.Reflection.ReflectionContext)">
@@ -1768,8 +1768,8 @@ contain a collection of errors that occurred.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="types" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="types" /> contains an element that is <see langword="null" />.  
--or-  
+        <paramref name="types" /> contains an element that is <see langword="null" />.
+-or-
 <paramref name="types" /> contains an element that was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.TypeCatalog.#ctor(System.Collections.Generic.IEnumerable{System.Type},System.Reflection.ReflectionContext,System.ComponentModel.Composition.Primitives.ICompositionElement)">
@@ -1780,8 +1780,8 @@ contain a collection of errors that occurred.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="types" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="types" /> contains an element that is <see langword="null" />.  
--or-  
+        <paramref name="types" /> contains an element that is <see langword="null" />.
+-or-
 <paramref name="types" /> contains an element that was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.TypeCatalog.#ctor(System.Type[])">
@@ -1790,8 +1790,8 @@ contain a collection of errors that occurred.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="types" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="types" /> contains an element that is <see langword="null" />.  
--or-  
+        <paramref name="types" /> contains an element that is <see langword="null" />.
+-or-
 <paramref name="types" /> contains an element that was loaded in the reflection-only context.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Hosting.TypeCatalog.Dispose(System.Boolean)">
@@ -1827,7 +1827,7 @@ contain a collection of errors that occurred.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.ICompositionService" /> has been disposed.</exception>
     </member>
     <member name="T:System.ComponentModel.Composition.ImportAttribute">
-      <summary>Specifies that a property, field, or parameter value should be provided by the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.object</summary>
+      <summary>Specifies that a property, field, or parameter value should be provided by the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />.object.</summary>
     </member>
     <member name="M:System.ComponentModel.Composition.ImportAttribute.#ctor">
       <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.Composition.ImportAttribute" /> class, importing the export with the default contract name.</summary>
@@ -1865,10 +1865,10 @@ contain a collection of errors that occurred.</exception>
     </member>
     <member name="P:System.ComponentModel.Composition.ImportAttribute.RequiredCreationPolicy">
       <summary>Gets or sets a value that indicates that the importer requires a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" /> for the exports used to satisfy this import.</summary>
-      <returns>One of the following values:  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.Any" />, if the importer does not require a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" />. This is the default.  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.Shared" /> to require that all used exports be shared by all parts in the container.  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.NonShared" /> to require that all used exports be non-shared in a container. In this case, each part receives their own instance.</returns>
+      <returns>One of the following values:
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.Any" />, if the importer does not require a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" />. This is the default.
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.Shared" /> to require that all used exports be shared by all parts in the container.
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.NonShared" /> to require that all used exports be non-shared in a container. In this case, each part receives their own instance.</returns>
     </member>
     <member name="P:System.ComponentModel.Composition.ImportAttribute.Source">
       <summary>Gets or sets a value that specifies the scopes from which this import may be satisfied.</summary>
@@ -1928,7 +1928,7 @@ contain a collection of errors that occurred.</exception>
     <member name="P:System.ComponentModel.Composition.ImportManyAttribute.AllowRecomposition">
       <summary>Gets or sets a value indicating whether the decorated property or field will be recomposed when exports that provide the matching contract change.</summary>
       <returns>
-        <see langword="true" /> if the property or field allows for recomposition when exports that provide the same <see cref="P:System.ComponentModel.Composition.ImportManyAttribute.ContractName" /> are added or removed from the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the property or field allows for recomposition when exports that provide the same <see cref="P:System.ComponentModel.Composition.ImportManyAttribute.ContractName" /> are added or removed from the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer" />; otherwise, <see langword="false" />.
 The default value is <see langword="false" />.</returns>
     </member>
     <member name="P:System.ComponentModel.Composition.ImportManyAttribute.ContractName">
@@ -1941,10 +1941,10 @@ The default value is <see langword="false" />.</returns>
     </member>
     <member name="P:System.ComponentModel.Composition.ImportManyAttribute.RequiredCreationPolicy">
       <summary>Gets or sets a value that indicates that the importer requires a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" /> for the exports used to satisfy this import.</summary>
-      <returns>One of the following values:  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.Any" />, if the importer does not require a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" />. This is the default.  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.Shared" /> to require that all used exports be shared by all parts in the container.  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.NonShared" /> to require that all used exports be non-shared in a container. In this case, each part receives their own instance.</returns>
+      <returns>One of the following values:
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.Any" />, if the importer does not require a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" />. This is the default.
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.Shared" /> to require that all used exports be shared by all parts in the container.
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.NonShared" /> to require that all used exports be non-shared in a container. In this case, each part receives their own instance.</returns>
     </member>
     <member name="P:System.ComponentModel.Composition.ImportManyAttribute.Source">
       <summary>Gets or sets a value that specifies the scopes from which this import may be satisfied.</summary>
@@ -2081,17 +2081,17 @@ The default value is <see langword="false" />.</returns>
       <param name="exports">A collection of <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects of which to set the import described by <paramref name="definition" />.</param>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePart" /> object has been disposed of.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="definition" /> is <see langword="null" />.  
--or-  
+        <paramref name="definition" /> is <see langword="null" />.
+-or-
 <paramref name="exports" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Composition.Primitives.ComposablePartException">An error occurred setting the import described by the <see cref="T:System.ComponentModel.Composition.Primitives.ImportDefinition" /> object.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="definition" /> did not originate from the <see cref="P:System.ComponentModel.Composition.Primitives.ComposablePart.ImportDefinitions" /> property on the <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePart" />.  
--or-  
-<paramref name="exports" /> contains an element that is <see langword="null" />.  
--or-  
-<paramref name="exports" /> is empty and <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" />.  
--or-  
+        <paramref name="definition" /> did not originate from the <see cref="P:System.ComponentModel.Composition.Primitives.ComposablePart.ImportDefinitions" /> property on the <see cref="T:System.ComponentModel.Composition.Primitives.ComposablePart" />.
+-or-
+<paramref name="exports" /> contains an element that is <see langword="null" />.
+-or-
+<paramref name="exports" /> is empty and <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" />.
+-or-
 <paramref name="exports" /> contains more than one element and <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.Cardinality" /> is <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ZeroOrOne" /> or <see cref="F:System.ComponentModel.Composition.Primitives.ImportCardinality.ExactlyOne" />.</exception>
       <exception cref="T:System.InvalidOperationException">
         <see cref="M:System.ComponentModel.Composition.Primitives.ComposablePart.SetImport(System.ComponentModel.Composition.Primitives.ImportDefinition,System.Collections.Generic.IEnumerable{System.ComponentModel.Composition.Primitives.Export})" /> has been previously called and <see cref="P:System.ComponentModel.Composition.Primitives.ImportDefinition.IsRecomposable" /> is <see langword="false" />.</exception>
@@ -2221,10 +2221,10 @@ The default value is <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="contractName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="contractName" /> is an empty string ("").  
--or-  
-<paramref name="requiredMetadata" /> contains an element that is <see langword="null" />.  
--or-  
+        <paramref name="contractName" /> is an empty string ("").
+-or-
+<paramref name="requiredMetadata" /> contains an element that is <see langword="null" />.
+-or-
 <paramref name="cardinality" /> is not one of the <see cref="T:System.ComponentModel.Composition.Primitives.ImportCardinality" /> values.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Primitives.ContractBasedImportDefinition.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Type}},System.ComponentModel.Composition.Primitives.ImportCardinality,System.Boolean,System.Boolean,System.ComponentModel.Composition.CreationPolicy,System.Collections.Generic.IDictionary{System.String,System.Object})">
@@ -2242,10 +2242,10 @@ The default value is <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="contractName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="contractName" /> is an empty string ("").  
--or-  
-<paramref name="requiredMetadata" /> contains an element that is <see langword="null" />.  
--or-  
+        <paramref name="contractName" /> is an empty string ("").
+-or-
+<paramref name="requiredMetadata" /> contains an element that is <see langword="null" />.
+-or-
 <paramref name="cardinality" /> is not one of the <see cref="T:System.ComponentModel.Composition.Primitives.ImportCardinality" /> values.</exception>
     </member>
     <member name="P:System.ComponentModel.Composition.Primitives.ContractBasedImportDefinition.Constraint">
@@ -2262,10 +2262,10 @@ The default value is <see langword="false" />.</returns>
     </member>
     <member name="P:System.ComponentModel.Composition.Primitives.ContractBasedImportDefinition.RequiredCreationPolicy">
       <summary>Gets or sets a value that indicates that the importer requires a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" /> for the exports used to satisfy this import.</summary>
-      <returns>One of the following values:  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.Any" />, if the importer does not require a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" />.  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.Shared" /> to require that all exports used should be shared by all importers in the container.  
- <see cref="F:System.ComponentModel.Composition.CreationPolicy.NonShared" /> to require that all exports used should be non-shared in the container. In this case, each importer receives a separate instance.</returns>
+      <returns>One of the following values:
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.Any" />, if the importer does not require a specific <see cref="T:System.ComponentModel.Composition.CreationPolicy" />.
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.Shared" /> to require that all exports used should be shared by all importers in the container.
+<see cref="F:System.ComponentModel.Composition.CreationPolicy.NonShared" /> to require that all exports used should be non-shared in the container. In this case, each importer receives a separate instance.</returns>
     </member>
     <member name="P:System.ComponentModel.Composition.Primitives.ContractBasedImportDefinition.RequiredMetadata">
       <summary>Gets the metadata names of the export required by the import definition.</summary>
@@ -2290,8 +2290,8 @@ The default value is <see langword="false" />.</returns>
       <param name="definition">An object that describes the contract that the <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> object satisfies.</param>
       <param name="exportedValueGetter">A method that is called to create the exported object of the <see cref="T:System.ComponentModel.Composition.Primitives.Export" />. This delays the creation of the object until the <see cref="P:System.ComponentModel.Composition.Primitives.Export.Value" /> property is called.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="definition" /> is <see langword="null" />.  
--or-  
+        <paramref name="definition" /> is <see langword="null" />.
+-or-
 <paramref name="exportedObjectGetter" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.ComponentModel.Composition.Primitives.Export.#ctor(System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Func{System.Object})">
@@ -2300,8 +2300,8 @@ The default value is <see langword="false" />.</returns>
       <param name="metadata">The metadata of the <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> object or <see langword="null" /> to set the <see cref="P:System.ComponentModel.Composition.Primitives.Export.Metadata" /> property to an empty, read-only <see cref="T:System.Collections.Generic.IDictionary`2" /> object.</param>
       <param name="exportedValueGetter">A method that is called to create the exported object of the <see cref="T:System.ComponentModel.Composition.Primitives.Export" />. This delays the creation of the object until the <see cref="P:System.ComponentModel.Composition.Primitives.Export.Value" /> method is called.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="contractName" /> is <see langword="null" />.  
--or-  
+        <paramref name="contractName" /> is <see langword="null" />.
+-or-
 <paramref name="exportedObjectGetter" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="contractName" /> is an empty string ("").</exception>
@@ -2311,8 +2311,8 @@ The default value is <see langword="false" />.</returns>
       <param name="contractName">The contract name of the <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> object.</param>
       <param name="exportedValueGetter">A method that is called to create the exported object of the <see cref="T:System.ComponentModel.Composition.Primitives.Export" />. This delays the creation of the object until the <see cref="P:System.ComponentModel.Composition.Primitives.Export.Value" /> method is called.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="contractName" /> is <see langword="null" />.  
--or-  
+        <paramref name="contractName" /> is <see langword="null" />.
+-or-
 <paramref name="exportedObjectGetter" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="contractName" /> is an empty string ("").</exception>

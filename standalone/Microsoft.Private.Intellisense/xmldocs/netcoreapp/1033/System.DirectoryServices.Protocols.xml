@@ -120,41 +120,41 @@
       <returns>The decoded data.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="format" /> parameter contains a null reference (<see langword="Nothing" /> in Visual Basic).</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="format" /> parameter contains an undefined character.</exception>
-      <exception cref="T:System.DirectoryServices.Protocols.BerConversionException">The underlying decoding fails. The decoding rules include the following.  
+      <exception cref="T:System.DirectoryServices.Protocols.BerConversionException">The underlying decoding fails. The decoding rules include the following.
   Code  
-
+  
   Corresponding Result  
-
+  
   '{' '}' '[' ']' 'n' 'x'  
-
+  
   No corresponding result  
-
+  
   'i' 'e'  
-
+  
   int  
-
+  
   'b'  
-
+  
   bool  
-
+  
   'a'  
-
+  
   string  
-
+  
   'O'  
-
+  
   byte[]  
-
+  
   'B'  
-
+  
   byte[] containing bit strings  
-
+  
   'v'  
-
+  
   string[]  
-
+  
   'V'  
-
+  
   byte[][]</exception>
     </member>
     <member name="M:System.DirectoryServices.Protocols.BerConverter.Encode(System.String,System.Object[])">
@@ -346,7 +346,7 @@
         <paramref name="array" /> contains a null reference (<see langword="Nothing" /> in Visual Basic).</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
-      <exception cref="T:System.ArgumentException">This exception can occur under one of the following conditions:  
+      <exception cref="T:System.ArgumentException">This exception can occur under one of the following conditions:
 
 <paramref name="array" /> is multidimensional.
 
@@ -483,9 +483,9 @@ The number of elements in the source <see cref="T:System.DirectoryServices.Proto
     <member name="M:System.DirectoryServices.Protocols.DirectoryAttributeCollection.OnValidate(System.Object)">
       <summary>The <see cref="M:System.DirectoryServices.Protocols.DirectoryAttributeCollection.OnValidate(System.Object)" /> method verifies that <paramref name="value" /> is a <see cref="T:System.DirectoryServices.Protocols.DirectoryAttribute" /> object or specifies an add operation.</summary>
       <param name="value">The object to evaluate.</param>
-      <exception cref="T:System.ArgumentException">This exception can occur under one of the following conditions:  
+      <exception cref="T:System.ArgumentException">This exception can occur under one of the following conditions:
 
-<paramref name="value" /> is a null reference (<see langword="Nothing" /> in Visual Basic).  
+<paramref name="value" /> is a null reference (<see langword="Nothing" /> in Visual Basic).
 
 <paramref name="value" /> is not a <see cref="T:System.DirectoryServices.Protocols.DirectoryAttribute" /> object.</exception>
     </member>
@@ -678,7 +678,7 @@ The number of elements in the source <see cref="T:System.DirectoryServices.Proto
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="array" /> is multidimensional.
--or-  
+-or-
 The number of elements in the source <see cref="T:System.DirectoryServices.Protocols.DirectoryControlCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.DirectoryServices.Protocols.DirectoryControlCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -1161,8 +1161,8 @@ The number of elements in the source <see cref="T:System.DirectoryServices.Proto
     </member>
     <member name="M:System.DirectoryServices.Protocols.LdapDirectoryIdentifier.#ctor(System.String)">
       <summary>The <see cref="M:System.DirectoryServices.Protocols.LdapDirectoryIdentifier.#ctor(System.String)" /> constructor creates an instance of the <see cref="T:System.DirectoryServices.Protocols.LdapDirectoryIdentifier" /> class using the specified server.</summary>
-      <param name="server">The server ID. A string specifying the server which can be a domain name, LDAP server name or dotted strings representing the IP address of the LDAP server, or <see langword="null" />. If <see langword="null" />, it represents the identity of any domain controller in the domain associated with the computer account.  
- Optionally, this parameter may also include a port number, separated from the ID itself by a colon (:).</param>
+      <param name="server">The server ID. A string specifying the server which can be a domain name, LDAP server name or dotted strings representing the IP address of the LDAP server, or <see langword="null" />. If <see langword="null" />, it represents the identity of any domain controller in the domain associated with the computer account.
+Optionally, this parameter may also include a port number, separated from the ID itself by a colon (:).</param>
       <exception cref="T:System.ArgumentException">Thrown if <paramref name="server" /> has space.</exception>
     </member>
     <member name="M:System.DirectoryServices.Protocols.LdapDirectoryIdentifier.#ctor(System.String,System.Boolean,System.Boolean)">
@@ -1625,7 +1625,7 @@ The number of elements in the source <see cref="T:System.DirectoryServices.Proto
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="values" /> is multidimensional.
--or-  
+-or-
 The number of elements in the source <see cref="T:System.DirectoryServices.Protocols.PartialResultsCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="values" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.DirectoryServices.Protocols.PartialResultsCollection" /> cannot be cast automatically to the type of the destination <paramref name="values" />.</exception>
     </member>
@@ -1981,7 +1981,7 @@ The number of elements in the source <see cref="T:System.DirectoryServices.Proto
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="array" /> is multidimensional.
--or-  
+-or-
 The number of elements in the source <see cref="T:System.DirectoryServices.Protocols.SearchResultAttributeCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.DirectoryServices.Protocols.SearchResultAttributeCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -2028,7 +2028,7 @@ The number of elements in the source <see cref="T:System.DirectoryServices.Proto
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="values" /> is multidimensional.
--or-  
+-or-
 The number of elements in the source <see cref="T:System.DirectoryServices.Protocols.SearchResultEntryCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="values" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.DirectoryServices.Protocols.SearchResultEntryCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -2072,7 +2072,7 @@ The number of elements in the source <see cref="T:System.DirectoryServices.Proto
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="values" /> is multidimensional.
--or-  
+-or-
 The number of elements in the source <see cref="T:System.DirectoryServices.Protocols.SearchResultReferenceCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="values" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.DirectoryServices.Protocols.SearchResultReferenceCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>

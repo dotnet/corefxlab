@@ -28,12 +28,12 @@
       <param name="item">The element to change the key of.</param>
       <param name="newKey">The new key for <paramref name="item" />.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="item" /> is <see langword="null" />.  
--or-  
+        <paramref name="item" /> is <see langword="null" />.
+-or-
 <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="item" /> is not found.  
--or-  
+        <paramref name="item" /> is not found.
+-or-
 <paramref name="key" /> already exists in the <see cref="T:System.Collections.ObjectModel.KeyedCollection`2" />.</exception>
     </member>
     <member name="M:System.Collections.ObjectModel.KeyedCollection`2.ClearItems">
@@ -65,8 +65,8 @@
       <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
       <param name="item">The object to insert.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than 0.  
--or-  
+        <paramref name="index" /> is less than 0.
+-or-
 <paramref name="index" /> is greater than <see cref="P:System.Collections.ObjectModel.Collection`1.Count" />.</exception>
     </member>
     <member name="P:System.Collections.ObjectModel.KeyedCollection`2.Item(`0)">
@@ -218,10 +218,10 @@
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="arrayIndex" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-The number of elements in the source collection is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+The number of elements in the source collection is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.
+-or-
 Type <paramref name="T" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.Count">
@@ -268,8 +268,8 @@ Type <paramref name="T" /> cannot be cast automatically to the type of the desti
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source collection is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.KeyCollection.System#Collections#ICollection#IsSynchronized">
@@ -375,10 +375,10 @@ Type <paramref name="T" /> cannot be cast automatically to the type of the desti
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-The number of elements in the source dictionary is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+The number of elements in the source dictionary is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.
+-or-
 The type of the source dictionary cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#ICollection#IsSynchronized">
@@ -428,9 +428,9 @@ The type of the source dictionary cannot be cast automatically to the type of th
       <returns>The element that has the specified key.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.NotSupportedException">The property is set.  
- -or-  
- The property is set, <paramref name="key" /> does not exist in the collection, and the dictionary has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The property is set.
+-or-
+The property is set, <paramref name="key" /> does not exist in the collection, and the dictionary has a fixed size.</exception>
     </member>
     <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.System#Collections#IDictionary#Keys">
       <summary>Gets a collection that contains the keys of the dictionary.</summary>
@@ -470,10 +470,10 @@ The type of the source dictionary cannot be cast automatically to the type of th
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="arrayIndex" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
-The number of elements in the source collection is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
+The number of elements in the source collection is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.
+-or-
 Type <paramref name="T" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.Count">
@@ -520,8 +520,8 @@ Type <paramref name="T" /> cannot be cast automatically to the type of the desti
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than 0.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source collection is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Collections.ObjectModel.ReadOnlyDictionary`2.ValueCollection.System#Collections#ICollection#IsSynchronized">
@@ -593,7 +593,7 @@ The number of elements in the source collection is greater than the available sp
       <summary>An item was replaced in the collection.</summary>
     </member>
     <member name="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset">
-      <summary>The content of the collection was cleared.</summary>
+      <summary>The contents of the collection changed dramatically.</summary>
     </member>
     <member name="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs">
       <summary>Provides data for the <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" /> event.</summary>

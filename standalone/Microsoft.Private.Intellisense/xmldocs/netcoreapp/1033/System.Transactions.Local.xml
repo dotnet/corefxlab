@@ -507,8 +507,8 @@ When you try to promote a transaction that was created with the <see langword="S
     <member name="M:System.Transactions.TransactionInterop.GetTransmitterPropagationToken(System.Transactions.Transaction)">
       <summary>Generates a propagation token for the specified <see cref="T:System.Transactions.Transaction" />.</summary>
       <param name="transaction">A transaction to be marshaled into a propagation token.</param>
-      <returns>This method, together with the <see cref="M:System.Transactions.TransactionInterop.GetTransactionFromTransmitterPropagationToken(System.Byte[])" /> method, provide functionality for Transmitter/Receiver propagation, in which the transaction is "pulled" from the remote machine when the latter is called to unmarshal the transaction.  
- For more information on different propagation models, see <see cref="T:System.Transactions.TransactionInterop" /> class.</returns>
+      <returns>This method, together with the <see cref="M:System.Transactions.TransactionInterop.GetTransactionFromTransmitterPropagationToken(System.Byte[])" /> method, provide functionality for Transmitter/Receiver propagation, in which the transaction is "pulled" from the remote machine when the latter is called to unmarshal the transaction.
+For more information on different propagation models, see <see cref="T:System.Transactions.TransactionInterop" /> class.</returns>
     </member>
     <member name="M:System.Transactions.TransactionInterop.GetWhereabouts">
       <summary>Gets the Whereabouts of the distributed transaction manager that <see cref="N:System.Transactions" /> uses.</summary>
@@ -547,10 +547,10 @@ When you try to promote a transaction that was created with the <see langword="S
       <param name="enlistmentNotification">A resource object that implements <see cref="T:System.Transactions.IEnlistmentNotification" /> to receive notifications.</param>
       <returns>An <see cref="T:System.Transactions.Enlistment" /> that describes the enlistment.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="recoveryInformation" /> is invalid.  
--or-  
-Transaction Manager information in <paramref name="recoveryInformation" /> does not match the configured transaction manager.  
--or-  
+        <paramref name="recoveryInformation" /> is invalid.
+-or-
+Transaction Manager information in <paramref name="recoveryInformation" /> does not match the configured transaction manager.
+-or-
 <paramref name="RecoveryInformation" /> is not recognized by <see cref="N:System.Transactions" />.</exception>
       <exception cref="T:System.InvalidOperationException">
         <see cref="M:System.Transactions.TransactionManager.RecoveryComplete(System.Guid)" /> has already been called for the specified <paramref name="resourceManagerIdentifier" />. The reenlistment is rejected.</exception>
@@ -653,15 +653,15 @@ Transaction Manager information in <paramref name="recoveryInformation" /> does 
       <param name="interopOption">An instance of the <see cref="T:System.Transactions.EnterpriseServicesInteropOption" /> enumeration that describes how the associated transaction interacts with COM+ transactions.</param>
     </member>
     <member name="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction,System.TimeSpan,System.Transactions.TransactionScopeAsyncFlowOption)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Initializes a new instance of the <see cref="T:System.Transactions.TransactionScope" /> class with the specified timeout value, and sets the specified transaction as the ambient transaction, so that transactional work done inside the scope uses this transaction.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Initializes a new instance of the <see cref="T:System.Transactions.TransactionScope" /> class with the specified timeout value, and sets the specified transaction as the ambient transaction, so that transactional work done inside the scope uses this transaction.</summary>
       <param name="transactionToUse">The transaction to be set as the ambient transaction, so that transactional work done inside the scope uses this transaction.</param>
       <param name="scopeTimeout">The <see cref="T:System.TimeSpan" /> after which the transaction scope times out and aborts the transaction.</param>
       <param name="asyncFlowOption">An instance of the <see cref="T:System.Transactions.TransactionScopeAsyncFlowOption" /> enumeration that describes whether the ambient transaction associated with the transaction scope will flow across thread continuations when using Task or async/await .NET async programming patterns.</param>
     </member>
     <member name="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction,System.Transactions.TransactionScopeAsyncFlowOption)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Initializes a new instance of the <see cref="T:System.Transactions.TransactionScope" /> class and sets the specified transaction as the ambient transaction, so that transactional work done inside the scope uses this transaction.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Initializes a new instance of the <see cref="T:System.Transactions.TransactionScope" /> class and sets the specified transaction as the ambient transaction, so that transactional work done inside the scope uses this transaction.</summary>
       <param name="transactionToUse">The transaction to be set as the ambient transaction, so that transactional work done inside the scope uses this transaction.</param>
       <param name="asyncFlowOption">An instance of the <see cref="T:System.Transactions.TransactionScopeAsyncFlowOption" /> enumeration that describes whether the ambient transaction associated with the transaction scope will flow across thread continuations when using Task or async/await .NET async programming patterns.</param>
     </member>
@@ -696,8 +696,8 @@ Transaction Manager information in <paramref name="recoveryInformation" /> does 
       <param name="interopOption">An instance of the <see cref="T:System.Transactions.EnterpriseServicesInteropOption" /> enumeration that describes how the associated transaction interacts with COM+ transactions.</param>
     </member>
     <member name="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.Transactions.TransactionOptions,System.Transactions.TransactionScopeAsyncFlowOption)">
-      <summary>[Supported in the .NET Framework 4.5.1 and later versions]  
- Initializes a new instance of the <see cref="T:System.Transactions.TransactionScope" /> class with the specified requirements and asynchronous flow option.</summary>
+      <summary>[Supported in the .NET Framework 4.5.1 and later versions]
+Initializes a new instance of the <see cref="T:System.Transactions.TransactionScope" /> class with the specified requirements and asynchronous flow option.</summary>
       <param name="scopeOption">An instance of the <see cref="T:System.Transactions.TransactionScopeOption" /> enumeration that describes the transaction requirements associated with this transaction scope.</param>
       <param name="transactionOptions">A <see cref="T:System.Transactions.TransactionOptions" /> structure that describes the transaction options to use if a new transaction is created. If an existing transaction is used, the timeout value in this parameter applies to the transaction scope. If that time expires before the scope is disposed, the transaction is aborted.</param>
       <param name="asyncFlowOption">An instance of the <see cref="T:System.Transactions.TransactionScopeAsyncFlowOption" /> enumeration that describes whether the ambient transaction associated with the transaction scope will flow across thread continuations when using Task or async/await .NET async programming patterns.</param>

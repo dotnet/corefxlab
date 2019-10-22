@@ -18,13 +18,13 @@
       <param name="offset">The offset, in bytes, in the <paramref name="content" /> parameter used to initialize the <see cref="T:System.Net.Http.ByteArrayContent" />.</param>
       <param name="count">The number of bytes in the <paramref name="content" /> starting from the <paramref name="offset" /> parameter used to initialize the <see cref="T:System.Net.Http.ByteArrayContent" />.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="content" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than zero.  
- -or-  
- The <paramref name="offset" /> parameter is greater than the length of content specified by the <paramref name="content" /> parameter.  
- -or-  
- The <paramref name="count" /> parameter is less than zero.  
- -or-  
- The <paramref name="count" /> parameter is greater than the length of content specified by the <paramref name="content" /> parameter - minus the <paramref name="offset" /> parameter.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than zero.
+-or-
+The <paramref name="offset" /> parameter is greater than the length of content specified by the <paramref name="content" /> parameter.
+-or-
+The <paramref name="count" /> parameter is less than zero.
+-or-
+The <paramref name="count" /> parameter is greater than the length of content specified by the <paramref name="content" /> parameter - minus the <paramref name="offset" /> parameter.</exception>
     </member>
     <member name="M:System.Net.Http.ByteArrayContent.CreateContentReadStreamAsync">
       <summary>Creates an HTTP content stream as an asynchronous operation for reading whose backing store is memory from the <see cref="T:System.Net.Http.ByteArrayContent" />.</summary>
@@ -190,9 +190,9 @@
       <returns>A collection of fieldnames.</returns>
     </member>
     <member name="P:System.Net.Http.Headers.CacheControlHeaderValue.NoStore">
-      <summary>Whether a cache must not store any part of either the HTTP request mressage or any response.</summary>
+      <summary>Whether a cache must not store any part of either the HTTP request message or any response.</summary>
       <returns>
-        <see langword="true" /> if a cache must not store any part of either the HTTP request mressage or any response; otherwise, <see langword="false" />.</returns>
+        <see langword="true" /> if a cache must not store any part of either the HTTP request message or any response; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Net.Http.Headers.CacheControlHeaderValue.NoTransform">
       <summary>Whether a cache or proxy must not change any aspect of the entity-body.</summary>
@@ -714,8 +714,8 @@ New line characters in header values must be followed by a white-space character
     </member>
     <member name="P:System.Net.Http.Headers.HttpRequestHeaders.IfMatch">
       <summary>Gets the value of the <see langword="If-Match" /> header for an HTTP request.</summary>
-      <returns>Returns <see cref="T:System.Net.Http.Headers.HttpHeaderValueCollection`1" />.  
- The value of the <see langword="If-Match" /> header for an HTTP request.</returns>
+      <returns>Returns <see cref="T:System.Net.Http.Headers.HttpHeaderValueCollection`1" />.
+The value of the <see langword="If-Match" /> header for an HTTP request.</returns>
     </member>
     <member name="P:System.Net.Http.Headers.HttpRequestHeaders.IfModifiedSince">
       <summary>Gets or sets the value of the <see langword="If-Modified-Since" /> header for an HTTP request.</summary>
@@ -824,8 +824,8 @@ New line characters in header values must be followed by a white-space character
     </member>
     <member name="P:System.Net.Http.Headers.HttpResponseHeaders.Pragma">
       <summary>Gets the value of the <see langword="Pragma" /> header for an HTTP response.</summary>
-      <returns>Returns <see cref="T:System.Net.Http.Headers.HttpHeaderValueCollection`1" />.  
- The value of the <see langword="Pragma" /> header for an HTTP response.</returns>
+      <returns>Returns <see cref="T:System.Net.Http.Headers.HttpHeaderValueCollection`1" />.
+The value of the <see langword="Pragma" /> header for an HTTP response.</returns>
     </member>
     <member name="P:System.Net.Http.Headers.HttpResponseHeaders.ProxyAuthenticate">
       <summary>Gets the value of the <see langword="Proxy-Authenticate" /> header for an HTTP response.</summary>
@@ -1253,8 +1253,8 @@ New line characters in header values must be followed by a white-space character
       <param name="from">The position at which to start sending data.</param>
       <param name="to">The position at which to stop sending data.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="from" /> is greater than <paramref name="to" />  
--or-  
+        <paramref name="from" /> is greater than <paramref name="to" />
+-or-
 <paramref name="from" /> or <paramref name="to" /> is less than 0.</exception>
     </member>
     <member name="M:System.Net.Http.Headers.RangeHeaderValue.Equals(System.Object)">
@@ -1307,8 +1307,8 @@ New line characters in header values must be followed by a white-space character
       <param name="from">The position at which to start sending data.</param>
       <param name="to">The position at which to stop sending data.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="from" /> is greater than <paramref name="to" />  
--or-  
+        <paramref name="from" /> is greater than <paramref name="to" />
+-or-
 <paramref name="from" /> or <paramref name="to" /> is less than 0.</exception>
     </member>
     <member name="M:System.Net.Http.Headers.RangeItemHeaderValue.Equals(System.Object)">
@@ -2388,7 +2388,7 @@ New line characters in header values must be followed by a white-space character
     </member>
     <member name="P:System.Net.Http.HttpRequestMessage.Version">
       <summary>Gets or sets the HTTP message version.</summary>
-      <returns>The HTTP message version. The default in the .NET Framework and earlier versions of .NET Core is 1.1. In .NET Core 2.1 and later, it is 2.0.</returns>
+      <returns>The HTTP message version. The default value is <c>1.1</c>, unless you're targeting .NET Core 2.1 or 2.2. In that case, the default value is <c>2.0</c>.</returns>
     </member>
     <member name="T:System.Net.Http.HttpResponseMessage">
       <summary>Represents a HTTP response message including the status code and data.</summary>
@@ -2495,10 +2495,10 @@ New line characters in header values must be followed by a white-space character
       <summary>Creates a new instance of the <see cref="T:System.Net.Http.MultipartContent" /> class.</summary>
       <param name="subtype">The subtype of the multipart content.</param>
       <param name="boundary">The boundary string for the multipart content.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="subtype" /> was <see langword="null" /> or an empty string.  
- The <paramref name="boundary" /> was <see langword="null" /> or contains only white space characters.  
- -or-  
- The <paramref name="boundary" /> ends with a space character.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="subtype" /> was <see langword="null" /> or an empty string.
+The <paramref name="boundary" /> was <see langword="null" /> or contains only white space characters.
+-or-
+The <paramref name="boundary" /> ends with a space character.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The length of the <paramref name="boundary" /> was greater than 70.</exception>
     </member>
     <member name="M:System.Net.Http.MultipartContent.Add(System.Net.Http.HttpContent)">
@@ -2544,9 +2544,9 @@ New line characters in header values must be followed by a white-space character
     <member name="M:System.Net.Http.MultipartFormDataContent.#ctor(System.String)">
       <summary>Creates a new instance of the <see cref="T:System.Net.Http.MultipartFormDataContent" /> class.</summary>
       <param name="boundary">The boundary string for the multipart form data content.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="boundary" /> was <see langword="null" /> or contains only white space characters.  
- -or-  
- The <paramref name="boundary" /> ends with a space character.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="boundary" /> was <see langword="null" /> or contains only white space characters.
+-or-
+The <paramref name="boundary" /> ends with a space character.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The length of the <paramref name="boundary" /> was greater than 70.</exception>
     </member>
     <member name="M:System.Net.Http.MultipartFormDataContent.Add(System.Net.Http.HttpContent)">
@@ -2566,9 +2566,9 @@ New line characters in header values must be followed by a white-space character
       <param name="content">The HTTP content to add to the collection.</param>
       <param name="name">The name for the HTTP content to add.</param>
       <param name="fileName">The file name for the HTTP content to add to the collection.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="name" /> was <see langword="null" /> or contains only white space characters.  
- -or-  
- The <paramref name="fileName" /> was <see langword="null" /> or contains only white space characters.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="name" /> was <see langword="null" /> or contains only white space characters.
+-or-
+The <paramref name="fileName" /> was <see langword="null" /> or contains only white space characters.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="content" /> was <see langword="null" />.</exception>
     </member>
     <member name="T:System.Net.Http.ReadOnlyMemoryContent" />
@@ -2624,7 +2624,7 @@ New line characters in header values must be followed by a white-space character
     </member>
     <member name="P:System.Net.Http.SocketsHttpHandler.Properties" />
     <member name="P:System.Net.Http.SocketsHttpHandler.Proxy">
-      <summary>Gets or sets the custom proxy when the <see cref="P:System.Net.Http.SocketsHttpHandler.UseProxy" /> property is <see langword="true" />.</summary>
+      <summary>Gets or sets the custom proxy when the <see cref="P:System.Net.Http.SocketsHttpHandler.UseProxy" /> property is <see langword="true" />.</summary>
       <returns>The custom proxy.</returns>
     </member>
     <member name="P:System.Net.Http.SocketsHttpHandler.ResponseDrainTimeout" />

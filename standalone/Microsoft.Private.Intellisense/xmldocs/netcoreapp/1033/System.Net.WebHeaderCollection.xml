@@ -258,13 +258,13 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="header" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="header" /> does not contain a colon (:) character.  
-The length of <paramref name="value" /> is greater than 65535.  
--or-  
-The name part of <paramref name="header" /> is <see cref="F:System.String.Empty" /> or contains invalid characters.  
--or-  
-<paramref name="header" /> is a restricted header that should be set with a property.  
--or-  
+        <paramref name="header" /> does not contain a colon (:) character.
+The length of <paramref name="value" /> is greater than 65535.
+-or-
+The name part of <paramref name="header" /> is <see cref="F:System.String.Empty" /> or contains invalid characters.
+-or-
+<paramref name="header" /> is a restricted header that should be set with a property.
+-or-
 The value part of <paramref name="header" /> contains invalid characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The length the string after the colon (:) is greater than 65535.</exception>
     </member>
@@ -273,10 +273,10 @@ The value part of <paramref name="header" /> contains invalid characters.</excep
       <param name="name">The header to add to the collection.</param>
       <param name="value">The content of the header.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or contains invalid characters.  
--or-  
-<paramref name="name" /> is a restricted header that must be set with a property setting.  
--or-  
+        <paramref name="name" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or contains invalid characters.
+-or-
+<paramref name="name" /> is a restricted header that must be set with a property setting.
+-or-
 <paramref name="value" /> contains invalid characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The length of <paramref name="value" /> is greater than 65535.</exception>
     </member>
@@ -285,8 +285,8 @@ The value part of <paramref name="header" /> contains invalid characters.</excep
       <param name="headerName">The header to add to the collection.</param>
       <param name="headerValue">The content of the header.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="headerName" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or contains invalid characters.  
--or-  
+        <paramref name="headerName" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or contains invalid characters.
+-or-
 <paramref name="headerValue" /> contains invalid characters.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="headerName" /> is not <see langword="null" /> and the length of <paramref name="headerValue" /> is too long (greater than 65,535 characters).</exception>
@@ -307,8 +307,8 @@ The value part of <paramref name="header" /> contains invalid characters.</excep
       <param name="index">The zero-based index of the key to get from the collection.</param>
       <returns>A <see cref="T:System.String" /> containing the value of the specified header.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is negative.  
--or-  
+        <paramref name="index" /> is negative.
+-or-
 <paramref name="index" /> exceeds the size of the collection.</exception>
     </member>
     <member name="M:System.Net.WebHeaderCollection.Get(System.String)">
@@ -325,8 +325,8 @@ The value part of <paramref name="header" /> contains invalid characters.</excep
       <param name="index">The zero-based index of the key to get from the collection.</param>
       <returns>A <see cref="T:System.String" /> holding the header name.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is negative.  
--or-  
+        <paramref name="index" /> is negative.
+-or-
 <paramref name="index" /> exceeds the size of the collection.</exception>
     </member>
     <member name="M:System.Net.WebHeaderCollection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
@@ -405,8 +405,8 @@ The value part of <paramref name="header" /> contains invalid characters.</excep
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" /><see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is a restricted header.  
--or-  
+        <paramref name="name" /> is a restricted header.
+-or-
 <paramref name="name" /> contains invalid characters.</exception>
     </member>
     <member name="M:System.Net.WebHeaderCollection.Set(System.Net.HttpRequestHeader,System.String)">
@@ -431,8 +431,8 @@ The value part of <paramref name="header" /> contains invalid characters.</excep
         <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The length of <paramref name="value" /> is greater than 65535.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is a restricted header.  
--or-  
+        <paramref name="name" /> is a restricted header.
+-or-
 <paramref name="name" /> or <paramref name="value" /> contain invalid characters.</exception>
     </member>
     <member name="M:System.Net.WebHeaderCollection.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">

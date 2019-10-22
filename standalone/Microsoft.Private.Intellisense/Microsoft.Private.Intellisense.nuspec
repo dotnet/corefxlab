@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata minClientVersion="2.12">
     <id>Microsoft.Private.Intellisense</id>
-    <version>3.0.0-preview9-190909-1</version>
+    <version>3.1.0-preview1-191022-1</version>
     <title>Microsoft.Private.Intellisense</title>
     <authors>Microsoft</authors>
     <owners>microsoft,dotnetframework</owners>

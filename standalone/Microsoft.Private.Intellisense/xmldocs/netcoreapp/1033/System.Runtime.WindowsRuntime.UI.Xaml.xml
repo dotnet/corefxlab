@@ -469,7 +469,7 @@
       <param name="keyTime1">The first value to compare.</param>
       <param name="keyTime2">The second value to compare.</param>
       <returns>
-        <see langword="true" /> if <paramref name="keyTime1" /> and <paramref name="keyTime2" /> are not equal; otherwise, false.</returns>
+        <see langword="true" /> if <paramref name="keyTime1" /> and <paramref name="keyTime2" /> are not equal; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:Windows.UI.Xaml.Media.Animation.KeyTime.TimeSpan">
       <summary>Gets the time when the key frame ends, expressed as a time relative to the beginning of the animation.</summary>

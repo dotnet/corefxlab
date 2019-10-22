@@ -973,23 +973,26 @@
       <param name="o2">Required. Any expression.</param>
       <param name="TextCompare">Required. <see langword="True" /> to perform a case-insensitive string comparison; otherwise, <see langword="False" />.</param>
       <returns>Value  
-
+ 
  Condition  
-
+ 
  -1  
-
+ 
 
                <paramref name="o1" /> is less than <paramref name="o2" />.  
-
+ 
  0  
-
+ 
 
                <paramref name="o1" /> is equal to <paramref name="o2" />.  
-
+ 
  1  
+ 
 
+               <paramref name="o1" /> is greater than <paramref name="o2" />.  
+ 
 
-               <paramref name="o1" /> is greater than <paramref name="o2" />.</returns>
+     .</returns>
     </member>
     <member name="M:Microsoft.VisualBasic.CompilerServices.ObjectType.PlusObj(System.Object)">
       <summary>Performs a unary plus (+) operation.</summary>
@@ -1101,23 +1104,26 @@
       <param name="Right">Required. Any <see langword="String" /> expression.</param>
       <param name="TextCompare">Required. <see langword="True" /> to perform a case-insensitive string comparison; otherwise, <see langword="False" />.</param>
       <returns>Value  
-
+ 
  Condition  
-
+ 
  -1  
-
+ 
 
                <paramref name="Left" /> is less than <paramref name="Right" />.  
-
+ 
  0  
-
+ 
 
                <paramref name="Left" /> is equal to <paramref name="Right" />.  
-
+ 
  1  
+ 
 
+               <paramref name="Left" /> is greater than <paramref name="Right" />.  
+ 
 
-               <paramref name="Left" /> is greater than <paramref name="Right" />.</returns>
+     .</returns>
     </member>
     <member name="M:Microsoft.VisualBasic.CompilerServices.Operators.ConcatenateObject(System.Object,System.Object)">
       <summary>Represents the Visual Basic concatenation (&amp;) operator.</summary>
@@ -1255,7 +1261,7 @@
       <summary>Initializes a new instance of the <see cref="T:Microsoft.VisualBasic.CompilerServices.OptionCompareAttribute" /> class.</summary>
     </member>
     <member name="T:Microsoft.VisualBasic.CompilerServices.OptionTextAttribute">
-      <summary>The Visual Basic compiler emits this helper class to indicate (for Visual Basic debugging) which comparison option, binary or text, is being used</summary>
+      <summary>The Visual Basic compiler emits this helper class to indicate (for Visual Basic debugging) which comparison option, binary or text, is being used.</summary>
     </member>
     <member name="M:Microsoft.VisualBasic.CompilerServices.OptionTextAttribute.#ctor">
       <summary>Initializes a new instance of the <see cref="T:Microsoft.VisualBasic.CompilerServices.OptionTextAttribute" /> class. This is a helper method.</summary>
@@ -1425,22 +1431,25 @@
       <param name="sRight">Required. String to compare with <paramref name="sLeft" />.</param>
       <param name="TextCompare">Required. <see langword="True" /> to perform a case-insensitive comparison; otherwise <see langword="False" />.</param>
       <returns>Value  
-
+ 
  Condition  
-
+ 
  zero  
-
+ 
  The two strings are equal.  
-
+ 
  less than zero  
-
+ 
 
                <paramref name="sLeft" /> is less than <paramref name="sRight" />.  
-
+ 
  greater than zero  
+ 
 
+               <paramref name="sLeft" /> is greater than <paramref name="sRight" />.  
+ 
 
-               <paramref name="sLeft" /> is greater than <paramref name="sRight" />.</returns>
+     .</returns>
     </member>
     <member name="M:Microsoft.VisualBasic.CompilerServices.StringType.StrLike(System.String,System.String,Microsoft.VisualBasic.CompareMethod)">
       <summary>Compares the parameters <paramref name="Source" /> and <paramref name="Pattern" /> and returns the same results as the <see langword="Like" /> operator.</summary>
@@ -2250,16 +2259,16 @@
     <member name="M:Microsoft.VisualBasic.DateAndTime.DateSerial(System.Int32,System.Int32,System.Int32)">
       <summary>Returns a <see langword="Date" /> value representing a specified year, month, and day, with the time information set to midnight (00:00:00).</summary>
       <param name="Year">Required. Integer expression from 1 through 9999. However, values below this range are also accepted. If <paramref name="Year" /> is 0 through 99, it is interpreted as being between 1930 and 2029, as explained in the "Remarks" section below. If <paramref name="Year" /> is less than 1, it is subtracted from the current year.</param>
-      <param name="Month">Required. Integer expression from 1 through 12. However, values outside this range are also accepted. The value of <paramref name="Month" /> is offset by 1 and applied to January of the calculated year. In other words, (<paramref name="Month" /> - 1) is added to January. The year is recalculated if necessary. The following results illustrate this effect:  
- If <paramref name="Month" /> is 1, the result is January of the calculated year.  
- If <paramref name="Month" /> is 0, the result is December of the previous year.  
- If <paramref name="Month" /> is -1, the result is November of the previous year.  
- If <paramref name="Month" /> is 13, the result is January of the following year.</param>
-      <param name="Day">Required. Integer expression from 1 through 31. However, values outside this range are also accepted. The value of <paramref name="Day" /> is offset by 1 and applied to the first day of the calculated month. In other words, (<paramref name="Day" /> - 1) is added to the first of the month. The month and year are recalculated if necessary. The following results illustrate this effect:  
- If <paramref name="Day" /> is 1, the result is the first day of the calculated month.  
- If <paramref name="Day" /> is 0, the result is the last day of the previous month.  
- If <paramref name="Day" /> is -1, the result is the penultimate day of the previous month.  
- If <paramref name="Day" /> is past the end of the current month, the result is the appropriate day of the following month. For example, if <paramref name="Month" /> is 4 and <paramref name="Day" /> is 31, the result is May 1.</param>
+      <param name="Month">Required. Integer expression from 1 through 12. However, values outside this range are also accepted. The value of <paramref name="Month" /> is offset by 1 and applied to January of the calculated year. In other words, (<paramref name="Month" /> - 1) is added to January. The year is recalculated if necessary. The following results illustrate this effect:
+If <paramref name="Month" /> is 1, the result is January of the calculated year.
+If <paramref name="Month" /> is 0, the result is December of the previous year.
+If <paramref name="Month" /> is -1, the result is November of the previous year.
+If <paramref name="Month" /> is 13, the result is January of the following year.</param>
+      <param name="Day">Required. Integer expression from 1 through 31. However, values outside this range are also accepted. The value of <paramref name="Day" /> is offset by 1 and applied to the first day of the calculated month. In other words, (<paramref name="Day" /> - 1) is added to the first of the month. The month and year are recalculated if necessary. The following results illustrate this effect:
+If <paramref name="Day" /> is 1, the result is the first day of the calculated month.
+If <paramref name="Day" /> is 0, the result is the last day of the previous month.
+If <paramref name="Day" /> is -1, the result is the penultimate day of the previous month.
+If <paramref name="Day" /> is past the end of the current month, the result is the appropriate day of the following month. For example, if <paramref name="Month" /> is 4 and <paramref name="Day" /> is 31, the result is May 1.</param>
       <returns>A <see langword="Date" /> value representing a specified year, month, and day, with the time information set to midnight (00:00:00).</returns>
     </member>
     <member name="P:Microsoft.VisualBasic.DateAndTime.DateString">
@@ -2421,10 +2430,10 @@
       <summary>Indicates when payments are due when calling financial methods.</summary>
     </member>
     <member name="F:Microsoft.VisualBasic.DueDate.BegOfPeriod">
-      <summary>Falls at the beginning of the date interval</summary>
+      <summary>Falls at the beginning of the date interval.</summary>
     </member>
     <member name="F:Microsoft.VisualBasic.DueDate.EndOfPeriod">
-      <summary>Falls at the end of the date interval</summary>
+      <summary>Falls at the end of the date interval.</summary>
     </member>
     <member name="T:Microsoft.VisualBasic.ErrObject">
       <summary>The <see langword="ErrObject" /> module contains properties and procedures used to identify and handle run-time errors using the <see langword="Err" /> object.</summary>
@@ -3203,8 +3212,8 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="newName" /> contains path information.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="directory" /> is <see langword="Nothing" />.  
--or-  
+        <paramref name="directory" /> is <see langword="Nothing" />.
+-or-
 <paramref name="newName" /> is <see langword="Nothing" /> or an empty string.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">The directory does not exist.</exception>
       <exception cref="T:System.IO.IOException">There is an existing file or directory with the name specified in <paramref name="newName" />.</exception>
@@ -3220,8 +3229,8 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="newName" /> contains path information or ends with a backslash (\).</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="file" /> is <see langword="Nothing" />.  
--or-  
+        <paramref name="file" /> is <see langword="Nothing" />.
+-or-
 <paramref name="newName" /> is <see langword="Nothing" /> or an empty string.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The directory does not exist.</exception>
       <exception cref="T:System.IO.IOException">There is an existing file or directory with the name specified in <paramref name="newName" />.</exception>
@@ -3633,21 +3642,21 @@
     <member name="M:Microsoft.VisualBasic.FileSystem.FileAttr(System.Int32)">
       <summary>Returns an enumeration representing the file mode for files opened using the <see langword="FileOpen" /> function. The <see cref="T:Microsoft.VisualBasic.FileIO.FileSystem" /> gives you better productivity and performance in file I/O operations than the <see langword="FileAttr" /> function. See <see cref="M:Microsoft.VisualBasic.FileIO.FileSystem.GetFileInfo(System.String)" /> for more information.</summary>
       <param name="FileNumber">Required. <see langword="Integer" />. Any valid file number.</param>
-      <returns>The following enumeration values indicate the file access mode:  
+      <returns>The following enumeration values indicate the file access mode:
   Value  
-
+  
   Mode  
-
+  
   1  
-
+  
  <see langword="OpenMode.Input" /> 2  
-
+  
  <see langword="OpenMode.Output" /> 4  
-
+  
  <see langword="OpenMode.Random" /> 8  
-
+  
  <see langword="OpenMode.Append" /> 32  
-
+  
  <see langword="OpenMode.Binary" /></returns>
     </member>
     <member name="M:Microsoft.VisualBasic.FileSystem.FileClose(System.Int32[])">
@@ -4110,18 +4119,18 @@
     <member name="M:Microsoft.VisualBasic.FileSystem.Print(System.Int32,System.Object[])">
       <summary>Writes display-formatted data to a sequential file.</summary>
       <param name="FileNumber">Required. Any valid file number.</param>
-      <param name="Output">Optional. Zero or more comma-delimited expressions to write to a file.  
- The <paramref name="Output" /> argument settings are:  
- <see langword="T:System.IO.IOException" />: File mode is invalid.  
- <see langword="T:System.IO.IOException" />: <paramref name="FileNumber" /> does not exist.</param>
+      <param name="Output">Optional. Zero or more comma-delimited expressions to write to a file.
+The <paramref name="Output" /> argument settings are:
+<see langword="T:System.IO.IOException" />: File mode is invalid.
+<see langword="T:System.IO.IOException" />: <paramref name="FileNumber" /> does not exist.</param>
     </member>
     <member name="M:Microsoft.VisualBasic.FileSystem.PrintLine(System.Int32,System.Object[])">
       <summary>Writes display-formatted data to a sequential file.</summary>
       <param name="FileNumber">Required. Any valid file number.</param>
-      <param name="Output">Optional. Zero or more comma-delimited expressions to write to a file.  
- The <paramref name="Output" /> argument settings are:  
- <see langword="T:System.IO.IOException" />: File mode is invalid.  
- <see langword="T:System.IO.IOException" />: <paramref name="FileNumber" /> does not exist.</param>
+      <param name="Output">Optional. Zero or more comma-delimited expressions to write to a file.
+The <paramref name="Output" /> argument settings are:
+<see langword="T:System.IO.IOException" />: File mode is invalid.
+<see langword="T:System.IO.IOException" />: <paramref name="FileNumber" /> does not exist.</param>
     </member>
     <member name="M:Microsoft.VisualBasic.FileSystem.Rename(System.String,System.String)">
       <summary>Renames a disk file or directory. The <see langword="My" /> feature gives you better productivity and performance in file I/O operations than <see langword="Rename" />. For more information, see <see cref="T:Microsoft.VisualBasic.FileIO.FileSystem" />.</summary>
@@ -4806,22 +4815,25 @@
       <param name="String2">Required. <see langword="String" /> expression sought.</param>
       <param name="Compare">Optional. Specifies the type of string comparison. If <paramref name="Compare" /> is omitted, the <see langword="Option Compare" /> setting determines the type of comparison.</param>
       <returns>If  
-
+ 
  InStr returns  
-
+ 
 
                <paramref name="String1" /> is zero length or <see langword="Nothing" /> 0  
-
+ 
 
                <paramref name="String2" /> is zero length or <see langword="Nothing" /><paramref name="start" /><paramref name="String2" /> is not found  
-
+ 
  0  
-
+ 
 
                <paramref name="String2" /> is found within <paramref name="String1" /> Position where match begins  
+ 
 
+               <paramref name="Start" /> &gt; length of <paramref name="String1" /> 0  
+ 
 
-               <paramref name="Start" /> &gt; length of <paramref name="String1" /> 0</returns>
+     .</returns>
       <exception cref="T:System.ArgumentException">
         <paramref name="Start" /> &lt; 1.</exception>
     </member>
@@ -4831,22 +4843,27 @@
       <param name="String2">Required. <see langword="String" /> expression sought.</param>
       <param name="Compare">Optional. Specifies the type of string comparison. If <paramref name="Compare" /> is omitted, the <see langword="Option Compare" /> setting determines the type of comparison.</param>
       <returns>If  
-
+ 
  InStr returns  
-
+ 
 
                <paramref name="String1" /> is zero length or <see langword="Nothing" /> 0  
-
+ 
 
                <paramref name="String2" /> is zero length or <see langword="Nothing" /> The starting position for the search, which defaults to the first character position.  
-
+ 
 
                <paramref name="String2" /> is not found  
-
+ 
  0  
+ 
 
+               <paramref name="String2" /> is found within <paramref name="String1" /> Position where match begins  
+ 
 
-               <paramref name="String2" /> is found within <paramref name="String1" /> Position where match begins</returns>
+             
+             
+     .</returns>
     </member>
     <member name="M:Microsoft.VisualBasic.Strings.InStrRev(System.String,System.String,System.Int32,Microsoft.VisualBasic.CompareMethod)">
       <summary>Returns the position of the first occurrence of one string within another, starting from the right side of the string.</summary>
@@ -4855,27 +4872,30 @@
       <param name="Start">Optional. Numeric expression setting the one-based starting position for each search, starting from the left side of the string. If <paramref name="Start" /> is omitted then -1 is used, meaning the search begins at the last character position. Search then proceeds from right to left.</param>
       <param name="Compare">Optional. Numeric value indicating the kind of comparison to use when evaluating substrings. If omitted, a binary comparison is performed. See Settings for values.</param>
       <returns>If  
-
+ 
  InStrRev returns  
-
+ 
 
                <paramref name="StringCheck" /> is zero-length  
-
+ 
  0  
-
+ 
 
                <paramref name="StringMatch" /> is zero-length  
-
+ 
 
                <paramref name="Start" /><paramref name="StringMatch" /> is not found  
-
+ 
  0  
-
+ 
 
                <paramref name="StringMatch" /> is found within <paramref name="StringCheck" /> Position at which the first match is found, starting with the right side of the string.  
+ 
 
+               <paramref name="Start" /> is greater than length of <paramref name="StringMatch" /> 0  
+ 
 
-               <paramref name="Start" /> is greater than length of <paramref name="StringMatch" /> 0</returns>
+     .</returns>
       <exception cref="T:System.ArgumentException">
         <paramref name="Start" /> = 0 or <paramref name="Start" /> &lt; -1.</exception>
     </member>
@@ -5030,15 +5050,15 @@
       <param name="Count">Optional. Number of substring substitutions to perform. If omitted, the default value is -1, which means "make all possible substitutions."</param>
       <param name="Compare">Optional. Numeric value indicating the kind of comparison to use when evaluating substrings. See Settings for values.</param>
       <returns>
-        <see langword="Replace" /> returns the following values.  
+        <see langword="Replace" /> returns the following values.
  If  
-
+ 
  Replace returns  
-
+ 
 <paramref name="Find" /> is zero-length or <see langword="Nothing" /> Copy of <paramref name="Expression" /><paramref name="Replace" /> is zero-length  
-
+ 
  Copy of <paramref name="Expression" /> with no occurrences of <paramref name="Find" /><paramref name="Expression" /> is zero-length or <see langword="Nothing" />, or <paramref name="Start" /> is greater than length of <paramref name="Expression" /><see langword="Nothing" /><paramref name="Count" /> is 0  
-
+ 
  Copy of <paramref name="Expression" /></returns>
       <exception cref="T:System.ArgumentException">
         <paramref name="Count" /> &lt; -1 or <paramref name="Start" /> &lt;= 0.</exception>
@@ -5083,15 +5103,15 @@
       <param name="String1">Required. Any valid <see langword="String" /> expression.</param>
       <param name="String2">Required. Any valid <see langword="String" /> expression.</param>
       <param name="Compare">Optional. Specifies the type of string comparison. If <paramref name="Compare" /> is omitted, the <see langword="Option Compare" /> setting determines the type of comparison.</param>
-      <returns>The <see langword="StrComp" /> function has the following return values.  
+      <returns>The <see langword="StrComp" /> function has the following return values.
   If  
-
+  
   StrComp returns  
-
+  
  <paramref name="String1" /> sorts ahead of <paramref name="String2" /> -1  
-
+  
  <paramref name="String1" /> is equal to <paramref name="String2" /> 0  
-
+  
  <paramref name="String1" /> sorts after <paramref name="String2" /> 1</returns>
       <exception cref="T:System.ArgumentException">
         <paramref name="Compare" /> value is not valid.</exception>

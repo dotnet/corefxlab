@@ -71,8 +71,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="format" /> is <see langword="null" />.</exception>
       <exception cref="T:System.FormatException">
-        <paramref name="format" /> is invalid.  
--or-  
+        <paramref name="format" /> is invalid.
+-or-
 The number that indicates an argument to format is less than zero, or greater than or equal to the number of specified objects to format.</exception>
     </member>
     <member name="M:System.Diagnostics.Debug.Unindent">

@@ -70,6 +70,11 @@
       <typeparam name="T">The type of the object to get.</typeparam>
       <returns>The  object of type <paramref name="T" /> from the <see cref="T:System.ServiceModel.Channels.BindingContext" />, or <see langword="null" /> if the object is not found.</returns>
     </member>
+    <member name="P:System.ServiceModel.Channels.SslStreamSecurityBindingElement.RequireClientCertificate">
+      <summary>Gets or sets a value that specifies whether a client certificate is required for this binding.</summary>
+      <returns>
+        <see langword="true" /> if a client certificate is required for this binding; otherwise, <see langword="false" />. The default is <see langword="false" />.</returns>
+    </member>
     <member name="P:System.ServiceModel.Channels.SslStreamSecurityBindingElement.SslProtocols">
       <summary>Specifies the list of SSL/TLS protocols to negotiate when using a client credential type of TcpClientCredentialType.Certificate. The value can be a combination of one of more of the following enumeration members: Ssl3, Tls, Tls11, Tls12.</summary>
       <returns>Returns <see cref="T:System.Security.Authentication.SslProtocols" />.</returns>

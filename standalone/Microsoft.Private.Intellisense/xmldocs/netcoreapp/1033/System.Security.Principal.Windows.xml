@@ -59,8 +59,8 @@
     </member>
     <member name="M:System.Security.Principal.IdentityReference.IsValidTargetType(System.Type)">
       <summary>Returns a value that indicates whether the specified type is a valid translation type for the <see cref="T:System.Security.Principal.IdentityReference" /> class.</summary>
-      <param name="targetType">The type being queried for validity to serve as a conversion from <see cref="T:System.Security.Principal.IdentityReference" />. The following target types are valid:  
- <see cref="T:System.Security.Principal.NTAccount" /><see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
+      <param name="targetType">The type being queried for validity to serve as a conversion from <see cref="T:System.Security.Principal.IdentityReference" />. The following target types are valid:
+<see cref="T:System.Security.Principal.NTAccount" /><see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
       <returns>
         <see langword="true" /> if <paramref name="targetType" /> is a valid translation type for the <see cref="T:System.Security.Principal.IdentityReference" /> class; otherwise, <see langword="false" />.</returns>
     </member>
@@ -157,9 +157,9 @@
     <member name="M:System.Security.Principal.IdentityReferenceCollection.Translate(System.Type,System.Boolean)">
       <summary>Converts the objects in the collection to the specified type and uses the specified fault tolerance to handle or ignore errors associated with a type not having a conversion mapping.</summary>
       <param name="targetType">The type to which items in the collection are being converted.</param>
-      <param name="forceSuccess">A Boolean value that determines how conversion errors are handled.  
- If <paramref name="forceSuccess" /> is <see langword="true" />, conversion errors due to a mapping not being found for the translation result in a failed conversion and exceptions being thrown.  
- If <paramref name="forceSuccess" /> is <see langword="false" />, types that failed to convert due to a mapping not being found for the translation are copied without being converted into the collection being returned.</param>
+      <param name="forceSuccess">A Boolean value that determines how conversion errors are handled.
+If <paramref name="forceSuccess" /> is <see langword="true" />, conversion errors due to a mapping not being found for the translation result in a failed conversion and exceptions being thrown.
+If <paramref name="forceSuccess" /> is <see langword="false" />, types that failed to convert due to a mapping not being found for the translation are copied without being converted into the collection being returned.</param>
       <returns>A <see cref="T:System.Security.Principal.IdentityReferenceCollection" /> collection that represents the converted contents of the original collection.</returns>
     </member>
     <member name="T:System.Security.Principal.NTAccount">
@@ -171,8 +171,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string.  
--or-  
+        <paramref name="name" /> is an empty string.
+-or-
 <paramref name="name" /> is too long.</exception>
     </member>
     <member name="M:System.Security.Principal.NTAccount.#ctor(System.String,System.String)">
@@ -182,10 +182,10 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="accountName" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="accountName" /> is an empty string.  
--or-  
-<paramref name="accountName" /> is too long.  
--or-  
+        <paramref name="accountName" /> is an empty string.
+-or-
+<paramref name="accountName" /> is too long.
+-or-
 <paramref name="domainName" /> is too long.</exception>
     </member>
     <member name="M:System.Security.Principal.NTAccount.Equals(System.Object)">
@@ -200,9 +200,9 @@
     </member>
     <member name="M:System.Security.Principal.NTAccount.IsValidTargetType(System.Type)">
       <summary>Returns a value that indicates whether the specified type is a valid translation type for the <see cref="T:System.Security.Principal.NTAccount" /> class.</summary>
-      <param name="targetType">The type being queried for validity to serve as a conversion from <see cref="T:System.Security.Principal.NTAccount" />. The following target types are valid:  
- - <see cref="T:System.Security.Principal.NTAccount" />  
- - <see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
+      <param name="targetType">The type being queried for validity to serve as a conversion from <see cref="T:System.Security.Principal.NTAccount" />. The following target types are valid:
+- <see cref="T:System.Security.Principal.NTAccount" />
+- <see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
       <returns>
         <see langword="true" /> if <paramref name="targetType" /> is a valid translation type for the <see cref="T:System.Security.Principal.NTAccount" /> class; otherwise <see langword="false" />.</returns>
     </member>
@@ -233,9 +233,9 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="targetType" /> is not an <see cref="T:System.Security.Principal.IdentityReference" /> type.</exception>
       <exception cref="T:System.Security.Principal.IdentityNotMappedException">Some or all identity references could not be translated.</exception>
-      <exception cref="T:System.SystemException">The source account name is too long.  
- -or-  
- A Win32 error code was returned.</exception>
+      <exception cref="T:System.SystemException">The source account name is too long.
+-or-
+A Win32 error code was returned.</exception>
     </member>
     <member name="P:System.Security.Principal.NTAccount.Value">
       <summary>Returns a string representation of this <see cref="T:System.Security.Principal.NTAccount" /> object.</summary>
@@ -256,20 +256,20 @@
     <member name="M:System.Security.Principal.SecurityIdentifier.#ctor(System.Security.Principal.WellKnownSidType,System.Security.Principal.SecurityIdentifier)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.SecurityIdentifier" /> class by using the specified well known security identifier (SID) type and domain SID.</summary>
       <param name="sidType">One of the enumeration values. This value must not be <see cref="F:System.Security.Principal.WellKnownSidType.LogonIdsSid" />.</param>
-      <param name="domainSid">The domain SID. This value is required for the following <see cref="T:System.Security.Principal.WellKnownSidType" /> values. This parameter is ignored for any other <see cref="T:System.Security.Principal.WellKnownSidType" /> values.  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountAdministratorSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountGuestSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountKrbtgtSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainAdminsSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainUsersSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainGuestsSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountComputersSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountControllersSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountCertAdminsSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountSchemaAdminsSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountEnterpriseAdminsSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountPolicyAdminsSid" />  
- - <see cref="F:System.Security.Principal.WellKnownSidType.AccountRasAndIasServersSid" /></param>
+      <param name="domainSid">The domain SID. This value is required for the following <see cref="T:System.Security.Principal.WellKnownSidType" /> values. This parameter is ignored for any other <see cref="T:System.Security.Principal.WellKnownSidType" /> values.
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountAdministratorSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountGuestSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountKrbtgtSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainAdminsSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainUsersSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainGuestsSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountComputersSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountControllersSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountCertAdminsSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountSchemaAdminsSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountEnterpriseAdminsSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountPolicyAdminsSid" />
+- <see cref="F:System.Security.Principal.WellKnownSidType.AccountRasAndIasServersSid" /></param>
     </member>
     <member name="M:System.Security.Principal.SecurityIdentifier.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.SecurityIdentifier" /> class by using the specified security identifier (SID) in Security Descriptor Definition Language (SDDL) format.</summary>
@@ -286,21 +286,21 @@
     <member name="M:System.Security.Principal.SecurityIdentifier.CompareTo(System.Security.Principal.SecurityIdentifier)">
       <summary>Compares the current <see cref="T:System.Security.Principal.SecurityIdentifier" /> object with the specified <see cref="T:System.Security.Principal.SecurityIdentifier" /> object.</summary>
       <param name="sid">The object to compare with the current object.</param>
-      <returns>A signed number indicating the relative values of this instance and <paramref name="sid" />.  
+      <returns>A signed number indicating the relative values of this instance and <paramref name="sid" />.
   Return Value  
-
+  
   Description  
-
+  
   Less than zero  
-
+  
   This instance is less than <paramref name="sid" />.  
-
+  
   Zero  
-
+  
   This instance is equal to <paramref name="sid" />.  
-
+  
   Greater than zero  
-
+  
   This instance is greater than <paramref name="sid" />.</returns>
     </member>
     <member name="M:System.Security.Principal.SecurityIdentifier.Equals(System.Object)">
@@ -337,9 +337,9 @@
     </member>
     <member name="M:System.Security.Principal.SecurityIdentifier.IsValidTargetType(System.Type)">
       <summary>Returns a value that indicates whether the specified type is a valid translation type for the <see cref="T:System.Security.Principal.SecurityIdentifier" /> class.</summary>
-      <param name="targetType">The type being queried for validity to serve as a conversion from <see cref="T:System.Security.Principal.SecurityIdentifier" />. The following target types are valid:  
- - <see cref="T:System.Security.Principal.NTAccount" />  
- - <see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
+      <param name="targetType">The type being queried for validity to serve as a conversion from <see cref="T:System.Security.Principal.SecurityIdentifier" />. The following target types are valid:
+- <see cref="T:System.Security.Principal.NTAccount" />
+- <see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
       <returns>
         <see langword="true" /> if <paramref name="targetType" /> is a valid translation type for the <see cref="T:System.Security.Principal.SecurityIdentifier" /> class; otherwise, <see langword="false" />.</returns>
     </member>
@@ -773,24 +773,24 @@
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.WindowsIdentity" /> class for the user represented by the specified Windows account token.</summary>
       <param name="userToken">The account token for the user on whose behalf the code is running.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="userToken" /> is 0.  
--or-  
+        <paramref name="userToken" /> is 0.
+-or-
 <paramref name="userToken" /> is duplicated and invalid for impersonation.</exception>
-      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.  
- -or-  
- A Win32 error occurred.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.
+-or-
+A Win32 error occurred.</exception>
     </member>
     <member name="M:System.Security.Principal.WindowsIdentity.#ctor(System.IntPtr,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.WindowsIdentity" /> class for the user represented by the specified Windows account token and the specified authentication type.</summary>
       <param name="userToken">The account token for the user on whose behalf the code is running.</param>
       <param name="type">(Informational use only.) The type of authentication used to identify the user.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="userToken" /> is 0.  
--or-  
+        <paramref name="userToken" /> is 0.
+-or-
 <paramref name="userToken" /> is duplicated and invalid for impersonation.</exception>
-      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.  
- -or-  
- A Win32 error occurred.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.
+-or-
+A Win32 error occurred.</exception>
     </member>
     <member name="M:System.Security.Principal.WindowsIdentity.#ctor(System.IntPtr,System.String,System.Security.Principal.WindowsAccountType)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.WindowsIdentity" /> class for the user represented by the specified Windows account token, the specified authentication type, and the specified Windows account type.</summary>
@@ -798,12 +798,12 @@
       <param name="type">(Informational use only.) The type of authentication used to identify the user.</param>
       <param name="acctType">One of the enumeration values.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="userToken" /> is 0.  
--or-  
+        <paramref name="userToken" /> is 0.
+-or-
 <paramref name="userToken" /> is duplicated and invalid for impersonation.</exception>
-      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.  
- -or-  
- A Win32 error occurred.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.
+-or-
+A Win32 error occurred.</exception>
     </member>
     <member name="M:System.Security.Principal.WindowsIdentity.#ctor(System.IntPtr,System.String,System.Security.Principal.WindowsAccountType,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.WindowsIdentity" /> class for the user represented by the specified Windows account token, the specified authentication type, the specified Windows account type, and the specified authentication status.</summary>
@@ -813,21 +813,21 @@
       <param name="isAuthenticated">
         <see langword="true" /> to indicate that the user is authenticated; otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="userToken" /> is 0.  
--or-  
+        <paramref name="userToken" /> is 0.
+-or-
 <paramref name="userToken" /> is duplicated and invalid for impersonation.</exception>
-      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.  
- -or-  
- A Win32 error occurred.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.
+-or-
+A Win32 error occurred.</exception>
     </member>
     <member name="M:System.Security.Principal.WindowsIdentity.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.WindowsIdentity" /> class for the user represented by information in a <see cref="T:System.Runtime.Serialization.SerializationInfo" /> stream.</summary>
       <param name="info">The object containing the account information for the user.</param>
       <param name="context">An object that indicates the stream characteristics.</param>
       <exception cref="T:System.NotSupportedException">A <see cref="T:System.Security.Principal.WindowsIdentity" /> cannot be serialized across processes.</exception>
-      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.  
- -or-  
- A Win32 error occurred.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.
+-or-
+A Win32 error occurred.</exception>
     </member>
     <member name="M:System.Security.Principal.WindowsIdentity.#ctor(System.Security.Principal.WindowsIdentity)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.WindowsIdentity" /> class by using the specified <see cref="T:System.Security.Principal.WindowsIdentity" /> object.</summary>
@@ -838,13 +838,13 @@
       <param name="sUserPrincipalName">The UPN for the user on whose behalf the code is running.</param>
       <exception cref="T:System.UnauthorizedAccessException">Windows returned the Windows NT status code STATUS_ACCESS_DENIED.</exception>
       <exception cref="T:System.OutOfMemoryException">There is insufficient memory available.</exception>
-      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.  
- -or-  
- The computer is not attached to a Windows 2003 or later domain.  
- -or-  
- The computer is not running Windows 2003 or later.  
- -or-  
- The user is not a member of the domain the computer is attached to.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.
+-or-
+The computer is not attached to a Windows 2003 or later domain.
+-or-
+The computer is not running Windows 2003 or later.
+-or-
+The user is not a member of the domain the computer is attached to.</exception>
     </member>
     <member name="P:System.Security.Principal.WindowsIdentity.AccessToken">
       <summary>Gets this <see cref="T:Microsoft.Win32.SafeHandles.SafeAccessTokenHandle" /> for this <see cref="T:System.Security.Principal.WindowsIdentity" /> instance.</summary>
@@ -855,13 +855,13 @@
       <returns>The type of authentication used to identify the user.</returns>
       <exception cref="T:System.UnauthorizedAccessException">Windows returned the Windows NT status code STATUS_ACCESS_DENIED.</exception>
       <exception cref="T:System.OutOfMemoryException">There is insufficient memory available.</exception>
-      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.  
- -or-  
- The computer is not attached to a Windows 2003 or later domain.  
- -or-  
- The computer is not running Windows 2003 or later.  
- -or-  
- The user is not a member of the domain the computer is attached to.</exception>
+      <exception cref="T:System.Security.SecurityException">The caller does not have the correct permissions.
+-or-
+The computer is not attached to a Windows 2003 or later domain.
+-or-
+The computer is not running Windows 2003 or later.
+-or-
+The user is not a member of the domain the computer is attached to.</exception>
     </member>
     <member name="P:System.Security.Principal.WindowsIdentity.Claims">
       <summary>Gets all claims for the user represented by this Windows identity.</summary>

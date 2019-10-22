@@ -4,6 +4,32 @@
     <name>System.ServiceModel.Security</name>
   </assembly>
   <members>
+    <member name="T:System.ServiceModel.Channels.ISecurityCapabilities">
+      <summary>Defines the contract for specifying the security capabilities for bindings.</summary>
+    </member>
+    <member name="P:System.ServiceModel.Channels.ISecurityCapabilities.SupportedRequestProtectionLevel">
+      <summary>Gets the protection level requests supported by the binding.</summary>
+      <returns>The <see cref="T:System.Net.Security.ProtectionLevel" /> that specifies the protection level requests supported by the binding.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Channels.ISecurityCapabilities.SupportedResponseProtectionLevel">
+      <summary>Gets the protection level responses supported by the binding.</summary>
+      <returns>The <see cref="T:System.Net.Security.ProtectionLevel" /> that specifies the protection level responses supported by the binding.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Channels.ISecurityCapabilities.SupportsClientAuthentication">
+      <summary>Gets a value that indicates whether the binding supports client authentication.</summary>
+      <returns>
+        <see langword="true" /> if the binding can support client authentication; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Channels.ISecurityCapabilities.SupportsClientWindowsIdentity">
+      <summary>Gets a value that indicates whether the binding supports client Windows identity.</summary>
+      <returns>
+        <see langword="true" /> if the binding can support client Windows identity; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Channels.ISecurityCapabilities.SupportsServerAuthentication">
+      <summary>Gets a value that indicates whether the binding supports server authentication.</summary>
+      <returns>
+        <see langword="true" /> if the binding can support server authentication; otherwise, <see langword="false" />.</returns>
+    </member>
     <member name="T:System.ServiceModel.Channels.LocalClientSecuritySettings">
       <summary>Specifies local client security settings.</summary>
     </member>
@@ -199,6 +225,118 @@
     <member name="P:System.ServiceModel.Security.SecureConversationVersion.WSSecureConversationFeb2005">
       <summary>Gets the February 2005 version of WS-SecureConversation.</summary>
       <returns>The February 2005 version of WS-SecureConversation.</returns>
+    </member>
+    <member name="T:System.ServiceModel.Security.SecurityAlgorithmSuite">
+      <summary>Specifies properties of algorithms. This is an <see langword="abstract" /> class.</summary>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.Security.SecurityAlgorithmSuite" /> class.</summary>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultAsymmetricKeyWrapAlgorithm">
+      <summary>Gets the default asymmetric key wrap algorithm as a string.</summary>
+      <returns>The default asymmetric key wrap algorithm.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultAsymmetricSignatureAlgorithm">
+      <summary>Gets the default asymmetric signature algorithm as a string.</summary>
+      <returns>The default asymmetric signature algorithm.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultCanonicalizationAlgorithm">
+      <summary>Gets the default canonicalization algorithm as a string.</summary>
+      <returns>The default canonicalization algorithm.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultDigestAlgorithm">
+      <summary>Gets the default digest algorithm as a string.</summary>
+      <returns>The default digest algorithm.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultEncryptionAlgorithm">
+      <summary>Gets the default encryption algorithm as a string.</summary>
+      <returns>The default encryption algorithm.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultEncryptionKeyDerivationLength">
+      <summary>Gets the default encryption key derivation length as an <see cref="T:System.Int32" /> value.</summary>
+      <returns>The default encryption key derivation length.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultSignatureKeyDerivationLength">
+      <summary>Gets the default signature key derivation length as an <see cref="T:System.Int32" /> value.</summary>
+      <returns>The default signature key derivation length.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultSymmetricKeyLength">
+      <summary>Gets the default symmetric key length as an <see cref="T:System.Int32" /> value.</summary>
+      <returns>The default symmetric key length.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultSymmetricKeyWrapAlgorithm">
+      <summary>Gets the default symmetric key wrap algorithm as a string.</summary>
+      <returns>The default symmetric key wrap algorithm.</returns>
+    </member>
+    <member name="P:System.ServiceModel.Security.SecurityAlgorithmSuite.DefaultSymmetricSignatureAlgorithm">
+      <summary>Gets the default symmetric signature algorithm as a string.</summary>
+      <returns>The default symmetric signature algorithm.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsAsymmetricKeyLengthSupported(System.Int32)">
+      <summary>Indicates whether a particular key length is supported by the asymmetric algorithm.</summary>
+      <param name="length">The key length to check.</param>
+      <returns>
+        <see langword="true" /> if the key length is supported by the asymmetric algorithm; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsAsymmetricKeyWrapAlgorithmSupported(System.String)">
+      <summary>Indicates whether an asymmetric key wrap algorithm is supported.</summary>
+      <param name="algorithm">The algorithm to check.</param>
+      <returns>
+        <see langword="true" /> if the asymmetric key wrap algorithm is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsAsymmetricSignatureAlgorithmSupported(System.String)">
+      <summary>Indicates whether an asymmetric signature algorithm is supported.</summary>
+      <param name="algorithm">The algorithm name to check.</param>
+      <returns>
+        <see langword="true" /> if the asymmetric signature algorithm is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsCanonicalizationAlgorithmSupported(System.String)">
+      <summary>Indicates whether a canonicalization algorithm is supported.</summary>
+      <param name="algorithm">The algorithm name to check.</param>
+      <returns>
+        <see langword="true" /> if the canonicalization algorithm is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsDigestAlgorithmSupported(System.String)">
+      <summary>Indicates whether a digest algorithm is supported.</summary>
+      <param name="algorithm">The algorithm name to check.</param>
+      <returns>
+        <see langword="true" /> if the digest algorithm is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsEncryptionAlgorithmSupported(System.String)">
+      <summary>Indicates whether an encryption algorithm is supported.</summary>
+      <param name="algorithm">The algorithm name to check.</param>
+      <returns>
+        <see langword="true" /> if the encryption algorithm is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsEncryptionKeyDerivationAlgorithmSupported(System.String)">
+      <summary>Indicates whether an encryption key derivation algorithm is supported.</summary>
+      <param name="algorithm">The algorithm name to check.</param>
+      <returns>
+        <see langword="true" /> if the encryption key derivation algorithm is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsSignatureKeyDerivationAlgorithmSupported(System.String)">
+      <summary>Indicates whether a signature key derivation algorithm is supported.</summary>
+      <param name="algorithm">The algorithm name to check.</param>
+      <returns>
+        <see langword="true" /> if the signature key derivation algorithm is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsSymmetricKeyLengthSupported(System.Int32)">
+      <summary>When overridden in a derived class, indicates whether a particular symmetric key length is supported.</summary>
+      <param name="length">The key length to check.</param>
+      <returns>
+        <see langword="true" /> if the symmetric key length is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsSymmetricKeyWrapAlgorithmSupported(System.String)">
+      <summary>Indicates whether a symmetric key wrap algorithm is supported.</summary>
+      <param name="algorithm">The algorithm name to check.</param>
+      <returns>
+        <see langword="true" /> if the symmetric key wrap algorithm is supported; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:System.ServiceModel.Security.SecurityAlgorithmSuite.IsSymmetricSignatureAlgorithmSupported(System.String)">
+      <summary>Indicates whether a symmetric signature algorithm is supported.</summary>
+      <param name="algorithm">The algorithm name to check.</param>
+      <returns>
+        <see langword="true" /> if the symmetric signature algorithm is supported; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="T:System.ServiceModel.Security.SecurityPolicyVersion">
       <summary>Contains the set of supported WS-SecurityPolicy versions. This is an abstract class.</summary>

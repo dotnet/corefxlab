@@ -9,7 +9,7 @@
         <see cref="T:System.Diagnostics.Tracing.DiagnosticCounter" /> is an abstract class that serves as the parent class for various Counter* classes, namely <see cref="T:System.Diagnostics.Tracing.EventCounter" />, <see cref="T:System.Diagnostics.Tracing.PollingCounter" />, <see cref="T:System.Diagnostics.Tracing.IncrementingEventCounter" />, and <see cref="T:System.Diagnostics.Tracing.IncrementingPollingCounter" />.</summary>
     </member>
     <member name="M:System.Diagnostics.Tracing.DiagnosticCounter.AddMetadata(System.String,System.String)">
-      <summary>Adds key-value metadata to the counter that will be included as a part of the payload</summary>
+      <summary>Adds key-value metadata to the counter that will be included as a part of the payload.</summary>
       <param name="key">The metadata key.</param>
       <param name="value">The metadata value.</param>
     </member>
@@ -158,8 +158,8 @@
       <param name="name">The event counter name.</param>
       <param name="eventSource">The event source.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="name" /> is <see langword="null" />.  
--or-  
+        <paramref name="name" /> is <see langword="null" />.
+-or-
 <paramref name="eventSource" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Diagnostics.Tracing.EventCounter.ToString">
@@ -202,7 +202,7 @@
       <summary>Specifies how to format the value of a user-defined type and can be used to override the default formatting for a field.</summary>
     </member>
     <member name="F:System.Diagnostics.Tracing.EventFieldFormat.Boolean">
-      <summary>Boolean</summary>
+      <summary>Boolean.</summary>
     </member>
     <member name="F:System.Diagnostics.Tracing.EventFieldFormat.Default">
       <summary>Default.</summary>
@@ -524,7 +524,7 @@
       <param name="keywords">The event keywords to check.</param>
       <param name="channel">The event channel to check.</param>
       <returns>
-        <see langword="true" /> if the event source is enabled for the specified event level, keywords and channel; otherwise, <see langword="false" />.  
+        <see langword="true" /> if the event source is enabled for the specified event level, keywords and channel; otherwise, <see langword="false" />.
 The result of this method is only an approximation of whether a particular event is active.  Use it to avoid expensive computation for logging when logging is disabled. Event sources may have additional filtering that determines their activity.</returns>
     </member>
     <member name="P:System.Diagnostics.Tracing.EventSource.Name">

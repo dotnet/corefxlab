@@ -81,30 +81,30 @@
       <summary>Initializes a new instance of the <see cref="T:System.Net.Cookie" /> class with a specified <see cref="P:System.Net.Cookie.Name" /> and <see cref="P:System.Net.Cookie.Value" />.</summary>
       <param name="name">The name of a <see cref="T:System.Net.Cookie" />. The following characters must not be used inside <paramref name="name" />: equal sign, semicolon, comma, newline (\n), return (\r), tab (\t), and space character. The dollar sign character ("$") cannot be the first character.</param>
       <param name="value">The value of a <see cref="T:System.Net.Cookie" />. The following characters must not be used inside <paramref name="value" />: semicolon, comma.</param>
-      <exception cref="T:System.Net.CookieException">The <paramref name="name" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="name" /> parameter is of zero length.  
- -or-  
- The <paramref name="name" /> parameter contains an invalid character.  
- -or-  
- The <paramref name="value" /> parameter is <see langword="null" /> .  
- -or -  
- The <paramref name="value" /> parameter contains a string not enclosed in quotes that contains an invalid character.</exception>
+      <exception cref="T:System.Net.CookieException">The <paramref name="name" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="name" /> parameter is of zero length.
+-or-
+The <paramref name="name" /> parameter contains an invalid character.
+-or-
+The <paramref name="value" /> parameter is <see langword="null" /> .
+-or -
+The <paramref name="value" /> parameter contains a string not enclosed in quotes that contains an invalid character.</exception>
     </member>
     <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Cookie" /> class with a specified <see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" />, and <see cref="P:System.Net.Cookie.Path" />.</summary>
       <param name="name">The name of a <see cref="T:System.Net.Cookie" />. The following characters must not be used inside <paramref name="name" />: equal sign, semicolon, comma, newline (\n), return (\r), tab (\t), and space character. The dollar sign character ("$") cannot be the first character.</param>
       <param name="value">The value of a <see cref="T:System.Net.Cookie" />. The following characters must not be used inside <paramref name="value" />: semicolon, comma.</param>
       <param name="path">The subset of URIs on the origin server to which this <see cref="T:System.Net.Cookie" /> applies. The default value is "/".</param>
-      <exception cref="T:System.Net.CookieException">The <paramref name="name" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="name" /> parameter is of zero length.  
- -or-  
- The <paramref name="name" /> parameter contains an invalid character.  
- -or-  
- The <paramref name="value" /> parameter is <see langword="null" /> .  
- -or -  
- The <paramref name="value" /> parameter contains a string not enclosed in quotes that contains an invalid character.</exception>
+      <exception cref="T:System.Net.CookieException">The <paramref name="name" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="name" /> parameter is of zero length.
+-or-
+The <paramref name="name" /> parameter contains an invalid character.
+-or-
+The <paramref name="value" /> parameter is <see langword="null" /> .
+-or -
+The <paramref name="value" /> parameter contains a string not enclosed in quotes that contains an invalid character.</exception>
     </member>
     <member name="M:System.Net.Cookie.#ctor(System.String,System.String,System.String,System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Cookie" /> class with a specified <see cref="P:System.Net.Cookie.Name" />, <see cref="P:System.Net.Cookie.Value" />, <see cref="P:System.Net.Cookie.Path" />, and <see cref="P:System.Net.Cookie.Domain" />.</summary>
@@ -112,15 +112,15 @@
       <param name="value">The value of a <see cref="T:System.Net.Cookie" /> object. The following characters must not be used inside <paramref name="value" />: semicolon, comma.</param>
       <param name="path">The subset of URIs on the origin server to which this <see cref="T:System.Net.Cookie" /> applies. The default value is "/".</param>
       <param name="domain">The optional internet domain for which this <see cref="T:System.Net.Cookie" /> is valid. The default value is the host this <see cref="T:System.Net.Cookie" /> has been received from.</param>
-      <exception cref="T:System.Net.CookieException">The <paramref name="name" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="name" /> parameter is of zero length.  
- -or-  
- The <paramref name="name" /> parameter contains an invalid character.  
- -or-  
- The <paramref name="value" /> parameter is <see langword="null" /> .  
- -or -  
- The <paramref name="value" /> parameter contains a string not enclosed in quotes that contains an invalid character.</exception>
+      <exception cref="T:System.Net.CookieException">The <paramref name="name" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="name" /> parameter is of zero length.
+-or-
+The <paramref name="name" /> parameter contains an invalid character.
+-or-
+The <paramref name="value" /> parameter is <see langword="null" /> .
+-or -
+The <paramref name="value" /> parameter contains a string not enclosed in quotes that contains an invalid character.</exception>
     </member>
     <member name="P:System.Net.Cookie.Comment">
       <summary>Gets or sets a comment that the server can add to a <see cref="T:System.Net.Cookie" />.</summary>
@@ -164,9 +164,9 @@
     <member name="P:System.Net.Cookie.Name">
       <summary>Gets or sets the name for the <see cref="T:System.Net.Cookie" />.</summary>
       <returns>The name for the <see cref="T:System.Net.Cookie" />.</returns>
-      <exception cref="T:System.Net.CookieException">The value specified for a set operation is <see langword="null" /> or the empty string  
+      <exception cref="T:System.Net.CookieException">The value specified for a set operation is <see langword="null" /> or the empty string
 -or-
- The value specified for a set operation contained an illegal character. The following characters must not be used inside the <see cref="P:System.Net.Cookie.Name" /> property: equal sign, semicolon, comma, newline (\n), return (\r), tab (\t), and space character. The dollar sign character ("$") cannot be the first character.</exception>
+The value specified for a set operation contained an illegal character. The following characters must not be used inside the <see cref="P:System.Net.Cookie.Name" /> property: equal sign, semicolon, comma, newline (\n), return (\r), tab (\t), and space character. The dollar sign character ("$") cannot be the first character.</exception>
     </member>
     <member name="P:System.Net.Cookie.Path">
       <summary>Gets or sets the URIs to which the <see cref="T:System.Net.Cookie" /> applies.</summary>
@@ -235,8 +235,8 @@
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in this <see cref="T:System.Net.CookieCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The elements in this <see cref="T:System.Net.CookieCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -249,8 +249,8 @@ The number of elements in this <see cref="T:System.Net.CookieCollection" /> is g
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in this <see cref="T:System.Net.CookieCollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The elements in this <see cref="T:System.Net.CookieCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -318,8 +318,8 @@ The number of elements in this <see cref="T:System.Net.CookieCollection" /> is g
       <param name="perDomainCapacity">The number of <see cref="T:System.Net.Cookie" /> instances per domain.</param>
       <param name="maxCookieSize">The maximum size in bytes for any single <see cref="T:System.Net.Cookie" /> in a <see cref="T:System.Net.CookieContainer" />.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="perDomainCapacity" /> is not equal to <see cref="F:System.Int32.MaxValue" />.  
-and  
+        <paramref name="perDomainCapacity" /> is not equal to <see cref="F:System.Int32.MaxValue" />.
+and
 <paramref name="(perDomainCapacity" /> is less than or equal to zero or <paramref name="perDomainCapacity" /> is greater than <paramref name="capacity)" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="maxCookieSize" /> is less than or equal to zero.</exception>
@@ -331,8 +331,8 @@ and
         <paramref name="cookie" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The domain for <paramref name="cookie" /> is <see langword="null" /> or the empty string ("").</exception>
       <exception cref="T:System.Net.CookieException">
-        <paramref name="cookie" /> is larger than <paramref name="maxCookieSize" />.  
--or-  
+        <paramref name="cookie" /> is larger than <paramref name="maxCookieSize" />.
+-or-
 the domain for <paramref name="cookie" /> is not a valid URI.</exception>
     </member>
     <member name="M:System.Net.CookieContainer.Add(System.Net.CookieCollection)">
@@ -348,8 +348,8 @@ the domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="uri" /> is <see langword="null" /> or <paramref name="cookie" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.CookieException">
-        <paramref name="cookie" /> is larger than <paramref name="maxCookieSize" />.  
--or-  
+        <paramref name="cookie" /> is larger than <paramref name="maxCookieSize" />.
+-or-
 The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     </member>
     <member name="M:System.Net.CookieContainer.Add(System.Uri,System.Net.CookieCollection)">
@@ -404,8 +404,8 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <summary>Gets or sets the number of <see cref="T:System.Net.Cookie" /> instances that a <see cref="T:System.Net.CookieContainer" /> can hold per domain.</summary>
       <returns>The number of <see cref="T:System.Net.Cookie" /> instances that are allowed per domain.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="PerDomainCapacity" /> is less than or equal to zero.  
--or-  
+        <paramref name="PerDomainCapacity" /> is less than or equal to zero.
+-or-
 <paramref name="(PerDomainCapacity" /> is greater than the maximum allowable number of cookies instances, 300, and is not equal to <see cref="F:System.Int32.MaxValue" />).</exception>
     </member>
     <member name="M:System.Net.CookieContainer.SetCookies(System.Uri,System.String)">
@@ -414,9 +414,9 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <param name="cookieHeader">The contents of an HTTP set-cookie header as returned by a HTTP server, with <see cref="T:System.Net.Cookie" /> instances delimited by commas.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="uri" /> or <paramref name="cookieHeader" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.Net.CookieException">One of the cookies is invalid.  
- -or-  
- An error occurred while adding one of the cookies to the container.</exception>
+      <exception cref="T:System.Net.CookieException">One of the cookies is invalid.
+-or-
+An error occurred while adding one of the cookies to the container.</exception>
     </member>
     <member name="T:System.Net.CookieException">
       <summary>The exception that is thrown when an error is made adding a <see cref="T:System.Net.Cookie" /> to a <see cref="T:System.Net.CookieContainer" />.</summary>
@@ -452,8 +452,8 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <param name="authenticationType">A <see cref="T:System.String" /> that identifies the authentication scheme used when connecting to <paramref name="host" /> using <paramref name="cred" />.</param>
       <param name="credential">The <see cref="T:System.Net.NetworkCredential" /> to add to the credential cache.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="host" /> is <see langword="null" />.  
--or-  
+        <paramref name="host" /> is <see langword="null" />.
+-or-
 <paramref name="authType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="authType" /> not an accepted value.</exception>
@@ -466,8 +466,8 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <param name="authType">The authentication scheme used by the resource named in <paramref name="uriPrefix" />.</param>
       <param name="cred">The <see cref="T:System.Net.NetworkCredential" /> to add to the credential cache.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="uriPrefix" /> is <see langword="null" />.  
--or-  
+        <paramref name="uriPrefix" /> is <see langword="null" />.
+-or-
 <paramref name="authType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The same credentials are added more than once.</exception>
     </member>
@@ -486,12 +486,12 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <param name="authenticationType">A <see cref="T:System.String" /> that identifies the authentication scheme used when connecting to <paramref name="host" />.</param>
       <returns>A <see cref="T:System.Net.NetworkCredential" /> or, if there is no matching credential in the cache, <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="host" /> is <see langword="null" />.  
--or-  
+        <paramref name="host" /> is <see langword="null" />.
+-or-
 <paramref name="authType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="authType" /> not an accepted value.  
--or-  
+        <paramref name="authType" /> not an accepted value.
+-or-
 <paramref name="host" /> is equal to the empty string ("").</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="port" /> is less than zero.</exception>
@@ -547,8 +547,8 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="host" /> parameter contains an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="host" /> parameter is a <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />.  
--or-  
+        <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />.
+-or-
 <paramref name="port" /> is greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.</exception>
     </member>
     <member name="M:System.Net.DnsEndPoint.#ctor(System.String,System.Int32,System.Net.Sockets.AddressFamily)">
@@ -556,13 +556,13 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <param name="host">The host name or a string representation of the IP address.</param>
       <param name="port">The port number associated with the address, or 0 to specify any available port. <paramref name="port" /> is in host order.</param>
       <param name="addressFamily">One of the <see cref="T:System.Net.Sockets.AddressFamily" /> values.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="host" /> parameter contains an empty string.  
- -or-  
- <paramref name="addressFamily" /> is <see cref="F:System.Net.Sockets.AddressFamily.Unknown" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="host" /> parameter contains an empty string.
+-or-
+<paramref name="addressFamily" /> is <see cref="F:System.Net.Sockets.AddressFamily.Unknown" />.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="host" /> parameter is a <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />.  
--or-  
+        <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />.
+-or-
 <paramref name="port" /> is greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.</exception>
     </member>
     <member name="P:System.Net.DnsEndPoint.AddressFamily">
@@ -619,7 +619,9 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.Accepted">
       <summary>Equivalent to HTTP status 202. <see cref="F:System.Net.HttpStatusCode.Accepted" /> indicates that the request has been accepted for further processing.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.AlreadyReported" />
+    <member name="F:System.Net.HttpStatusCode.AlreadyReported">
+      <summary>Equivalent to HTTP status 208. <see cref="F:System.Net.HttpStatusCode.AlreadyReported" /> indicates that the members of a WebDAV binding have already been enumerated in a preceding part of the multistatus response, and are not being included again.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.Ambiguous">
       <summary>Equivalent to HTTP status 300. <see cref="F:System.Net.HttpStatusCode.Ambiguous" /> indicates that the requested information has multiple representations. The default action is to treat this status as a redirect and follow the contents of the Location header associated with this response. <c>Ambiguous</c> is a synonym for <c>MultipleChoices</c>.</summary>
     </member>
@@ -638,11 +640,15 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.Created">
       <summary>Equivalent to HTTP status 201. <see cref="F:System.Net.HttpStatusCode.Created" /> indicates that the request resulted in a new resource created before the response was sent.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.EarlyHints" />
+    <member name="F:System.Net.HttpStatusCode.EarlyHints">
+      <summary>Equivalent to HTTP status 103. <see cref="F:System.Net.HttpStatusCode.EarlyHints" /> indicates to the client that the server is likely to send a final response with the header fields included in the informational response.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.ExpectationFailed">
       <summary>Equivalent to HTTP status 417. <see cref="F:System.Net.HttpStatusCode.ExpectationFailed" /> indicates that an expectation given in an Expect header could not be met by the server.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.FailedDependency" />
+    <member name="F:System.Net.HttpStatusCode.FailedDependency">
+      <summary>Equivalent to HTTP status 424. <see cref="F:System.Net.HttpStatusCode.FailedDependency" /> indicates that the method couldn't be performed on the resource because the requested action depended on another action and that action failed.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.Forbidden">
       <summary>Equivalent to HTTP status 403. <see cref="F:System.Net.HttpStatusCode.Forbidden" /> indicates that the server refuses to fulfill the request.</summary>
     </member>
@@ -658,20 +664,30 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.HttpVersionNotSupported">
       <summary>Equivalent to HTTP status 505. <see cref="F:System.Net.HttpStatusCode.HttpVersionNotSupported" /> indicates that the requested HTTP version is not supported by the server.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.IMUsed" />
-    <member name="F:System.Net.HttpStatusCode.InsufficientStorage" />
+    <member name="F:System.Net.HttpStatusCode.IMUsed">
+      <summary>Equivalent to HTTP status 226. <see cref="F:System.Net.HttpStatusCode.IMUsed" /> indicates that the server has fulfilled a request for the resource, and the response is a representation of the result of one or more instance-manipulations applied to the current instance.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.InsufficientStorage">
+      <summary>Equivalent to HTTP status 507. <see cref="F:System.Net.HttpStatusCode.InsufficientStorage" /> indicates that the server is unable to store the representation needed to complete the request.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.InternalServerError">
       <summary>Equivalent to HTTP status 500. <see cref="F:System.Net.HttpStatusCode.InternalServerError" /> indicates that a generic error has occurred on the server.</summary>
     </member>
     <member name="F:System.Net.HttpStatusCode.LengthRequired">
       <summary>Equivalent to HTTP status 411. <see cref="F:System.Net.HttpStatusCode.LengthRequired" /> indicates that the required Content-length header is missing.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.Locked" />
-    <member name="F:System.Net.HttpStatusCode.LoopDetected" />
+    <member name="F:System.Net.HttpStatusCode.Locked">
+      <summary>Equivalent to HTTP status 423. <see cref="F:System.Net.HttpStatusCode.Locked" /> indicates that the source or destination resource is locked.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.LoopDetected">
+      <summary>Equivalent to HTTP status 508. <see cref="F:System.Net.HttpStatusCode.LoopDetected" /> indicates that the server terminated an operation because it encountered an infinite loop while processing a WebDAV request with "Depth: infinity". This status code is meant for backward compatibility with clients not aware of the 208 status code <see cref="F:System.Net.HttpStatusCode.AlreadyReported" /> appearing in multistatus response bodies.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.MethodNotAllowed">
       <summary>Equivalent to HTTP status 405. <see cref="F:System.Net.HttpStatusCode.MethodNotAllowed" /> indicates that the request method (POST or GET) is not allowed on the requested resource.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.MisdirectedRequest" />
+    <member name="F:System.Net.HttpStatusCode.MisdirectedRequest">
+      <summary>Equivalent to HTTP status 421. <see cref="F:System.Net.HttpStatusCode.MisdirectedRequest" /> indicates that the request was directed at a server that is not able to produce a response.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.Moved">
       <summary>Equivalent to HTTP status 301. <see cref="F:System.Net.HttpStatusCode.Moved" /> indicates that the requested information has been moved to the URI specified in the Location header. The default action when this status is received is to follow the Location header associated with the response. When the original request method was POST, the redirected request will use the GET method. <c>Moved</c> is a synonym for <c>MovedPermanently</c>.</summary>
     </member>
@@ -681,8 +697,12 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.MultipleChoices">
       <summary>Equivalent to HTTP status 300. <see cref="F:System.Net.HttpStatusCode.MultipleChoices" /> indicates that the requested information has multiple representations. The default action is to treat this status as a redirect and follow the contents of the Location header associated with this response. <c>MultipleChoices</c> is a synonym for <c>Ambiguous</c>.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.MultiStatus" />
-    <member name="F:System.Net.HttpStatusCode.NetworkAuthenticationRequired" />
+    <member name="F:System.Net.HttpStatusCode.MultiStatus">
+      <summary>Equivalent to HTTP status 207. <see cref="F:System.Net.HttpStatusCode.MultiStatus" /> indicates multiple status codes for a single response during a Web Distributed Authoring and Versioning (WebDAV) operation. The response body contains XML that describes the status codes.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.NetworkAuthenticationRequired">
+      <summary>Equivalent to HTTP status 511. <see cref="F:System.Net.HttpStatusCode.NetworkAuthenticationRequired" /> indicates that the client needs to authenticate to gain network access; it's intended for use by intercepting proxies used to control access to the network.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.NoContent">
       <summary>Equivalent to HTTP status 204. <see cref="F:System.Net.HttpStatusCode.NoContent" /> indicates that the request has been successfully processed and that the response is intentionally blank.</summary>
     </member>
@@ -692,7 +712,9 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.NotAcceptable">
       <summary>Equivalent to HTTP status 406. <see cref="F:System.Net.HttpStatusCode.NotAcceptable" /> indicates that the client has indicated with Accept headers that it will not accept any of the available representations of the resource.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.NotExtended" />
+    <member name="F:System.Net.HttpStatusCode.NotExtended">
+      <summary>Equivalent to HTTP status 510. <see cref="F:System.Net.HttpStatusCode.NotExtended" /> indicates that further extensions to the request are required for the server to fulfill it.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.NotFound">
       <summary>Equivalent to HTTP status 404. <see cref="F:System.Net.HttpStatusCode.NotFound" /> indicates that the requested resource does not exist on the server.</summary>
     </member>
@@ -711,12 +733,18 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.PaymentRequired">
       <summary>Equivalent to HTTP status 402. <see cref="F:System.Net.HttpStatusCode.PaymentRequired" /> is reserved for future use.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.PermanentRedirect" />
+    <member name="F:System.Net.HttpStatusCode.PermanentRedirect">
+      <summary>Equivalent to HTTP status 308. <see cref="F:System.Net.HttpStatusCode.PermanentRedirect" /> indicates that the request information is located at the URI specified in the Location header. The default action when this status is received is to follow the Location header associated with the response. When the original request method was POST, the redirected request will also use the POST method.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.PreconditionFailed">
       <summary>Equivalent to HTTP status 412. <see cref="F:System.Net.HttpStatusCode.PreconditionFailed" /> indicates that a condition set for this request failed, and the request cannot be carried out. Conditions are set with conditional request headers like If-Match, If-None-Match, or If-Unmodified-Since.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.PreconditionRequired" />
-    <member name="F:System.Net.HttpStatusCode.Processing" />
+    <member name="F:System.Net.HttpStatusCode.PreconditionRequired">
+      <summary>Equivalent to HTTP status 428. <see cref="F:System.Net.HttpStatusCode.PreconditionRequired" /> indicates that the server requires the request to be conditional.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.Processing">
+      <summary>Equivalent to HTTP status 102. <see cref="F:System.Net.HttpStatusCode.Processing" /> indicates that the server has accepted the complete request but hasn't completed it yet.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired">
       <summary>Equivalent to HTTP status 407. <see cref="F:System.Net.HttpStatusCode.ProxyAuthenticationRequired" /> indicates that the requested proxy requires authentication. The Proxy-authenticate header contains the details of how to perform the authentication.</summary>
     </member>
@@ -735,7 +763,9 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.RequestEntityTooLarge">
       <summary>Equivalent to HTTP status 413. <see cref="F:System.Net.HttpStatusCode.RequestEntityTooLarge" /> indicates that the request is too large for the server to process.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.RequestHeaderFieldsTooLarge" />
+    <member name="F:System.Net.HttpStatusCode.RequestHeaderFieldsTooLarge">
+      <summary>Equivalent to HTTP status 431. <see cref="F:System.Net.HttpStatusCode.RequestHeaderFieldsTooLarge" /> indicates that the server is unwilling to process the request because its header fields (either an individual header field or all the header fields collectively) are too large.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.RequestTimeout">
       <summary>Equivalent to HTTP status 408. <see cref="F:System.Net.HttpStatusCode.RequestTimeout" /> indicates that the client did not send a request within the time the server was expecting the request.</summary>
     </member>
@@ -757,12 +787,18 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.TemporaryRedirect">
       <summary>Equivalent to HTTP status 307. <see cref="F:System.Net.HttpStatusCode.TemporaryRedirect" /> indicates that the request information is located at the URI specified in the Location header. The default action when this status is received is to follow the Location header associated with the response. When the original request method was POST, the redirected request will also use the POST method. <c>TemporaryRedirect</c> is a synonym for <c>RedirectKeepVerb</c>.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.TooManyRequests" />
+    <member name="F:System.Net.HttpStatusCode.TooManyRequests">
+      <summary>Equivalent to HTTP status 429. <see cref="F:System.Net.HttpStatusCode.TooManyRequests" /> indicates that the user has sent too many requests in a given amount of time.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.Unauthorized">
       <summary>Equivalent to HTTP status 401. <see cref="F:System.Net.HttpStatusCode.Unauthorized" /> indicates that the requested resource requires authentication. The WWW-Authenticate header contains the details of how to perform the authentication.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.UnavailableForLegalReasons" />
-    <member name="F:System.Net.HttpStatusCode.UnprocessableEntity" />
+    <member name="F:System.Net.HttpStatusCode.UnavailableForLegalReasons">
+      <summary>Equivalent to HTTP status 451. <see cref="F:System.Net.HttpStatusCode.UnavailableForLegalReasons" /> indicates that the server is denying access to the resource as a consequence of a legal demand.</summary>
+    </member>
+    <member name="F:System.Net.HttpStatusCode.UnprocessableEntity">
+      <summary>Equivalent to HTTP status 422. <see cref="F:System.Net.HttpStatusCode.UnprocessableEntity" /> indicates that the request was well-formed but was unable to be followed due to semantic errors.</summary>
+    </member>
     <member name="F:System.Net.HttpStatusCode.UnsupportedMediaType">
       <summary>Equivalent to HTTP status 415. <see cref="F:System.Net.HttpStatusCode.UnsupportedMediaType" /> indicates that the request is an unsupported type.</summary>
     </member>
@@ -775,7 +811,9 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     <member name="F:System.Net.HttpStatusCode.UseProxy">
       <summary>Equivalent to HTTP status 305. <see cref="F:System.Net.HttpStatusCode.UseProxy" /> indicates that the request should use the proxy server at the URI specified in the Location header.</summary>
     </member>
-    <member name="F:System.Net.HttpStatusCode.VariantAlsoNegotiates" />
+    <member name="F:System.Net.HttpStatusCode.VariantAlsoNegotiates">
+      <summary>Equivalent to HTTP status 506. <see cref="F:System.Net.HttpStatusCode.VariantAlsoNegotiates" /> indicates that the chosen variant resource is configured to engage in transparent content negotiation itself and, therefore, isn't a proper endpoint in the negotiation process.</summary>
+    </member>
     <member name="T:System.Net.HttpVersion">
       <summary>Defines the HTTP version numbers that are supported by the <see cref="T:System.Net.HttpWebRequest" /> and <see cref="T:System.Net.HttpWebResponse" /> classes.</summary>
     </member>
@@ -826,14 +864,14 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="address" /> contains a bad IP address.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="scopeid" /> &lt; 0 or  
+        <paramref name="scopeid" /> &lt; 0 or
 <paramref name="scopeid" /> &gt; 0x00000000FFFFFFFF</exception>
     </member>
     <member name="M:System.Net.IPAddress.#ctor(System.Int64)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.IPAddress" /> class with the address specified as an <see cref="T:System.Int64" />.</summary>
       <param name="newAddress">The long value of the IP address. For example, the value 0x2414188f in big-endian format would be the IP address "143.24.20.36".</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="newAddress" /> &lt; 0 or  
+        <paramref name="newAddress" /> &lt; 0 or
 <paramref name="newAddress" /> &gt; 0x00000000FFFFFFFF</exception>
     </member>
     <member name="M:System.Net.IPAddress.#ctor(System.ReadOnlySpan{System.Byte})">
@@ -898,8 +936,8 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     </member>
     <member name="P:System.Net.IPAddress.IsIPv4MappedToIPv6">
       <summary>Gets whether the IP address is an IPv4-mapped IPv6 address.</summary>
-      <returns>Returns <see cref="T:System.Boolean" />.  
- <see langword="true" /> if the IP address is an IPv4-mapped IPv6 address; otherwise, <see langword="false" />.</returns>
+      <returns>Returns <see cref="T:System.Boolean" />.
+<see langword="true" /> if the IP address is an IPv4-mapped IPv6 address; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Net.IPAddress.IsIPv6LinkLocal">
       <summary>Gets whether the address is an IPv6 link local address.</summary>
@@ -932,13 +970,13 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
     </member>
     <member name="M:System.Net.IPAddress.MapToIPv4">
       <summary>Maps the <see cref="T:System.Net.IPAddress" /> object to an IPv4 address.</summary>
-      <returns>Returns <see cref="T:System.Net.IPAddress" />.  
- An IPv4 address.</returns>
+      <returns>Returns <see cref="T:System.Net.IPAddress" />.
+An IPv4 address.</returns>
     </member>
     <member name="M:System.Net.IPAddress.MapToIPv6">
       <summary>Maps the <see cref="T:System.Net.IPAddress" /> object to an IPv6 address.</summary>
-      <returns>Returns <see cref="T:System.Net.IPAddress" />.  
- An IPv6 address.</returns>
+      <returns>Returns <see cref="T:System.Net.IPAddress" />.
+An IPv6 address.</returns>
     </member>
     <member name="M:System.Net.IPAddress.NetworkToHostOrder(System.Int16)">
       <summary>Converts a short value from network byte order to host byte order.</summary>
@@ -976,7 +1014,7 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
         <see langword="AddressFamily" /> = <see langword="InterNetwork" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="scopeId" /> &lt; 0  
+        <paramref name="scopeId" /> &lt; 0
 -or-
 
 <paramref name="scopeId" /> &gt; 0x00000000FFFFFFFF</exception>
@@ -1015,10 +1053,10 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <param name="address">The IP address of the Internet host.</param>
       <param name="port">The port number associated with the <paramref name="address" />, or 0 to specify any available port. <paramref name="port" /> is in host order.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />.  
--or-  
-<paramref name="port" /> is greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.  
--or-  
+        <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />.
+-or-
+<paramref name="port" /> is greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.
+-or-
 <paramref name="address" /> is less than 0 or greater than 0x00000000FFFFFFFF.</exception>
     </member>
     <member name="M:System.Net.IPEndPoint.#ctor(System.Net.IPAddress,System.Int32)">
@@ -1028,10 +1066,10 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="address" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />.  
--or-  
-<paramref name="port" /> is greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.  
--or-  
+        <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />.
+-or-
+<paramref name="port" /> is greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.
+-or-
 <paramref name="address" /> is less than 0 or greater than 0x00000000FFFFFFFF.</exception>
     </member>
     <member name="P:System.Net.IPEndPoint.Address">
@@ -1046,9 +1084,9 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <summary>Creates an endpoint from a socket address.</summary>
       <param name="socketAddress">The <see cref="T:System.Net.SocketAddress" /> to use for the endpoint.</param>
       <returns>An <see cref="T:System.Net.EndPoint" /> instance using the specified socket address.</returns>
-      <exception cref="T:System.ArgumentException">The AddressFamily of <paramref name="socketAddress" /> is not equal to the AddressFamily of the current instance.  
- -or-  
- <paramref name="socketAddress" />.Size &lt; 8.</exception>
+      <exception cref="T:System.ArgumentException">The AddressFamily of <paramref name="socketAddress" /> is not equal to the AddressFamily of the current instance.
+-or-
+<paramref name="socketAddress" />.Size &lt; 8.</exception>
     </member>
     <member name="M:System.Net.IPEndPoint.Equals(System.Object)">
       <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
@@ -1217,10 +1255,10 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="offset" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
+        <paramref name="array" /> is multidimensional.
 
- -or-  
- The number of elements in this <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> is greater than the available space from <paramref name="offset" /> to the end of the destination <paramref name="array" />.</exception>
+-or-
+The number of elements in this <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> is greater than the available space from <paramref name="offset" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The elements in this <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
     <member name="P:System.Net.NetworkInformation.IPAddressCollection.Count">
@@ -1257,7 +1295,7 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <summary>The client and server should be authenticated. The request does not fail if the server is not authenticated. To determine whether mutual authentication occurred, check the value of the <see cref="P:System.Net.WebResponse.IsMutuallyAuthenticated" /> property.</summary>
     </member>
     <member name="F:System.Net.Security.AuthenticationLevel.MutualAuthRequired">
-      <summary>The client and server should be authenticated. If the server is not authenticated, your application will receive an <see cref="T:System.IO.IOException" /> with a <see cref="T:System.Net.ProtocolViolationException" /> inner exception that indicates that mutual authentication failed</summary>
+      <summary>The client and server should be authenticated. If the server is not authenticated, your application will receive an <see cref="T:System.IO.IOException" /> with a <see cref="T:System.Net.ProtocolViolationException" /> inner exception that indicates that mutual authentication failed.</summary>
     </member>
     <member name="F:System.Net.Security.AuthenticationLevel.None">
       <summary>No authentication is required for the client and server.</summary>
@@ -1597,7 +1635,7 @@ The domain for <paramref name="cookie" /> is not a valid URI.</exception>
       <summary>The <see cref="T:System.Net.TransportContext" /> class provides additional context about the underlying transport layer.</summary>
     </member>
     <member name="M:System.Net.TransportContext.#ctor">
-      <summary>Creates a new instance of the <see cref="T:System.Net.TransportContext" /> class</summary>
+      <summary>Creates a new instance of the <see cref="T:System.Net.TransportContext" /> class.</summary>
     </member>
     <member name="M:System.Net.TransportContext.GetChannelBinding(System.Security.Authentication.ExtendedProtection.ChannelBindingKind)">
       <summary>Retrieves the requested channel binding.</summary>

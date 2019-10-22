@@ -302,70 +302,69 @@
     </member>
     <member name="P:System.DirectoryServices.ActiveDirectory.ActiveDirectorySchedule.RawSchedule">
       <summary>Gets or sets a three-dimensional array that indicates at what time during the week that the source is available for replication.</summary>
-      <returns>A three-dimensional array of <see cref="T:System.Boolean" /> elements in which the element is <see langword="true" /> if the source is available for replication during that specific 15-minute interval. The element is <see langword="false" /> if the source is not available for replication.  
- The array is in the form RawSchedule[&lt;day-of-week&gt;, &lt;hour&gt;, &lt;15-minute interval&gt;]. All of these values are zero-based and the week begins at 00:00 on Sunday morning, Coordinated Universal Time.  
- The following are the valid values for the day-of-week.  
+      <returns>A three-dimensional array of <see cref="T:System.Boolean" /> elements in which the element is <see langword="true" /> if the source is available for replication during that specific 15-minute interval. The element is <see langword="false" /> if the source is not available for replication.
+The array is in the form RawSchedule[&lt;day-of-week&gt;, &lt;hour&gt;, &lt;15-minute interval&gt;]. All of these values are zero-based and the week begins at 00:00 on Sunday morning, Coordinated Universal Time.
+The following are the valid values for the day-of-week.
   Day-of-week value  
-
+  
   Indicated day of the week.  
-
+  
   0  
-
+  
   Sunday  
-
+  
   1  
-
+  
   Monday  
-
+  
   2  
-
+  
   Tuesday  
-
+  
   3  
-
+  
   Wednesday  
-
+  
   4  
-
+  
   Thursday  
-
+  
   5  
-
+  
   Friday  
-
+  
   6  
-
+  
   Saturday  
-
+  
    
-
- The hour is zero-based and specified in 24-hour format. For example, 2 P.M. would be specified as 14. Valid values are 0-23.  
- The 15-minute interval specifies the 15-minute block within the hour that the source is available for replication. The following table identifies the possible values for the 15-minute interval.  
+The hour is zero-based and specified in 24-hour format. For example, 2 P.M. would be specified as 14. Valid values are 0-23.
+The 15-minute interval specifies the 15-minute block within the hour that the source is available for replication. The following table identifies the possible values for the 15-minute interval.
   15-minute interval  
-
+  
   Description  
-
+  
   0  
-
+  
   The source is available for replication from 0 to 14 minutes after the hour.  
-
+  
   1  
-
+  
   The source is available for replication from 15 to 29 minutes after the hour.  
-
+  
   2  
-
+  
   The source is available for replication from 30 to 44 minutes after the hour.  
-
+  
   3  
-
+  
   The source is available for replication from 45 to 59 minutes after the hour.  
-
+  
    
-
- The following C# example shows how to use this property to determine if the source is available for replication at 15:50 Coordinated Universal Time on Tuesday.  
+The following C# example shows how to use this property to determine if the source is available for replication at 15:50 Coordinated Universal Time on Tuesday.
 Boolean isAvailable = scheduleObject.RawSchedule[2, 15, 3];  
- The following C# example shows how to use this property to calculate the 15-minute interval at runtime by dividing the minutes by 15.  
+
+The following C# example shows how to use this property to calculate the 15-minute interval at runtime by dividing the minutes by 15.
 Boolean isAvailable = scheduleObject.RawSchedule[2, 15, (Int32)50/15];</returns>
     </member>
     <member name="M:System.DirectoryServices.ActiveDirectory.ActiveDirectorySchedule.ResetSchedule">
@@ -1100,9 +1099,9 @@ Boolean isAvailable = scheduleObject.RawSchedule[2, 15, (Int32)50/15];</returns>
       <param name="siteName">The name for the new site.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 <paramref name="siteName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1154,9 +1153,9 @@ The target in the <paramref name="context" /> parameter is not a forest, configu
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">The site could not be found for the given <paramref name="siteName" /> in the <paramref name="context" /> specified.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 <paramref name="siteName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1376,9 +1375,9 @@ The target in the <paramref name="context" /> parameter is not a forest, configu
       <param name="siteLinkName">The name for the site link.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 <paramref name="siteLinkName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1392,9 +1391,9 @@ The target in the <paramref name="context" /> parameter is not a forest, configu
       <param name="transport">An <see cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryTransportType" /> object that specifies the transport type.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 <paramref name="siteLinkName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1412,9 +1411,9 @@ The target in the <paramref name="context" /> parameter is not a forest, configu
       <param name="schedule">An <see cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectorySchedule" /> object that specifies the replication schedule for this site link.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 <paramref name="siteLinkName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1462,9 +1461,9 @@ The target in the <paramref name="context" /> parameter is not a forest, configu
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">The site could not be found for the given <paramref name="siteLinkName" /> in the <paramref name="context" /> specified.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 <paramref name="siteLinkName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1480,9 +1479,9 @@ The target in the <paramref name="context" /> parameter is not a forest, configu
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">The site could not be found for the given <paramref name="siteLinkName" /> in the <paramref name="context" /> specified.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 <paramref name="siteLinkName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1561,9 +1560,9 @@ The target in the <paramref name="context" /> parameter is not a forest, configu
       <param name="bridgeName">A <see cref="T:System.String" /> that specifies the name for this <see cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectorySiteLinkBridge" /> object.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:
 
-The <paramref name="context" /> parameter does not refer to a valid forest, configuration set,  domain controller, or AD LDS server.  
+The <paramref name="context" /> parameter does not refer to a valid forest, configuration set,  domain controller, or AD LDS server.
 
 The <paramref name="bridgeName" /> parameter is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="context" /> parameter or the <paramref name="bridgeName" /> parameter is <see langword="null" />.</exception>
@@ -1576,9 +1575,9 @@ The <paramref name="bridgeName" /> parameter is an empty string.</exception>
       <param name="transport">A <see cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryTransportType" /> value that specifies the transport type to be used.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:
 
-The <paramref name="context" /> parameter does not refer to a valid forest, configuration set, domain controller, or AD LDS server.  
+The <paramref name="context" /> parameter does not refer to a valid forest, configuration set, domain controller, or AD LDS server.
 
 The <paramref name="bridgeName" /> parameter is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="context" /> parameter or the <paramref name="bridgeName" /> parameter is <see langword="null" />.</exception>
@@ -1611,9 +1610,9 @@ The <paramref name="bridgeName" /> parameter is an empty string.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">In the <paramref name="context" /> parameter that was specified, the site link bridge could not be found for the given <paramref name="bridgeName" /> parameter.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 The <paramref name="bridgeName" /> parameter is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="context" /> or the <paramref name="bridgeName" /> parameter is <see langword="null" />.</exception>
@@ -1627,9 +1626,9 @@ The <paramref name="bridgeName" /> parameter is an empty string.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">In the <paramref name="context" /> parameter that was specified, the site link bridge could not be found for the given <paramref name="bridgeName" /> parameter.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or an AD LDS server.
 
 The <paramref name="bridgeName" /> parameter is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="context" /> or the <paramref name="bridgeName" /> parameter is <see langword="null" />.</exception>
@@ -1837,9 +1836,9 @@ The <paramref name="bridgeName" /> parameter is an empty string.</exception>
         <paramref name="context" /> specifies a configuration set, but no AD LDS instance was found.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:
 
-<paramref name="context" /> does not refer a valid forest, configuration set, domain controller, or AD LDS server.  
+<paramref name="context" /> does not refer a valid forest, configuration set, domain controller, or AD LDS server.
 
 <paramref name="subnetName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1855,9 +1854,9 @@ The <paramref name="bridgeName" /> parameter is an empty string.</exception>
         <paramref name="context" /> specifies a configuration set, but no AD LDS instance was found.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:
 
-<paramref name="context" /> does not refer to a valid forest, configuration set, domain controller, or AD LDS server.  
+<paramref name="context" /> does not refer to a valid forest, configuration set, domain controller, or AD LDS server.
 
 <paramref name="subnetName" /> or <paramref name="siteName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -1888,9 +1887,9 @@ The <paramref name="bridgeName" /> parameter is an empty string.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">In the <paramref name="context" /> parameter that was specified, the site could not be found for the given <paramref name="subnetName" /> parameter.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:
 
-The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or AD LDS server.  
+The target in the <paramref name="context" /> parameter is not a forest, configuration set, domain controller, or AD LDS server.
 
 <paramref name="subnetName" /> is an empty string.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -2500,23 +2499,23 @@ The target in the <paramref name="context" /> parameter is not a forest, configu
       <param name="context">A <see cref="T:System.DirectoryServices.ActiveDirectory.DirectoryContext" /> object that contains the target and credentials to use for the search.</param>
       <param name="distinguishedName">A <see cref="T:System.String" /> that contains the distinguished name of the application partition to search for.</param>
       <returns>An <see cref="T:System.DirectoryServices.ActiveDirectory.ApplicationPartition" /> object that represents the results of the search.</returns>
-      <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">This exception will occur for any one of the following reasons:
 
-A target specified in the <paramref name="context" /> parameter could not be found.  
+A target specified in the <paramref name="context" /> parameter could not be found.
 
-The target is a configuration set and no AD LDS instance was found in that configuration set.  
+The target is a configuration set and no AD LDS instance was found in that configuration set.
 
-The target is a forest and the application partition was not found in that forest.  
+The target is a forest and the application partition was not found in that forest.
 
-The target does not host the current application partition.  
+The target does not host the current application partition.
 
 No AD LDS instance was found for the application partition.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="context" /> or <paramref name="distinguishedName" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons:
 
-The <paramref name="context" /> parameter is not a valid forest, configuration set, or directory server.  
+The <paramref name="context" /> parameter is not a valid forest, configuration set, or directory server.
 
 The <paramref name="distinguishedName" /> has a zero length.
 
@@ -2793,8 +2792,8 @@ The <paramref name="distinguishedName" /> parameter is in an invalid format.</ex
     </member>
     <member name="P:System.DirectoryServices.ActiveDirectory.ConfigurationSet.SchemaRoleOwner">
       <summary>Gets the AD LDS instance that is the current owner of the schema operations master role.</summary>
-      <returns>An <see cref="T:System.DirectoryServices.ActiveDirectory.AdamInstance" /> object that represents the AD LDS+  
- instance that currently holds the schema operations master role.</returns>
+      <returns>An <see cref="T:System.DirectoryServices.ActiveDirectory.AdamInstance" /> object that represents the AD LDS+
+instance that currently holds the schema operations master role.</returns>
       <exception cref="T:System.ObjectDisposedException">The object has been disposed.</exception>
     </member>
     <member name="M:System.DirectoryServices.ActiveDirectory.ConfigurationSet.SetSecurityLevel(System.DirectoryServices.ActiveDirectory.ReplicationSecurityLevel)">
@@ -3247,9 +3246,9 @@ The <paramref name="distinguishedName" /> parameter is in an invalid format.</ex
       <returns>A <see cref="T:System.DirectoryServices.ActiveDirectory.DomainController" /> object that represents the domain controller that is found by this method.</returns>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryObjectNotFoundException">A domain controller cannot be located.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.  
+      <exception cref="T:System.ArgumentException">This exception will occur for any of the following reasons.
 
-<paramref name="siteName" /> is an empty string.  
+<paramref name="siteName" /> is an empty string.
 
 <paramref name="flag" /> contains an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -5018,15 +5017,15 @@ The <paramref name="distinguishedName" /> parameter is in an invalid format.</ex
       <param name="sourceServer">A <see cref="T:System.DirectoryServices.ActiveDirectory.DirectoryServer" /> object that identifies the source server of the connection.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:
 
-The target of the <paramref name="context" /> parameter is not a domain controller or AD LDS instance.  
+The target of the <paramref name="context" /> parameter is not a domain controller or AD LDS instance.
 
-<paramref name="sourceServer" /> is invalid or an empty string.  
+<paramref name="sourceServer" /> is invalid or an empty string.
 
-The target specified in the <paramref name="context" /> parameter does not match the server type specified in the <paramref name="sourceServer" /> parameter. The servers must both be either domain controllers or AD LDS instances.  
+The target specified in the <paramref name="context" /> parameter does not match the server type specified in the <paramref name="sourceServer" /> parameter. The servers must both be either domain controllers or AD LDS instances.
 
-The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are domain controllers, but are not in the same forest.  
+The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are domain controllers, but are not in the same forest.
 
 The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are AD LDS instances, but do not belong to the same configuration set.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -5041,15 +5040,15 @@ The servers specified in the <paramref name="context" /> and <paramref name="sou
       <param name="schedule">A <see cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectorySchedule" /> object that specifies when the source is available for replication.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:
 
-The target of the <paramref name="context" /> parameter is not a domain controller or AD LDS instance.  
+The target of the <paramref name="context" /> parameter is not a domain controller or AD LDS instance.
 
-<paramref name="sourceServer" /> is invalid or an empty string.  
+<paramref name="sourceServer" /> is invalid or an empty string.
 
-The target specified in the <paramref name="context" /> parameter does not match the server type specified in the <paramref name="sourceServer" /> parameter. The servers must both be either domain controllers or AD LDS instances.  
+The target specified in the <paramref name="context" /> parameter does not match the server type specified in the <paramref name="sourceServer" /> parameter. The servers must both be either domain controllers or AD LDS instances.
 
-The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are domain controllers, but are not in the same forest.  
+The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are domain controllers, but are not in the same forest.
 
 The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are AD LDS instances, but do not belong to the same configuration set.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -5065,15 +5064,15 @@ The servers specified in the <paramref name="context" /> and <paramref name="sou
       <param name="transport">One of the <see cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryTransportType" /> members that specifies the transport type of the connection.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:
 
-The target of the <paramref name="context" /> parameter is not a domain controller or AD LDS instance.  
+The target of the <paramref name="context" /> parameter is not a domain controller or AD LDS instance.
 
-<paramref name="sourceServer" /> is invalid or an empty string.  
+<paramref name="sourceServer" /> is invalid or an empty string.
 
-The target specified in the <paramref name="context" /> parameter does not match the server type specified in the <paramref name="sourceServer" /> parameter. The servers must both be either domain controllers or AD LDS instances.  
+The target specified in the <paramref name="context" /> parameter does not match the server type specified in the <paramref name="sourceServer" /> parameter. The servers must both be either domain controllers or AD LDS instances.
 
-The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are domain controllers, but are not in the same forest.  
+The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are domain controllers, but are not in the same forest.
 
 The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are AD LDS instances, but do not belong to the same configuration set.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -5092,15 +5091,15 @@ The servers specified in the <paramref name="context" /> and <paramref name="sou
       <param name="transport">One of the <see cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryTransportType" /> members that specifies the transport type of the connection.</param>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException">A call to the underlying directory service resulted in an error.</exception>
       <exception cref="T:System.DirectoryServices.ActiveDirectory.ActiveDirectoryServerDownException">The target server is either busy or unavailable.</exception>
-      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:  
+      <exception cref="T:System.ArgumentException">This exception will occur for any one of the following reasons:
 
-The target of the <paramref name="context" /> parameter is not a domain controller or AD LDS instance.  
+The target of the <paramref name="context" /> parameter is not a domain controller or AD LDS instance.
 
-<paramref name="sourceServer" /> is invalid or an empty string.  
+<paramref name="sourceServer" /> is invalid or an empty string.
 
-The target specified in the <paramref name="context" /> parameter does not match the server type specified in the <paramref name="sourceServer" /> parameter. The servers must both be either domain controllers or AD LDS instances.  
+The target specified in the <paramref name="context" /> parameter does not match the server type specified in the <paramref name="sourceServer" /> parameter. The servers must both be either domain controllers or AD LDS instances.
 
-The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are domain controllers, but are not in the same forest.  
+The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are domain controllers, but are not in the same forest.
 
 The servers specified in the <paramref name="context" /> and <paramref name="sourceServer" /> parameters are AD LDS instances, but do not belong to the same configuration set.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -6709,8 +6708,8 @@ The servers specified in the <paramref name="context" /> and <paramref name="sou
     </member>
     <member name="P:System.DirectoryServices.DirectorySearcher.ClientTimeout">
       <summary>Gets or sets the maximum amount of time that the client waits for the server to return results. If the server does not respond within this time, the search is aborted and no results are returned.</summary>
-      <returns>A <see cref="T:System.TimeSpan" /> structure that contains the maximum amount of time for the client to wait for the server to return results.  
- The default value is -1 second, which means to wait indefinitely.</returns>
+      <returns>A <see cref="T:System.TimeSpan" /> structure that contains the maximum amount of time for the client to wait for the server to return results.
+The default value is -1 second, which means to wait indefinitely.</returns>
     </member>
     <member name="P:System.DirectoryServices.DirectorySearcher.DerefAlias">
       <summary>Gets or sets a value indicating how the aliases of objects that are found during a search should be resolved.</summary>
@@ -6750,8 +6749,8 @@ The servers specified in the <paramref name="context" /> and <paramref name="sou
     </member>
     <member name="P:System.DirectoryServices.DirectorySearcher.PropertiesToLoad">
       <summary>Gets a value indicating the list of properties to retrieve during the search.</summary>
-      <returns>A <see cref="T:System.Collections.Specialized.StringCollection" /> object that contains the set of properties to retrieve during the search.  
- The default is an empty <see cref="T:System.Collections.Specialized.StringCollection" />, which retrieves all properties.</returns>
+      <returns>A <see cref="T:System.Collections.Specialized.StringCollection" /> object that contains the set of properties to retrieve during the search.
+The default is an empty <see cref="T:System.Collections.Specialized.StringCollection" />, which retrieves all properties.</returns>
     </member>
     <member name="P:System.DirectoryServices.DirectorySearcher.PropertyNamesOnly">
       <summary>Gets or sets a value indicating whether the search retrieves only the names of attributes to which values have been assigned.</summary>
@@ -6778,13 +6777,13 @@ The servers specified in the <paramref name="context" /> and <paramref name="sou
     </member>
     <member name="P:System.DirectoryServices.DirectorySearcher.ServerPageTimeLimit">
       <summary>Gets or sets a value indicating the maximum amount of time the server should search for an individual page of results. This is not the same as the time limit for the entire search.</summary>
-      <returns>A <see cref="T:System.TimeSpan" /> that represents the amount of time the server should search for a page of results.  
- The default value is -1 seconds, which means to search indefinitely.</returns>
+      <returns>A <see cref="T:System.TimeSpan" /> that represents the amount of time the server should search for a page of results.
+The default value is -1 seconds, which means to search indefinitely.</returns>
     </member>
     <member name="P:System.DirectoryServices.DirectorySearcher.ServerTimeLimit">
       <summary>The <see cref="P:System.DirectoryServices.DirectorySearcher.ServerTimeLimit" /> property gets or sets a value indicating the maximum amount of time the server spends searching. If the time limit is reached, only entries that are found up to that point are returned.</summary>
-      <returns>A <see cref="T:System.TimeSpan" /> that represents the amount of time that the server should search.  
- The default value is -1 seconds, which means to use the server-determined default of 120 seconds.</returns>
+      <returns>A <see cref="T:System.TimeSpan" /> that represents the amount of time that the server should search.
+The default value is -1 seconds, which means to use the server-determined default of 120 seconds.</returns>
     </member>
     <member name="P:System.DirectoryServices.DirectorySearcher.SizeLimit">
       <summary>Gets or sets a value indicating the maximum number of objects that the server returns in a search.</summary>
@@ -7301,8 +7300,8 @@ The servers specified in the <paramref name="context" /> and <paramref name="sou
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -7322,9 +7321,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">An element with the same key already exists in the <see cref="T:System.Collections.IDictionary" /> object.</exception>
-      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary" /> is read-only.  
- -or-  
- The <see cref="T:System.Collections.IDictionary" /> has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary" /> is read-only.
+-or-
+The <see cref="T:System.Collections.IDictionary" /> has a fixed size.</exception>
     </member>
     <member name="M:System.DirectoryServices.PropertyCollection.System#Collections#IDictionary#Clear">
       <summary>Removes all elements from the <see cref="T:System.Collections.IDictionary" /> object.</summary>
@@ -7354,9 +7353,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <returns>The element with the specified key.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.IDictionary" /> object is read-only.  
- -or-  
- The property is set, <paramref name="key" /> does not exist in the collection, and the <see cref="T:System.Collections.IDictionary" /> has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.IDictionary" /> object is read-only.
+-or-
+The property is set, <paramref name="key" /> does not exist in the collection, and the <see cref="T:System.Collections.IDictionary" /> has a fixed size.</exception>
     </member>
     <member name="P:System.DirectoryServices.PropertyCollection.System#Collections#IDictionary#Keys">
       <summary>Gets an <see cref="T:System.Collections.ICollection" /> object containing the keys of the <see cref="T:System.Collections.IDictionary" /> object.</summary>
@@ -7367,9 +7366,9 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="key">The key of the element to remove.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="key" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary" /> object is read-only.  
- -or-  
- The <see cref="T:System.Collections.IDictionary" /> has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary" /> object is read-only.
+-or-
+The <see cref="T:System.Collections.IDictionary" /> has a fixed size.</exception>
     </member>
     <member name="M:System.DirectoryServices.PropertyCollection.System#Collections#IEnumerable#GetEnumerator">
       <summary>Returns an <see cref="T:System.Collections.IEnumerable" /> object.</summary>
@@ -7387,16 +7386,16 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="identity">An <see cref="T:System.Security.Principal.IdentityReference" /> object that identifies the trustee of the access rule.</param>
       <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType" /> enumeration values that specifies the access rule type.</param>
       <param name="access">One of the <see cref="T:System.DirectoryServices.PropertyAccess" /> enumeration values that specifies the property access type.</param>
-      <param name="propertySetType">The Rights-Guid of the property set that this access rule applies to. In the Active Directory Domain Services schema documentation, this information can be found in the Rights-GUID row on the reference page for each property set. For more information, see the Rights-Guid attribute article. 
-        For a list of property sets, see the Property Sets article.</param>
+      <param name="propertySetType">The Rights-Guid of the property set that this access rule applies to. In the Active Directory Domain Services schema documentation, this information can be found in the Rights-GUID row on the reference page for each property set. For more information, see the Rights-Guid attribute article.
+For a list of property sets, see the Property Sets article.</param>
     </member>
     <member name="M:System.DirectoryServices.PropertySetAccessRule.#ctor(System.Security.Principal.IdentityReference,System.Security.AccessControl.AccessControlType,System.DirectoryServices.PropertyAccess,System.Guid,System.DirectoryServices.ActiveDirectorySecurityInheritance)">
       <summary>Initializes a new instance of the <see cref="T:System.DirectoryServices.PropertySetAccessRule" /> class with the specified identity reference, access control type, property access type, property set identifier, and Active Directory Domain Services security inheritance information.</summary>
       <param name="identity">An <see cref="T:System.Security.Principal.IdentityReference" /> object that identifies the trustee of the access rule.</param>
       <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType" /> enumeration values that specifies the access rule type.</param>
       <param name="access">One of the <see cref="T:System.DirectoryServices.PropertyAccess" /> enumeration values that specifies the property access type.</param>
-      <param name="propertySetType">The Rights-Guid of the property set that this access rule applies to. In the Active Directory Domain Services schema documentation, this information can be found in the Rights-GUID row on the reference page for each property set. For more information, see the Rights-Guid attribute article.  
- For a list of property sets, see the Property Sets article.</param>
+      <param name="propertySetType">The Rights-Guid of the property set that this access rule applies to. In the Active Directory Domain Services schema documentation, this information can be found in the Rights-GUID row on the reference page for each property set. For more information, see the Rights-Guid attribute article.
+For a list of property sets, see the Property Sets article.</param>
       <param name="inheritanceType">One of the <see cref="T:System.DirectoryServices.ActiveDirectorySecurityInheritance" /> enumeration values that specifies the inheritance type of the access rule.</param>
     </member>
     <member name="M:System.DirectoryServices.PropertySetAccessRule.#ctor(System.Security.Principal.IdentityReference,System.Security.AccessControl.AccessControlType,System.DirectoryServices.PropertyAccess,System.Guid,System.DirectoryServices.ActiveDirectorySecurityInheritance,System.Guid)">
@@ -7404,8 +7403,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <param name="identity">An <see cref="T:System.Security.Principal.IdentityReference" /> object that identifies the trustee of the access rule.</param>
       <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType" /> enumeration values that specifies the access rule type.</param>
       <param name="access">One of the <see cref="T:System.DirectoryServices.PropertyAccess" /> enumeration values that specifies the property access type.</param>
-      <param name="propertySetType">The Rights-Guid of the property set that this access rule applies to. In the Active Directory Domain Services schema documentation, this information can be found in the Rights-GUID row on the reference page for each property set. For more information, see the Rights-Guid attribute article.  
- For a list of property sets, see the Property Sets article.</param>
+      <param name="propertySetType">The Rights-Guid of the property set that this access rule applies to. In the Active Directory Domain Services schema documentation, this information can be found in the Rights-GUID row on the reference page for each property set. For more information, see the Rights-Guid attribute article.
+For a list of property sets, see the Property Sets article.</param>
       <param name="inheritanceType">One of the <see cref="T:System.DirectoryServices.ActiveDirectorySecurityInheritance" /> enumeration values that specifies the inheritance type of the access rule.</param>
       <param name="inheritedObjectType">The schema GUID of the child object type that can inherit this access rule.</param>
     </member>
@@ -7491,8 +7490,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
     </member>
     <member name="P:System.DirectoryServices.PropertyValueCollection.Value">
       <summary>Gets or sets the values of the collection.</summary>
-      <returns>If the collection is empty, the property value is a null reference (<see langword="Nothing" /> in Visual Basic). If the collection contains one value, the property value is that value. If the collection contains multiple values, the property value equals a copy of an array of those values.  
- If setting this property, the value or values are added to the <see cref="T:System.DirectoryServices.PropertyValueCollection" />. Setting this property to a null reference (<see langword="Nothing" />) clears the collection.</returns>
+      <returns>If the collection is empty, the property value is a null reference (<see langword="Nothing" /> in Visual Basic). If the collection contains one value, the property value is that value. If the collection contains multiple values, the property value equals a copy of an array of those values.
+If setting this property, the value or values are added to the <see cref="T:System.DirectoryServices.PropertyValueCollection" />. Setting this property to a null reference (<see langword="Nothing" />) clears the collection.</returns>
     </member>
     <member name="T:System.DirectoryServices.ReferralChasingOption">
       <summary>The <see cref="T:System.DirectoryServices.ReferralChasingOption" /> enumeration specifies if and how referral chasing is pursued.</summary>
@@ -7628,8 +7627,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>
@@ -7760,8 +7759,8 @@ The number of elements in the source <see cref="T:System.Collections.ICollection
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="index" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" /> is multidimensional.  
--or-  
+        <paramref name="array" /> is multidimensional.
+-or-
 The number of elements in the source <see cref="T:System.Collections.ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
     </member>

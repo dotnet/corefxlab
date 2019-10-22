@@ -229,11 +229,11 @@
     <member name="P:System.Diagnostics.Switch.Value">
       <summary>Gets or sets the value of the switch.</summary>
       <returns>A string representing the value of the switch.</returns>
-      <exception cref="T:System.Configuration.ConfigurationErrorsException">The value is <see langword="null" />.  
- -or-  
- The value does not consist solely of an optional negative sign followed by a sequence of digits ranging from 0 to 9.  
- -or-  
- The value represents a number less than <see cref="F:System.Int32.MinValue" /> or greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.Configuration.ConfigurationErrorsException">The value is <see langword="null" />.
+-or-
+The value does not consist solely of an optional negative sign followed by a sequence of digits ranging from 0 to 9.
+-or-
+The value represents a number less than <see cref="F:System.Int32.MinValue" /> or greater than <see cref="F:System.Int32.MaxValue" />.</exception>
     </member>
     <member name="T:System.Diagnostics.SwitchAttribute">
       <summary>Identifies a switch used in an assembly, class, or member.</summary>
@@ -820,8 +820,8 @@
       <param name="value">The object to add to the <see cref="T:System.Diagnostics.TraceListenerCollection" />.</param>
       <returns>The position into which the new trace listener was inserted.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="value" /> is <see langword="null" />.  
--or-  
+        <paramref name="value" /> is <see langword="null" />.
+-or-
 <paramref name="value" /> is not a <see cref="T:System.Diagnostics.TraceListener" />.</exception>
     </member>
     <member name="M:System.Diagnostics.TraceListenerCollection.System#Collections#IList#Contains(System.Object)">
@@ -847,7 +847,7 @@
       <returns>Always <see langword="false" />.</returns>
     </member>
     <member name="P:System.Diagnostics.TraceListenerCollection.System#Collections#IList#IsReadOnly">
-      <summary>Gets a value indicating whether the <see cref="T:System.Diagnostics.TraceListenerCollection" /> is read-only</summary>
+      <summary>Gets a value indicating whether the <see cref="T:System.Diagnostics.TraceListenerCollection" /> is read-only.</summary>
       <returns>Always <see langword="false" />.</returns>
     </member>
     <member name="P:System.Diagnostics.TraceListenerCollection.System#Collections#IList#Item(System.Int32)">
@@ -968,8 +968,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="format" /> is <see langword="null" />.</exception>
       <exception cref="T:System.FormatException">
-        <paramref name="format" /> is invalid.  
--or-  
+        <paramref name="format" /> is invalid.
+-or-
 The number that indicates an argument to format is less than zero, or greater than or equal to the number of specified objects to format.</exception>
       <exception cref="T:System.ObjectDisposedException">An attempt was made to trace an event during finalization.</exception>
     </member>
@@ -985,8 +985,8 @@ The number that indicates an argument to format is less than zero, or greater th
       <exception cref="T:System.ArgumentNullException">
         <paramref name="format" /> is <see langword="null" />.</exception>
       <exception cref="T:System.FormatException">
-        <paramref name="format" /> is invalid.  
--or-  
+        <paramref name="format" /> is invalid.
+-or-
 The number that indicates an argument to format is less than zero, or greater than or equal to the number of specified objects to format.</exception>
       <exception cref="T:System.ObjectDisposedException">An attempt was made to trace an event during finalization.</exception>
     </member>

@@ -768,7 +768,7 @@
       <summary>Return only those properties that are not valid given the current context of the object.</summary>
     </member>
     <member name="F:System.ComponentModel.PropertyFilterOptions.None">
-      <summary>Return no properties</summary>
+      <summary>Return no properties.</summary>
     </member>
     <member name="F:System.ComponentModel.PropertyFilterOptions.SetValues">
       <summary>Return only those properties that have local values currently set.</summary>
@@ -1125,7 +1125,7 @@
       <returns>The <see cref="T:System.IO.Packaging.PackageProperties" /> for the package.</returns>
     </member>
     <member name="P:System.IO.Packaging.EncryptedPackageEnvelope.RightsManagementInformation">
-      <summary>Gets the rights management information stored in the <see cref="T:System.IO.Packaging.EncryptedPackageEnvelope" />; specifically, the <see cref="T:System.Security.RightsManagement.PublishLicense" /> and the <see cref="T:System.Security.RightsManagement.UseLicense" />s stored in the OLE compound file that embodies the rights-management protected package</summary>
+      <summary>Gets the rights management information stored in the <see cref="T:System.IO.Packaging.EncryptedPackageEnvelope" />; specifically, the <see cref="T:System.Security.RightsManagement.PublishLicense" /> and the <see cref="T:System.Security.RightsManagement.UseLicense" />s stored in the OLE compound file that embodies the rights-management protected package.</summary>
       <returns>The <see cref="T:System.IO.Packaging.RightsManagementInformation" /> for the package.</returns>
     </member>
     <member name="P:System.IO.Packaging.EncryptedPackageEnvelope.StorageInfo">
@@ -1665,18 +1665,18 @@
     <member name="P:System.IO.Packaging.PackagePart.CompressionOption">
       <summary>Gets the compression option of the part content stream.</summary>
       <returns>The compression option of the part content stream.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
     </member>
     <member name="P:System.IO.Packaging.PackagePart.ContentType">
       <summary>Gets the MIME type of the content stream.</summary>
       <returns>The MIME type of the content data stream for the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).  
- -or-  
- The string returned by the derived class <see cref="M:System.IO.Packaging.PackagePart.GetContentTypeCore" /> method is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).
+-or-
+The string returned by the derived class <see cref="M:System.IO.Packaging.PackagePart.GetContentTypeCore" /> method is empty.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.CreateRelationship(System.Uri,System.IO.Packaging.TargetMode,System.String)">
       <summary>Creates a part-level relationship between this <see cref="T:System.IO.Packaging.PackagePart" /> to a specified target <see cref="T:System.IO.Packaging.PackagePart" /> or external resource.</summary>
@@ -1684,15 +1684,15 @@
       <param name="targetMode">One of the enumeration values. For example, <see cref="F:System.IO.Packaging.TargetMode.Internal" /> if the target part is inside the <see cref="T:System.IO.Packaging.Package" />; or <see cref="F:System.IO.Packaging.TargetMode.External" /> if the target is a resource outside the <see cref="T:System.IO.Packaging.Package" />.</param>
       <param name="relationshipType">The role of the relationship.</param>
       <returns>The part-level relationship between this <see cref="T:System.IO.Packaging.PackagePart" /> to the target <see cref="T:System.IO.Packaging.PackagePart" /> or external resource.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="targetUri" /> or <paramref name="relationshipType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="targetMode" /> parameter is not a valid <see cref="T:System.IO.Packaging.TargetMode" /> enumeration value.</exception>
-      <exception cref="T:System.ArgumentException">The part identified by the <paramref name="targetUri" /> is a relationship (the target of a relationship cannot be another relationship).  
- -or-  
- <paramref name="targetMode" /> is specified as <see cref="F:System.IO.Packaging.TargetMode.Internal" /> but <paramref name="targetUri" /> is an absolute external URI.</exception>
+      <exception cref="T:System.ArgumentException">The part identified by the <paramref name="targetUri" /> is a relationship (the target of a relationship cannot be another relationship).
+-or-
+<paramref name="targetMode" /> is specified as <see cref="F:System.IO.Packaging.TargetMode.Internal" /> but <paramref name="targetUri" /> is an absolute external URI.</exception>
       <exception cref="T:System.IO.IOException">The package is read-only (a new relationship cannot be added).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.CreateRelationship(System.Uri,System.IO.Packaging.TargetMode,System.String,System.String)">
@@ -1702,27 +1702,27 @@
       <param name="relationshipType">The role of the relationship.</param>
       <param name="id">A unique ID for the relationship.</param>
       <returns>The part-level relationship between this <see cref="T:System.IO.Packaging.PackagePart" /> to the target <see cref="T:System.IO.Packaging.PackagePart" /> or external resource.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="targetUri" /> or <paramref name="relationshipType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="targetMode" /> parameter is not a valid <see cref="T:System.IO.Packaging.TargetMode" /> enumeration value.</exception>
-      <exception cref="T:System.ArgumentException">The part identified by the <paramref name="targetUri" /> is a relationship (the target of a relationship cannot be another relationship).  
- -or-  
- <paramref name="targetMode" /> is specified as <see cref="F:System.IO.Packaging.TargetMode.Internal" /> but <paramref name="targetUri" /> is an absolute external URI.</exception>
+      <exception cref="T:System.ArgumentException">The part identified by the <paramref name="targetUri" /> is a relationship (the target of a relationship cannot be another relationship).
+-or-
+<paramref name="targetMode" /> is specified as <see cref="F:System.IO.Packaging.TargetMode.Internal" /> but <paramref name="targetUri" /> is an absolute external URI.</exception>
       <exception cref="T:System.IO.IOException">The package is read-only (a new relationship cannot be added).</exception>
       <exception cref="T:System.Xml.XmlException">
-        <paramref name="id" /> is not a valid XML identifier.  
--or-  
+        <paramref name="id" /> is not a valid XML identifier.
+-or-
 A part with the specified <paramref name="id" /> already exists.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.DeleteRelationship(System.String)">
       <summary>Deletes a specified part-level <see cref="T:System.IO.Packaging.PackageRelationship" />.</summary>
       <param name="id">The <see cref="P:System.IO.Packaging.PackageRelationship.Id" /> of the relationship to delete.</param>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="id" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.IOException">The package is read-only (relationships cannot be deleted).</exception>
@@ -1744,19 +1744,19 @@ A part with the specified <paramref name="id" /> already exists.</exception>
         <paramref name="id" /> is not a valid XML identifier.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="relationshipType" /> is an empty string.</exception>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).  
- -or-  
- A relationship with the specified <paramref name="id" /> does not exist in the package.</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).
+-or-
+A relationship with the specified <paramref name="id" /> does not exist in the package.</exception>
       <exception cref="T:System.IO.IOException">The package is write-only (relationship information cannot be read).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetRelationships">
       <summary>Returns a collection of all the relationships that are owned by this part.</summary>
       <returns>A collection of all the relationships that are owned by the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.IO.IOException">The package is write-only (relationship information cannot be read).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetRelationshipsByType(System.String)">
@@ -1767,47 +1767,47 @@ A part with the specified <paramref name="id" /> already exists.</exception>
         <paramref name="relationshipType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="relationshipType" /> is an empty string.</exception>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.IO.IOException">The package is write-only (relationship information cannot be read).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetStream">
       <summary>Returns the part content data stream.</summary>
       <returns>The content data stream for the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.IO.IOException">The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)" /> method of the derived subclass is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetStream(System.IO.FileMode)">
       <summary>Returns the content stream opened in a specified I/O <see cref="T:System.IO.FileMode" />.</summary>
       <param name="mode">The I/O mode in which to open the content stream.</param>
       <returns>The content stream of the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="mode" /> parameter is not a valid <see cref="T:System.IO.FileMode" /> enumeration value.</exception>
-      <exception cref="T:System.IO.IOException">The <paramref name="mode" /> parameter is not compatible with the package and part stream.  
- -or-  
- The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)" /> method of the derived subclass is <see langword="null" />.</exception>
+      <exception cref="T:System.IO.IOException">The <paramref name="mode" /> parameter is not compatible with the package and part stream.
+-or-
+The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)" /> method of the derived subclass is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetStream(System.IO.FileMode,System.IO.FileAccess)">
       <summary>Returns the part content stream opened with a specified <see cref="T:System.IO.FileMode" /> and <see cref="T:System.IO.FileAccess" />.</summary>
       <param name="mode">The I/O mode in which to open the content stream.</param>
       <param name="access">The access permissions to use in opening the content stream.</param>
       <returns>The content stream for the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="mode" /> parameter is not a valid <see cref="T:System.IO.FileMode" /> enumeration value.  
- -or-  
- The <paramref name="access" /> parameter is not a valid <see cref="T:System.IO.FileAccess" /> enumeration value.</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="mode" /> parameter is not a valid <see cref="T:System.IO.FileMode" /> enumeration value.
+-or-
+The <paramref name="access" /> parameter is not a valid <see cref="T:System.IO.FileAccess" /> enumeration value.</exception>
       <exception cref="T:System.IO.IOException">
-        <paramref name="mode" /> or <paramref name="access" /> is not compatible with the package and part stream.  
--or-  
-The <paramref name="access" /> parameter is specified as <see cref="F:System.IO.FileAccess.Read" /> but the <paramref name="mode" /> parameter requires write access.  (<see cref="T:System.IO.FileMode" /> values of <see cref="F:System.IO.FileMode.Create" />, <see cref="F:System.IO.FileMode.CreateNew" />, <see cref="F:System.IO.FileMode.Truncate" />, and <see cref="F:System.IO.FileMode.Append" /> require <see cref="F:System.IO.FileAccess.Write" /> or <see cref="F:System.IO.FileAccess.ReadWrite" /> access.)  
--or-  
+        <paramref name="mode" /> or <paramref name="access" /> is not compatible with the package and part stream.
+-or-
+The <paramref name="access" /> parameter is specified as <see cref="F:System.IO.FileAccess.Read" /> but the <paramref name="mode" /> parameter requires write access.  (<see cref="T:System.IO.FileMode" /> values of <see cref="F:System.IO.FileMode.Create" />, <see cref="F:System.IO.FileMode.CreateNew" />, <see cref="F:System.IO.FileMode.Truncate" />, and <see cref="F:System.IO.FileMode.Append" /> require <see cref="F:System.IO.FileAccess.Write" /> or <see cref="F:System.IO.FileAccess.ReadWrite" /> access.)
+-or-
 The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)" /> method of the derived subclass is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)">
@@ -1819,9 +1819,9 @@ The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.G
     <member name="P:System.IO.Packaging.PackagePart.Package">
       <summary>Gets the parent <see cref="T:System.IO.Packaging.Package" /> of the part.</summary>
       <returns>The parent package of the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.RelationshipExists(System.String)">
       <summary>Returns a value that indicates whether this part owns a relationship with a specified <see cref="P:System.IO.Packaging.PackageRelationship.Id" />.</summary>
@@ -1832,17 +1832,17 @@ The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.G
         <paramref name="id" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Xml.XmlException">
         <paramref name="id" /> is not a valid XML identifier.</exception>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.IO.IOException">The package is write-only (relationship information cannot be read).</exception>
     </member>
     <member name="P:System.IO.Packaging.PackagePart.Uri">
       <summary>Gets the URI of the part.</summary>
       <returns>The URI of the part relative to the package root.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
     </member>
     <member name="T:System.IO.Packaging.PackagePartCollection">
       <summary>Represents a collection of <see cref="T:System.IO.Packaging.PackagePart" /> objects.</summary>
@@ -2028,45 +2028,45 @@ The <paramref name="sourceUri" /> is not the <see cref="T:System.IO.Packaging.Pa
       <summary>Returns a value that indicates whether two pack URIs are equivalent.</summary>
       <param name="firstPackUri">The first pack URI.</param>
       <param name="secondPackUri">The second pack URI.</param>
-      <returns>A signed integer indicating the relationship between <paramref name="firstPackUri" /> and <paramref name="secondPackUri" />.  
+      <returns>A signed integer indicating the relationship between <paramref name="firstPackUri" /> and <paramref name="secondPackUri" />.
   Value  
-
+  
   Meaning  
-
+  
   Less than 0  
-
+  
  <paramref name="firstPackUri" /> is less than <paramref name="secondPackUri" />.  
-
+  
   0  
-
+  
  <paramref name="firstPackUri" /> is equivalent to <paramref name="secondPackUri" />.  
-
+  
   Greater than 0  
-
+  
  <paramref name="firstPackUri" /> is greater than <paramref name="secondPackUri" />.</returns>
-      <exception cref="T:System.ArgumentException">Either <paramref name="firstPackUri" /> or <paramref name="secondPackUri" /> is not an absolute URI.  
- -or-  
- Either <paramref name="firstPackUri" /> or <paramref name="secondPackUri" /> do not begin with a "pack://" scheme.</exception>
+      <exception cref="T:System.ArgumentException">Either <paramref name="firstPackUri" /> or <paramref name="secondPackUri" /> is not an absolute URI.
+-or-
+Either <paramref name="firstPackUri" /> or <paramref name="secondPackUri" /> do not begin with a "pack://" scheme.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.ComparePartUri(System.Uri,System.Uri)">
       <summary>Returns a value that indicates whether two package part URIs are equivalent.</summary>
       <param name="firstPartUri">The URI of the first <see cref="T:System.IO.Packaging.PackagePart" />.</param>
       <param name="secondPartUri">The URI of the second <see cref="T:System.IO.Packaging.PackagePart" />.</param>
-      <returns>A value that indicates the relationship between <paramref name="firstPartUri" /> and <paramref name="secondPartUri" />.  
+      <returns>A value that indicates the relationship between <paramref name="firstPartUri" /> and <paramref name="secondPartUri" />.
   Value  
-
+  
   Meaning  
-
+  
   Less than 0  
-
+  
  <paramref name="firstPartUri" /> is less than <paramref name="secondPartUri" />.  
-
+  
   0  
-
+  
  <paramref name="firstPartUri" /> is equivalent to <paramref name="secondPartUri" />.  
-
+  
   Greater than 0  
-
+  
  <paramref name="firstPartUri" /> is greater than <paramref name="secondPartUri" />.</returns>
       <exception cref="T:System.ArgumentException">
         <paramref name="firstPartUri" /> or <paramref name="secondPartUri" /> is not a valid part URI syntax.</exception>
@@ -2088,8 +2088,8 @@ The <paramref name="sourceUri" /> is not the <see cref="T:System.IO.Packaging.Pa
       <exception cref="T:System.ArgumentNullException">
         <paramref name="packageUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="packageUri" /> is not an absolute URI.  
--or-  
+        <paramref name="packageUri" /> is not an absolute URI.
+-or-
 <paramref name="partUri" /> is not a valid part URI syntax.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.Create(System.Uri,System.Uri,System.String)">
@@ -2101,10 +2101,10 @@ The <paramref name="sourceUri" /> is not the <see cref="T:System.IO.Packaging.Pa
       <exception cref="T:System.ArgumentNullException">
         <paramref name="packageUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="packageUri" /> is not an absolute URI.  
--or-  
-<paramref name="partUri" /> is not a valid part URI syntax.  
--or-  
+        <paramref name="packageUri" /> is not an absolute URI.
+-or-
+<paramref name="partUri" /> is not a valid part URI syntax.
+-or-
 <paramref name="fragment" /> is empty or does begin with "#".</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.CreatePartUri(System.Uri)">
@@ -2152,10 +2152,10 @@ The partUri extracted from <paramref name="packUri" /> does not conform to the v
       <exception cref="T:System.ArgumentNullException">
         <paramref name="partUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="partUri" /> syntax is not valid for a package part URI.  
--or-  
-<paramref name="partUri" /> is an absolute URI.  
--or-  
+        <paramref name="partUri" /> syntax is not valid for a package part URI.
+-or-
+<paramref name="partUri" /> is an absolute URI.
+-or-
 <paramref name="partUri" /> references a relationship part.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.GetRelativeUri(System.Uri,System.Uri)">
@@ -2174,12 +2174,12 @@ The partUri extracted from <paramref name="packUri" /> does not conform to the v
       <exception cref="T:System.ArgumentNullException">
         <paramref name="relationshipPartUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="relationshipPartUri" /> is an absolute URI.  
--or-  
-<paramref name="relationshipPartUri" /> syntax is not valid for a <see cref="T:System.IO.Packaging.PackagePart" />.  
--or-  
-<paramref name="relationshipPartUri" /> does not reference a relationship part.  
--or-  
+        <paramref name="relationshipPartUri" /> is an absolute URI.
+-or-
+<paramref name="relationshipPartUri" /> syntax is not valid for a <see cref="T:System.IO.Packaging.PackagePart" />.
+-or-
+<paramref name="relationshipPartUri" /> does not reference a relationship part.
+-or-
 The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the relationship part references another relationship part (not valid).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.IsRelationshipPartUri(System.Uri)">
@@ -2190,8 +2190,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <exception cref="T:System.ArgumentNullException">
         <paramref name="partUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="partUri" /> is an absolute URI.  
--or-  
+        <paramref name="partUri" /> is an absolute URI.
+-or-
 <paramref name="partUri" /> is an invalid <see cref="T:System.IO.Packaging.PackagePart" /> syntax.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.ResolvePartUri(System.Uri,System.Uri)">
@@ -2202,8 +2202,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <exception cref="T:System.ArgumentNullException">
         <paramref name="sourcePartUri" /> or <paramref name="targetUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="sourcePartUri" /> is not a valid part URI.  
--or-  
+        <paramref name="sourcePartUri" /> is not a valid part URI.
+-or-
 <paramref name="targetUri" /> is not a valid relative URI.</exception>
     </member>
     <member name="F:System.IO.Packaging.PackUriHelper.UriSchemePack">
@@ -3010,7 +3010,7 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <summary>The user's email address cannot be verified.</summary>
     </member>
     <member name="F:System.Security.RightsManagement.RightsManagementFailureCode.EnablingPrincipalFailure">
-      <summary>The specified principal cannot be enabled</summary>
+      <summary>The specified principal cannot be enabled.</summary>
     </member>
     <member name="F:System.Security.RightsManagement.RightsManagementFailureCode.EncryptionNotPermitted">
       <summary>Encryption is not permitted.</summary>
@@ -3028,7 +3028,7 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <summary>The option specified has already been set.</summary>
     </member>
     <member name="F:System.Security.RightsManagement.RightsManagementFailureCode.GroupIdentityNotSet">
-      <summary>A user name was not specified for the client session</summary>
+      <summary>A user name was not specified for the client session.</summary>
     </member>
     <member name="F:System.Security.RightsManagement.RightsManagementFailureCode.HidCorrupted">
       <summary>The Hardware ID (HID) used in a machine activation attempt is incorrectly formatted. Rights management services are not properly configured.</summary>
@@ -3037,7 +3037,7 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <summary>The Hardware ID (HID) used in a machine activation attempt is invalid. Rights management services are not properly configured.</summary>
     </member>
     <member name="F:System.Security.RightsManagement.RightsManagementFailureCode.IdMismatch">
-      <summary>The content ID from the license does not match the content ID the license storage session</summary>
+      <summary>The content ID from the license does not match the content ID the license storage session.</summary>
     </member>
     <member name="F:System.Security.RightsManagement.RightsManagementFailureCode.IncompatibleObjects">
       <summary>An object type passed is incompatible with this operation.</summary>
@@ -3202,7 +3202,7 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <summary>An unspecified error occurred.  Also thrown when an application runs in debug mode.</summary>
     </member>
     <member name="F:System.Security.RightsManagement.RightsManagementFailureCode.UseDefault">
-      <summary>If a request is made for computer activation or a rights account certificate, receiving <see cref="F:System.Security.RightsManagement.RightsManagementFailureCode.UseDefault" /> indicates that the application should pass <see langword="null" /> into the ActServInfo parameter</summary>
+      <summary>If a request is made for computer activation or a rights account certificate, receiving <see cref="F:System.Security.RightsManagement.RightsManagementFailureCode.UseDefault" /> indicates that the application should pass <see langword="null" /> into the ActServInfo parameter.</summary>
     </member>
     <member name="F:System.Security.RightsManagement.RightsManagementFailureCode.ValidityTimeViolation">
       <summary>The defined time period for the protected content has expired; access is no longer permitted.</summary>
@@ -3420,16 +3420,16 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <summary>Provides a set of values that describes how the dispatcher responds to failures that are encountered while requesting processing.</summary>
     </member>
     <member name="F:System.Windows.BaseCompatibilityPreferences.HandleDispatcherRequestProcessingFailureOptions.Continue">
-      <summary>Continue after the failure.  
- This is the default value. It defines the behavior of the Windows Presentation Foundation dispatcher prior to the .NET Framework 4.7.1. The dispatcher may become unresponsive when this option is selected.</summary>
+      <summary>Continue after the failure.
+This is the default value. It defines the behavior of the Windows Presentation Foundation dispatcher prior to the .NET Framework 4.7.1. The dispatcher may become unresponsive when this option is selected.</summary>
     </member>
     <member name="F:System.Windows.BaseCompatibilityPreferences.HandleDispatcherRequestProcessingFailureOptions.Reset">
-      <summary>Reset the dispatcher's state to try another request the next time one is needed.  
- While this option can sometimes "repair" unresponsiveness, it cannot honor the usual timing of processing, which can be crucial. Selecting this option can lead to unexpected behavior.</summary>
+      <summary>Reset the dispatcher's state to try another request the next time one is needed.
+While this option can sometimes "repair" unresponsiveness, it cannot honor the usual timing of processing, which can be crucial. Selecting this option can lead to unexpected behavior.</summary>
     </member>
     <member name="F:System.Windows.BaseCompatibilityPreferences.HandleDispatcherRequestProcessingFailureOptions.Throw">
-      <summary>Throw an exception.  
- This option immediately brings the problem to the application developer's attention.</summary>
+      <summary>Throw an exception.
+This option immediately brings the problem to the application developer's attention.</summary>
     </member>
     <member name="P:System.Windows.BaseCompatibilityPreferences.InlineDispatcherSynchronizationContextSend">
       <summary>Gets or sets a value that indicates whether the <see cref="M:System.Windows.Threading.DispatcherSynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)" /> method puts the delegates on the dispatcher queue or if the delegate is directly invoked.</summary>
@@ -3724,7 +3724,7 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <exception cref="T:System.InvalidOperationException">The specified <paramref name="dp" /> or its value was invalid, or the specified <paramref name="dp" /> does not exist.</exception>
     </member>
     <member name="M:System.Windows.DependencyObject.InvalidateProperty(System.Windows.DependencyProperty)">
-      <summary>Re-evaluates the effective value for the specified dependency property</summary>
+      <summary>Re-evaluates the effective value for the specified dependency property.</summary>
       <param name="dp">The <see cref="T:System.Windows.DependencyProperty" /> identifier of the property to invalidate.</param>
     </member>
     <member name="P:System.Windows.DependencyObject.IsSealed">
@@ -5337,8 +5337,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <summary>Compares the specified <see cref="T:System.Windows.LocalValueEnumerator" /> instances to determine whether they are different.</summary>
       <param name="obj1">The first instance to compare.</param>
       <param name="obj2">The second instance to compare.</param>
-      <returns>This implementation compares the values of the <see cref="P:System.Windows.LocalValueEntry.Property" /> and <see cref="P:System.Windows.LocalValueEntry.Value" /> components of a <see cref="T:System.Windows.LocalValueEntry" />. The <see cref="P:System.Windows.LocalValueEntry.Property" /> component of a <see cref="T:System.Windows.LocalValueEntry" /> is always a value type, so this comparison will always be a bitwise comparison. For the <see cref="P:System.Windows.LocalValueEntry.Value" /> component, this implementation employs a bitwise comparison if it is a value type.  
- For locally set properties that have reference types, the behavior is deferred to that type's equality determination mechanisms, because it uses the <see langword="==" /> operator on the two values internally. By default, this is a reference equality of the values.</returns>
+      <returns>This implementation compares the values of the <see cref="P:System.Windows.LocalValueEntry.Property" /> and <see cref="P:System.Windows.LocalValueEntry.Value" /> components of a <see cref="T:System.Windows.LocalValueEntry" />. The <see cref="P:System.Windows.LocalValueEntry.Property" /> component of a <see cref="T:System.Windows.LocalValueEntry" /> is always a value type, so this comparison will always be a bitwise comparison. For the <see cref="P:System.Windows.LocalValueEntry.Value" /> component, this implementation employs a bitwise comparison if it is a value type.
+For locally set properties that have reference types, the behavior is deferred to that type's equality determination mechanisms, because it uses the <see langword="==" /> operator on the two values internally. By default, this is a reference equality of the values.</returns>
     </member>
     <member name="P:System.Windows.LocalValueEntry.Property">
       <summary>Gets the identifier for the locally set dependency property that is represented by this entry.</summary>
@@ -5440,7 +5440,7 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <returns>The created instance.</returns>
     </member>
     <member name="M:System.Windows.Markup.InternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
-      <summary>When overridden in a derived (generated) class, gets the value of an internal property on the target object</summary>
+      <summary>When overridden in a derived (generated) class, gets the value of an internal property on the target object.</summary>
       <param name="propertyInfo">Property information for the property to get.</param>
       <param name="target">The object that holds the desired property value.</param>
       <param name="culture">Culture specific information.</param>
@@ -5493,7 +5493,7 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <returns>The collection of attributes.</returns>
     </member>
     <member name="P:System.Windows.Markup.Primitives.MarkupProperty.DependencyProperty">
-      <summary>When overridden in a derived class, gets the <see cref="T:System.Windows.DependencyProperty" /> identifier for the markup property if the property is implemented as a dependency property</summary>
+      <summary>When overridden in a derived class, gets the <see cref="T:System.Windows.DependencyProperty" /> identifier for the markup property if the property is implemented as a dependency property.</summary>
       <returns>The dependency property identifier.</returns>
     </member>
     <member name="P:System.Windows.Markup.Primitives.MarkupProperty.IsAttached">
@@ -5792,12 +5792,12 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
     </member>
     <member name="M:System.Windows.Media.Matrix.System#IFormattable#ToString(System.String,System.IFormatProvider)">
       <summary>Formats the value of the current instance using the specified format.</summary>
-      <param name="format">The format to use.  
- -or-  
- A null reference (<see langword="Nothing" /> in Visual Basic) to use the default format defined for the type of the <see cref="T:System.IFormattable" /> implementation.</param>
-      <param name="provider">The provider to use to format the value.  
- -or-  
- A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
+      <param name="format">The format to use.
+-or-
+A null reference (<see langword="Nothing" /> in Visual Basic) to use the default format defined for the type of the <see cref="T:System.IFormattable" /> implementation.</param>
+      <param name="provider">The provider to use to format the value.
+-or-
+A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
       <returns>The value of the current instance in the specified format.</returns>
     </member>
     <member name="M:System.Windows.Media.Matrix.ToString">
@@ -5950,8 +5950,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <param name="key">The string name for the XAML name mapping to get or set.</param>
       <returns>The value of the object mapped by the XAML name provided as <paramref name="key" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="key" /> is provided as <see langword="null" />.  
--or-  
+        <paramref name="key" /> is provided as <see langword="null" />.
+-or-
 <paramref name="value" /> is provided as <see langword="null" /> for a set operation.</exception>
     </member>
     <member name="P:System.Windows.NameScope.Keys">
@@ -5971,11 +5971,11 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> or <paramref name="scopedElement" /> was provided as <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> was provided as empty string  
+        <paramref name="name" /> was provided as empty string
 -or-
- <paramref name="name" /> provided was rejected by the parser, because it contained characters that are invalid for a XAML name  
+<paramref name="name" /> provided was rejected by the parser, because it contained characters that are invalid for a XAML name
 -or-
- <paramref name="name" /> provided would result in a duplicate name registration.</exception>
+<paramref name="name" /> provided would result in a duplicate name registration.</exception>
     </member>
     <member name="M:System.Windows.NameScope.Remove(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
       <summary>Removes the specific object from the collection.</summary>
@@ -6008,15 +6008,16 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <summary>Gets the value associated with the specified key.</summary>
       <param name="key">The key of the value to get.</param>
       <param name="value">When this method returns, contains the value associated with the specified key, if the key is found; otherwise, a null object. This parameter is passed uninitialized.</param>
-      <returns>true if the <see cref="T:System.Windows.NameScope" /> contains a mapping for the name provided as <paramref name="key" />. Otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the <see cref="T:System.Windows.NameScope" /> contains a mapping for the name provided as <paramref name="key" />. Otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Windows.NameScope.UnregisterName(System.String)">
       <summary>Removes a name-object mapping from the XAML namescope.</summary>
       <param name="name">The name of the mapping to remove.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> was provided as empty string.  
+        <paramref name="name" /> was provided as empty string.
 -or-
- <paramref name="name" /> provided had not been registered.</exception>
+<paramref name="name" /> provided had not been registered.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="name" /> is <see langword="null" />.</exception>
     </member>
@@ -6127,8 +6128,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <exception cref="T:System.FormatException">
         <paramref name="source" /> is not composed of two comma- or space-delimited double values.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="source" /> does not contain two numbers.  
--or-  
+        <paramref name="source" /> does not contain two numbers.
+-or-
 <paramref name="source" /> contains too many delimiters.</exception>
     </member>
     <member name="M:System.Windows.Point.Subtract(System.Windows.Point,System.Windows.Point)">
@@ -6145,12 +6146,12 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
     </member>
     <member name="M:System.Windows.Point.System#IFormattable#ToString(System.String,System.IFormatProvider)">
       <summary>This member supports the Windows Presentation Foundation (WPF) infrastructure and is not intended to be used directly from your code. For a description of this member, see <see cref="M:System.IFormattable.ToString(System.String,System.IFormatProvider)" />.</summary>
-      <param name="format">The string specifying the format to use.  
- -or-  
- <see langword="null" /> to use the default format defined for the type of the <see cref="T:System.IFormattable" /> implementation.</param>
-      <param name="provider">The <see langword="IFormatProvider" /> to use to format the value.  
- -or-  
- <see langword="null" /> to obtain the numeric format information from the current locale setting of the operating system.</param>
+      <param name="format">The string specifying the format to use.
+-or-
+<see langword="null" /> to use the default format defined for the type of the <see cref="T:System.IFormattable" /> implementation.</param>
+      <param name="provider">The <see langword="IFormatProvider" /> to use to format the value.
+-or-
+<see langword="null" /> to obtain the numeric format information from the current locale setting of the operating system.</param>
       <returns>A string containing the value of the current instance in the specified format.</returns>
     </member>
     <member name="M:System.Windows.Point.ToString">
@@ -6284,8 +6285,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <param name="width">The width of the rectangle.</param>
       <param name="height">The height of the rectangle.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="width" /> is a negative value.  
--or-  
+        <paramref name="width" /> is a negative value.
+-or-
 <paramref name="height" /> is a negative value.</exception>
     </member>
     <member name="M:System.Windows.Rect.#ctor(System.Windows.Point,System.Windows.Point)">
@@ -6312,7 +6313,7 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <returns>The y-axis value of the bottom of the rectangle. If the rectangle is empty, the value is <see cref="F:System.Double.NegativeInfinity" /> .</returns>
     </member>
     <member name="P:System.Windows.Rect.BottomLeft">
-      <summary>Gets the position of the bottom-left corner of the rectangle</summary>
+      <summary>Gets the position of the bottom-left corner of the rectangle.</summary>
       <returns>The position of the bottom-left corner of the rectangle.</returns>
     </member>
     <member name="P:System.Windows.Rect.BottomRight">
@@ -6496,12 +6497,12 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
     </member>
     <member name="M:System.Windows.Rect.System#IFormattable#ToString(System.String,System.IFormatProvider)">
       <summary>Formats the value of the current instance using the specified format.</summary>
-      <param name="format">The format to use.  
- -or-  
- A null reference (<see langword="Nothing" /> in Visual Basic) to use the default format defined for the type of the <see cref="T:System.IFormattable" /> implementation.</param>
-      <param name="provider">The provider to use to format the value.  
- -or-  
- A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
+      <param name="format">The format to use.
+-or-
+A null reference (<see langword="Nothing" /> in Visual Basic) to use the default format defined for the type of the <see cref="T:System.IFormattable" /> implementation.</param>
+      <param name="provider">The provider to use to format the value.
+-or-
+A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
       <returns>A string representation of the rectangle.</returns>
     </member>
     <member name="P:System.Windows.Rect.Top">
@@ -6611,11 +6612,11 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <param name="destinationType">The type to convert this <see cref="T:System.Windows.Rect" /> to.</param>
       <returns>The object created from converting this <see cref="T:System.Windows.Rect" />.</returns>
       <exception cref="T:System.NotSupportedException">
-        <paramref name="value" /> is <see langword="null" />.  
+        <paramref name="value" /> is <see langword="null" />.
 -or-
- <paramref name="value" /> is not a <see cref="T:System.Windows.Rect" />.  
+<paramref name="value" /> is not a <see cref="T:System.Windows.Rect" />.
 -or-
- The <paramref name="destinationType" /> is not one of the valid types for conversion.</exception>
+The <paramref name="destinationType" /> is not one of the valid types for conversion.</exception>
     </member>
     <member name="T:System.Windows.Size">
       <summary>Implements a structure that is used to describe the <see cref="T:System.Windows.Size" /> of an object.</summary>
@@ -6665,7 +6666,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <summary>Compares two instances of <see cref="T:System.Windows.Size" /> for equality.</summary>
       <param name="size1">The first instance of <see cref="T:System.Windows.Size" /> to compare.</param>
       <param name="size2">The second instance of <see cref="T:System.Windows.Size" /> to compare.</param>
-      <returns>true if the two instances of <see cref="T:System.Windows.Size" /> are equal; otherwise <see langword="false" />.</returns>
+      <returns>
+        <see langword="true" /> if the two instances of <see cref="T:System.Windows.Size" /> are equal; otherwise <see langword="false" />.</returns>
     </member>
     <member name="M:System.Windows.Size.op_Explicit(System.Windows.Size)~System.Windows.Point">
       <summary>Explicitly converts an instance of <see cref="T:System.Windows.Size" /> to an instance of <see cref="T:System.Windows.Point" />.</summary>
@@ -7061,10 +7063,10 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <exception cref="T:System.ArgumentNullException">
         <paramref name="frame" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <see cref="P:System.Windows.Threading.Dispatcher.HasShutdownFinished" /> is <see langword="true" />  
--or-  
-<paramref name="frame" /> is running on a different <see cref="T:System.Windows.Threading.Dispatcher" />.  
--or-  
+        <see cref="P:System.Windows.Threading.Dispatcher.HasShutdownFinished" /> is <see langword="true" />
+-or-
+<paramref name="frame" /> is running on a different <see cref="T:System.Windows.Threading.Dispatcher" />.
+-or-
 Dispatcher processing has been disabled.</exception>
     </member>
     <member name="M:System.Windows.Threading.Dispatcher.Run">
@@ -7232,7 +7234,7 @@ Dispatcher processing has been disabled.</exception>
       <returns>An object that represents the current operation.</returns>
     </member>
     <member name="M:System.Windows.Threading.DispatcherOperation.Wait">
-      <summary>Waits for the operation to complete</summary>
+      <summary>Waits for the operation to complete.</summary>
       <returns>The status of the operation.</returns>
       <exception cref="T:System.InvalidOperationException">
         <see cref="P:System.Windows.Threading.DispatcherOperation.Status" /> is equal to <see cref="F:System.Windows.Threading.DispatcherOperationStatus.Executing" />.  This can occur when waiting for an operation that is already executing on the same thread.</exception>
@@ -7324,7 +7326,7 @@ Dispatcher processing has been disabled.</exception>
       <summary>The enumeration value is 1. Operations are processed when the system is idle.</summary>
     </member>
     <member name="T:System.Windows.Threading.DispatcherPriorityAwaitable">
-      <summary>Represents an awaitable object that asynchronously yields control back to the current dispatcher and provides an opportunity for the dispatcher to process other events</summary>
+      <summary>Represents an awaitable object that asynchronously yields control back to the current dispatcher and provides an opportunity for the dispatcher to process other events.</summary>
     </member>
     <member name="M:System.Windows.Threading.DispatcherPriorityAwaitable.GetAwaiter">
       <summary>Returns an object that waits for the completion of an asynchronous task.</summary>
@@ -7546,8 +7548,8 @@ Dispatcher processing has been disabled.</exception>
       <summary>Calculates the cross product of two vectors.</summary>
       <param name="vector1">The first vector to evaluate.</param>
       <param name="vector2">The second vector to evaluate.</param>
-      <returns>The cross product of <paramref name="vector1" /> and <paramref name="vector2" />. The following formula is used to calculate the cross product:  
- <c>(Vector1.X * Vector2.Y) - (Vector1.Y * Vector2.X)</c></returns>
+      <returns>The cross product of <paramref name="vector1" /> and <paramref name="vector2" />. The following formula is used to calculate the cross product:
+<c>(Vector1.X * Vector2.Y) - (Vector1.Y * Vector2.X)</c></returns>
     </member>
     <member name="M:System.Windows.Vector.Determinant(System.Windows.Vector,System.Windows.Vector)">
       <summary>Calculates the determinant of two vectors.</summary>
@@ -7614,8 +7616,8 @@ Dispatcher processing has been disabled.</exception>
       <summary>Calculates the dot product of the two specified vectors and returns the result as a <see cref="T:System.Double" />.</summary>
       <param name="vector1">The first vector to multiply.</param>
       <param name="vector2">The second vector structure to multiply.</param>
-      <returns>A <see cref="T:System.Double" /> containing the scalar dot product of <paramref name="vector1" /> and <paramref name="vector2" />, which is calculated using the following formula:  
- <c>(vector1.X * vector2.X) + (vector1.Y * vector2.Y)</c></returns>
+      <returns>A <see cref="T:System.Double" /> containing the scalar dot product of <paramref name="vector1" /> and <paramref name="vector2" />, which is calculated using the following formula:
+<c>(vector1.X * vector2.X) + (vector1.Y * vector2.Y)</c></returns>
     </member>
     <member name="M:System.Windows.Vector.Negate">
       <summary>Negates this vector. The vector has the same magnitude as before, but its direction is now opposite.</summary>
@@ -7687,8 +7689,8 @@ Dispatcher processing has been disabled.</exception>
       <summary>Calculates the dot product of the two specified vector structures and returns the result as a <see cref="T:System.Double" />.</summary>
       <param name="vector1">The first vector to multiply.</param>
       <param name="vector2">The second vector to multiply.</param>
-      <returns>Returns a <see cref="T:System.Double" /> containing the scalar dot product of <paramref name="vector1" /> and <paramref name="vector2" />, which is calculated using the following formula:  
- <c>vector1.X * vector2.X + vector1.Y * vector2.Y</c></returns>
+      <returns>Returns a <see cref="T:System.Double" /> containing the scalar dot product of <paramref name="vector1" /> and <paramref name="vector2" />, which is calculated using the following formula:
+<c>vector1.X * vector2.X + vector1.Y * vector2.Y</c></returns>
     </member>
     <member name="M:System.Windows.Vector.op_Subtraction(System.Windows.Vector,System.Windows.Vector)">
       <summary>Subtracts one specified vector from another.</summary>
@@ -7714,12 +7716,12 @@ Dispatcher processing has been disabled.</exception>
     </member>
     <member name="M:System.Windows.Vector.System#IFormattable#ToString(System.String,System.IFormatProvider)">
       <summary>This member supports the Windows Presentation Foundation (WPF) infrastructure and is not intended to be used directly from your code. For a description of this member, see <see cref="M:System.IFormattable.ToString(System.String,System.IFormatProvider)" />.</summary>
-      <param name="format">The string specifying the format to use.  
- -or-  
- <see langword="null" /> to use the default format defined for the type of the <see cref="T:System.IFormattable" /> implementation.</param>
-      <param name="provider">The <see langword="IFormatProvider" /> to use to format the value.  
- -or-  
- <see langword="null" /> to obtain the numeric format information from the current locale setting of the operating system.</param>
+      <param name="format">The string specifying the format to use.
+-or-
+<see langword="null" /> to use the default format defined for the type of the <see cref="T:System.IFormattable" /> implementation.</param>
+      <param name="provider">The <see langword="IFormatProvider" /> to use to format the value.
+-or-
+<see langword="null" /> to obtain the numeric format information from the current locale setting of the operating system.</param>
       <returns>A string containing the value of the current instance in the specified format.</returns>
     </member>
     <member name="M:System.Windows.Vector.ToString">

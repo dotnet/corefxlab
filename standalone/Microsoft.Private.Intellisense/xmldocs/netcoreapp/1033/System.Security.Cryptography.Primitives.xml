@@ -20,35 +20,35 @@
     </member>
     <member name="M:System.Security.Cryptography.AsymmetricAlgorithm.Create(System.String)">
       <summary>Creates an instance of the specified implementation of an asymmetric algorithm.</summary>
-      <param name="algName">The asymmetric algorithm implementation to use. The following table shows the valid values for the <paramref name="algName" /> parameter and the algorithms they map to.  
+      <param name="algName">The asymmetric algorithm implementation to use. The following table shows the valid values for the <paramref name="algName" /> parameter and the algorithms they map to.
   Parameter value  
-
+  
   Implements  
-
+  
   System.Security.Cryptography.AsymmetricAlgorithm  
-
+  
  <see cref="T:System.Security.Cryptography.AsymmetricAlgorithm" /> RSA  
-
+  
  <see cref="T:System.Security.Cryptography.RSA" /> System.Security.Cryptography.RSA  
-
+  
  <see cref="T:System.Security.Cryptography.RSA" /> DSA  
-
+  
  <see cref="T:System.Security.Cryptography.DSA" /> System.Security.Cryptography.DSA  
-
+  
  <see cref="T:System.Security.Cryptography.DSA" /> ECDsa  
-
+  
  <see cref="T:System.Security.Cryptography.ECDsa" /> ECDsaCng  
-
+  
  <see cref="T:System.Security.Cryptography.ECDsaCng" /> System.Security.Cryptography.ECDsaCng  
-
+  
  <see cref="T:System.Security.Cryptography.ECDsaCng" /> ECDH  
-
+  
  <see cref="T:System.Security.Cryptography.ECDiffieHellman" /> ECDiffieHellman  
-
+  
  <see cref="T:System.Security.Cryptography.ECDiffieHellman" /> ECDiffieHellmanCng  
-
+  
  <see cref="T:System.Security.Cryptography.ECDiffieHellmanCng" /> System.Security.Cryptography.ECDiffieHellmanCng  
-
+  
  <see cref="T:System.Security.Cryptography.ECDiffieHellmanCng" /></param>
       <returns>A new instance of the specified asymmetric algorithm implementation.</returns>
     </member>
@@ -353,9 +353,9 @@ The algorithm-specific key import failed.</exception>
       <returns>The number of bytes read from the stream, between zero (0) and the number of bytes you requested. Streams return zero (0) only at the end of the stream, otherwise, they should block until at least one byte is available.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="asyncResult" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">A handle to the pending read operation is not available.  
- -or-  
- The pending operation does not support reading.</exception>
+      <exception cref="T:System.ArgumentException">A handle to the pending read operation is not available.
+-or-
+The pending operation does not support reading.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="asyncResult" /> did not originate from a <see cref="M:System.Security.Cryptography.CryptoStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /> method on the current stream.</exception>
       <exception cref="T:System.IO.IOException">The stream is closed or an internal error has occurred.</exception>
@@ -365,9 +365,9 @@ The algorithm-specific key import failed.</exception>
       <param name="asyncResult">A reference to the outstanding asynchronous I/O request.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="asyncResult" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">A handle to the pending write operation is not available.  
- -or-  
- The pending operation does not support writing.</exception>
+      <exception cref="T:System.ArgumentException">A handle to the pending write operation is not available.
+-or-
+The pending operation does not support writing.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="asyncResult" /> did not originate from a <see cref="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /> method on the current stream.</exception>
       <exception cref="T:System.IO.IOException">The stream is closed or an internal error has occurred.</exception>
@@ -384,9 +384,9 @@ The algorithm-specific key import failed.</exception>
     <member name="M:System.Security.Cryptography.CryptoStream.FlushFinalBlock">
       <summary>Updates the underlying data source or repository with the current state of the buffer, then clears the buffer.</summary>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The key is corrupt which can cause invalid padding to the stream.</exception>
-      <exception cref="T:System.NotSupportedException">The current stream is not writable.  
- -or-  
- The final block has already been transformed.</exception>
+      <exception cref="T:System.NotSupportedException">The current stream is not writable.
+-or-
+The final block has already been transformed.</exception>
     </member>
     <member name="P:System.Security.Cryptography.CryptoStream.HasFlushedFinalBlock">
       <summary>Gets a value indicating whether the final buffer block has been written to the underlying stream.</summary>
@@ -410,9 +410,9 @@ The algorithm-specific key import failed.</exception>
       <param name="count">The maximum number of bytes to be read from the current stream.</param>
       <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero if the end of the stream has been reached.</returns>
       <exception cref="T:System.NotSupportedException">The <see cref="T:System.Security.Cryptography.CryptoStreamMode" /> associated with current <see cref="T:System.Security.Cryptography.CryptoStream" /> object does not match the underlying stream.  For example, this exception is thrown when using <see cref="F:System.Security.Cryptography.CryptoStreamMode.Read" /> with an underlying stream that is write only.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than zero.  
- -or-  
- The <paramref name="count" /> parameter is less than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than zero.
+-or-
+The <paramref name="count" /> parameter is less than zero.</exception>
       <exception cref="T:System.ArgumentException">The sum of the <paramref name="count" /> and <paramref name="offset" /> parameters is longer than the length of the buffer.</exception>
     </member>
     <member name="M:System.Security.Cryptography.CryptoStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
@@ -455,9 +455,9 @@ The algorithm-specific key import failed.</exception>
       <param name="offset">The byte offset in <paramref name="buffer" /> at which to begin copying bytes to the current stream.</param>
       <param name="count">The number of bytes to be written to the current stream.</param>
       <exception cref="T:System.NotSupportedException">The <see cref="T:System.Security.Cryptography.CryptoStreamMode" /> associated with current <see cref="T:System.Security.Cryptography.CryptoStream" /> object does not match the underlying stream.  For example, this exception is thrown when using <see cref="F:System.Security.Cryptography.CryptoStreamMode.Write" /> with an underlying stream that is read only.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than zero.  
- -or-  
- The <paramref name="count" /> parameter is less than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than zero.
+-or-
+The <paramref name="count" /> parameter is less than zero.</exception>
       <exception cref="T:System.ArgumentException">The sum of the <paramref name="count" /> and <paramref name="offset" /> parameters is longer than the length of the buffer.</exception>
     </member>
     <member name="M:System.Security.Cryptography.CryptoStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
@@ -525,8 +525,8 @@ The algorithm-specific key import failed.</exception>
       <param name="count">The number of bytes in the array to use as data.</param>
       <returns>The computed hash code.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="count" /> is an invalid value.  
--or-  
+        <paramref name="count" /> is an invalid value.
+-or-
 <paramref name="buffer" /> length is invalid.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="buffer" /> is <see langword="null" />.</exception>
@@ -546,41 +546,41 @@ The algorithm-specific key import failed.</exception>
     </member>
     <member name="M:System.Security.Cryptography.HashAlgorithm.Create(System.String)">
       <summary>Creates an instance of the specified implementation of a hash algorithm.</summary>
-      <param name="hashName">The hash algorithm implementation to use. The following table shows the valid values for the <paramref name="hashName" /> parameter and the algorithms they map to.  
+      <param name="hashName">The hash algorithm implementation to use. The following table shows the valid values for the <paramref name="hashName" /> parameter and the algorithms they map to.
   Parameter value  
-
+  
   Implements  
-
+  
   SHA  
-
+  
  <see cref="T:System.Security.Cryptography.SHA1CryptoServiceProvider" /> SHA1  
-
+  
  <see cref="T:System.Security.Cryptography.SHA1CryptoServiceProvider" /> System.Security.Cryptography.SHA1  
-
+  
  <see cref="T:System.Security.Cryptography.SHA1CryptoServiceProvider" /> System.Security.Cryptography.HashAlgorithm  
-
+  
  <see cref="T:System.Security.Cryptography.SHA1CryptoServiceProvider" /> MD5  
-
+  
  <see cref="T:System.Security.Cryptography.MD5CryptoServiceProvider" /> System.Security.Cryptography.MD5  
-
+  
  <see cref="T:System.Security.Cryptography.MD5CryptoServiceProvider" /> SHA256  
-
+  
  <see cref="T:System.Security.Cryptography.SHA256Managed" /> SHA-256  
-
+  
  <see cref="T:System.Security.Cryptography.SHA256Managed" /> System.Security.Cryptography.SHA256  
-
+  
  <see cref="T:System.Security.Cryptography.SHA256Managed" /> SHA384  
-
+  
  <see cref="T:System.Security.Cryptography.SHA384Managed" /> SHA-384  
-
+  
  <see cref="T:System.Security.Cryptography.SHA384Managed" /> System.Security.Cryptography.SHA384  
-
+  
  <see cref="T:System.Security.Cryptography.SHA384Managed" /> SHA512  
-
+  
  <see cref="T:System.Security.Cryptography.SHA512Managed" /> SHA-512  
-
+  
  <see cref="T:System.Security.Cryptography.SHA512Managed" /> System.Security.Cryptography.SHA512  
-
+  
  <see cref="T:System.Security.Cryptography.SHA512Managed" /></param>
       <returns>A new instance of the specified hash algorithm, or <see langword="null" /> if <paramref name="hashName" /> is not a valid hash algorithm.</returns>
     </member>
@@ -645,8 +645,8 @@ The algorithm-specific key import failed.</exception>
       <param name="outputOffset">The offset into the output byte array from which to begin writing data.</param>
       <returns>The number of bytes written.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="inputCount" /> uses an invalid value.  
--or-  
+        <paramref name="inputCount" /> uses an invalid value.
+-or-
 <paramref name="inputBuffer" /> has an invalid length.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="inputBuffer" /> is <see langword="null" />.</exception>
@@ -661,8 +661,8 @@ The algorithm-specific key import failed.</exception>
       <param name="inputCount">The number of bytes in the byte array to use as data.</param>
       <returns>An array that is a copy of the part of the input that is hashed.</returns>
       <exception cref="T:System.ArgumentException">
-        <paramref name="inputCount" /> uses an invalid value.  
--or-  
+        <paramref name="inputCount" /> uses an invalid value.
+-or-
 <paramref name="inputBuffer" /> has an invalid offset length.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="inputBuffer" /> is <see langword="null" />.</exception>
@@ -708,7 +708,7 @@ The algorithm-specific key import failed.</exception>
     </member>
     <member name="P:System.Security.Cryptography.HashAlgorithmName.Name">
       <summary>Gets the underlying string representation of the algorithm name.</summary>
-      <returns>The string representation of the algorithm name, or <see langword="null" /> or <see cref="F:System.String.Empty" /> if no hash algorithm is available.</returns>
+      <returns>The string representation of the algorithm name, or <see langword="default" /> if no hash algorithm is available.</returns>
     </member>
     <member name="M:System.Security.Cryptography.HashAlgorithmName.op_Equality(System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.HashAlgorithmName)">
       <summary>Determines whether two specified <see cref="T:System.Security.Cryptography.HashAlgorithmName" /> objects are equal.</summary>
@@ -760,43 +760,43 @@ The algorithm-specific key import failed.</exception>
     </member>
     <member name="M:System.Security.Cryptography.HMAC.Create(System.String)">
       <summary>Creates an instance of the specified implementation of a Hash-based Message Authentication Code (HMAC).</summary>
-      <param name="algorithmName">The HMAC implementation to use. The following table shows the valid values for the <paramref name="algorithmName" /> parameter and the algorithms they map to.  
+      <param name="algorithmName">The HMAC implementation to use. The following table shows the valid values for the <paramref name="algorithmName" /> parameter and the algorithms they map to.
   Parameter value  
-
+  
   Implements  
-
+  
   System.Security.Cryptography.HMAC  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA1" /> System.Security.Cryptography.KeyedHashAlgorithm  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA1" /> HMACMD5  
-
+  
  <see cref="T:System.Security.Cryptography.HMACMD5" /> System.Security.Cryptography.HMACMD5  
-
+  
  <see cref="T:System.Security.Cryptography.HMACMD5" /> HMACRIPEMD160  
-
+  
  <see cref="T:System.Security.Cryptography.HMACRIPEMD160" /> System.Security.Cryptography.HMACRIPEMD160  
-
+  
  <see cref="T:System.Security.Cryptography.HMACRIPEMD160" /> HMACSHA1  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA1" /> System.Security.Cryptography.HMACSHA1  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA1" /> HMACSHA256  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA256" /> System.Security.Cryptography.HMACSHA256  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA256" /> HMACSHA384  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA384" /> System.Security.Cryptography.HMACSHA384  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA384" /> HMACSHA512  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA512" /> System.Security.Cryptography.HMACSHA512  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA512" /> MACTripleDES  
-
+  
  <see cref="T:System.Security.Cryptography.MACTripleDES" /> System.Security.Cryptography.MACTripleDES  
-
+  
  <see cref="T:System.Security.Cryptography.MACTripleDES" /></param>
       <returns>A new instance of the specified HMAC implementation.</returns>
     </member>
@@ -884,43 +884,43 @@ The algorithm-specific key import failed.</exception>
     </member>
     <member name="M:System.Security.Cryptography.KeyedHashAlgorithm.Create(System.String)">
       <summary>Creates an instance of the specified implementation of a keyed hash algorithm.</summary>
-      <param name="algName">The keyed hash algorithm implementation to use. The following table shows the valid values for the <paramref name="algName" /> parameter and the algorithms they map to.  
+      <param name="algName">The keyed hash algorithm implementation to use. The following table shows the valid values for the <paramref name="algName" /> parameter and the algorithms they map to.
   Parameter value  
-
+  
   Implements  
-
+  
   System.Security.Cryptography.HMAC  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA1" /> System.Security.Cryptography.KeyedHashAlgorithm  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA1" /> HMACMD5  
-
+  
  <see cref="T:System.Security.Cryptography.HMACMD5" /> System.Security.Cryptography.HMACMD5  
-
+  
  <see cref="T:System.Security.Cryptography.HMACMD5" /> HMACRIPEMD160  
-
+  
  <see cref="T:System.Security.Cryptography.HMACRIPEMD160" /> System.Security.Cryptography.HMACRIPEMD160  
-
+  
  <see cref="T:System.Security.Cryptography.HMACRIPEMD160" /> HMACSHA1  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA1" /> System.Security.Cryptography.HMACSHA1  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA1" /> HMACSHA256  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA256" /> System.Security.Cryptography.HMACSHA256  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA256" /> HMACSHA384  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA384" /> System.Security.Cryptography.HMACSHA384  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA384" /> HMACSHA512  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA512" /> System.Security.Cryptography.HMACSHA512  
-
+  
  <see cref="T:System.Security.Cryptography.HMACSHA512" /> MACTripleDES  
-
+  
  <see cref="T:System.Security.Cryptography.MACTripleDES" /> System.Security.Cryptography.MACTripleDES  
-
+  
  <see cref="T:System.Security.Cryptography.MACTripleDES" /></param>
       <returns>A new instance of the specified keyed hash algorithm.</returns>
     </member>

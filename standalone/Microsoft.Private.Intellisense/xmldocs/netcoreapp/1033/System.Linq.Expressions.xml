@@ -99,7 +99,8 @@
     <member name="M:System.Dynamic.CallInfo.Equals(System.Object)">
       <summary>Determines whether the specified CallInfo instance is considered equal to the current.</summary>
       <param name="obj">The instance of <see cref="T:System.Dynamic.CallInfo" /> to compare with the current instance.</param>
-      <returns>true if the specified instance is equal to the current one otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the specified instance is equal to the current one otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Dynamic.CallInfo.GetHashCode">
       <summary>Serves as a hash function for the current <see cref="T:System.Dynamic.CallInfo" />.</summary>
@@ -957,7 +958,7 @@
       <returns>The <see cref="P:System.Linq.Expressions.ConditionalExpression.Type" /> that represents the static type of the expression.</returns>
     </member>
     <member name="M:System.Linq.Expressions.ConditionalExpression.Update(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Linq.Expressions.Expression)">
-      <summary>Creates a new expression that is like this one, but using the supplied children. If all of the children are the same, it will return this expression</summary>
+      <summary>Creates a new expression that is like this one, but using the supplied children. If all of the children are the same, it will return this expression.</summary>
       <param name="test">The <see cref="P:System.Linq.Expressions.ConditionalExpression.Test" /> property of the result.</param>
       <param name="ifTrue">The <see cref="P:System.Linq.Expressions.ConditionalExpression.IfTrue" /> property of the result.</param>
       <param name="ifFalse">The <see cref="P:System.Linq.Expressions.ConditionalExpression.IfFalse" /> property of the result.</param>
@@ -1353,9 +1354,9 @@
       <returns>A <see cref="T:System.Linq.Expressions.BinaryExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.AndAlso" /> and the <see cref="P:System.Linq.Expressions.BinaryExpression.Left" /> and <see cref="P:System.Linq.Expressions.BinaryExpression.Right" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="left" /> or <paramref name="right" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The bitwise <see langword="AND" /> operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.  
- -or-  
- <paramref name="left" />.Type and <paramref name="right" />.Type are not the same Boolean type.</exception>
+      <exception cref="T:System.InvalidOperationException">The bitwise <see langword="AND" /> operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.
+-or-
+<paramref name="left" />.Type and <paramref name="right" />.Type are not the same Boolean type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.AndAlso(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Reflection.MethodInfo)">
       <summary>Creates a <see cref="T:System.Linq.Expressions.BinaryExpression" /> that represents a conditional <see langword="AND" /> operation that evaluates the second operand only if the first operand is resolved to true. The implementing method can be specified.</summary>
@@ -1368,8 +1369,8 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly two arguments.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="method" /> is <see langword="null" /> and the bitwise <see langword="AND" /> operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.  
--or-  
+        <paramref name="method" /> is <see langword="null" /> and the bitwise <see langword="AND" /> operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.
+-or-
 <paramref name="method" /> is <see langword="null" /> and <paramref name="left" />.Type and <paramref name="right" />.Type are not the same Boolean type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.AndAssign(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression)">
@@ -1413,10 +1414,10 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> or <paramref name="indexes" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" />.Type does not represent an array type.  
--or-  
-The rank of <paramref name="array" />.Type does not match the number of elements in <paramref name="indexes" />.  
--or-  
+        <paramref name="array" />.Type does not represent an array type.
+-or-
+The rank of <paramref name="array" />.Type does not match the number of elements in <paramref name="indexes" />.
+-or-
 The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or more elements of <paramref name="indexes" /> does not represent the <see cref="T:System.Int32" /> type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ArrayIndex(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression)">
@@ -1427,10 +1428,10 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or 
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> or <paramref name="index" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" />.Type does not represent an array type.  
--or-  
-<paramref name="array" />.Type represents an array type whose rank is not 1.  
--or-  
+        <paramref name="array" />.Type does not represent an array type.
+-or-
+<paramref name="array" />.Type represents an array type whose rank is not 1.
+-or-
 <paramref name="index" />.Type does not represent the <see cref="T:System.Int32" /> type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ArrayIndex(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression[])">
@@ -1441,10 +1442,10 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or 
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> or <paramref name="indexes" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="array" />.Type does not represent an array type.  
--or-  
-The rank of <paramref name="array" />.Type does not match the number of elements in <paramref name="indexes" />.  
--or-  
+        <paramref name="array" />.Type does not represent an array type.
+-or-
+The rank of <paramref name="array" />.Type does not match the number of elements in <paramref name="indexes" />.
+-or-
 The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or more elements of <paramref name="indexes" /> does not represent the <see cref="T:System.Int32" /> type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ArrayLength(System.Linq.Expressions.Expression)">
@@ -1470,10 +1471,10 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or 
       <exception cref="T:System.ArgumentNullException">
         <paramref name="member" /> or <paramref name="expression" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="member" /> does not represent a field or property.  
--or-  
-The property represented by <paramref name="member" /> does not have a <see langword="set" /> accessor.  
--or-  
+        <paramref name="member" /> does not represent a field or property.
+-or-
+The property represented by <paramref name="member" /> does not have a <see langword="set" /> accessor.
+-or-
 <paramref name="expression" />.Type is not assignable to the type of the field or property that <paramref name="member" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Bind(System.Reflection.MethodInfo,System.Linq.Expressions.Expression)">
@@ -1484,10 +1485,10 @@ The property represented by <paramref name="member" /> does not have a <see lang
       <exception cref="T:System.ArgumentNullException">
         <paramref name="propertyAccessor" /> or <paramref name="expression" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="propertyAccessor" /> does not represent a property accessor method.  
--or-  
-The property accessed by <paramref name="propertyAccessor" /> does not have a <see langword="set" /> accessor.  
--or-  
+        <paramref name="propertyAccessor" /> does not represent a property accessor method.
+-or-
+The property accessed by <paramref name="propertyAccessor" /> does not have a <see langword="set" /> accessor.
+-or-
 <paramref name="expression" />.Type is not assignable to the type of the field or property that <paramref name="member" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Block(System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})">
@@ -1598,8 +1599,8 @@ The property accessed by <paramref name="propertyAccessor" /> does not have a <s
       <param name="method">A <see cref="T:System.Reflection.MethodInfo" /> to set the <see cref="P:System.Linq.Expressions.MethodCallExpression.Method" /> property equal to.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Call" /> and the <see cref="P:System.Linq.Expressions.MethodCallExpression.Object" /> and <see cref="P:System.Linq.Expressions.MethodCallExpression.Method" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="method" /> is <see langword="null" />.  
--or-  
+        <paramref name="method" /> is <see langword="null" />.
+-or-
 <paramref name="instance" /> is <see langword="null" /> and <paramref name="method" /> represents an instance method.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="instance" />.Type is not assignable to the declaring type of the method represented by <paramref name="method" />.</exception>
@@ -1611,14 +1612,14 @@ The property accessed by <paramref name="propertyAccessor" /> does not have a <s
       <param name="arguments">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Call" /> and the <see cref="P:System.Linq.Expressions.MethodCallExpression.Object" />, <see cref="P:System.Linq.Expressions.MethodCallExpression.Method" />, and <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="method" /> is <see langword="null" />.  
--or-  
+        <paramref name="method" /> is <see langword="null" />.
+-or-
 <paramref name="instance" /> is <see langword="null" /> and <paramref name="method" /> represents an instance method.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="instance" />.Type is not assignable to the declaring type of the method represented by <paramref name="method" />.  
--or-  
-The number of elements in <paramref name="arguments" /> does not equal the number of parameters for the method represented by <paramref name="method" />.  
--or-  
+        <paramref name="instance" />.Type is not assignable to the declaring type of the method represented by <paramref name="method" />.
+-or-
+The number of elements in <paramref name="arguments" /> does not equal the number of parameters for the method represented by <paramref name="method" />.
+-or-
 One or more of the elements of <paramref name="arguments" /> is not assignable to the corresponding parameter for the method represented by <paramref name="method" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Call(System.Linq.Expressions.Expression,System.Reflection.MethodInfo,System.Linq.Expressions.Expression,System.Linq.Expressions.Expression)">
@@ -1645,16 +1646,16 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <param name="arguments">An array of <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Call" /> and the <see cref="P:System.Linq.Expressions.MethodCallExpression.Object" />, <see cref="P:System.Linq.Expressions.MethodCallExpression.Method" />, and <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="method" /> is <see langword="null" />.  
--or-  
-<paramref name="instance" /> is <see langword="null" /> and <paramref name="method" /> represents an instance method.  
--or-  
+        <paramref name="method" /> is <see langword="null" />.
+-or-
+<paramref name="instance" /> is <see langword="null" /> and <paramref name="method" /> represents an instance method.
+-or-
 <paramref name="arguments" /> is not <see langword="null" /> and one or more of its elements is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="instance" />.Type is not assignable to the declaring type of the method represented by <paramref name="method" />.  
--or-  
-The number of elements in <paramref name="arguments" /> does not equal the number of parameters for the method represented by <paramref name="method" />.  
--or-  
+        <paramref name="instance" />.Type is not assignable to the declaring type of the method represented by <paramref name="method" />.
+-or-
+The number of elements in <paramref name="arguments" /> does not equal the number of parameters for the method represented by <paramref name="method" />.
+-or-
 One or more of the elements of <paramref name="arguments" /> is not assignable to the corresponding parameter for the method represented by <paramref name="method" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Call(System.Linq.Expressions.Expression,System.String,System.Type[],System.Linq.Expressions.Expression[])">
@@ -1666,9 +1667,9 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <returns>A <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Call" />, the <see cref="P:System.Linq.Expressions.MethodCallExpression.Object" /> property equal to <paramref name="instance" />, <see cref="P:System.Linq.Expressions.MethodCallExpression.Method" /> set to the <see cref="T:System.Reflection.MethodInfo" /> that represents the specified instance method, and <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments" /> set to the specified arguments.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="instance" /> or <paramref name="methodName" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">No method whose name is <paramref name="methodName" />, whose type parameters match <paramref name="typeArguments" />, and whose parameter types match <paramref name="arguments" /> is found in <paramref name="instance" />.Type or its base types.  
- -or-  
- More than one method whose name is <paramref name="methodName" />, whose type parameters match <paramref name="typeArguments" />, and whose parameter types match <paramref name="arguments" /> is found in <paramref name="instance" />.Type or its base types.</exception>
+      <exception cref="T:System.InvalidOperationException">No method whose name is <paramref name="methodName" />, whose type parameters match <paramref name="typeArguments" />, and whose parameter types match <paramref name="arguments" /> is found in <paramref name="instance" />.Type or its base types.
+-or-
+More than one method whose name is <paramref name="methodName" />, whose type parameters match <paramref name="typeArguments" />, and whose parameter types match <paramref name="arguments" /> is found in <paramref name="instance" />.Type or its base types.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Call(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})">
       <summary>Creates a <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that represents a call to a static (Shared in Visual Basic) method.</summary>
@@ -1733,9 +1734,9 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <returns>A <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Call" /> and the <see cref="P:System.Linq.Expressions.MethodCallExpression.Method" /> and <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="method" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The number of elements in <paramref name="arguments" /> does not equal the number of parameters for the method represented by <paramref name="method" />.  
- -or-  
- One or more of the elements of <paramref name="arguments" /> is not assignable to the corresponding parameter for the method represented by <paramref name="method" />.</exception>
+      <exception cref="T:System.ArgumentException">The number of elements in <paramref name="arguments" /> does not equal the number of parameters for the method represented by <paramref name="method" />.
+-or-
+One or more of the elements of <paramref name="arguments" /> is not assignable to the corresponding parameter for the method represented by <paramref name="method" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Call(System.Type,System.String,System.Type[],System.Linq.Expressions.Expression[])">
       <summary>Creates a <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that represents a call to a <see langword="static" /> (<see langword="Shared" /> in Visual Basic) method by calling the appropriate factory method.</summary>
@@ -1746,9 +1747,9 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <returns>A <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Call" />, the <see cref="P:System.Linq.Expressions.MethodCallExpression.Method" /> property set to the <see cref="T:System.Reflection.MethodInfo" /> that represents the specified <see langword="static" /> (<see langword="Shared" /> in Visual Basic) method, and the <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments" /> property set to the specified arguments.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="type" /> or <paramref name="methodName" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">No method whose name is <paramref name="methodName" />, whose type parameters match <paramref name="typeArguments" />, and whose parameter types match <paramref name="arguments" /> is found in <paramref name="type" /> or its base types.  
- -or-  
- More than one method whose name is <paramref name="methodName" />, whose type parameters match <paramref name="typeArguments" />, and whose parameter types match <paramref name="arguments" /> is found in <paramref name="type" /> or its base types.</exception>
+      <exception cref="T:System.InvalidOperationException">No method whose name is <paramref name="methodName" />, whose type parameters match <paramref name="typeArguments" />, and whose parameter types match <paramref name="arguments" /> is found in <paramref name="type" /> or its base types.
+-or-
+More than one method whose name is <paramref name="methodName" />, whose type parameters match <paramref name="typeArguments" />, and whose parameter types match <paramref name="arguments" /> is found in <paramref name="type" /> or its base types.</exception>
     </member>
     <member name="P:System.Linq.Expressions.Expression.CanReduce">
       <summary>Indicates that the node can be reduced to a simpler node. If this returns true, Reduce() can be called to produce the reduced form.</summary>
@@ -1806,14 +1807,14 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <exception cref="T:System.ArgumentNullException">
         <paramref name="left" /> or <paramref name="right" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="left" />.Type and <paramref name="right" />.Type are not convertible to each other.  
--or-  
+        <paramref name="left" />.Type and <paramref name="right" />.Type are not convertible to each other.
+-or-
 <paramref name="conversion" /> is not <see langword="null" /> and <paramref name="conversion" />.Type is a delegate type that does not take exactly one argument.</exception>
-      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of <paramref name="left" /> does not represent a reference type or a nullable value type.  
- -or-  
- The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of <paramref name="left" /> represents a type that is not assignable to the parameter type of the delegate type <paramref name="conversion" />.Type.  
- -or-  
- The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of <paramref name="right" /> is not equal to the return type of the delegate type <paramref name="conversion" />.Type.</exception>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of <paramref name="left" /> does not represent a reference type or a nullable value type.
+-or-
+The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of <paramref name="left" /> represents a type that is not assignable to the parameter type of the delegate type <paramref name="conversion" />.Type.
+-or-
+The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of <paramref name="right" /> is not equal to the return type of the delegate type <paramref name="conversion" />.Type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Condition(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Linq.Expressions.Expression)">
       <summary>Creates a <see cref="T:System.Linq.Expressions.ConditionalExpression" /> that represents a conditional statement.</summary>
@@ -1824,8 +1825,8 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <exception cref="T:System.ArgumentNullException">
         <paramref name="test" /> or <paramref name="ifTrue" /> or <paramref name="ifFalse" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="test" />.Type is not <see cref="T:System.Boolean" />.  
--or-  
+        <paramref name="test" />.Type is not <see cref="T:System.Boolean" />.
+-or-
 <paramref name="ifTrue" />.Type is not equal to <paramref name="ifFalse" />.Type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Condition(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Type)">
@@ -1881,13 +1882,13 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
         <paramref name="expression" /> or <paramref name="type" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly one argument.</exception>
-      <exception cref="T:System.InvalidOperationException">No conversion operator is defined between <paramref name="expression" />.Type and <paramref name="type" />.  
- -or-  
- <paramref name="expression" />.Type is not assignable to the argument type of the method represented by <paramref name="method" />.  
- -or-  
- The return type of the method represented by <paramref name="method" /> is not assignable to <paramref name="type" />.  
- -or-  
- <paramref name="expression" />.Type or <paramref name="type" /> is a nullable value type and the corresponding non-nullable value type does not equal the argument type or the return type, respectively, of the method represented by <paramref name="method" />.</exception>
+      <exception cref="T:System.InvalidOperationException">No conversion operator is defined between <paramref name="expression" />.Type and <paramref name="type" />.
+-or-
+<paramref name="expression" />.Type is not assignable to the argument type of the method represented by <paramref name="method" />.
+-or-
+The return type of the method represented by <paramref name="method" /> is not assignable to <paramref name="type" />.
+-or-
+<paramref name="expression" />.Type or <paramref name="type" /> is a nullable value type and the corresponding non-nullable value type does not equal the argument type or the return type, respectively, of the method represented by <paramref name="method" />.</exception>
       <exception cref="T:System.Reflection.AmbiguousMatchException">More than one method that matches the <paramref name="method" /> description was found.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ConvertChecked(System.Linq.Expressions.Expression,System.Type)">
@@ -1909,13 +1910,13 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
         <paramref name="expression" /> or <paramref name="type" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly one argument.</exception>
-      <exception cref="T:System.InvalidOperationException">No conversion operator is defined between <paramref name="expression" />.Type and <paramref name="type" />.  
- -or-  
- <paramref name="expression" />.Type is not assignable to the argument type of the method represented by <paramref name="method" />.  
- -or-  
- The return type of the method represented by <paramref name="method" /> is not assignable to <paramref name="type" />.  
- -or-  
- <paramref name="expression" />.Type or <paramref name="type" /> is a nullable value type and the corresponding non-nullable value type does not equal the argument type or the return type, respectively, of the method represented by <paramref name="method" />.</exception>
+      <exception cref="T:System.InvalidOperationException">No conversion operator is defined between <paramref name="expression" />.Type and <paramref name="type" />.
+-or-
+<paramref name="expression" />.Type is not assignable to the argument type of the method represented by <paramref name="method" />.
+-or-
+The return type of the method represented by <paramref name="method" /> is not assignable to <paramref name="type" />.
+-or-
+<paramref name="expression" />.Type or <paramref name="type" /> is a nullable value type and the corresponding non-nullable value type does not equal the argument type or the return type, respectively, of the method represented by <paramref name="method" />.</exception>
       <exception cref="T:System.Reflection.AmbiguousMatchException">More than one method that matches the <paramref name="method" /> description was found.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.DebugInfo(System.Linq.Expressions.SymbolDocumentInfo,System.Int32,System.Int32,System.Int32,System.Int32)">
@@ -2041,13 +2042,13 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <returns>An <see cref="T:System.Linq.Expressions.ElementInit" /> that has the <see cref="P:System.Linq.Expressions.ElementInit.AddMethod" /> and <see cref="P:System.Linq.Expressions.ElementInit.Arguments" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="addMethod" /> or <paramref name="arguments" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The method that <paramref name="addMethod" /> represents is not named "Add" (case insensitive).  
- -or-  
- The method that <paramref name="addMethod" /> represents is not an instance method.  
- -or-  
- <paramref name="arguments" /> does not contain the same number of elements as the number of parameters for the method that <paramref name="addMethod" /> represents.  
- -or-  
- The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or more elements of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the method that <paramref name="addMethod" /> represents.</exception>
+      <exception cref="T:System.ArgumentException">The method that <paramref name="addMethod" /> represents is not named "Add" (case insensitive).
+-or-
+The method that <paramref name="addMethod" /> represents is not an instance method.
+-or-
+<paramref name="arguments" /> does not contain the same number of elements as the number of parameters for the method that <paramref name="addMethod" /> represents.
+-or-
+The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or more elements of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the method that <paramref name="addMethod" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ElementInit(System.Reflection.MethodInfo,System.Linq.Expressions.Expression[])">
       <summary>Creates an <see cref="T:System.Linq.Expressions.ElementInit" />, given an array of values as the second argument.</summary>
@@ -2056,13 +2057,13 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <returns>An <see cref="T:System.Linq.Expressions.ElementInit" /> that has the <see cref="P:System.Linq.Expressions.ElementInit.AddMethod" /> and <see cref="P:System.Linq.Expressions.ElementInit.Arguments" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="addMethod" /> or <paramref name="arguments" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The method that addMethod represents is not named "Add" (case insensitive).  
- -or-  
- The method that addMethod represents is not an instance method.  
- -or-  
- arguments does not contain the same number of elements as the number of parameters for the method that addMethod represents.  
- -or-  
- The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or more elements of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the method that <paramref name="addMethod" /> represents.</exception>
+      <exception cref="T:System.ArgumentException">The method that addMethod represents is not named "Add" (case insensitive).
+-or-
+The method that addMethod represents is not an instance method.
+-or-
+arguments does not contain the same number of elements as the number of parameters for the method that addMethod represents.
+-or-
+The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or more elements of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the method that <paramref name="addMethod" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Empty">
       <summary>Creates an empty expression that has <see cref="T:System.Void" /> type.</summary>
@@ -2141,8 +2142,8 @@ One or more of the elements of <paramref name="arguments" /> is not assignable t
       <param name="field">The <see cref="T:System.Reflection.FieldInfo" /> to set the <see cref="P:System.Linq.Expressions.MemberExpression.Member" /> property equal to.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MemberExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.MemberAccess" /> and the <see cref="P:System.Linq.Expressions.MemberExpression.Expression" /> and <see cref="P:System.Linq.Expressions.MemberExpression.Member" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="field" /> is <see langword="null" />.  
--or-  
+        <paramref name="field" /> is <see langword="null" />.
+-or-
 The field represented by <paramref name="field" /> is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic) and <paramref name="expression" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="expression" />.Type is not assignable to the declaring type of the field represented by <paramref name="field" />.</exception>
@@ -2290,8 +2291,8 @@ The field represented by <paramref name="field" /> is not <see langword="static"
       <exception cref="T:System.ArgumentNullException">
         <paramref name="expression" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="expression" />.Type does not represent a delegate type or an <see cref="T:System.Linq.Expressions.Expression`1" />.  
--or-  
+        <paramref name="expression" />.Type does not represent a delegate type or an <see cref="T:System.Linq.Expressions.Expression`1" />.
+-or-
 The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the delegate represented by <paramref name="expression" />.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="arguments" /> does not contain the same number of elements as the list of parameters for the delegate represented by <paramref name="expression" />.</exception>
@@ -2304,8 +2305,8 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an elem
       <exception cref="T:System.ArgumentNullException">
         <paramref name="expression" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="expression" />.Type does not represent a delegate type or an <see cref="T:System.Linq.Expressions.Expression`1" />.  
--or-  
+        <paramref name="expression" />.Type does not represent a delegate type or an <see cref="T:System.Linq.Expressions.Expression`1" />.
+-or-
 The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the delegate represented by <paramref name="expression" />.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="arguments" /> does not contain the same number of elements as the list of parameters for the delegate represented by <paramref name="expression" />.</exception>
@@ -2389,8 +2390,8 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an elem
       <param name="parameters">An array of <see cref="T:System.Linq.Expressions.ParameterExpression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.LambdaExpression.Parameters" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.LambdaExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Lambda" /> and the <see cref="P:System.Linq.Expressions.LambdaExpression.Body" /> and <see cref="P:System.Linq.Expressions.LambdaExpression.Parameters" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="body" /> is <see langword="null" />.  
--or-  
+        <paramref name="body" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="parameters" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="parameters" /> contains more than sixteen elements.</exception>
@@ -2433,16 +2434,16 @@ One or more elements of <paramref name="parameters" /> are <see langword="null" 
       <param name="parameters">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.ParameterExpression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.LambdaExpression.Parameters" /> collection.</param>
       <returns>An object that represents a lambda expression which has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Lambda" /> and the <see cref="P:System.Linq.Expressions.LambdaExpression.Body" /> and <see cref="P:System.Linq.Expressions.LambdaExpression.Parameters" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="delegateType" /> or <paramref name="body" /> is <see langword="null" />.  
--or-  
+        <paramref name="delegateType" /> or <paramref name="body" /> is <see langword="null" />.
+-or-
 One or more elements in <paramref name="parameters" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="delegateType" /> does not represent a delegate type.  
--or-  
-<paramref name="body" />.Type represents a type that is not assignable to the return type of the delegate type represented by <paramref name="delegateType" />.  
--or-  
-<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for the delegate type represented by <paramref name="delegateType" />.  
--or-  
+        <paramref name="delegateType" /> does not represent a delegate type.
+-or-
+<paramref name="body" />.Type represents a type that is not assignable to the return type of the delegate type represented by <paramref name="delegateType" />.
+-or-
+<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for the delegate type represented by <paramref name="delegateType" />.
+-or-
 The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="parameters" /> is not assignable from the type of the corresponding parameter type of the delegate type represented by <paramref name="delegateType" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Lambda(System.Type,System.Linq.Expressions.Expression,System.Linq.Expressions.ParameterExpression[])">
@@ -2452,16 +2453,16 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an elem
       <param name="parameters">An array of <see cref="T:System.Linq.Expressions.ParameterExpression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.LambdaExpression.Parameters" /> collection.</param>
       <returns>An object that represents a lambda expression which has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Lambda" /> and the <see cref="P:System.Linq.Expressions.LambdaExpression.Body" /> and <see cref="P:System.Linq.Expressions.LambdaExpression.Parameters" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="delegateType" /> or <paramref name="body" /> is <see langword="null" />.  
--or-  
+        <paramref name="delegateType" /> or <paramref name="body" /> is <see langword="null" />.
+-or-
 One or more elements in <paramref name="parameters" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="delegateType" /> does not represent a delegate type.  
--or-  
-<paramref name="body" />.Type represents a type that is not assignable to the return type of the delegate type represented by <paramref name="delegateType" />.  
--or-  
-<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for the delegate type represented by <paramref name="delegateType" />.  
--or-  
+        <paramref name="delegateType" /> does not represent a delegate type.
+-or-
+<paramref name="body" />.Type represents a type that is not assignable to the return type of the delegate type represented by <paramref name="delegateType" />.
+-or-
+<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for the delegate type represented by <paramref name="delegateType" />.
+-or-
 The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="parameters" /> is not assignable from the type of the corresponding parameter type of the delegate type represented by <paramref name="delegateType" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Lambda(System.Type,System.Linq.Expressions.Expression,System.String,System.Boolean,System.Collections.Generic.IEnumerable{System.Linq.Expressions.ParameterExpression})">
@@ -2504,16 +2505,16 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an elem
       <typeparam name="TDelegate">A delegate type.</typeparam>
       <returns>An <see cref="T:System.Linq.Expressions.Expression`1" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Lambda" /> and the <see cref="P:System.Linq.Expressions.LambdaExpression.Body" /> and <see cref="P:System.Linq.Expressions.LambdaExpression.Parameters" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="body" /> is <see langword="null" />.  
--or-  
+        <paramref name="body" /> is <see langword="null" />.
+-or-
 One or more elements in <paramref name="parameters" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="TDelegate" /> is not a delegate type.  
--or-  
-<paramref name="body" />.Type represents a type that is not assignable to the return type of <paramref name="TDelegate" />.  
--or-  
-<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for <paramref name="TDelegate" />.  
--or-  
+        <paramref name="TDelegate" /> is not a delegate type.
+-or-
+<paramref name="body" />.Type represents a type that is not assignable to the return type of <paramref name="TDelegate" />.
+-or-
+<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for <paramref name="TDelegate" />.
+-or-
 The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="parameters" /> is not assignable from the type of the corresponding parameter type of <paramref name="TDelegate" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Lambda``1(System.Linq.Expressions.Expression,System.Linq.Expressions.ParameterExpression[])">
@@ -2523,16 +2524,16 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an elem
       <typeparam name="TDelegate">A delegate type.</typeparam>
       <returns>An <see cref="T:System.Linq.Expressions.Expression`1" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Lambda" /> and the <see cref="P:System.Linq.Expressions.LambdaExpression.Body" /> and <see cref="P:System.Linq.Expressions.LambdaExpression.Parameters" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="body" /> is <see langword="null" />.  
--or-  
+        <paramref name="body" /> is <see langword="null" />.
+-or-
 One or more elements in <paramref name="parameters" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="TDelegate" /> is not a delegate type.  
--or-  
-<paramref name="body" />.Type represents a type that is not assignable to the return type of <paramref name="TDelegate" />.  
--or-  
-<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for <paramref name="TDelegate" />.  
--or-  
+        <paramref name="TDelegate" /> is not a delegate type.
+-or-
+<paramref name="body" />.Type represents a type that is not assignable to the return type of <paramref name="TDelegate" />.
+-or-
+<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for <paramref name="TDelegate" />.
+-or-
 The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="parameters" /> is not assignable from the type of the corresponding parameter type of <paramref name="TDelegate" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Lambda``1(System.Linq.Expressions.Expression,System.String,System.Boolean,System.Collections.Generic.IEnumerable{System.Linq.Expressions.ParameterExpression})">
@@ -2649,12 +2650,12 @@ The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an elem
       <param name="initializers">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.ElementInit" /> objects to use to populate the <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MemberListBinding" /> that has the <see cref="P:System.Linq.Expressions.MemberBinding.BindingType" /> property equal to <see cref="F:System.Linq.Expressions.MemberBindingType.ListBinding" /> and the <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> and <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="member" /> is <see langword="null" />.  
--or-  
+        <paramref name="member" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="member" /> does not represent a field or property.  
--or-  
+        <paramref name="member" /> does not represent a field or property.
+-or-
 The <see cref="P:System.Reflection.FieldInfo.FieldType" /> or <see cref="P:System.Reflection.PropertyInfo.PropertyType" /> of the field or property that <paramref name="member" /> represents does not implement <see cref="T:System.Collections.IEnumerable" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ListBind(System.Reflection.MemberInfo,System.Linq.Expressions.ElementInit[])">
@@ -2663,12 +2664,12 @@ The <see cref="P:System.Reflection.FieldInfo.FieldType" /> or <see cref="P:Syste
       <param name="initializers">An array of <see cref="T:System.Linq.Expressions.ElementInit" /> objects to use to populate the <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MemberListBinding" /> that has the <see cref="P:System.Linq.Expressions.MemberBinding.BindingType" /> property equal to <see cref="F:System.Linq.Expressions.MemberBindingType.ListBinding" /> and the <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> and <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="member" /> is <see langword="null" />.  
--or-  
+        <paramref name="member" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="member" /> does not represent a field or property.  
--or-  
+        <paramref name="member" /> does not represent a field or property.
+-or-
 The <see cref="P:System.Reflection.FieldInfo.FieldType" /> or <see cref="P:System.Reflection.PropertyInfo.PropertyType" /> of the field or property that <paramref name="member" /> represents does not implement <see cref="T:System.Collections.IEnumerable" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ListBind(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.ElementInit})">
@@ -2677,12 +2678,12 @@ The <see cref="P:System.Reflection.FieldInfo.FieldType" /> or <see cref="P:Syste
       <param name="initializers">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.ElementInit" /> objects to use to populate the <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MemberListBinding" /> that has the <see cref="P:System.Linq.Expressions.MemberBinding.BindingType" /> property equal to <see cref="F:System.Linq.Expressions.MemberBindingType.ListBinding" />, the <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property set to the <see cref="T:System.Reflection.MemberInfo" /> that represents the property accessed in <paramref name="propertyAccessor" />, and <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers" /> populated with the elements of <paramref name="initializers" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="propertyAccessor" /> is <see langword="null" />.  
--or-  
+        <paramref name="propertyAccessor" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="propertyAccessor" /> does not represent a property accessor method.  
--or-  
+        <paramref name="propertyAccessor" /> does not represent a property accessor method.
+-or-
 The <see cref="P:System.Reflection.PropertyInfo.PropertyType" /> of the property that the method represented by <paramref name="propertyAccessor" /> accesses does not implement <see cref="T:System.Collections.IEnumerable" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ListBind(System.Reflection.MethodInfo,System.Linq.Expressions.ElementInit[])">
@@ -2691,12 +2692,12 @@ The <see cref="P:System.Reflection.PropertyInfo.PropertyType" /> of the property
       <param name="initializers">An array of <see cref="T:System.Linq.Expressions.ElementInit" /> objects to use to populate the <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MemberListBinding" /> that has the <see cref="P:System.Linq.Expressions.MemberBinding.BindingType" /> property equal to <see cref="F:System.Linq.Expressions.MemberBindingType.ListBinding" />, the <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property set to the <see cref="T:System.Reflection.MemberInfo" /> that represents the property accessed in <paramref name="propertyAccessor" />, and <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers" /> populated with the elements of <paramref name="initializers" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="propertyAccessor" /> is <see langword="null" />.  
--or-  
+        <paramref name="propertyAccessor" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="propertyAccessor" /> does not represent a property accessor method.  
--or-  
+        <paramref name="propertyAccessor" /> does not represent a property accessor method.
+-or-
 The <see cref="P:System.Reflection.PropertyInfo.PropertyType" /> of the property that the method represented by <paramref name="propertyAccessor" /> accesses does not implement <see cref="T:System.Collections.IEnumerable" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ListInit(System.Linq.Expressions.NewExpression,System.Collections.Generic.IEnumerable{System.Linq.Expressions.ElementInit})">
@@ -2705,8 +2706,8 @@ The <see cref="P:System.Reflection.PropertyInfo.PropertyType" /> of the property
       <param name="initializers">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.ElementInit" /> objects to use to populate the <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.ListInitExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.ListInit" /> and the <see cref="P:System.Linq.Expressions.ListInitExpression.NewExpression" /> and <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.  
--or-  
+        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="newExpression" />.Type does not implement <see cref="T:System.Collections.IEnumerable" />.</exception>
@@ -2717,18 +2718,18 @@ One or more elements of <paramref name="initializers" /> are <see langword="null
       <param name="initializers">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.ListInitExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.ListInit" /> and the <see cref="P:System.Linq.Expressions.ListInitExpression.NewExpression" /> property set to the specified value.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.  
--or-  
+        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="newExpression" />.Type does not implement <see cref="T:System.Collections.IEnumerable" />.</exception>
-      <exception cref="T:System.InvalidOperationException">There is no instance method named "Add" (case insensitive) declared in <paramref name="newExpression" />.Type or its base type.  
- -or-  
- The add method on <paramref name="newExpression" />.Type or its base type does not take exactly one argument.  
- -or-  
- The type represented by the <see cref="P:System.Linq.Expressions.Expression.Type" /> property of the first element of <paramref name="initializers" /> is not assignable to the argument type of the add method on <paramref name="newExpression" />.Type or its base type.  
- -or-  
- More than one argument-compatible method named "Add" (case-insensitive) exists on <paramref name="newExpression" />.Type and/or its base type.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no instance method named "Add" (case insensitive) declared in <paramref name="newExpression" />.Type or its base type.
+-or-
+The add method on <paramref name="newExpression" />.Type or its base type does not take exactly one argument.
+-or-
+The type represented by the <see cref="P:System.Linq.Expressions.Expression.Type" /> property of the first element of <paramref name="initializers" /> is not assignable to the argument type of the add method on <paramref name="newExpression" />.Type or its base type.
+-or-
+More than one argument-compatible method named "Add" (case-insensitive) exists on <paramref name="newExpression" />.Type and/or its base type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ListInit(System.Linq.Expressions.NewExpression,System.Linq.Expressions.ElementInit[])">
       <summary>Creates a <see cref="T:System.Linq.Expressions.ListInitExpression" /> that uses specified <see cref="T:System.Linq.Expressions.ElementInit" /> objects to initialize a collection.</summary>
@@ -2736,8 +2737,8 @@ One or more elements of <paramref name="initializers" /> are <see langword="null
       <param name="initializers">An array of <see cref="T:System.Linq.Expressions.ElementInit" /> objects to use to populate the <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.ListInitExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.ListInit" /> and the <see cref="P:System.Linq.Expressions.ListInitExpression.NewExpression" /> and <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.  
--or-  
+        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="newExpression" />.Type does not implement <see cref="T:System.Collections.IEnumerable" />.</exception>
@@ -2748,18 +2749,18 @@ One or more elements of <paramref name="initializers" /> are <see langword="null
       <param name="initializers">An array of <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.ListInitExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.ListInit" /> and the <see cref="P:System.Linq.Expressions.ListInitExpression.NewExpression" /> property set to the specified value.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.  
--or-  
+        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="newExpression" />.Type does not implement <see cref="T:System.Collections.IEnumerable" />.</exception>
-      <exception cref="T:System.InvalidOperationException">There is no instance method named "Add" (case insensitive) declared in <paramref name="newExpression" />.Type or its base type.  
- -or-  
- The add method on <paramref name="newExpression" />.Type or its base type does not take exactly one argument.  
- -or-  
- The type represented by the <see cref="P:System.Linq.Expressions.Expression.Type" /> property of the first element of <paramref name="initializers" /> is not assignable to the argument type of the add method on <paramref name="newExpression" />.Type or its base type.  
- -or-  
- More than one argument-compatible method named "Add" (case-insensitive) exists on <paramref name="newExpression" />.Type and/or its base type.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no instance method named "Add" (case insensitive) declared in <paramref name="newExpression" />.Type or its base type.
+-or-
+The add method on <paramref name="newExpression" />.Type or its base type does not take exactly one argument.
+-or-
+The type represented by the <see cref="P:System.Linq.Expressions.Expression.Type" /> property of the first element of <paramref name="initializers" /> is not assignable to the argument type of the add method on <paramref name="newExpression" />.Type or its base type.
+-or-
+More than one argument-compatible method named "Add" (case-insensitive) exists on <paramref name="newExpression" />.Type and/or its base type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.ListInit(System.Linq.Expressions.NewExpression,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})">
       <summary>Creates a <see cref="T:System.Linq.Expressions.ListInitExpression" /> that uses a specified method to add elements to a collection.</summary>
@@ -2768,14 +2769,14 @@ One or more elements of <paramref name="initializers" /> are <see langword="null
       <param name="initializers">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.ListInitExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.ListInit" /> and the <see cref="P:System.Linq.Expressions.ListInitExpression.NewExpression" /> property set to the specified value.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.  
--or-  
+        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="newExpression" />.Type does not implement <see cref="T:System.Collections.IEnumerable" />.  
--or-  
-<paramref name="addMethod" /> is not <see langword="null" /> and it does not represent an instance method named "Add" (case insensitive) that takes exactly one argument.  
--or-  
+        <paramref name="newExpression" />.Type does not implement <see cref="T:System.Collections.IEnumerable" />.
+-or-
+<paramref name="addMethod" /> is not <see langword="null" /> and it does not represent an instance method named "Add" (case insensitive) that takes exactly one argument.
+-or-
 <paramref name="addMethod" /> is not <see langword="null" /> and the type represented by the <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or more elements of <paramref name="initializers" /> is not assignable to the argument type of the method that <paramref name="addMethod" /> represents.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="addMethod" /> is <see langword="null" /> and no instance method named "Add" that takes one type-compatible argument exists on <paramref name="newExpression" />.Type or its base type.</exception>
@@ -2787,14 +2788,14 @@ One or more elements of <paramref name="initializers" /> are <see langword="null
       <param name="initializers">An array of <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.ListInitExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.ListInit" /> and the <see cref="P:System.Linq.Expressions.ListInitExpression.NewExpression" /> property set to the specified value.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.  
--or-  
+        <paramref name="newExpression" /> or <paramref name="initializers" /> is <see langword="null" />.
+-or-
 One or more elements of <paramref name="initializers" /> are <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="newExpression" />.Type does not implement <see cref="T:System.Collections.IEnumerable" />.  
--or-  
-<paramref name="addMethod" /> is not <see langword="null" /> and it does not represent an instance method named "Add" (case insensitive) that takes exactly one argument.  
--or-  
+        <paramref name="newExpression" />.Type does not implement <see cref="T:System.Collections.IEnumerable" />.
+-or-
+<paramref name="addMethod" /> is not <see langword="null" /> and it does not represent an instance method named "Add" (case insensitive) that takes exactly one argument.
+-or-
 <paramref name="addMethod" /> is not <see langword="null" /> and the type represented by the <see cref="P:System.Linq.Expressions.Expression.Type" /> property of one or more elements of <paramref name="initializers" /> is not assignable to the argument type of the method that <paramref name="addMethod" /> represents.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="addMethod" /> is <see langword="null" /> and no instance method named "Add" that takes one type-compatible argument exists on <paramref name="newExpression" />.Type or its base type.</exception>
@@ -2978,8 +2979,8 @@ One or more elements of <paramref name="initializers" /> are <see langword="null
       <exception cref="T:System.ArgumentNullException">
         <paramref name="member" /> or <paramref name="bindings" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="member" /> does not represent a field or property.  
--or-  
+        <paramref name="member" /> does not represent a field or property.
+-or-
 The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an element of <paramref name="bindings" /> does not represent a member of the type of the field or property that <paramref name="member" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.MemberBind(System.Reflection.MemberInfo,System.Linq.Expressions.MemberBinding[])">
@@ -2990,8 +2991,8 @@ The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an
       <exception cref="T:System.ArgumentNullException">
         <paramref name="member" /> or <paramref name="bindings" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="member" /> does not represent a field or property.  
--or-  
+        <paramref name="member" /> does not represent a field or property.
+-or-
 The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an element of <paramref name="bindings" /> does not represent a member of the type of the field or property that <paramref name="member" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.MemberBind(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.MemberBinding})">
@@ -3002,8 +3003,8 @@ The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an
       <exception cref="T:System.ArgumentNullException">
         <paramref name="propertyAccessor" /> or <paramref name="bindings" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="propertyAccessor" /> does not represent a property accessor method.  
--or-  
+        <paramref name="propertyAccessor" /> does not represent a property accessor method.
+-or-
 The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an element of <paramref name="bindings" /> does not represent a member of the type of the property accessed by the method that <paramref name="propertyAccessor" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.MemberBind(System.Reflection.MethodInfo,System.Linq.Expressions.MemberBinding[])">
@@ -3014,8 +3015,8 @@ The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an
       <exception cref="T:System.ArgumentNullException">
         <paramref name="propertyAccessor" /> or <paramref name="bindings" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="propertyAccessor" /> does not represent a property accessor method.  
--or-  
+        <paramref name="propertyAccessor" /> does not represent a property accessor method.
+-or-
 The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an element of <paramref name="bindings" /> does not represent a member of the type of the property accessed by the method that <paramref name="propertyAccessor" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.MemberInit(System.Linq.Expressions.NewExpression,System.Collections.Generic.IEnumerable{System.Linq.Expressions.MemberBinding})">
@@ -3183,8 +3184,8 @@ The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly one argument.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="method" /> is <see langword="null" /> and the unary minus operator is not defined for <paramref name="expression" />.Type.  
--or-  
+        <paramref name="method" /> is <see langword="null" /> and the unary minus operator is not defined for <paramref name="expression" />.Type.
+-or-
 <paramref name="expression" />.Type (or its corresponding non-nullable type if it is a nullable value type) is not assignable to the argument type of the method represented by <paramref name="method" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.NegateChecked(System.Linq.Expressions.Expression)">
@@ -3205,8 +3206,8 @@ The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly one argument.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="method" /> is <see langword="null" /> and the unary minus operator is not defined for <paramref name="expression" />.Type.  
--or-  
+        <paramref name="method" /> is <see langword="null" /> and the unary minus operator is not defined for <paramref name="expression" />.Type.
+-or-
 <paramref name="expression" />.Type (or its corresponding non-nullable type if it is a nullable value type) is not assignable to the argument type of the method represented by <paramref name="method" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.New(System.Reflection.ConstructorInfo)">
@@ -3223,12 +3224,12 @@ The <see cref="P:System.Linq.Expressions.MemberBinding.Member" /> property of an
       <param name="arguments">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.NewExpression.Arguments" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.NewExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.New" /> and the <see cref="P:System.Linq.Expressions.NewExpression.Constructor" /> and <see cref="P:System.Linq.Expressions.NewExpression.Arguments" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="constructor" /> is <see langword="null" />.  
--or-  
+        <paramref name="constructor" /> is <see langword="null" />.
+-or-
 An element of <paramref name="arguments" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="arguments" /> parameter does not contain the same number of elements as the number of parameters for the constructor that <paramref name="constructor" /> represents.  
- -or-  
- The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the constructor that <paramref name="constructor" /> represents.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="arguments" /> parameter does not contain the same number of elements as the number of parameters for the constructor that <paramref name="constructor" /> represents.
+-or-
+The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the constructor that <paramref name="constructor" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.New(System.Reflection.ConstructorInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression},System.Collections.Generic.IEnumerable{System.Reflection.MemberInfo})">
       <summary>Creates a <see cref="T:System.Linq.Expressions.NewExpression" /> that represents calling the specified constructor with the specified arguments. The members that access the constructor initialized fields are specified.</summary>
@@ -3237,18 +3238,18 @@ An element of <paramref name="arguments" /> is <see langword="null" />.</excepti
       <param name="members">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Reflection.MemberInfo" /> objects to use to populate the <see cref="P:System.Linq.Expressions.NewExpression.Members" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.NewExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.New" /> and the <see cref="P:System.Linq.Expressions.NewExpression.Constructor" />, <see cref="P:System.Linq.Expressions.NewExpression.Arguments" /> and <see cref="P:System.Linq.Expressions.NewExpression.Members" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="constructor" /> is <see langword="null" />.  
--or-  
-An element of <paramref name="arguments" /> is <see langword="null" />.  
--or-  
+        <paramref name="constructor" /> is <see langword="null" />.
+-or-
+An element of <paramref name="arguments" /> is <see langword="null" />.
+-or-
 An element of <paramref name="members" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="arguments" /> parameter does not contain the same number of elements as the number of parameters for the constructor that <paramref name="constructor" /> represents.  
- -or-  
- The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the constructor that <paramref name="constructor" /> represents.  
- -or-  
- The <paramref name="members" /> parameter does not have the same number of elements as <paramref name="arguments" />.  
- -or-  
- An element of <paramref name="arguments" /> has a <see cref="P:System.Linq.Expressions.Expression.Type" /> property that represents a type that is not assignable to the type of the member that is represented by the corresponding element of <paramref name="members" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="arguments" /> parameter does not contain the same number of elements as the number of parameters for the constructor that <paramref name="constructor" /> represents.
+-or-
+The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the constructor that <paramref name="constructor" /> represents.
+-or-
+The <paramref name="members" /> parameter does not have the same number of elements as <paramref name="arguments" />.
+-or-
+An element of <paramref name="arguments" /> has a <see cref="P:System.Linq.Expressions.Expression.Type" /> property that represents a type that is not assignable to the type of the member that is represented by the corresponding element of <paramref name="members" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.New(System.Reflection.ConstructorInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression},System.Reflection.MemberInfo[])">
       <summary>Creates a <see cref="T:System.Linq.Expressions.NewExpression" /> that represents calling the specified constructor with the specified arguments. The members that access the constructor initialized fields are specified as an array.</summary>
@@ -3257,18 +3258,18 @@ An element of <paramref name="members" /> is <see langword="null" />.</exception
       <param name="members">An array of <see cref="T:System.Reflection.MemberInfo" /> objects to use to populate the <see cref="P:System.Linq.Expressions.NewExpression.Members" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.NewExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.New" /> and the <see cref="P:System.Linq.Expressions.NewExpression.Constructor" />, <see cref="P:System.Linq.Expressions.NewExpression.Arguments" /> and <see cref="P:System.Linq.Expressions.NewExpression.Members" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="constructor" /> is <see langword="null" />.  
--or-  
-An element of <paramref name="arguments" /> is <see langword="null" />.  
--or-  
+        <paramref name="constructor" /> is <see langword="null" />.
+-or-
+An element of <paramref name="arguments" /> is <see langword="null" />.
+-or-
 An element of <paramref name="members" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="arguments" /> parameter does not contain the same number of elements as the number of parameters for the constructor that <paramref name="constructor" /> represents.  
- -or-  
- The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the constructor that <paramref name="constructor" /> represents.  
- -or-  
- The <paramref name="members" /> parameter does not have the same number of elements as <paramref name="arguments" />.  
- -or-  
- An element of <paramref name="arguments" /> has a <see cref="P:System.Linq.Expressions.Expression.Type" /> property that represents a type that is not assignable to the type of the member that is represented by the corresponding element of <paramref name="members" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="arguments" /> parameter does not contain the same number of elements as the number of parameters for the constructor that <paramref name="constructor" /> represents.
+-or-
+The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the constructor that <paramref name="constructor" /> represents.
+-or-
+The <paramref name="members" /> parameter does not have the same number of elements as <paramref name="arguments" />.
+-or-
+An element of <paramref name="arguments" /> has a <see cref="P:System.Linq.Expressions.Expression.Type" /> property that represents a type that is not assignable to the type of the member that is represented by the corresponding element of <paramref name="members" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.New(System.Reflection.ConstructorInfo,System.Linq.Expressions.Expression[])">
       <summary>Creates a <see cref="T:System.Linq.Expressions.NewExpression" /> that represents calling the specified constructor with the specified arguments.</summary>
@@ -3276,12 +3277,12 @@ An element of <paramref name="members" /> is <see langword="null" />.</exception
       <param name="arguments">An array of <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.NewExpression.Arguments" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.NewExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.New" /> and the <see cref="P:System.Linq.Expressions.NewExpression.Constructor" /> and <see cref="P:System.Linq.Expressions.NewExpression.Arguments" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="constructor" /> is <see langword="null" />.  
--or-  
+        <paramref name="constructor" /> is <see langword="null" />.
+-or-
 An element of <paramref name="arguments" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The length of <paramref name="arguments" /> does match the number of parameters for the constructor that <paramref name="constructor" /> represents.  
- -or-  
- The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the constructor that <paramref name="constructor" /> represents.</exception>
+      <exception cref="T:System.ArgumentException">The length of <paramref name="arguments" /> does match the number of parameters for the constructor that <paramref name="constructor" /> represents.
+-or-
+The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="arguments" /> is not assignable to the type of the corresponding parameter of the constructor that <paramref name="constructor" /> represents.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.New(System.Type)">
       <summary>Creates a <see cref="T:System.Linq.Expressions.NewExpression" /> that represents calling the parameterless constructor of the specified type.</summary>
@@ -3297,8 +3298,8 @@ An element of <paramref name="arguments" /> is <see langword="null" />.</excepti
       <param name="bounds">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.NewArrayExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.NewArrayBounds" /> and the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions" /> property set to the specified value.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="type" /> or <paramref name="bounds" /> is <see langword="null" />.  
--or-  
+        <paramref name="type" /> or <paramref name="bounds" /> is <see langword="null" />.
+-or-
 An element of <paramref name="bounds" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="bounds" /> does not represent an integral type.</exception>
     </member>
@@ -3308,8 +3309,8 @@ An element of <paramref name="bounds" /> is <see langword="null" />.</exception>
       <param name="bounds">An array of <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.NewArrayExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.NewArrayBounds" /> and the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions" /> property set to the specified value.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="type" /> or <paramref name="bounds" /> is <see langword="null" />.  
--or-  
+        <paramref name="type" /> or <paramref name="bounds" /> is <see langword="null" />.
+-or-
 An element of <paramref name="bounds" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="bounds" /> does not represent an integral type.</exception>
     </member>
@@ -3319,8 +3320,8 @@ An element of <paramref name="bounds" /> is <see langword="null" />.</exception>
       <param name="initializers">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> that contains <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.NewArrayExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.NewArrayInit" /> and the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions" /> property set to the specified value.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="type" /> or <paramref name="initializers" /> is <see langword="null" />.  
--or-  
+        <paramref name="type" /> or <paramref name="initializers" /> is <see langword="null" />.
+-or-
 An element of <paramref name="initializers" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="initializers" /> represents a type that is not assignable to the type that <paramref name="type" /> represents.</exception>
     </member>
@@ -3330,8 +3331,8 @@ An element of <paramref name="initializers" /> is <see langword="null" />.</exce
       <param name="initializers">An array of <see cref="T:System.Linq.Expressions.Expression" /> objects to use to populate the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions" /> collection.</param>
       <returns>A <see cref="T:System.Linq.Expressions.NewArrayExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.NewArrayInit" /> and the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions" /> property set to the specified value.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="type" /> or <paramref name="initializers" /> is <see langword="null" />.  
--or-  
+        <paramref name="type" /> or <paramref name="initializers" /> is <see langword="null" />.
+-or-
 An element of <paramref name="initializers" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="initializers" /> represents a type that is not assignable to the type <paramref name="type" />.</exception>
     </member>
@@ -3357,8 +3358,8 @@ An element of <paramref name="initializers" /> is <see langword="null" />.</exce
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly one argument.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="method" /> is <see langword="null" /> and the unary not operator is not defined for <paramref name="expression" />.Type.  
--or-  
+        <paramref name="method" /> is <see langword="null" /> and the unary not operator is not defined for <paramref name="expression" />.Type.
+-or-
 <paramref name="expression" />.Type (or its corresponding non-nullable type if it is a nullable value type) is not assignable to the argument type of the method represented by <paramref name="method" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.NotEqual(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression)">
@@ -3446,9 +3447,9 @@ An element of <paramref name="initializers" /> is <see langword="null" />.</exce
       <returns>A <see cref="T:System.Linq.Expressions.BinaryExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.OrElse" /> and the <see cref="P:System.Linq.Expressions.BinaryExpression.Left" /> and <see cref="P:System.Linq.Expressions.BinaryExpression.Right" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="left" /> or <paramref name="right" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The bitwise <see langword="OR" /> operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.  
- -or-  
- <paramref name="left" />.Type and <paramref name="right" />.Type are not the same Boolean type.</exception>
+      <exception cref="T:System.InvalidOperationException">The bitwise <see langword="OR" /> operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.
+-or-
+<paramref name="left" />.Type and <paramref name="right" />.Type are not the same Boolean type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.OrElse(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Reflection.MethodInfo)">
       <summary>Creates a <see cref="T:System.Linq.Expressions.BinaryExpression" /> that represents a conditional <see langword="OR" /> operation that evaluates the second operand only if the first operand evaluates to <see langword="false" />.</summary>
@@ -3461,8 +3462,8 @@ An element of <paramref name="initializers" /> is <see langword="null" />.</exce
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly two arguments.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="method" /> is <see langword="null" /> and the bitwise <see langword="OR" /> operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.  
--or-  
+        <paramref name="method" /> is <see langword="null" /> and the bitwise <see langword="OR" /> operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.
+-or-
 <paramref name="method" /> is <see langword="null" /> and <paramref name="left" />.Type and <paramref name="right" />.Type are not the same Boolean type.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Parameter(System.Type)">
@@ -3507,9 +3508,9 @@ An element of <paramref name="initializers" /> is <see langword="null" />.</exce
       <returns>A <see cref="T:System.Linq.Expressions.BinaryExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Power" /> and the <see cref="P:System.Linq.Expressions.BinaryExpression.Left" /> and <see cref="P:System.Linq.Expressions.BinaryExpression.Right" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="left" /> or <paramref name="right" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.InvalidOperationException">The exponentiation operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.  
- -or-  
- <paramref name="left" />.Type and/or <paramref name="right" />.Type are not <see cref="T:System.Double" />.</exception>
+      <exception cref="T:System.InvalidOperationException">The exponentiation operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.
+-or-
+<paramref name="left" />.Type and/or <paramref name="right" />.Type are not <see cref="T:System.Double" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Power(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Reflection.MethodInfo)">
       <summary>Creates a <see cref="T:System.Linq.Expressions.BinaryExpression" /> that represents raising a number to a power.</summary>
@@ -3522,8 +3523,8 @@ An element of <paramref name="initializers" /> is <see langword="null" />.</exce
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly two arguments.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="method" /> is <see langword="null" /> and the exponentiation operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.  
--or-  
+        <paramref name="method" /> is <see langword="null" /> and the exponentiation operator is not defined for <paramref name="left" />.Type and <paramref name="right" />.Type.
+-or-
 <paramref name="method" /> is <see langword="null" /> and <paramref name="left" />.Type and/or <paramref name="right" />.Type are not <see cref="T:System.Double" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.PowerAssign(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression)">
@@ -3575,12 +3576,12 @@ An element of <paramref name="initializers" /> is <see langword="null" />.</exce
       <param name="propertyAccessor">The <see cref="T:System.Reflection.MethodInfo" /> that represents a property accessor method.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MemberExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.MemberAccess" />, the <see cref="P:System.Linq.Expressions.MemberExpression.Expression" /> property set to <paramref name="expression" /> and the <see cref="P:System.Linq.Expressions.MemberExpression.Member" /> property set to the <see cref="T:System.Reflection.PropertyInfo" /> that represents the property accessed in <paramref name="propertyAccessor" />.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="propertyAccessor" /> is <see langword="null" />.  
--or-  
+        <paramref name="propertyAccessor" /> is <see langword="null" />.
+-or-
 The method that <paramref name="propertyAccessor" /> represents is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic) and <paramref name="expression" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="expression" />.Type is not assignable to the declaring type of the method represented by <paramref name="propertyAccessor" />.  
--or-  
+        <paramref name="expression" />.Type is not assignable to the declaring type of the method represented by <paramref name="propertyAccessor" />.
+-or-
 The method that <paramref name="propertyAccessor" /> represents is not a property accessor method.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Property(System.Linq.Expressions.Expression,System.Reflection.PropertyInfo)">
@@ -3589,8 +3590,8 @@ The method that <paramref name="propertyAccessor" /> represents is not a propert
       <param name="property">The <see cref="T:System.Reflection.PropertyInfo" /> to set the <see cref="P:System.Linq.Expressions.MemberExpression.Member" /> property equal to.</param>
       <returns>A <see cref="T:System.Linq.Expressions.MemberExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.MemberAccess" /> and the <see cref="P:System.Linq.Expressions.MemberExpression.Expression" /> and <see cref="P:System.Linq.Expressions.MemberExpression.Member" /> properties set to the specified values.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="property" /> is <see langword="null" />.  
--or-  
+        <paramref name="property" /> is <see langword="null" />.
+-or-
 The property that <paramref name="property" /> represents is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic) and <paramref name="expression" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="expression" />.Type is not assignable to the declaring type of the property that <paramref name="property" /> represents.</exception>
@@ -4027,8 +4028,8 @@ The property that <paramref name="property" /> represents is not <see langword="
       <exception cref="T:System.ArgumentException">
         <paramref name="method" /> is not <see langword="null" /> and the method it represents returns <see langword="void" />, is not <see langword="static" /> (<see langword="Shared" /> in Visual Basic), or does not take exactly one argument.</exception>
       <exception cref="T:System.InvalidOperationException">
-        <paramref name="method" /> is <see langword="null" /> and the unary plus operator is not defined for <paramref name="expression" />.Type.  
--or-  
+        <paramref name="method" /> is <see langword="null" /> and the unary plus operator is not defined for <paramref name="expression" />.Type.
+-or-
 <paramref name="expression" />.Type (or its corresponding non-nullable type if it is a nullable value type) is not assignable to the argument type of the method represented by <paramref name="method" />.</exception>
     </member>
     <member name="M:System.Linq.Expressions.Expression.Unbox(System.Linq.Expressions.Expression,System.Type)">
@@ -5410,7 +5411,8 @@ The property that <paramref name="property" /> represents is not <see langword="
     <member name="M:System.Runtime.CompilerServices.CallSiteHelpers.IsInternalFrame(System.Reflection.MethodBase)">
       <summary>Checks if a <see cref="T:System.Reflection.MethodBase" /> is internally used by DLR and should not be displayed on the language code's stack.</summary>
       <param name="mb">The input <see cref="T:System.Reflection.MethodBase" /></param>
-      <returns>True if the input <see cref="T:System.Reflection.MethodBase" /> is internally used by DLR and should not be displayed on the language code's stack. Otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if the input <see cref="T:System.Reflection.MethodBase" /> is internally used by DLR and should not be displayed on the language code's stack. Otherwise, <see langword="false" />.</returns>
     </member>
     <member name="T:System.Runtime.CompilerServices.DebugInfoGenerator">
       <summary>Generates debug information for lambda expressions in an expression tree.</summary>
@@ -5481,9 +5483,10 @@ The property that <paramref name="property" /> represents is not <see langword="
       <summary>Removes all items from the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />.</summary>
     </member>
     <member name="M:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1.Contains(`0)">
-      <summary>Determines whether the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" /> contains a specific value</summary>
+      <summary>Determines whether the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" /> contains a specific value.</summary>
       <param name="item">the object to locate in the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />.</param>
-      <returns>true if item is found in the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />; otherwise, false.</returns>
+      <returns>
+        <see langword="true" /> if item is found in the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1.CopyTo(`0[],System.Int32)">
       <summary>Copies the elements of the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" /> to an <see cref="T:System.Array" />, starting at particular <see cref="T:System.Array" /> index.</summary>
@@ -5516,7 +5519,8 @@ The property that <paramref name="property" /> represents is not <see langword="
     <member name="M:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1.Remove(`0)">
       <summary>Removes the first occurrence of a specific object from the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />.</summary>
       <param name="item">The object to remove from the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />.</param>
-      <returns>true if item was successfully removed from the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />; otherwise, false. This method also returns false if item is not found in the original <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />.</returns>
+      <returns>
+        <see langword="true" /> if item was successfully removed from the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />; otherwise, false. This method also returns false if item is not found in the original <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" />.</returns>
     </member>
     <member name="M:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1.RemoveAt(System.Int32)">
       <summary>Removes the <see cref="T:System.Runtime.CompilerServices.ReadOnlyCollectionBuilder`1" /> item at the specified index.</summary>

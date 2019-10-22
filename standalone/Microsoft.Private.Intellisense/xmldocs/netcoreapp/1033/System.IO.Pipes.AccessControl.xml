@@ -127,8 +127,8 @@
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="accessMask" />, <paramref name="inheritanceFlags" />, <paramref name="propagationFlags" />, or <paramref name="type" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="identityReference" /> is <see langword="null" />.  
--or-  
+        <paramref name="identityReference" /> is <see langword="null" />.
+-or-
 <paramref name="accessMask" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="identityReference" /> is neither of type <see cref="T:System.Security.Principal.SecurityIdentifier" /> nor of a type, such as <see cref="T:System.Security.Principal.NTAccount" />, that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier" />.</exception>
@@ -158,9 +158,9 @@
       <param name="flags">One of the <see cref="T:System.Security.AccessControl.AuditFlags" /> values that specifies the valid access control type.</param>
       <returns>The <see cref="T:System.Security.AccessControl.AuditRule" /> object that this method creates.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="accessMask" />, <paramref name="inheritanceFlags" />, <paramref name="propagationFlags" />, or <paramref name="flags" /> properties specify an invalid value.</exception>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="identityReference" /> property is <see langword="null" />.  
- -or-  
- The <paramref name="accessMask" /> property is zero.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="identityReference" /> property is <see langword="null" />.
+-or-
+The <paramref name="accessMask" /> property is zero.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="identityReference" /> property is neither of type <see cref="T:System.Security.Principal.SecurityIdentifier" /> nor of a type, such as <see cref="T:System.Security.Principal.NTAccount" />, that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier" />.</exception>
     </member>
     <member name="P:System.IO.Pipes.PipeSecurity.AuditRuleType">

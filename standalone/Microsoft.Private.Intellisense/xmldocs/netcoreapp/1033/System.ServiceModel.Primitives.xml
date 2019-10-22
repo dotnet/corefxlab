@@ -390,6 +390,11 @@
       <param name="remoteAddress">The <see cref="T:System.ServiceModel.EndpointAddress" /> that provides the location of the service.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="binding" /> is <see langword="null" />.</exception>
     </member>
+    <member name="M:System.ServiceModel.ChannelFactory`1.#ctor(System.ServiceModel.Description.ServiceEndpoint)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.ChannelFactory`1" /> class that produces channels with a specified endpoint.</summary>
+      <param name="endpoint">The <see cref="T:System.ServiceModel.Description.ServiceEndpoint" /> for the channels produced by the factory.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endpoint" /> is <see langword="null" />.</exception>
+    </member>
     <member name="M:System.ServiceModel.ChannelFactory`1.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.ChannelFactory`1" /> class with a specified endpoint configuration name.</summary>
       <param name="endpointConfigurationName">The configuration name used for the endpoint.</param>
@@ -619,7 +624,7 @@
       <exception cref="T:System.ArgumentOutOfRangeException">The value set is an unsupported envelope version.</exception>
     </member>
     <member name="P:System.ServiceModel.Channels.BinaryMessageEncodingBindingElement.ReaderQuotas">
-      <summary>Gets constraints on the complexity of XML messages that can be processed by endpoints configured with this binding element.</summary>
+      <summary>Gets or sets constraints on the complexity of XML messages that can be processed by endpoints configured with this binding element.</summary>
       <returns>The <see cref="T:System.Xml.XmlDictionaryReaderQuotas" /> that specifies the complexity constraints on SOAP messages exchanged. The default values for these constraints are provided in the following remarks section.</returns>
     </member>
     <member name="T:System.ServiceModel.Channels.Binding">
@@ -691,7 +696,7 @@
     </member>
     <member name="P:System.ServiceModel.Channels.Binding.Namespace">
       <summary>Gets or sets the XML namespace of the binding.</summary>
-      <returns>The XML namespace of the binding. The default value is <c>"</c>.</returns>
+      <returns>The XML namespace of the binding. The default value is <c>"http://tempuri.org/"</c>.</returns>
       <exception cref="T:System.ArgumentNullException">The value set cannot be <see langword="null" />.</exception>
     </member>
     <member name="P:System.ServiceModel.Channels.Binding.OpenTimeout">
@@ -929,10 +934,10 @@
       <param name="maxBufferSize">The maximum size of an individual buffer.</param>
       <returns>Returns a <see cref="T:System.ServiceModel.Channels.BufferManager" /> object with the specified parameters.</returns>
       <exception cref="T:System.InsufficientMemoryException">In the .NET for Windows Store apps or the Portable Class Library, catch the base class exception, <see cref="T:System.OutOfMemoryException" />, instead.  
-
+  
 
             
-
+  
  There was insufficient memory to create the requested buffer pool.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="maxBufferPoolSize" /> or <paramref name="maxBufferSize" /> was less than zero.</exception>
@@ -1481,7 +1486,7 @@
         <paramref name="message" /> or <paramref name="fault" /> is <see langword="null" />.
 -or-
 <see cref="M:System.ServiceModel.Channels.FaultConverter.OnTryCreateException(System.ServiceModel.Channels.Message,System.ServiceModel.Channels.MessageFault,System.Exception@)" /> returned <see langword="true" /> but <paramref name="exception" /> is <see langword="null" />.
--or- 
+-or-
 <see cref="M:System.ServiceModel.Channels.FaultConverter.OnTryCreateException(System.ServiceModel.Channels.Message,System.ServiceModel.Channels.MessageFault,System.Exception@)" /> returned <see langword="false" /> but <paramref name="exception" /> is not <see langword="null" />.</exception>
     </member>
     <member name="T:System.ServiceModel.Channels.IChannel">
@@ -1857,10 +1862,10 @@
     </member>
     <member name="M:System.ServiceModel.Channels.Message.GetBodyAttribute(System.String,System.String)">
       <summary>Retrieves the attributes of the message body.</summary>
-      <param name="localName">The local name of the XML node.  
- The name of the element that corresponds to this member. This string must be a valid XML element name.</param>
-      <param name="ns">The namespace to which this XML element belongs.  
- The namespace URI of the element that corresponds to this member. The system does not validate any URIs other than transport addresses.</param>
+      <param name="localName">The local name of the XML node.
+The name of the element that corresponds to this member. This string must be a valid XML element name.</param>
+      <param name="ns">The namespace to which this XML element belongs.
+The namespace URI of the element that corresponds to this member. The system does not validate any URIs other than transport addresses.</param>
       <returns>The attributes of the message body.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="localName" /> or <paramref name="ns" /> is <see langword="null" />.</exception>
@@ -1915,10 +1920,10 @@
     </member>
     <member name="M:System.ServiceModel.Channels.Message.OnGetBodyAttribute(System.String,System.String)">
       <summary>Called when the attributes of the message body is retrieved.</summary>
-      <param name="localName">The local name of the XML node.  
- The name of the element that corresponds to this member. This string must be a valid XML element name.</param>
-      <param name="ns">The namespace to which this XML element belongs.  
- The namespace URI of the element that corresponds to this member. The system does not validate any URIs other than transport addresses.</param>
+      <param name="localName">The local name of the XML node.
+The name of the element that corresponds to this member. This string must be a valid XML element name.</param>
+      <param name="ns">The namespace to which this XML element belongs.
+The namespace URI of the element that corresponds to this member. The system does not validate any URIs other than transport addresses.</param>
       <returns>The attributes of the message body.</returns>
     </member>
     <member name="M:System.ServiceModel.Channels.Message.OnGetReaderAtBodyContents">
@@ -2990,6 +2995,10 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="binding" /> or <paramref name="remoteAddress" /> is <see langword="null" />.</exception>
     </member>
+    <member name="M:System.ServiceModel.ClientBase`1.#ctor(System.ServiceModel.Description.ServiceEndpoint)">
+      <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.ClientBase`1" /> class using the specified  <see cref="T:System.ServiceModel.Description.ServiceEndpoint" />.</summary>
+      <param name="endpoint">The endpoint for a service that allows clients to find and communicate with the service.</param>
+    </member>
     <member name="M:System.ServiceModel.ClientBase`1.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.ServiceModel.ClientBase`1" /> class using the configuration information specified in the application configuration file by <paramref name="endpointConfigurationName" />.</summary>
       <param name="endpointConfigurationName">The name of the endpoint in the application configuration file.</param>
@@ -3284,8 +3293,8 @@
     </member>
     <member name="T:System.ServiceModel.ClientBase`1.EndOperationDelegate">
       <summary>Represents a delegate that is invoked by <see cref="M:System.ServiceModel.ClientBase`1.InvokeAsync(System.ServiceModel.ClientBase{`0}.BeginOperationDelegate,System.Object[],System.ServiceModel.ClientBase{`0}.EndOperationDelegate,System.Threading.SendOrPostCallback,System.Object)" /> on successful completion of the call made by <see cref="M:System.ServiceModel.ClientBase`1.InvokeAsync(System.ServiceModel.ClientBase{`0}.BeginOperationDelegate,System.Object[],System.ServiceModel.ClientBase{`0}.EndOperationDelegate,System.Threading.SendOrPostCallback,System.Object)" /> to <see cref="T:System.ServiceModel.ClientBase`1.BeginOperationDelegate" />.</summary>
-      <param name="result">The result returned by the call made by <see cref="M:System.ServiceModel.ClientBase`1.InvokeAsync(System.ServiceModel.ClientBase{`0}.BeginOperationDelegate,System.Object[],System.ServiceModel.ClientBase{`0}.EndOperationDelegate,System.Threading.SendOrPostCallback,System.Object)" />  
- to <see cref="T:System.ServiceModel.ClientBase`1.BeginOperationDelegate" />.</param>
+      <param name="result">The result returned by the call made by <see cref="M:System.ServiceModel.ClientBase`1.InvokeAsync(System.ServiceModel.ClientBase{`0}.BeginOperationDelegate,System.Object[],System.ServiceModel.ClientBase{`0}.EndOperationDelegate,System.Threading.SendOrPostCallback,System.Object)" />
+to <see cref="T:System.ServiceModel.ClientBase`1.BeginOperationDelegate" />.</param>
       <typeparam name="TChannel" />
       <returns>An array of <see cref="T:System.Object" /> that contains the results of the call to the asynchronous method. The operation may have multiple return values, which are all returned in this object array.</returns>
     </member>
@@ -3628,6 +3637,7 @@
       <summary>Gets or sets the maximum number of items in the object graph to serialize or deserialize.</summary>
       <returns>The maximum number of items in the object graph to serialize or deserialize. The default is <see cref="F:System.Int32.MaxValue" />.</returns>
     </member>
+    <member name="P:System.ServiceModel.Description.DataContractSerializerOperationBehavior.SerializationSurrogateProvider" />
     <member name="M:System.ServiceModel.Description.DataContractSerializerOperationBehavior.System#ServiceModel#Description#IOperationBehavior#AddBindingParameters(System.ServiceModel.Description.OperationDescription,System.ServiceModel.Channels.BindingParameterCollection)">
       <summary>Adds a collection of parameters to the behavior.</summary>
       <param name="description">The <see cref="T:System.ServiceModel.Description.OperationDescription" /> to add the parameters to.</param>
@@ -4274,8 +4284,8 @@
       <summary>Enables inspection or modification of a message before a request message is sent to a service.</summary>
       <param name="request">The message to be sent to the service.</param>
       <param name="channel">The WCF client object channel.</param>
-      <returns>The object that is returned as the <paramref name="correlationState" /> argument of the <see cref="M:System.ServiceModel.Dispatcher.IClientMessageInspector.AfterReceiveReply(System.ServiceModel.Channels.Message@,System.Object)" /> method. This is <see langword="null" /> if no correlation state is used.  
- The best practice is to make this a <see cref="T:System.Guid" /> to ensure that no two <paramref name="correlationState" /> objects are the same.</returns>
+      <returns>The object that is returned as the <paramref name="correlationState" /> argument of the <see cref="M:System.ServiceModel.Dispatcher.IClientMessageInspector.AfterReceiveReply(System.ServiceModel.Channels.Message@,System.Object)" /> method. This is <see langword="null" /> if no correlation state is used.
+The best practice is to make this a <see cref="T:System.Guid" /> to ensure that no two <paramref name="correlationState" /> objects are the same.</returns>
     </member>
     <member name="T:System.ServiceModel.Dispatcher.IClientOperationSelector">
       <summary>Defines the contract for an operation selector.</summary>
@@ -5687,7 +5697,7 @@
     </member>
     <member name="P:System.ServiceModel.ServiceContractAttribute.Namespace">
       <summary>Gets or sets the namespace of the <see langword="&lt;portType&gt;" /> element in Web Services Description Language (WSDL).</summary>
-      <returns>The WSDL namespace of the <see langword="&lt;portType&gt;" /> element. The default value is <c>"</c>.</returns>
+      <returns>The WSDL namespace of the <see langword="&lt;portType&gt;" /> element. The default value is <c>"http://tempuri.org"</c>.</returns>
     </member>
     <member name="P:System.ServiceModel.ServiceContractAttribute.SessionMode">
       <summary>Gets or sets whether sessions are allowed, not allowed or required.</summary>

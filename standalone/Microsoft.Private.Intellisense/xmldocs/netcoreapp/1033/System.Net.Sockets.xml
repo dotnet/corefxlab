@@ -173,8 +173,8 @@
       <param name="group">The group <see cref="T:System.Net.IPAddress" />.</param>
       <param name="ifindex">The local interface address.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="ifindex" /> is less than 0.  
--or-  
+        <paramref name="ifindex" /> is less than 0.
+-or-
 <paramref name="ifindex" /> is greater than 0x00000000FFFFFFFF.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="group" /> is <see langword="null" />.</exception>
@@ -227,8 +227,8 @@
       <param name="group">The group <see cref="T:System.Net.IPAddress" />.</param>
       <param name="mcint">The local <see cref="T:System.Net.IPAddress" />.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="group" /> is <see langword="null" />.  
--or-  
+        <paramref name="group" /> is <see langword="null" />.
+-or-
 <paramref name="mcint" /> is <see langword="null" />.</exception>
     </member>
     <member name="P:System.Net.Sockets.MulticastOption.Group">
@@ -250,33 +250,33 @@
       <summary>Creates a new instance of the <see cref="T:System.Net.Sockets.NetworkStream" /> class for the specified <see cref="T:System.Net.Sockets.Socket" />.</summary>
       <param name="socket">The <see cref="T:System.Net.Sockets.Socket" /> that the <see cref="T:System.Net.Sockets.NetworkStream" /> will use to send and receive data.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="socket" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.IO.IOException">The <paramref name="socket" /> parameter is not connected.  
- -or-  
- The <see cref="P:System.Net.Sockets.Socket.SocketType" /> property of the <paramref name="socket" /> parameter is not <see cref="F:System.Net.Sockets.SocketType.Stream" />.  
- -or-  
- The <paramref name="socket" /> parameter is in a nonblocking state.</exception>
+      <exception cref="T:System.IO.IOException">The <paramref name="socket" /> parameter is not connected.
+-or-
+The <see cref="P:System.Net.Sockets.Socket.SocketType" /> property of the <paramref name="socket" /> parameter is not <see cref="F:System.Net.Sockets.SocketType.Stream" />.
+-or-
+The <paramref name="socket" /> parameter is in a nonblocking state.</exception>
     </member>
     <member name="M:System.Net.Sockets.NetworkStream.#ctor(System.Net.Sockets.Socket,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Sockets.NetworkStream" /> class for the specified <see cref="T:System.Net.Sockets.Socket" /> with the specified <see cref="T:System.Net.Sockets.Socket" /> ownership.</summary>
       <param name="socket">The <see cref="T:System.Net.Sockets.Socket" /> that the <see cref="T:System.Net.Sockets.NetworkStream" /> will use to send and receive data.</param>
       <param name="ownsSocket">Set to <see langword="true" /> to indicate that the <see cref="T:System.Net.Sockets.NetworkStream" /> will take ownership of the <see cref="T:System.Net.Sockets.Socket" />; otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="socket" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.IO.IOException">The <paramref name="socket" /> parameter is not connected.  
- -or-  
- the value of the <see cref="P:System.Net.Sockets.Socket.SocketType" /> property of the <paramref name="socket" /> parameter is not <see cref="F:System.Net.Sockets.SocketType.Stream" />.  
- -or-  
- the <paramref name="socket" /> parameter is in a nonblocking state.</exception>
+      <exception cref="T:System.IO.IOException">The <paramref name="socket" /> parameter is not connected.
+-or-
+the value of the <see cref="P:System.Net.Sockets.Socket.SocketType" /> property of the <paramref name="socket" /> parameter is not <see cref="F:System.Net.Sockets.SocketType.Stream" />.
+-or-
+the <paramref name="socket" /> parameter is in a nonblocking state.</exception>
     </member>
     <member name="M:System.Net.Sockets.NetworkStream.#ctor(System.Net.Sockets.Socket,System.IO.FileAccess)">
       <summary>Creates a new instance of the <see cref="T:System.Net.Sockets.NetworkStream" /> class for the specified <see cref="T:System.Net.Sockets.Socket" /> with the specified access rights.</summary>
       <param name="socket">The <see cref="T:System.Net.Sockets.Socket" /> that the <see cref="T:System.Net.Sockets.NetworkStream" /> will use to send and receive data.</param>
       <param name="access">A bitwise combination of the <see cref="T:System.IO.FileAccess" /> values that specify the type of access given to the <see cref="T:System.Net.Sockets.NetworkStream" /> over the provided <see cref="T:System.Net.Sockets.Socket" />.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="socket" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.IO.IOException">The <paramref name="socket" /> parameter is not connected.  
- -or-  
- the <see cref="P:System.Net.Sockets.Socket.SocketType" /> property of the <paramref name="socket" /> parameter is not <see cref="F:System.Net.Sockets.SocketType.Stream" />.  
- -or-  
- the <paramref name="socket" /> parameter is in a nonblocking state.</exception>
+      <exception cref="T:System.IO.IOException">The <paramref name="socket" /> parameter is not connected.
+-or-
+the <see cref="P:System.Net.Sockets.Socket.SocketType" /> property of the <paramref name="socket" /> parameter is not <see cref="F:System.Net.Sockets.SocketType.Stream" />.
+-or-
+the <paramref name="socket" /> parameter is in a nonblocking state.</exception>
     </member>
     <member name="M:System.Net.Sockets.NetworkStream.#ctor(System.Net.Sockets.Socket,System.IO.FileAccess,System.Boolean)">
       <summary>Creates a new instance of the <see cref="T:System.Net.Sockets.NetworkStream" /> class for the specified <see cref="T:System.Net.Sockets.Socket" /> with the specified access rights and the specified <see cref="T:System.Net.Sockets.Socket" /> ownership.</summary>
@@ -284,11 +284,11 @@
       <param name="access">A bitwise combination of the <see cref="T:System.IO.FileAccess" /> values that specifies the type of access given to the <see cref="T:System.Net.Sockets.NetworkStream" /> over the provided <see cref="T:System.Net.Sockets.Socket" />.</param>
       <param name="ownsSocket">Set to <see langword="true" /> to indicate that the <see cref="T:System.Net.Sockets.NetworkStream" /> will take ownership of the <see cref="T:System.Net.Sockets.Socket" />; otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="socket" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.IO.IOException">The <paramref name="socket" /> parameter is not connected.  
- -or-  
- The <see cref="P:System.Net.Sockets.Socket.SocketType" /> property of the <paramref name="socket" /> parameter is not <see cref="F:System.Net.Sockets.SocketType.Stream" />.  
- -or-  
- The <paramref name="socket" /> parameter is in a nonblocking state.</exception>
+      <exception cref="T:System.IO.IOException">The <paramref name="socket" /> parameter is not connected.
+-or-
+The <see cref="P:System.Net.Sockets.Socket.SocketType" /> property of the <paramref name="socket" /> parameter is not <see cref="F:System.Net.Sockets.SocketType.Stream" />.
+-or-
+The <paramref name="socket" /> parameter is in a nonblocking state.</exception>
     </member>
     <member name="M:System.Net.Sockets.NetworkStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
       <summary>Begins an asynchronous read from the <see cref="T:System.Net.Sockets.NetworkStream" />.</summary>
@@ -299,18 +299,18 @@
       <param name="state">An object that contains any additional user-defined data.</param>
       <returns>An <see cref="T:System.IAsyncResult" /> that represents the asynchronous call.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than 0.  
- -or-  
- The <paramref name="offset" /> parameter is greater than the length of the <paramref name="buffer" /> paramater.  
- -or-  
- The <paramref name="size" /> is less than 0.  
- -or-  
- The <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
-      <exception cref="T:System.IO.IOException">The underlying <see cref="T:System.Net.Sockets.Socket" /> is closed.  
- -or-  
- There was a failure while reading from the network.  
- -or-  
- An error occurred when accessing the socket.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than 0.
+-or-
+The <paramref name="offset" /> parameter is greater than the length of the <paramref name="buffer" /> paramater.
+-or-
+The <paramref name="size" /> is less than 0.
+-or-
+The <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
+      <exception cref="T:System.IO.IOException">The underlying <see cref="T:System.Net.Sockets.Socket" /> is closed.
+-or-
+There was a failure while reading from the network.
+-or-
+An error occurred when accessing the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.NetworkStream" /> is closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.NetworkStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
@@ -322,18 +322,18 @@
       <param name="state">An object that contains any additional user-defined data.</param>
       <returns>An <see cref="T:System.IAsyncResult" /> that represents the asynchronous call.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than 0.  
- -or-  
- The <paramref name="offset" /> parameter is greater than the length of <paramref name="buffer" />.  
- -or-  
- The <paramref name="size" /> parameter is less than 0.  
- -or-  
- The <paramref name="size" /> parameter is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
-      <exception cref="T:System.IO.IOException">The underlying <see cref="T:System.Net.Sockets.Socket" /> is closed.  
- -or-  
- There was a failure while writing to the network.  
- -or-  
- An error occurred when accessing the socket.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than 0.
+-or-
+The <paramref name="offset" /> parameter is greater than the length of <paramref name="buffer" />.
+-or-
+The <paramref name="size" /> parameter is less than 0.
+-or-
+The <paramref name="size" /> parameter is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
+      <exception cref="T:System.IO.IOException">The underlying <see cref="T:System.Net.Sockets.Socket" /> is closed.
+-or-
+There was a failure while writing to the network.
+-or-
+An error occurred when accessing the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.NetworkStream" /> is closed.</exception>
     </member>
     <member name="P:System.Net.Sockets.NetworkStream.CanRead">
@@ -379,20 +379,20 @@
       <param name="asyncResult">An <see cref="T:System.IAsyncResult" /> that represents an asynchronous call.</param>
       <returns>The number of bytes read from the <see cref="T:System.Net.Sockets.NetworkStream" />.</returns>
       <exception cref="T:System.ArgumentException">The <paramref name="asyncResult" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.IO.IOException">The underlying <see cref="T:System.Net.Sockets.Socket" /> is closed.  
- -or-  
- An error occurred when accessing the socket.</exception>
+      <exception cref="T:System.IO.IOException">The underlying <see cref="T:System.Net.Sockets.Socket" /> is closed.
+-or-
+An error occurred when accessing the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.NetworkStream" /> is closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.NetworkStream.EndWrite(System.IAsyncResult)">
       <summary>Handles the end of an asynchronous write.</summary>
       <param name="asyncResult">The <see cref="T:System.IAsyncResult" /> that represents the asynchronous call.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="asyncResult" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.IO.IOException">The underlying <see cref="T:System.Net.Sockets.Socket" /> is closed.  
- -or-  
- An error occurred while writing to the network.  
- -or-  
- An error occurred when accessing the socket.</exception>
+      <exception cref="T:System.IO.IOException">The underlying <see cref="T:System.Net.Sockets.Socket" /> is closed.
+-or-
+An error occurred while writing to the network.
+-or-
+An error occurred when accessing the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.NetworkStream" /> is closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.NetworkStream.Finalize">
@@ -425,12 +425,12 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus <paramref name="offset" />.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.Sockets.NetworkStream" /> does not support reading.</exception>
       <exception cref="">An error occurred when accessing the socket.
@@ -513,13 +513,13 @@ There is a failure reading from the network.</exception>
       <param name="offset">The location in <paramref name="buffer" /> from which to start writing data.</param>
       <param name="size">The number of bytes to write to the <see cref="T:System.Net.Sockets.NetworkStream" />.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than 0.  
- -or-  
- The <paramref name="offset" /> parameter is greater than the length of <paramref name="buffer" />.  
- -or-  
- The <paramref name="size" /> parameter is less than 0.  
- -or-  
- The <paramref name="size" /> parameter is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than 0.
+-or-
+The <paramref name="offset" /> parameter is greater than the length of <paramref name="buffer" />.
+-or-
+The <paramref name="size" /> parameter is less than 0.
+-or-
+The <paramref name="size" /> parameter is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.Sockets.NetworkStream" /> does not support writing.</exception>
       <exception cref="T:System.IO.IOException">An error occurred when accessing the socket.
 -or-
@@ -548,17 +548,17 @@ There was a failure while writing to the network.</exception>
       <param name="cancellationToken">The token to monitor for cancellation requests.</param>
       <returns>A task that represents the asynchronous write operation.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than 0.  
- -or-  
- The <paramref name="offset" /> parameter is greater than the length of <paramref name="buffer" />.  
- -or-  
- The <paramref name="size" /> parameter is less than 0.  
- -or-  
- The <paramref name="size" /> parameter is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> parameter is less than 0.
+-or-
+The <paramref name="offset" /> parameter is greater than the length of <paramref name="buffer" />.
+-or-
+The <paramref name="size" /> parameter is less than 0.
+-or-
+The <paramref name="size" /> parameter is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.Sockets.NetworkStream" /> does not support writing.</exception>
-      <exception cref="T:System.IO.IOException">There was a failure while writing to the network.  
- -or-  
- An error occurred when accessing the socket.</exception>
+      <exception cref="T:System.IO.IOException">There was a failure while writing to the network.
+-or-
+An error occurred when accessing the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.NetworkStream" /> is closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.NetworkStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
@@ -801,8 +801,8 @@ There was a failure while writing to the network.</exception>
       <param name="offset">The offset, in bytes, from the beginning of the <paramref name="buffer" /> to the location in the <paramref name="buffer" /> to start sending the data specified in the <paramref name="buffer" /> parameter.</param>
       <param name="count">The number of bytes to send starting from the <paramref name="offset" /> parameter. If <paramref name="count" /> is zero, no bytes are sent.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> parameter cannot be null</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> and <paramref name="count" /> parameters must be greater than or equal to zero.  
- The <paramref name="offset" /> and <paramref name="count" /> must be less than the size of the buffer</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> and <paramref name="count" /> parameters must be greater than or equal to zero.
+The <paramref name="offset" /> and <paramref name="count" /> must be less than the size of the buffer</exception>
     </member>
     <member name="M:System.Net.Sockets.SendPacketsElement.#ctor(System.Byte[],System.Int32,System.Int32,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Sockets.SendPacketsElement" /> class using the specified range of the buffer with an option to combine this element with the next element in a single send request from the sockets layer to the transport.</summary>
@@ -811,8 +811,8 @@ There was a failure while writing to the network.</exception>
       <param name="count">The number bytes to send starting from the <paramref name="offset" /> parameter. If <paramref name="count" /> is zero, no bytes are sent.</param>
       <param name="endOfPacket">A Boolean value that specifies that this element should not be combined with the next element in a single send request from the sockets layer to the transport. This flag is used for granular control of the content of each message on a datagram or message-oriented socket.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> parameter cannot be null</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> and <paramref name="count" /> parameters must be greater than or equal to zero.  
- The <paramref name="offset" /> and <paramref name="count" /> must be less than the size of the buffer</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="offset" /> and <paramref name="count" /> parameters must be greater than or equal to zero.
+The <paramref name="offset" /> and <paramref name="count" /> must be less than the size of the buffer</exception>
     </member>
     <member name="M:System.Net.Sockets.SendPacketsElement.#ctor(System.IO.FileStream)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Sockets.SendPacketsElement" /> class using the specified <see cref="T:System.IO.FileStream" /> object.</summary>
@@ -939,14 +939,14 @@ There was a failure while writing to the network.</exception>
       <summary>Begins an asynchronous operation to accept an incoming connection attempt.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
-      <exception cref="T:System.ArgumentException">An argument is not valid. This exception occurs if the buffer provided is not large enough. The buffer must be at least 2 * (sizeof(SOCKADDR_STORAGE + 16) bytes.  
- This exception also occurs if multiple buffers are specified, the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.BufferList" /> property is not null.</exception>
+      <exception cref="T:System.ArgumentException">An argument is not valid. This exception occurs if the buffer provided is not large enough. The buffer must be at least 2 * (sizeof(SOCKADDR_STORAGE + 16) bytes.
+This exception also occurs if multiple buffers are specified, the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.BufferList" /> property is not null.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">An argument is out of range. The exception occurs if the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.Count" /> is less than 0.</exception>
-      <exception cref="T:System.InvalidOperationException">An invalid operation was requested. This exception occurs if the accepting <see cref="T:System.Net.Sockets.Socket" /> is not listening for connections or the accepted socket is bound.  
- You must call the <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> and <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> method before calling the <see cref="M:System.Net.Sockets.Socket.AcceptAsync(System.Net.Sockets.SocketAsyncEventArgs)" /> method.  
- This exception also occurs if the socket is already connected or a socket operation was already in progress using the specified <paramref name="e" /> parameter.</exception>
+      <exception cref="T:System.InvalidOperationException">An invalid operation was requested. This exception occurs if the accepting <see cref="T:System.Net.Sockets.Socket" /> is not listening for connections or the accepted socket is bound.
+You must call the <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> and <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> method before calling the <see cref="M:System.Net.Sockets.Socket.AcceptAsync(System.Net.Sockets.SocketAsyncEventArgs)" /> method.
+This exception also occurs if the socket is already connected or a socket operation was already in progress using the specified <paramref name="e" /> parameter.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.NotSupportedException">Windows XP or later is required for this method.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
@@ -968,9 +968,9 @@ There was a failure while writing to the network.</exception>
       <returns>An <see cref="T:System.IAsyncResult" /> that references the asynchronous <see cref="T:System.Net.Sockets.Socket" /> creation.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> object has been closed.</exception>
       <exception cref="T:System.NotSupportedException">Windows NT is required for this method.</exception>
-      <exception cref="T:System.InvalidOperationException">The accepting socket is not listening for connections. You must call <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> and <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> before calling <see cref="M:System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)" />.  
- -or-  
- The accepted socket is bound.</exception>
+      <exception cref="T:System.InvalidOperationException">The accepting socket is not listening for connections. You must call <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> and <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> before calling <see cref="M:System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)" />.
+-or-
+The accepted socket is bound.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="receiveSize" /> is less than 0.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
@@ -983,9 +983,9 @@ There was a failure while writing to the network.</exception>
       <returns>An <see cref="T:System.IAsyncResult" /> that references the asynchronous <see cref="T:System.Net.Sockets.Socket" /> creation.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> object has been closed.</exception>
       <exception cref="T:System.NotSupportedException">Windows NT is required for this method.</exception>
-      <exception cref="T:System.InvalidOperationException">The accepting socket is not listening for connections. You must call <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> and <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> before calling <see cref="M:System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)" />.  
- -or-  
- The accepted socket is bound.</exception>
+      <exception cref="T:System.InvalidOperationException">The accepting socket is not listening for connections. You must call <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> and <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> before calling <see cref="M:System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)" />.
+-or-
+The accepted socket is bound.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="receiveSize" /> is less than 0.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
@@ -999,9 +999,9 @@ There was a failure while writing to the network.</exception>
       <returns>An <see cref="T:System.IAsyncResult" /> object that references the asynchronous <see cref="T:System.Net.Sockets.Socket" /> object creation.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> object has been closed.</exception>
       <exception cref="T:System.NotSupportedException">Windows NT is required for this method.</exception>
-      <exception cref="T:System.InvalidOperationException">The accepting socket is not listening for connections. You must call <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> and <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> before calling <see cref="M:System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)" />.  
- -or-  
- The accepted socket is bound.</exception>
+      <exception cref="T:System.InvalidOperationException">The accepting socket is not listening for connections. You must call <see cref="M:System.Net.Sockets.Socket.Bind(System.Net.EndPoint)" /> and <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> before calling <see cref="M:System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)" />.
+-or-
+The accepted socket is bound.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="receiveSize" /> is less than 0.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
@@ -1091,12 +1091,12 @@ There was a failure while writing to the network.</exception>
       <exception cref="T:System.ObjectDisposedException">
         <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.BeginReceive(System.Byte[],System.Int32,System.Int32,System.Net.Sockets.SocketFlags,System.Net.Sockets.SocketError@,System.AsyncCallback,System.Object)">
@@ -1115,12 +1115,12 @@ There was a failure while writing to the network.</exception>
       <exception cref="T:System.ObjectDisposedException">
         <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.BeginReceive(System.Collections.Generic.IList{System.ArraySegment{System.Byte}},System.Net.Sockets.SocketFlags,System.AsyncCallback,System.Object)">
@@ -1161,17 +1161,17 @@ There was a failure while writing to the network.</exception>
       <param name="state">An object that contains state information for this request.</param>
       <returns>An <see cref="T:System.IAsyncResult" /> that references the asynchronous read.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.Security.SecurityException">A caller higher in the call stack does not have permission for the requested operation.</exception>
@@ -1187,17 +1187,17 @@ There was a failure while writing to the network.</exception>
       <param name="state">An object that contains state information for this request.</param>
       <returns>An <see cref="T:System.IAsyncResult" /> that references the asynchronous read.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.NotSupportedException">The operating system is Windows 2000 or earlier, and this method requires Windows XP.</exception>
@@ -1215,12 +1215,12 @@ There was a failure while writing to the network.</exception>
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket. See remarks section below.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is less than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is less than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
@@ -1238,12 +1238,12 @@ There was a failure while writing to the network.</exception>
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket. See remarks section below.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is less than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is less than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
@@ -1298,9 +1298,9 @@ There was a failure while writing to the network.</exception>
       <returns>An <see cref="T:System.IAsyncResult" /> object that represents the asynchronous operation.</returns>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> object has been closed.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket. See remarks section below.</exception>
-      <exception cref="T:System.NotSupportedException">The operating system is not Windows NT or later.  
+      <exception cref="T:System.NotSupportedException">The operating system is not Windows NT or later.
 -or-
- The socket is not connected to a remote host.</exception>
+The socket is not connected to a remote host.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file <paramref name="fileName" /> was not found.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.BeginSendTo(System.Byte[],System.Int32,System.Int32,System.Net.Sockets.SocketFlags,System.Net.EndPoint,System.AsyncCallback,System.Object)">
@@ -1314,17 +1314,17 @@ There was a failure while writing to the network.</exception>
       <param name="state">An object that contains state information for this request.</param>
       <returns>An <see cref="T:System.IAsyncResult" /> that references the asynchronous send.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.Security.SecurityException">A caller higher in the call stack does not have permission for the requested operation.</exception>
@@ -1412,7 +1412,7 @@ There was a failure while writing to the network.</exception>
       <summary>Begins an asynchronous request for a connection to a remote host.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.ArgumentException">An argument is not valid. This exception occurs if multiple buffers are specified, the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.BufferList" /> property is not null.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="e" /> parameter cannot be null and the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.RemoteEndPoint" /> cannot be null.</exception>
@@ -1428,7 +1428,7 @@ There was a failure while writing to the network.</exception>
       <param name="protocolType">One of the <see cref="T:System.Net.Sockets.ProtocolType" /> values.</param>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.ArgumentException">An argument is not valid. This exception occurs if multiple buffers are specified, the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.BufferList" /> property is not null.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="e" /> parameter cannot be null and the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.RemoteEndPoint" /> cannot be null.</exception>
@@ -1455,7 +1455,7 @@ There was a failure while writing to the network.</exception>
       <summary>Begins an asynchronous request to disconnect from a remote endpoint.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="e" /> parameter cannot be null.</exception>
       <exception cref="T:System.InvalidOperationException">A socket operation was already in progress using the <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object specified in the <paramref name="e" /> parameter.</exception>
@@ -1489,8 +1489,8 @@ There was a failure while writing to the network.</exception>
       <param name="targetProcessId">The ID of the target process where a duplicate of the socket reference is created.</param>
       <returns>The socket reference to be passed to the target process.</returns>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="targetProcessID" /> is not a valid process id.  
--or-  
+        <paramref name="targetProcessID" /> is not a valid process id.
+-or-
 Duplication of the socket reference failed.</exception>
     </member>
     <member name="P:System.Net.Sockets.Socket.EnableBroadcast">
@@ -1620,8 +1620,8 @@ Duplication of the socket reference failed.</exception>
       <param name="ipPacketInformation">The <see cref="T:System.Net.IPAddress" /> and interface of the received packet.</param>
       <returns>If successful, the number of bytes received. If unsuccessful, returns 0.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="asyncResult" /> is <see langword="null" />  
--or-  
+        <paramref name="asyncResult" /> is <see langword="null" />
+-or-
 <paramref name="endPoint" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="asyncResult" /> was not returned by a call to the <see cref="M:System.Net.Sockets.Socket.BeginReceiveMessageFrom(System.Byte[],System.Int32,System.Int32,System.Net.Sockets.SocketFlags,System.Net.EndPoint@,System.AsyncCallback,System.Object)" /> method.</exception>
@@ -1700,9 +1700,9 @@ Duplication of the socket reference failed.</exception>
       <param name="optionLevel">One of the <see cref="T:System.Net.Sockets.SocketOptionLevel" /> values.</param>
       <param name="optionName">One of the <see cref="T:System.Net.Sockets.SocketOptionName" /> values.</param>
       <returns>An object that represents the value of the option. When the <paramref name="optionName" /> parameter is set to <see cref="F:System.Net.Sockets.SocketOptionName.Linger" /> the return value is an instance of the <see cref="T:System.Net.Sockets.LingerOption" /> class. When <paramref name="optionName" /> is set to <see cref="F:System.Net.Sockets.SocketOptionName.AddMembership" /> or <see cref="F:System.Net.Sockets.SocketOptionName.DropMembership" />, the return value is an instance of the <see cref="T:System.Net.Sockets.MulticastOption" /> class. When <paramref name="optionName" /> is any other value, the return value is an integer.</returns>
-      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.  
- -or-  
- <paramref name="optionName" /> was set to the unsupported value <see cref="F:System.Net.Sockets.SocketOptionName.MaxConnections" />.</exception>
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.
+-or-
+<paramref name="optionName" /> was set to the unsupported value <see cref="F:System.Net.Sockets.SocketOptionName.MaxConnections" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.GetSocketOption(System.Net.Sockets.SocketOptionLevel,System.Net.Sockets.SocketOptionName,System.Byte[])">
@@ -1710,9 +1710,9 @@ Duplication of the socket reference failed.</exception>
       <param name="optionLevel">One of the <see cref="T:System.Net.Sockets.SocketOptionLevel" /> values.</param>
       <param name="optionName">One of the <see cref="T:System.Net.Sockets.SocketOptionName" /> values.</param>
       <param name="optionValue">An array of type <see cref="T:System.Byte" /> that is to receive the option setting.</param>
-      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.  
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.
 -or-
- In .NET Compact Framework applications, the Windows CE default buffer space is set to 32768 bytes. You can change the per socket buffer space by calling <see cref="Overload:System.Net.Sockets.Socket.SetSocketOption" />.</exception>
+In .NET Compact Framework applications, the Windows CE default buffer space is set to 32768 bytes. You can change the per socket buffer space by calling <see cref="Overload:System.Net.Sockets.Socket.SetSocketOption" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.GetSocketOption(System.Net.Sockets.SocketOptionLevel,System.Net.Sockets.SocketOptionName,System.Int32)">
@@ -1721,9 +1721,9 @@ Duplication of the socket reference failed.</exception>
       <param name="optionName">One of the <see cref="T:System.Net.Sockets.SocketOptionName" /> values.</param>
       <param name="optionLength">The length, in bytes, of the expected return value.</param>
       <returns>An array of type <see cref="T:System.Byte" /> that contains the value of the socket option.</returns>
-      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.  
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.
 -or-
- In .NET Compact Framework applications, the Windows CE default buffer space is set to 32768 bytes. You can change the per socket buffer space by calling <see cref="Overload:System.Net.Sockets.Socket.SetSocketOption" />.</exception>
+In .NET Compact Framework applications, the Windows CE default buffer space is set to 32768 bytes. You can change the per socket buffer space by calling <see cref="Overload:System.Net.Sockets.Socket.SetSocketOption" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
     <member name="P:System.Net.Sockets.Socket.Handle">
@@ -1802,37 +1802,37 @@ Duplication of the socket reference failed.</exception>
       <summary>Determines the status of the <see cref="T:System.Net.Sockets.Socket" />.</summary>
       <param name="microSeconds">The time to wait for a response, in microseconds.</param>
       <param name="mode">One of the <see cref="T:System.Net.Sockets.SelectMode" /> values.</param>
-      <returns>The status of the <see cref="T:System.Net.Sockets.Socket" /> based on the polling mode value passed in the <paramref name="mode" /> parameter.  
+      <returns>The status of the <see cref="T:System.Net.Sockets.Socket" /> based on the polling mode value passed in the <paramref name="mode" /> parameter.
   Mode  
-
+  
   Return Value  
-
+  
  <see cref="F:System.Net.Sockets.SelectMode.SelectRead" /><see langword="true" /> if <see cref="M:System.Net.Sockets.Socket.Listen(System.Int32)" /> has been called and a connection is pending;  
-
+  
  -or-  
-
+  
  <see langword="true" /> if data is available for reading;  
-
+  
  -or-  
-
+  
  <see langword="true" /> if the connection has been closed, reset, or terminated;  
-
+  
  otherwise, returns <see langword="false" />.  
-
+  
  <see cref="F:System.Net.Sockets.SelectMode.SelectWrite" /><see langword="true" />, if processing a <see cref="M:System.Net.Sockets.Socket.Connect(System.Net.EndPoint)" />, and the connection has succeeded;  
-
+  
  -or-  
-
+  
  <see langword="true" /> if data can be sent;  
-
+  
  otherwise, returns <see langword="false" />.  
-
+  
  <see cref="F:System.Net.Sockets.SelectMode.SelectError" /><see langword="true" /> if processing a <see cref="M:System.Net.Sockets.Socket.Connect(System.Net.EndPoint)" /> that does not block, and the connection has failed;  
-
+  
  -or-  
-
+  
  <see langword="true" /> if <see cref="F:System.Net.Sockets.SocketOptionName.OutOfBandInline" /> is not set and out-of-band data is available;  
-
+  
  otherwise, returns <see langword="false" />.</returns>
       <exception cref="T:System.NotSupportedException">The <paramref name="mode" /> parameter is not one of the <see cref="T:System.Net.Sockets.SelectMode" /> values.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket. See remarks below.</exception>
@@ -1862,18 +1862,18 @@ Duplication of the socket reference failed.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
-The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property was not set.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
+The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property was not set.
+-or-
 An operating system error occurs while accessing the <see cref="T:System.Net.Sockets.Socket" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.Security.SecurityException">A caller in the call stack does not have the required permissions.</exception>
@@ -1889,18 +1889,18 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <exception cref="T:System.ArgumentNullException">
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
-The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property is not set.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
+The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property is not set.
+-or-
 An operating system error occurs while accessing the <see cref="T:System.Net.Sockets.Socket" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.Security.SecurityException">A caller in the call stack does not have the required permissions.</exception>
@@ -1944,8 +1944,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="socketFlags">A bitwise combination of the <see cref="T:System.Net.Sockets.SocketFlags" /> values.</param>
       <returns>The number of bytes received.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffers" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffers" /> is <see langword="null" />.
+-or-
 <paramref name="buffers" />.Count is zero.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred while attempting to access the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
@@ -1957,8 +1957,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="errorCode">A <see cref="T:System.Net.Sockets.SocketError" /> object that stores the socket error.</param>
       <returns>The number of bytes received.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffers" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffers" /> is <see langword="null" />.
+-or-
 <paramref name="buffers" />.Count is zero.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred while attempting to access the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
@@ -1979,7 +1979,7 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <summary>Begins an asynchronous request to receive data from a connected <see cref="T:System.Net.Sockets.Socket" /> object.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.ArgumentException">An argument was invalid. The <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.Buffer" /> or <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.BufferList" /> properties on the <paramref name="e" /> parameter must reference valid buffers. One or the other of these properties may be set, but not both at the same time.</exception>
       <exception cref="T:System.InvalidOperationException">A socket operation was already in progress using the <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object specified in the <paramref name="e" /> parameter.</exception>
@@ -2003,22 +2003,22 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="remoteEP">An <see cref="T:System.Net.EndPoint" />, passed by reference, that represents the remote server.</param>
       <returns>The number of bytes received.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of the <paramref name="buffer" /> minus the value of the offset parameter.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
-The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property was not set.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
+The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property was not set.
+-or-
 An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
@@ -2030,18 +2030,18 @@ An error occurred when attempting to access the socket.</exception>
       <param name="remoteEP">An <see cref="T:System.Net.EndPoint" />, passed by reference, that represents the remote server.</param>
       <returns>The number of bytes received.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
-The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property was not set.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
+The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property was not set.
+-or-
 An operating system error occurs while accessing the <see cref="T:System.Net.Sockets.Socket" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.Security.SecurityException">A caller in the call stack does not have the required permissions.</exception>
@@ -2052,8 +2052,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="remoteEP">An <see cref="T:System.Net.EndPoint" />, passed by reference, that represents the remote server.</param>
       <returns>The number of bytes received.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
@@ -2066,8 +2066,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="remoteEP">An <see cref="T:System.Net.EndPoint" />, passed by reference, that represents the remote server.</param>
       <returns>The number of bytes received.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
@@ -2077,7 +2077,7 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <summary>Begins to asynchronously receive data from a specified network device.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.RemoteEndPoint" /> cannot be null.</exception>
       <exception cref="T:System.InvalidOperationException">A socket operation was already in progress using the <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object specified in the <paramref name="e" /> parameter.</exception>
@@ -2095,24 +2095,24 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="ipPacketInformation">An <see cref="T:System.Net.Sockets.IPPacketInformation" /> holding address and interface information.</param>
       <returns>The number of bytes received.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
-- or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+- or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of the <paramref name="buffer" /> minus the value of the offset parameter.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
-The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property was not set.  
--or-  
-The .NET Framework is running on an AMD 64-bit processor.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
+The <see cref="P:System.Net.Sockets.Socket.LocalEndPoint" /> property was not set.
+-or-
+The .NET Framework is running on an AMD 64-bit processor.
+-or-
 An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.NotSupportedException">The operating system is Windows 2000 or earlier, and this method requires Windows XP.</exception>
@@ -2121,7 +2121,7 @@ An error occurred when attempting to access the socket.</exception>
       <summary>Begins to asynchronously receive the specified number of bytes of data into the specified location in the data buffer, using the specified <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.SocketFlags" />, and stores the endpoint and packet information.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.RemoteEndPoint" /> cannot be null.</exception>
       <exception cref="T:System.NotSupportedException">Windows XP or later is required for this method.</exception>
@@ -2151,11 +2151,11 @@ An error occurred when attempting to access the socket.</exception>
       <param name="checkWrite">An <see cref="T:System.Collections.IList" /> of <see cref="T:System.Net.Sockets.Socket" /> instances to check for writability.</param>
       <param name="checkError">An <see cref="T:System.Collections.IList" /> of <see cref="T:System.Net.Sockets.Socket" /> instances to check for errors.</param>
       <param name="microSeconds">The time-out value, in microseconds. A -1 value indicates an infinite time-out.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="checkRead" /> parameter is <see langword="null" /> or empty.  
- -and-  
- The <paramref name="checkWrite" /> parameter is <see langword="null" /> or empty  
- -and-  
- The <paramref name="checkError" /> parameter is <see langword="null" /> or empty.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="checkRead" /> parameter is <see langword="null" /> or empty.
+-and-
+The <paramref name="checkWrite" /> parameter is <see langword="null" /> or empty
+-and-
+The <paramref name="checkError" /> parameter is <see langword="null" /> or empty.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.Send(System.Byte[])">
@@ -2177,16 +2177,16 @@ An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
 An operating system error occurs while accessing the <see cref="T:System.Net.Sockets.Socket" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
@@ -2201,16 +2201,16 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <exception cref="T:System.ArgumentNullException">
         <paramref name="buffer" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
 An operating system error occurs while accessing the <see cref="T:System.Net.Sockets.Socket" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
@@ -2225,8 +2225,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="size" /> is less than 0 or exceeds the size of the buffer.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
 An operating system error occurs while accessing the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
@@ -2292,7 +2292,7 @@ An operating system error occurs while accessing the socket.</exception>
       <summary>Sends data asynchronously to a connected <see cref="T:System.Net.Sockets.Socket" /> object.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.ArgumentException">The <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.Buffer" /> or <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.BufferList" /> properties on the <paramref name="e" /> parameter must reference valid buffers. One or the other of these properties may be set, but not both at the same time.</exception>
       <exception cref="T:System.InvalidOperationException">A socket operation was already in progress using the <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object specified in the <paramref name="e" /> parameter.</exception>
@@ -2322,9 +2322,9 @@ An operating system error occurs while accessing the socket.</exception>
       <param name="preBuffer">A <see cref="T:System.Byte" /> array that contains data to be sent before the file is sent. This parameter can be <see langword="null" />.</param>
       <param name="postBuffer">A <see cref="T:System.Byte" /> array that contains data to be sent after the file is sent. This parameter can be <see langword="null" />.</param>
       <param name="flags">One or more of <see cref="T:System.Net.Sockets.TransmitFileOptions" /> values.</param>
-      <exception cref="T:System.NotSupportedException">The operating system is not Windows NT or later.  
+      <exception cref="T:System.NotSupportedException">The operating system is not Windows NT or later.
 -or-
- The socket is not connected to a remote host.</exception>
+The socket is not connected to a remote host.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> object has been closed.</exception>
       <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.Sockets.Socket" /> object is not in blocking mode and cannot accept this synchronous call.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The file <paramref name="fileName" /> was not found.</exception>
@@ -2334,7 +2334,7 @@ An operating system error occurs while accessing the socket.</exception>
       <summary>Sends a collection of files or in memory data buffers asynchronously to a connected <see cref="T:System.Net.Sockets.Socket" /> object.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.IO.FileNotFoundException">The file specified in the <see cref="P:System.Net.Sockets.SendPacketsElement.FilePath" /> property was not found.</exception>
       <exception cref="T:System.InvalidOperationException">A socket operation was already in progress using the <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object specified in the <paramref name="e" /> parameter.</exception>
@@ -2358,20 +2358,20 @@ An operating system error occurs while accessing the socket.</exception>
       <param name="remoteEP">The <see cref="T:System.Net.EndPoint" /> that represents the destination location for the data.</param>
       <returns>The number of bytes sent.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="offset" /> is less than 0.  
--or-  
-<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.  
--or-  
-<paramref name="size" /> is less than 0.  
--or-  
+        <paramref name="offset" /> is less than 0.
+-or-
+<paramref name="offset" /> is greater than the length of <paramref name="buffer" />.
+-or-
+<paramref name="size" /> is less than 0.
+-or-
 <paramref name="size" /> is greater than the length of <paramref name="buffer" /> minus the value of the <paramref name="offset" /> parameter.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">
-        <paramref name="socketFlags" /> is not a valid combination of values.  
--or-  
+        <paramref name="socketFlags" /> is not a valid combination of values.
+-or-
 An operating system error occurs while accessing the <see cref="T:System.Net.Sockets.Socket" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.Security.SecurityException">A caller in the call stack does not have the required permissions.</exception>
@@ -2384,8 +2384,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="remoteEP">The <see cref="T:System.Net.EndPoint" /> that represents the destination location for the data.</param>
       <returns>The number of bytes sent.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The specified <paramref name="size" /> exceeds the size of <paramref name="buffer" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
@@ -2397,8 +2397,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="remoteEP">The <see cref="T:System.Net.EndPoint" /> that represents the destination for the data.</param>
       <returns>The number of bytes sent.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
@@ -2410,8 +2410,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <param name="remoteEP">The <see cref="T:System.Net.EndPoint" /> that represents the destination location for the data.</param>
       <returns>The number of bytes sent.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="buffer" /> is <see langword="null" />.  
--or-  
+        <paramref name="buffer" /> is <see langword="null" />.
+-or-
 <paramref name="remoteEP" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
@@ -2420,7 +2420,7 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <summary>Sends data asynchronously to a specific remote host.</summary>
       <param name="e">The <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object to use for this asynchronous socket operation.</param>
       <returns>
-        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.  
+        <see langword="true" /> if the I/O operation is pending. The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will be raised upon completion of the operation.
 <see langword="false" /> if the I/O operation completed synchronously. In this case, The <see cref="E:System.Net.Sockets.SocketAsyncEventArgs.Completed" /> event on the <paramref name="e" /> parameter will not be raised and the <paramref name="e" /> object passed as a parameter may be examined immediately after the method call returns to retrieve the result of the operation.</returns>
       <exception cref="T:System.ArgumentNullException">The <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.RemoteEndPoint" /> cannot be null.</exception>
       <exception cref="T:System.InvalidOperationException">A socket operation was already in progress using the <see cref="T:System.Net.Sockets.SocketAsyncEventArgs" /> object specified in the <paramref name="e" /> parameter.</exception>
@@ -3050,9 +3050,9 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
     <member name="M:System.Net.Sockets.TcpClient.#ctor(System.Net.Sockets.AddressFamily)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Sockets.TcpClient" /> class with the specified family.</summary>
       <param name="family">The <see cref="P:System.Net.IPAddress.AddressFamily" /> of the IP protocol.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="family" /> parameter is not equal to AddressFamily.InterNetwork  
- -or-  
- The <paramref name="family" /> parameter is not equal to AddressFamily.InterNetworkV6</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="family" /> parameter is not equal to AddressFamily.InterNetwork
+-or-
+The <paramref name="family" /> parameter is not equal to AddressFamily.InterNetworkV6</exception>
     </member>
     <member name="M:System.Net.Sockets.TcpClient.#ctor(System.String,System.Int32)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Sockets.TcpClient" /> class and connects to the specified port on the specified host.</summary>
@@ -3240,9 +3240,9 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
     <member name="P:System.Net.Sockets.TcpClient.ReceiveBufferSize">
       <summary>Gets or sets the size of the receive buffer.</summary>
       <returns>The size of the receive buffer, in bytes. The default value is 8192 bytes.</returns>
-      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when setting the buffer size.  
- -or-  
- In .NET Compact Framework applications, you cannot set this property. For a workaround, see the Platform Note in Remarks.</exception>
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when setting the buffer size.
+-or-
+In .NET Compact Framework applications, you cannot set this property. For a workaround, see the Platform Note in Remarks.</exception>
     </member>
     <member name="P:System.Net.Sockets.TcpClient.ReceiveTimeout">
       <summary>Gets or sets the amount of time a <see cref="T:System.Net.Sockets.TcpClient" /> will wait to receive data once a read operation is initiated.</summary>
@@ -3336,8 +3336,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
     <member name="M:System.Net.Sockets.TcpListener.EndAcceptSocket(System.IAsyncResult)">
       <summary>Asynchronously accepts an incoming connection attempt and creates a new <see cref="T:System.Net.Sockets.Socket" /> to handle remote host communication.</summary>
       <param name="asyncResult">An <see cref="T:System.IAsyncResult" /> returned by a call to the <see cref="M:System.Net.Sockets.TcpListener.BeginAcceptSocket(System.AsyncCallback,System.Object)" /> method.</param>
-      <returns>A <see cref="T:System.Net.Sockets.Socket" />.  
- The <see cref="T:System.Net.Sockets.Socket" /> used to send and receive data.</returns>
+      <returns>A <see cref="T:System.Net.Sockets.Socket" />.
+The <see cref="T:System.Net.Sockets.Socket" /> used to send and receive data.</returns>
       <exception cref="T:System.ObjectDisposedException">The underlying <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="asyncResult" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="asyncResult" /> parameter was not created by a call to the <see cref="M:System.Net.Sockets.TcpListener.BeginAcceptSocket(System.AsyncCallback,System.Object)" /> method.</exception>
@@ -3347,8 +3347,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
     <member name="M:System.Net.Sockets.TcpListener.EndAcceptTcpClient(System.IAsyncResult)">
       <summary>Asynchronously accepts an incoming connection attempt and creates a new <see cref="T:System.Net.Sockets.TcpClient" /> to handle remote host communication.</summary>
       <param name="asyncResult">An <see cref="T:System.IAsyncResult" /> returned by a call to the <see cref="M:System.Net.Sockets.TcpListener.BeginAcceptTcpClient(System.AsyncCallback,System.Object)" /> method.</param>
-      <returns>A <see cref="T:System.Net.Sockets.TcpClient" />.  
- The <see cref="T:System.Net.Sockets.TcpClient" /> used to send and receive data.</returns>
+      <returns>A <see cref="T:System.Net.Sockets.TcpClient" />.
+The <see cref="T:System.Net.Sockets.TcpClient" /> used to send and receive data.</returns>
     </member>
     <member name="P:System.Net.Sockets.TcpListener.ExclusiveAddressUse">
       <summary>Gets or sets a <see cref="T:System.Boolean" /> value that specifies whether the <see cref="T:System.Net.Sockets.TcpListener" /> allows only one underlying socket to listen to a specific port.</summary>

@@ -670,7 +670,7 @@
       <summary>Specifies that the control has vertical orientation.</summary>
     </member>
     <member name="T:System.Windows.Automation.ProxyAssemblyNotLoadedException">
-      <summary>Contains information about an exception that is raised when there is a problem loading an assembly that contains client-side providers</summary>
+      <summary>Contains information about an exception that is raised when there is a problem loading an assembly that contains client-side providers.</summary>
     </member>
     <member name="M:System.Windows.Automation.ProxyAssemblyNotLoadedException.#ctor">
       <summary>Initializes a new instance of the <see cref="T:System.Windows.Automation.ProxyAssemblyNotLoadedException" /> class. Used internally.</summary>
@@ -722,7 +722,7 @@
       <summary>Contains values that specify whether data in a table should be read primarily by row or by column.</summary>
     </member>
     <member name="F:System.Windows.Automation.RowOrColumnMajor.ColumnMajor">
-      <summary>Specifies that data in the table should be read column by column</summary>
+      <summary>Specifies that data in the table should be read column by column.</summary>
     </member>
     <member name="F:System.Windows.Automation.RowOrColumnMajor.Indeterminate">
       <summary>Specifies that the best way to present the data is indeterminate.</summary>

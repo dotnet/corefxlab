@@ -20,12 +20,12 @@
     <member name="M:System.Runtime.Loader.AssemblyDependencyResolver.ResolveAssemblyToPath(System.Reflection.AssemblyName)">
       <summary>Resolves a path to an assembly with the given assembly name based on the component's dependencies.</summary>
       <param name="assemblyName">The assembly name to resolve.</param>
-      <returns>The path to an assembly with the given name from the component's deps.json file, or <c>null</c> if the assembly does not exist in the deps.json file or is not on disk in the location specified by the deps.json file.</returns>
+      <returns>The path to an assembly with the given name from the component's deps.json file, or <see langword="null" /> if the assembly does not exist in the deps.json file or is not on disk in the location specified by the deps.json file.</returns>
     </member>
     <member name="M:System.Runtime.Loader.AssemblyDependencyResolver.ResolveUnmanagedDllToPath(System.String)">
       <summary>Resolves a path to a native library with the given name based on the component's dependencies.</summary>
       <param name="unmanagedDllName">The name of the native library to resolve.</param>
-      <returns>The path to a native library with the given name from the component's deps.json file and the current runtime identifier, or <c>null</c> if the assembly does not exist in the deps.json file or is not on disk  in the location specified by the deps.json file.</returns>
+      <returns>The path to a native library with the given name from the component's deps.json file and the current runtime identifier, or <see langword="null" /> if the assembly does not exist in the deps.json file or is not on disk  in the location specified by the deps.json file.</returns>
     </member>
     <member name="T:System.Runtime.Loader.AssemblyLoadContext">
       <summary>Represents the runtime's concept of a scope for binding. This class is abstract.</summary>
@@ -167,11 +167,12 @@
     <member name="M:System.Runtime.Loader.AssemblyLoadContext.LoadUnmanagedDllFromPath(System.String)">
       <summary>Loads an unmanaged library from the specified path.</summary>
       <param name="unmanagedDllPath">The path to the unmanaged library.</param>
-      <returns>A handle to the loaded library.</returns>
+      <returns>The OS handle for the loaded native library.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="unmanagedDllPath" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="unmanagedDllPath" /> argument is not an absolute path.</exception>
-      <exception cref="T:System.IO.FileNotFoundException">The unmanaged library cannot be found.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="unmanagedDllPath" /> argument is empty or not an absolute path.</exception>
+      <exception cref="T:System.DllNotFoundException">The library can't be found.</exception>
+      <exception cref="T:System.BadImageFormatException">The library is not valid.</exception>
     </member>
     <member name="P:System.Runtime.Loader.AssemblyLoadContext.Name">
       <summary>Get the name of the <see cref="T:System.Runtime.Loader.AssemblyLoadContext" />.</summary>

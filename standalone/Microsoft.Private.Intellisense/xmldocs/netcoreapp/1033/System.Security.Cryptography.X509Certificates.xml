@@ -17,7 +17,7 @@
       <param name="hashAlgorithm">The hash algorithm to use when signing the certificate or certificate request.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="subjectName" /> is <see langword="null" />.
- -or-  
+-or-
 <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -30,9 +30,9 @@
       <param name="padding">The RSA signature padding to apply if self-signing or being signed with an <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="subjectName" /> is <see langword="null" />.
- -or-  
+-or-
 <paramref name="key" /> is <see langword="null" />.
- -or-  
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -44,7 +44,7 @@
       <param name="hashAlgorithm">The hash algorithm to use when signing the certificate or certificate request.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="subjectName" /> is <see langword="null" />.
- -or-  
+-or-
 <paramref name="publicKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -56,7 +56,7 @@
       <param name="hashAlgorithm">The hash algorithm to use when signing the certificate or certificate request.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="subjectName" /> is <see langword="null" />.
- -or-  
+-or-
 <paramref name="key" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -69,9 +69,9 @@
       <param name="padding">The RSA signature padding to apply if self-signing or being signed with an <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="subjectName" /> is <see langword="null" />.
- -or-  
+-or-
 <paramref name="key" /> is <see langword="null" />.
- -or-  
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" />.<see cref="P:System.Security.Cryptography.HashAlgorithmName.Name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
@@ -90,11 +90,11 @@
       <returns>An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> object with the specified values. The returned object won't assert <see cref="P:System.Security.Cryptography.X509Certificates.X509Certificate2.HasPrivateKey" />.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="issuerCertificate" /> is <see langword="null" />.
- -or-
+-or-
 <paramref name="generator" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="notAfter" /> represents a date and time that happens earlier than <paramref name="notBefore" />.
- -or-
+-or-
 <paramref name="serialNumber" /> is zero length or <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">An error occurs during the signing operation.</exception>
     </member>
@@ -108,13 +108,13 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="issuerCertificate" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="issuerCertificate" /> doesn't contain a private key.
- -or-
+-or-
 The type of signing key represented by <paramref name="issuerCertificate" /> couldn't be determined.
- -or-
+-or-
 <paramref name="notAfter" /> represents a date and time that happens earlier than <paramref name="notBefore" />.
- -or-
+-or-
 <paramref name="serialNumber" /> is zero length or <see langword="null" />.
- -or-
+-or-
 <paramref name="issuerCertificate" /> has a different key algorithm than the requested certificate.</exception>
       <exception cref="T:System.InvalidOperationException">
         <paramref name="issuerCertificate" /> is an RSA certificate and the current object was created using a constructor that doesn't accept a <paramref name="padding" /> parameter.</exception>
@@ -164,9 +164,9 @@ The type of signing key represented by <paramref name="issuerCertificate" /> cou
       <exception cref="T:System.ArgumentNullException">
         <paramref name="certificate" /> or <paramref name="privateKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The certificate already has an associated private key.</exception>
-      <exception cref="T:System.ArgumentException">The certificate doesn't have a public key.  
- -or-  
- The specified private key doesn't match the public key for the specified certificate.</exception>
+      <exception cref="T:System.ArgumentException">The certificate doesn't have a public key.
+-or-
+The specified private key doesn't match the public key for the specified certificate.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.DSACertificateExtensions.GetDSAPrivateKey(System.Security.Cryptography.X509Certificates.X509Certificate2)">
       <summary>Gets the <see cref="T:System.Security.Cryptography.DSA" /> private key from the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</summary>
@@ -194,9 +194,9 @@ The type of signing key represented by <paramref name="issuerCertificate" /> cou
       <exception cref="T:System.ArgumentNullException">
         <paramref name="certificate" /> or <paramref name="privateKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The certificate already has an associated private key.</exception>
-      <exception cref="T:System.ArgumentException">The certificate doesn't have a public key.  
- -or-  
- The specified private key doesn't match the public key for the specified certificate.</exception>
+      <exception cref="T:System.ArgumentException">The certificate doesn't have a public key.
+-or-
+The specified private key doesn't match the public key for the specified certificate.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.ECDsaCertificateExtensions.GetECDsaPrivateKey(System.Security.Cryptography.X509Certificates.X509Certificate2)">
       <summary>Gets the <see cref="T:System.Security.Cryptography.ECDsa" /> private key from the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> certificate.</summary>
@@ -268,9 +268,9 @@ The type of signing key represented by <paramref name="issuerCertificate" /> cou
       <exception cref="T:System.ArgumentNullException">
         <paramref name="certificate" /> or <paramref name="privateKey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.InvalidOperationException">The certificate already has an associated private key.</exception>
-      <exception cref="T:System.ArgumentException">The certificate doesn't have a public key.  
- -or-  
- The specified private key doesn't match the public key for the specified certificate.</exception>
+      <exception cref="T:System.ArgumentException">The certificate doesn't have a public key.
+-or-
+The specified private key doesn't match the public key for the specified certificate.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.RSACertificateExtensions.GetRSAPrivateKey(System.Security.Cryptography.X509Certificates.X509Certificate2)">
       <summary>Gets the <see cref="T:System.Security.Cryptography.RSA" /> private key from the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</summary>
@@ -489,87 +489,87 @@ The type of signing key represented by <paramref name="issuerCertificate" /> cou
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Byte[])">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class defined from a sequence of bytes representing an X.509v3 certificate.</summary>
       <param name="data">A byte array containing data from an X.509 certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.  
- -or-  
- The length of the <paramref name="rawData" /> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.
+-or-
+The length of the <paramref name="rawData" /> parameter is 0.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Byte[],System.Security.SecureString)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using a byte array and a password.</summary>
       <param name="rawData">A byte array that contains data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.  
- -or-  
- The length of the <paramref name="rawData" /> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.
+-or-
+The length of the <paramref name="rawData" /> parameter is 0.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Byte[],System.Security.SecureString,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using a byte array, a password, and a key storage flag.</summary>
       <param name="rawData">A byte array that contains data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.  
- -or-  
- The length of the <paramref name="rawData" /> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.
+-or-
+The length of the <paramref name="rawData" /> parameter is 0.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Byte[],System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using a byte array and a password.</summary>
       <param name="rawData">A byte array containing data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.  
- -or-  
- The length of the <paramref name="rawData" /> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.
+-or-
+The length of the <paramref name="rawData" /> parameter is 0.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Byte[],System.String,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using a byte array, a password, and a key storage flag.</summary>
       <param name="rawData">A byte array containing data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.  
- -or-  
- The length of the <paramref name="rawData" /> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.
+-or-
+The length of the <paramref name="rawData" /> parameter is 0.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.IntPtr)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using a handle to an unmanaged <see langword="PCCERT_CONTEXT" /> structure.</summary>
       <param name="handle">A handle to an unmanaged <see langword="PCCERT_CONTEXT" /> structure.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
       <exception cref="T:System.ArgumentException">The handle parameter does not represent a valid <see langword="PCCERT_CONTEXT" /> structure.</exception>
@@ -578,22 +578,22 @@ The certificate's password is incorrect.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using a <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object and a <see cref="T:System.Runtime.Serialization.StreamingContext" /> structure.</summary>
       <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object that describes serialization information.</param>
       <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext" /> structure that describes how serialization should be performed.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using another <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class.</summary>
       <param name="cert">A <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class from which to initialize this class.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
       <exception cref="T:System.ArgumentNullException">The value of the <paramref name="cert" /> parameter is <see langword="null" />.</exception>
@@ -601,11 +601,11 @@ The certificate's password is incorrect.</exception>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using the name of a PKCS7 signed file.</summary>
       <param name="fileName">The name of a PKCS7 signed file.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="fileName" /> parameter is <see langword="null" />.</exception>
@@ -614,11 +614,11 @@ The certificate's password is incorrect.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using a certificate file name and a password.</summary>
       <param name="fileName">The name of a certificate file.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="fileName" /> parameter is <see langword="null" />.</exception>
@@ -628,11 +628,11 @@ The certificate's password is incorrect.</exception>
       <param name="fileName">The name of a certificate file.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="fileName" /> parameter is <see langword="null" />.</exception>
@@ -641,11 +641,11 @@ The certificate's password is incorrect.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> class using the name of a PKCS7 signed file and a password to access the certificate.</summary>
       <param name="fileName">The name of a PKCS7 signed file.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="fileName" /> parameter is <see langword="null" />.</exception>
@@ -655,11 +655,11 @@ The certificate's password is incorrect.</exception>
       <param name="fileName">The name of a PKCS7 signed file.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
       <exception cref="T:System.ArgumentException">The <paramref name="fileName" /> parameter is <see langword="null" />.</exception>
@@ -699,27 +699,27 @@ The certificate's password is incorrect.</exception>
       <summary>Exports the current <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object to a byte array in a format described by one of the <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> values.</summary>
       <param name="contentType">One of the <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> values that describes how to format the output data.</param>
       <returns>An array of bytes that represents the current <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">A value other than <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert" />, <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert" />, or <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12" /> was passed to the <paramref name="contentType" /> parameter.  
- -or-  
- The certificate could not be exported.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A value other than <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert" />, <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert" />, or <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12" /> was passed to the <paramref name="contentType" /> parameter.
+-or-
+The certificate could not be exported.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Export(System.Security.Cryptography.X509Certificates.X509ContentType,System.Security.SecureString)">
       <summary>Exports the current <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object to a byte array using the specified format and a password.</summary>
       <param name="contentType">One of the <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> values that describes how to format the output data.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <returns>A byte array that represents the current <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">A value other than <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert" />, <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert" />, or <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12" /> was passed to the <paramref name="contentType" /> parameter.  
- -or-  
- The certificate could not be exported.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A value other than <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert" />, <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert" />, or <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12" /> was passed to the <paramref name="contentType" /> parameter.
+-or-
+The certificate could not be exported.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Export(System.Security.Cryptography.X509Certificates.X509ContentType,System.String)">
       <summary>Exports the current <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object to a byte array in a format described by one of the <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> values, and using the specified password.</summary>
       <param name="contentType">One of the <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> values that describes how to format the output data.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <returns>An array of bytes that represents the current <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">A value other than <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert" />, <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert" />, or <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12" /> was passed to the <paramref name="contentType" /> parameter.  
- -or-  
- The certificate could not be exported.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">A value other than <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert" />, <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert" />, or <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12" /> was passed to the <paramref name="contentType" /> parameter.
+-or-
+The certificate could not be exported.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.FormatDate(System.DateTime)">
       <summary>Converts the specified date and time to a string.</summary>
@@ -763,11 +763,11 @@ The certificate's password is incorrect.</exception>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetIssuerName">
       <summary>Returns the name of the certification authority that issued the X.509v3 certificate.</summary>
       <returns>The name of the certification authority that issued the X.509 certificate.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -824,27 +824,27 @@ The certificate's password is incorrect.</exception>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Import(System.Byte[])">
       <summary>Populates the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object with data from a byte array.</summary>
       <param name="rawData">A byte array containing data from an X.509 certificate.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.  
- -or-  
- The length of the <paramref name="rawData" /> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.
+-or-
+The length of the <paramref name="rawData" /> parameter is 0.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Import(System.Byte[],System.Security.SecureString,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
       <summary>Populates an <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object using data from a byte array, a password, and a key storage flag.</summary>
       <param name="rawData">A byte array that contains data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.  
- -or-  
- The length of the <paramref name="rawData" /> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.
+-or-
+The length of the <paramref name="rawData" /> parameter is 0.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Import(System.Byte[],System.String,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
       <summary>Populates the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object using data from a byte array, a password, and flags for determining how the private key is imported.</summary>
       <param name="rawData">A byte array containing data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.  
- -or-  
- The length of the <paramref name="rawData" /> parameter is 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="rawData" /> parameter is <see langword="null" />.
+-or-
+The length of the <paramref name="rawData" /> parameter is 0.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Import(System.String)">
       <summary>Populates the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object with information from a certificate file.</summary>
@@ -911,11 +911,11 @@ The certificate's password is incorrect.</exception>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.Byte[])">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> class using information from a byte array.</summary>
       <param name="rawData">A byte array containing data from an X.509 certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -923,11 +923,11 @@ The certificate's password is incorrect.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> class using a byte array and a password.</summary>
       <param name="rawData">A byte array that contains data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -936,11 +936,11 @@ The certificate's password is incorrect.</exception>
       <param name="rawData">A byte array that contains data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -948,11 +948,11 @@ The certificate's password is incorrect.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> class using a byte array and a password.</summary>
       <param name="rawData">A byte array containing data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -961,22 +961,22 @@ The certificate's password is incorrect.</exception>
       <param name="rawData">A byte array containing data from an X.509 certificate.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.IntPtr)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> class using an unmanaged handle.</summary>
       <param name="handle">A pointer to a certificate context in unmanaged code. The C structure is called <see langword="PCCERT_CONTEXT" />.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -989,22 +989,22 @@ The certificate's password is incorrect.</exception>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> class using an <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object.</summary>
       <param name="certificate">An <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> object.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
     <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> class using a certificate file name.</summary>
       <param name="fileName">The name of a certificate file.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -1012,11 +1012,11 @@ The certificate's password is incorrect.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> class using a certificate file name and a password.</summary>
       <param name="fileName">The name of a certificate file.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -1025,11 +1025,11 @@ The certificate's password is incorrect.</exception>
       <param name="fileName">The name of a certificate file.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -1037,11 +1037,11 @@ The certificate's password is incorrect.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> class using a certificate file name and a password used to access the certificate.</summary>
       <param name="fileName">The name of a certificate file.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -1050,11 +1050,11 @@ The certificate's password is incorrect.</exception>
       <param name="fileName">The name of a certificate file.</param>
       <param name="password">The password required to access the X.509 certificate data.</param>
       <param name="keyStorageFlags">A bitwise combination of the enumeration values that control where and how to import the certificate.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:  
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An error with the certificate occurs. For example:
 
-The certificate file does not exist.  
+The certificate file does not exist.
 
-The certificate is invalid.  
+The certificate is invalid.
 
 The certificate's password is incorrect.</exception>
     </member>
@@ -1305,12 +1305,12 @@ The certificate's password is incorrect.</exception>
       <param name="index">The zero-based index at which to insert <paramref name="certificate" />.</param>
       <param name="certificate">The <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> object to insert.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is greater than the <see cref="P:System.Collections.CollectionBase.Count" /> property.</exception>
-      <exception cref="T:System.NotSupportedException">The collection is read-only.  
- -or-  
- The collection has a fixed size.</exception>
+      <exception cref="T:System.NotSupportedException">The collection is read-only.
+-or-
+The collection has a fixed size.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="certificate" /> is <see langword="null" />.</exception>
     </member>
@@ -1319,8 +1319,8 @@ The certificate's password is incorrect.</exception>
       <param name="index">The zero-based index of the element to get or set.</param>
       <returns>The element at the specified index.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="index" /> is less than zero.  
--or-  
+        <paramref name="index" /> is less than zero.
+-or-
 <paramref name="index" /> is equal to or greater than the <see cref="P:System.Collections.CollectionBase.Count" /> property.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="index" /> is <see langword="null" />.</exception>
@@ -1415,9 +1415,9 @@ The certificate's password is incorrect.</exception>
       <summary>Copies the <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> values in the current <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> to a one-dimensional <see cref="T:System.Array" /> instance at the specified index.</summary>
       <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the values copied from <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />.</param>
       <param name="index">The index into <paramref name="array" /> to begin copying.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="array" /> parameter is multidimensional.  
- -or-  
- The number of elements in the <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> is greater than the available space between <paramref name="arrayIndex" /> and the end of <paramref name="array" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="array" /> parameter is multidimensional.
+-or-
+The number of elements in the <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> is greater than the available space between <paramref name="arrayIndex" /> and the end of <paramref name="array" />.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="array" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="arrayIndex" /> parameter is less than the <paramref name="array" /> parameter's lower bound.</exception>
     </member>
@@ -2181,8 +2181,8 @@ The certificate's password is incorrect.</exception>
       <param name="signaturePadding">The padding mode.</param>
       <returns>An <see cref="T:System.Security.Cryptography.X509Certificates.X509SignatureGenerator" /> object for RSA signatures.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="key" /> is <see langword="null" />.  
--or-  
+        <paramref name="key" /> is <see langword="null" />.
+-or-
 <paramref name="signaturePadding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The specified padding mode is not valid for this algorithm.</exception>
     </member>

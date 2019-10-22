@@ -56,9 +56,9 @@
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileSystemWatcher" /> class, given the specified directory to monitor.</summary>
       <param name="path">The directory to monitor, in standard or Universal Naming Convention (UNC) notation.</param>
       <exception cref="T:System.ArgumentNullException">The <paramref name="path" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="path" /> parameter is an empty string ("").  
- -or-  
- The path specified through the <paramref name="path" /> parameter does not exist.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="path" /> parameter is an empty string ("").
+-or-
+The path specified through the <paramref name="path" /> parameter does not exist.</exception>
       <exception cref="T:System.IO.PathTooLongException">
         <paramref name="path" /> is too long.</exception>
     </member>
@@ -66,12 +66,12 @@
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileSystemWatcher" /> class, given the specified directory and type of files to monitor.</summary>
       <param name="path">The directory to monitor, in standard or Universal Naming Convention (UNC) notation.</param>
       <param name="filter">The type of files to watch. For example, "*.txt" watches for changes to all text files.</param>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="path" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="filter" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">The <paramref name="path" /> parameter is an empty string ("").  
- -or-  
- The path specified through the <paramref name="path" /> parameter does not exist.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="path" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="filter" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="path" /> parameter is an empty string ("").
+-or-
+The path specified through the <paramref name="path" /> parameter does not exist.</exception>
       <exception cref="T:System.IO.PathTooLongException">
         <paramref name="path" /> is too long.</exception>
     </member>
@@ -154,11 +154,11 @@
     <member name="P:System.IO.FileSystemWatcher.Path">
       <summary>Gets or sets the path of the directory to watch.</summary>
       <returns>The path to monitor. The default is an empty string ("").</returns>
-      <exception cref="T:System.ArgumentException">The specified path does not exist or could not be found.  
- -or-  
- The specified path contains wildcard characters.  
- -or-  
- The specified path contains invalid path characters.</exception>
+      <exception cref="T:System.ArgumentException">The specified path does not exist or could not be found.
+-or-
+The specified path contains wildcard characters.
+-or-
+The specified path contains invalid path characters.</exception>
     </member>
     <member name="E:System.IO.FileSystemWatcher.Renamed">
       <summary>Occurs when a file or directory in the specified <see cref="P:System.IO.FileSystemWatcher.Path" /> is renamed.</summary>

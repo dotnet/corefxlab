@@ -42,8 +42,8 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="value" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="keyName" /> does not begin with a valid registry root.  
--or-  
+        <paramref name="keyName" /> does not begin with a valid registry root.
+-or-
 <paramref name="keyName" /> is longer than the maximum length allowed (255 characters).</exception>
       <exception cref="T:System.UnauthorizedAccessException">The <see cref="T:Microsoft.Win32.RegistryKey" /> is read-only, and thus cannot be written to; for example, it is a root-level node.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or modify registry keys.</exception>
@@ -57,10 +57,10 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="value" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="keyName" /> does not begin with a valid registry root.  
--or-  
-<paramref name="keyName" /> is longer than the maximum length allowed (255 characters).  
--or-  
+        <paramref name="keyName" /> does not begin with a valid registry root.
+-or-
+<paramref name="keyName" /> is longer than the maximum length allowed (255 characters).
+-or-
 The type of <paramref name="value" /> did not match the registry data type specified by <paramref name="valueKind" />, therefore the data could not be converted properly.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The <see cref="T:Microsoft.Win32.RegistryKey" /> is read-only, and thus cannot be written to; for example, it is a root-level node, or the key has not been opened with write access.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or modify registry keys.</exception>
@@ -104,9 +104,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> on which this method is being invoked is closed (closed keys cannot be accessed).</exception>
       <exception cref="T:System.UnauthorizedAccessException">The <see cref="T:Microsoft.Win32.RegistryKey" /> cannot be written to; for example, it was not opened as a writable key , or the user does not have the necessary access rights.</exception>
-      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.  
- -or-  
- A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
+      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.
+-or-
+A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.CreateSubKey(System.String,Microsoft.Win32.RegistryKeyPermissionCheck)">
       <summary>Creates a new subkey or opens an existing subkey for write access, using the specified permission check option.</summary>
@@ -120,9 +120,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
         <paramref name="permissionCheck" /> contains an invalid value.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> on which this method is being invoked is closed (closed keys cannot be accessed).</exception>
       <exception cref="T:System.UnauthorizedAccessException">The <see cref="T:Microsoft.Win32.RegistryKey" /> cannot be written to; for example, it was not opened as a writable key, or the user does not have the necessary access rights.</exception>
-      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.  
- -or-  
- A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
+      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.
+-or-
+A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.CreateSubKey(System.String,Microsoft.Win32.RegistryKeyPermissionCheck,Microsoft.Win32.RegistryOptions)">
       <summary>Creates a subkey or opens a subkey for write access, using the specified permission check and registry options.</summary>
@@ -134,9 +134,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
         <paramref name="subkey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> object is closed (closed keys cannot be accessed).</exception>
       <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> object cannot be written to; for example, it was not opened as a writable key, or the user does not have the required access rights.</exception>
-      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.  
- -or-  
- A system error occurred, such as deletion of the key or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
+      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.
+-or-
+A system error occurred, such as deletion of the key or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.CreateSubKey(System.String,Microsoft.Win32.RegistryKeyPermissionCheck,Microsoft.Win32.RegistryOptions,System.Security.AccessControl.RegistrySecurity)">
@@ -150,9 +150,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
         <paramref name="subkey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> object is closed. Closed keys cannot be accessed.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> object cannot be written to; for example, it was not opened as a writable key, or the user does not have the required access rights.</exception>
-      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.  
- -or-  
- A system error occurred, such as deletion of the key or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
+      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.
+-or-
+A system error occurred, such as deletion of the key or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.CreateSubKey(System.String,Microsoft.Win32.RegistryKeyPermissionCheck,System.Security.AccessControl.RegistrySecurity)">
@@ -168,9 +168,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
         <paramref name="permissionCheck" /> contains an invalid value.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> on which this method is being invoked is closed (closed keys cannot be accessed).</exception>
       <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> cannot be written to; for example, it was not opened as a writable key, or the user does not have the necessary access rights.</exception>
-      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.  
- -or-  
- A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
+      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.
+-or-
+A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.CreateSubKey(System.String,System.Boolean)">
       <summary>Creates a new subkey or opens an existing subkey with the specified access. Available starting with .NET Framework 4.6.</summary>
@@ -182,9 +182,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
         <paramref name="subkey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> cannot be written to; for example, it was not opened as a writable key, or the user does not have the necessary access rights.</exception>
-      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.  
- -or-  
- A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
+      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.
+-or-
+A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.CreateSubKey(System.String,System.Boolean,Microsoft.Win32.RegistryOptions)">
       <summary>Creates a new subkey or opens an existing subkey with the specified access. Available starting with .NET Framework 4.6.</summary>
@@ -199,9 +199,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
         <paramref name="options" /> does not specify a valid Option</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> cannot be written to; for example, it was not opened as a writable key, or the user does not have the necessary access rights.</exception>
-      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.  
- -or-  
- A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
+      <exception cref="T:System.IO.IOException">The nesting level exceeds 510.
+-or-
+A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.DeleteSubKey(System.String)">
       <summary>Deletes the specified subkey.</summary>
@@ -233,9 +233,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
       <param name="subkey">The subkey to delete. This string is not case-sensitive.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="subkey" /> is <see langword="null" />.</exception>
-      <exception cref="T:System.ArgumentException">Deletion of a root hive is attempted.  
- -or-  
- <paramref name="subkey" /> does not specify a valid registry subkey.</exception>
+      <exception cref="T:System.ArgumentException">Deletion of a root hive is attempted.
+-or-
+<paramref name="subkey" /> does not specify a valid registry subkey.</exception>
       <exception cref="T:System.IO.IOException">An I/O error has occurred.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to delete the key.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> being manipulated is closed (closed keys cannot be accessed).</exception>
@@ -245,9 +245,9 @@ The type of <paramref name="value" /> did not match the registry data type speci
       <summary>Deletes the specified subkey and any child subkeys recursively, and specifies whether an exception is raised if the subkey is not found.</summary>
       <param name="subkey">The name of the subkey to delete. This string is not case-sensitive.</param>
       <param name="throwOnMissingSubKey">Indicates whether an exception should be raised if the specified subkey cannot be found. If this argument is <see langword="true" /> and the specified subkey does not exist, an exception is raised. If this argument is <see langword="false" /> and the specified subkey does not exist, no action is taken.</param>
-      <exception cref="T:System.ArgumentException">An attempt was made to delete the root hive of the tree.  
- -or-  
- <paramref name="subkey" /> does not specify a valid registry subkey, and <paramref name="throwOnMissingSubKey" /> is <see langword="true" />.</exception>
+      <exception cref="T:System.ArgumentException">An attempt was made to delete the root hive of the tree.
+-or-
+<paramref name="subkey" /> does not specify a valid registry subkey, and <paramref name="throwOnMissingSubKey" /> is <see langword="true" />.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="subkey" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> is closed (closed keys cannot be accessed).</exception>
@@ -268,8 +268,8 @@ The type of <paramref name="value" /> did not match the registry data type speci
       <param name="name">The name of the value to delete.</param>
       <param name="throwOnMissingValue">Indicates whether an exception should be raised if the specified value cannot be found. If this argument is <see langword="true" /> and the specified value does not exist, an exception is raised. If this argument is <see langword="false" /> and the specified value does not exist, no action is taken.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is not a valid reference to a value and <paramref name="throwOnMissingValue" /> is <see langword="true" />.  
--or-  
+        <paramref name="name" /> is not a valid reference to a value and <paramref name="throwOnMissingValue" /> is <see langword="true" />.
+-or-
 <paramref name="name" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to delete the value.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> being manipulated is closed (closed keys cannot be accessed).</exception>
@@ -363,10 +363,10 @@ The type of <paramref name="value" /> did not match the registry data type speci
       <returns>The registry data type of the value associated with <paramref name="name" />.</returns>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to read from the registry key.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> that contains the specified value is closed (closed keys cannot be accessed).</exception>
-      <exception cref="T:System.IO.IOException">The subkey that contains the specified value does not exist.  
- -or-  
- The name/value pair specified by <paramref name="name" /> does not exist.  
- This exception is not thrown on Windows 95, Windows 98, or Windows Millennium Edition.</exception>
+      <exception cref="T:System.IO.IOException">The subkey that contains the specified value does not exist.
+-or-
+The name/value pair specified by <paramref name="name" /> does not exist.
+This exception is not thrown on Windows 95, Windows 98, or Windows Millennium Edition.</exception>
       <exception cref="T:System.UnauthorizedAccessException">The user does not have the necessary registry rights.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.GetValueNames">
@@ -462,8 +462,8 @@ The type of <paramref name="value" /> did not match the registry data type speci
         <paramref name="permissionCheck" /> contains an invalid value.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> is closed (closed keys cannot be accessed).</exception>
       <exception cref="T:System.Security.SecurityException">
-        <paramref name="rights" /> includes invalid registry rights values.  
--or-  
+        <paramref name="rights" /> includes invalid registry rights values.
+-or-
 The user does not have the requested permissions.</exception>
     </member>
     <member name="M:Microsoft.Win32.RegistryKey.OpenSubKey(System.String,System.Boolean)">
@@ -503,9 +503,9 @@ The user does not have the requested permissions.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="value" /> is an unsupported data type.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> that contains the specified value is closed (closed keys cannot be accessed).</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The <see cref="T:Microsoft.Win32.RegistryKey" /> is read-only, and cannot be written to; for example, the key has not been opened with write access.  
- -or-  
- The <see cref="T:Microsoft.Win32.RegistryKey" /> object represents a root-level node, and the operating system is Windows Millennium Edition or Windows 98.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The <see cref="T:Microsoft.Win32.RegistryKey" /> is read-only, and cannot be written to; for example, the key has not been opened with write access.
+-or-
+The <see cref="T:Microsoft.Win32.RegistryKey" /> object represents a root-level node, and the operating system is Windows Millennium Edition or Windows 98.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or modify registry keys.</exception>
       <exception cref="T:System.IO.IOException">The <see cref="T:Microsoft.Win32.RegistryKey" /> object represents a root-level node, and the operating system is Windows 2000, Windows XP, or Windows Server 2003.</exception>
     </member>
@@ -518,9 +518,9 @@ The user does not have the requested permissions.</exception>
         <paramref name="value" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">The type of <paramref name="value" /> did not match the registry data type specified by <paramref name="valueKind" />, therefore the data could not be converted properly.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:Microsoft.Win32.RegistryKey" /> that contains the specified value is closed (closed keys cannot be accessed).</exception>
-      <exception cref="T:System.UnauthorizedAccessException">The <see cref="T:Microsoft.Win32.RegistryKey" /> is read-only, and cannot be written to; for example, the key has not been opened with write access.  
- -or-  
- The <see cref="T:Microsoft.Win32.RegistryKey" /> object represents a root-level node, and the operating system is Windows Millennium Edition or Windows 98.</exception>
+      <exception cref="T:System.UnauthorizedAccessException">The <see cref="T:Microsoft.Win32.RegistryKey" /> is read-only, and cannot be written to; for example, the key has not been opened with write access.
+-or-
+The <see cref="T:Microsoft.Win32.RegistryKey" /> object represents a root-level node, and the operating system is Windows Millennium Edition or Windows 98.</exception>
       <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or modify registry keys.</exception>
       <exception cref="T:System.IO.IOException">The <see cref="T:Microsoft.Win32.RegistryKey" /> object represents a root-level node, and the operating system is Windows 2000, Windows XP, or Windows Server 2003.</exception>
     </member>
@@ -547,9 +547,9 @@ The user does not have the requested permissions.</exception>
     </member>
     <member name="P:Microsoft.Win32.RegistryKey.View">
       <summary>Gets the view that was used to create the registry key.</summary>
-      <returns>The view that was used to create the registry key.  
- -or-  
- <see cref="F:Microsoft.Win32.RegistryView.Default" />, if no view was used.</returns>
+      <returns>The view that was used to create the registry key.
+-or-
+<see cref="F:Microsoft.Win32.RegistryView.Default" />, if no view was used.</returns>
     </member>
     <member name="T:Microsoft.Win32.RegistryKeyPermissionCheck">
       <summary>Specifies whether security checks are performed when opening registry keys and accessing their name/value pairs.</summary>
@@ -639,12 +639,12 @@ The user does not have the requested permissions.</exception>
       <param name="registryRights">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights" /> values indicating the rights allowed or denied.</param>
       <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType" /> values indicating whether the rights are allowed or denied.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="registryRights" /> specifies an invalid value.  
--or-  
+        <paramref name="registryRights" /> specifies an invalid value.
+-or-
 <paramref name="type" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="identity" /> is <see langword="null" />.  
--or-  
+        <paramref name="identity" /> is <see langword="null" />.
+-or-
 <paramref name="eventRights" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="identity" /> is neither of type <see cref="T:System.Security.Principal.SecurityIdentifier" /> nor of a type such as <see cref="T:System.Security.Principal.NTAccount" /> that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier" />.</exception>
@@ -657,16 +657,16 @@ The user does not have the requested permissions.</exception>
       <param name="propagationFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.PropagationFlags" /> flags specifying how access rights are propagated to other objects.</param>
       <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType" /> values specifying whether the rights are allowed or denied.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="registryRights" /> specifies an invalid value.  
--or-  
-<paramref name="type" /> specifies an invalid value.  
--or-  
-<paramref name="inheritanceFlags" /> specifies an invalid value.  
--or-  
+        <paramref name="registryRights" /> specifies an invalid value.
+-or-
+<paramref name="type" /> specifies an invalid value.
+-or-
+<paramref name="inheritanceFlags" /> specifies an invalid value.
+-or-
 <paramref name="propagationFlags" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="identity" /> is <see langword="null" />.  
--or-  
+        <paramref name="identity" /> is <see langword="null" />.
+-or-
 <paramref name="registryRights" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="identity" /> is neither of type <see cref="T:System.Security.Principal.SecurityIdentifier" />, nor of a type such as <see cref="T:System.Security.Principal.NTAccount" /> that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier" />.</exception>
@@ -677,16 +677,16 @@ The user does not have the requested permissions.</exception>
       <param name="registryRights">A bitwise combination of <see cref="T:System.Security.AccessControl.RegistryRights" /> values indicating the rights allowed or denied.</param>
       <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType" /> values indicating whether the rights are allowed or denied.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="registryRights" /> specifies an invalid value.  
--or-  
+        <paramref name="registryRights" /> specifies an invalid value.
+-or-
 <paramref name="type" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="registryRights" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="identity" /> is <see langword="null" />.  
--or-  
-<paramref name="identity" /> is a zero-length string.  
--or-  
+        <paramref name="identity" /> is <see langword="null" />.
+-or-
+<paramref name="identity" /> is a zero-length string.
+-or-
 <paramref name="identity" /> is longer than 512 characters.</exception>
     </member>
     <member name="M:System.Security.AccessControl.RegistryAccessRule.#ctor(System.String,System.Security.AccessControl.RegistryRights,System.Security.AccessControl.InheritanceFlags,System.Security.AccessControl.PropagationFlags,System.Security.AccessControl.AccessControlType)">
@@ -697,20 +697,20 @@ The user does not have the requested permissions.</exception>
       <param name="propagationFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.PropagationFlags" /> flags specifying how access rights are propagated to other objects.</param>
       <param name="type">One of the <see cref="T:System.Security.AccessControl.AccessControlType" /> values specifying whether the rights are allowed or denied.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="registryRights" /> specifies an invalid value.  
--or-  
-<paramref name="type" /> specifies an invalid value.  
--or-  
-<paramref name="inheritanceFlags" /> specifies an invalid value.  
--or-  
+        <paramref name="registryRights" /> specifies an invalid value.
+-or-
+<paramref name="type" /> specifies an invalid value.
+-or-
+<paramref name="inheritanceFlags" /> specifies an invalid value.
+-or-
 <paramref name="propagationFlags" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="eventRights" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="identity" /> is <see langword="null" />.  
--or-  
-<paramref name="identity" /> is a zero-length string.  
--or-  
+        <paramref name="identity" /> is <see langword="null" />.
+-or-
+<paramref name="identity" /> is a zero-length string.
+-or-
 <paramref name="identity" /> is longer than 512 characters.</exception>
     </member>
     <member name="P:System.Security.AccessControl.RegistryAccessRule.RegistryRights">
@@ -728,16 +728,16 @@ The user does not have the requested permissions.</exception>
       <param name="propagationFlags">A bitwise combination of <see cref="T:System.Security.AccessControl.PropagationFlags" /> values that affect the way an inherited audit rule is propagated to subkeys of the current key.</param>
       <param name="flags">A bitwise combination of <see cref="T:System.Security.AccessControl.AuditFlags" /> values specifying whether to audit success, failure, or both.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="eventRights" /> specifies an invalid value.  
--or-  
-<paramref name="flags" /> specifies an invalid value.  
--or-  
-<paramref name="inheritanceFlags" /> specifies an invalid value.  
--or-  
+        <paramref name="eventRights" /> specifies an invalid value.
+-or-
+<paramref name="flags" /> specifies an invalid value.
+-or-
+<paramref name="inheritanceFlags" /> specifies an invalid value.
+-or-
 <paramref name="propagationFlags" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="identity" /> is <see langword="null" />.  
--or-  
+        <paramref name="identity" /> is <see langword="null" />.
+-or-
 <paramref name="registryRights" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="identity" /> is neither of type <see cref="T:System.Security.Principal.SecurityIdentifier" /> nor of a type such as <see cref="T:System.Security.Principal.NTAccount" /> that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier" />.</exception>
@@ -750,20 +750,20 @@ The user does not have the requested permissions.</exception>
       <param name="propagationFlags">A combination of <see cref="T:System.Security.AccessControl.PropagationFlags" /> flags that affect the way an inherited audit rule is propagated to subkeys of the current key.</param>
       <param name="flags">A bitwise combination of <see cref="T:System.Security.AccessControl.AuditFlags" /> values specifying whether to audit success, failure, or both.</param>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="eventRights" /> specifies an invalid value.  
--or-  
-<paramref name="flags" /> specifies an invalid value.  
--or-  
-<paramref name="inheritanceFlags" /> specifies an invalid value.  
--or-  
+        <paramref name="eventRights" /> specifies an invalid value.
+-or-
+<paramref name="flags" /> specifies an invalid value.
+-or-
+<paramref name="inheritanceFlags" /> specifies an invalid value.
+-or-
 <paramref name="propagationFlags" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="registryRights" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="identity" /> is <see langword="null" />.  
--or-  
-<paramref name="identity" /> is a zero-length string.  
--or-  
+        <paramref name="identity" /> is <see langword="null" />.
+-or-
+<paramref name="identity" /> is a zero-length string.
+-or-
 <paramref name="identity" /> is longer than 512 characters.</exception>
     </member>
     <member name="P:System.Security.AccessControl.RegistryAuditRule.RegistryRights">
@@ -837,8 +837,8 @@ The user does not have the requested permissions.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="accessMask" />, <paramref name="inheritanceFlags" />, <paramref name="propagationFlags" />, or <paramref name="type" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="identityReference" /> is <see langword="null" />.  
--or-  
+        <paramref name="identityReference" /> is <see langword="null" />.
+-or-
 <paramref name="accessMask" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="identityReference" /> is neither of type <see cref="T:System.Security.Principal.SecurityIdentifier" />, nor of a type such as <see cref="T:System.Security.Principal.NTAccount" /> that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier" />.</exception>
@@ -869,8 +869,8 @@ The user does not have the requested permissions.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="accessMask" />, <paramref name="inheritanceFlags" />, <paramref name="propagationFlags" />, or <paramref name="flags" /> specifies an invalid value.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="identityReference" /> is <see langword="null" />.  
--or-  
+        <paramref name="identityReference" /> is <see langword="null" />.
+-or-
 <paramref name="accessMask" /> is zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="identityReference" /> is neither of type <see cref="T:System.Security.Principal.SecurityIdentifier" />, nor of a type such as <see cref="T:System.Security.Principal.NTAccount" /> that can be converted to type <see cref="T:System.Security.Principal.SecurityIdentifier" />.</exception>

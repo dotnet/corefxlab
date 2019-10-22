@@ -58,8 +58,8 @@
       <summary>Initializes a new instance of the <see cref="T:System.Drawing.Bitmap" /> class from the specified data stream.</summary>
       <param name="stream">The data stream used to load the image.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="stream" /> does not contain image data or is <see langword="null" />.  
--or-  
+        <paramref name="stream" /> does not contain image data or is <see langword="null" />.
+-or-
 <paramref name="stream" /> contains a PNG image file with a single dimension greater than 65,535 pixels.</exception>
     </member>
     <member name="M:System.Drawing.Bitmap.#ctor(System.IO.Stream,System.Boolean)">
@@ -68,8 +68,8 @@
       <param name="useIcm">
         <see langword="true" /> to use color correction for this <see cref="T:System.Drawing.Bitmap" />; otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="stream" /> does not contain image data or is <see langword="null" />.  
--or-  
+        <paramref name="stream" /> does not contain image data or is <see langword="null" />.
+-or-
 <paramref name="stream" /> contains a PNG image file with a single dimension greater than 65,535 pixels.</exception>
     </member>
     <member name="M:System.Drawing.Bitmap.#ctor(System.String)">
@@ -95,9 +95,9 @@
       <returns>The new <see cref="T:System.Drawing.Bitmap" /> that this method creates.</returns>
       <exception cref="T:System.OutOfMemoryException">
         <paramref name="rect" /> is outside of the source bitmap bounds.</exception>
-      <exception cref="T:System.ArgumentException">The height or width of <paramref name="rect" /> is 0.  
- -or-  
- A <see cref="T:System.Drawing.Imaging.PixelFormat" /> value is specified whose name does not start with Format. For example, specifying <see cref="F:System.Drawing.Imaging.PixelFormat.Gdi" /> will cause an <see cref="T:System.ArgumentException" />, but <see cref="F:System.Drawing.Imaging.PixelFormat.Format48bppRgb" /> will not.</exception>
+      <exception cref="T:System.ArgumentException">The height or width of <paramref name="rect" /> is 0.
+-or-
+A <see cref="T:System.Drawing.Imaging.PixelFormat" /> value is specified whose name does not start with Format. For example, specifying <see cref="F:System.Drawing.Imaging.PixelFormat.Gdi" /> will cause an <see cref="T:System.ArgumentException" />, but <see cref="F:System.Drawing.Imaging.PixelFormat.Format48bppRgb" /> will not.</exception>
     </member>
     <member name="M:System.Drawing.Bitmap.Clone(System.Drawing.RectangleF,System.Drawing.Imaging.PixelFormat)">
       <summary>Creates a copy of the section of this <see cref="T:System.Drawing.Bitmap" /> defined with a specified <see cref="T:System.Drawing.Imaging.PixelFormat" /> enumeration.</summary>
@@ -143,8 +143,8 @@
       <param name="y">The y-coordinate of the pixel to retrieve.</param>
       <returns>A <see cref="T:System.Drawing.Color" /> structure that represents the color of the specified pixel.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="x" /> is less than 0, or greater than or equal to <see cref="P:System.Drawing.Image.Width" />.  
--or-  
+        <paramref name="x" /> is less than 0, or greater than or equal to <see cref="P:System.Drawing.Image.Width" />.
+-or-
 <paramref name="y" /> is less than 0, or greater than or equal to <see cref="P:System.Drawing.Image.Height" />.</exception>
       <exception cref="T:System.Exception">The operation failed.</exception>
     </member>
@@ -154,21 +154,21 @@
       <param name="flags">An <see cref="T:System.Drawing.Imaging.ImageLockMode" /> enumeration that specifies the access level (read/write) for the <see cref="T:System.Drawing.Bitmap" />.</param>
       <param name="format">A <see cref="T:System.Drawing.Imaging.PixelFormat" /> enumeration that specifies the data format of this <see cref="T:System.Drawing.Bitmap" />.</param>
       <returns>A <see cref="T:System.Drawing.Imaging.BitmapData" /> that contains information about this lock operation.</returns>
-      <exception cref="T:System.ArgumentException">The <see cref="T:System.Drawing.Imaging.PixelFormat" /> is not a specific bits-per-pixel value.  
- -or-  
- The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in for a bitmap.</exception>
+      <exception cref="T:System.ArgumentException">The <see cref="T:System.Drawing.Imaging.PixelFormat" /> is not a specific bits-per-pixel value.
+-or-
+The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in for a bitmap.</exception>
       <exception cref="T:System.Exception">The operation failed.</exception>
     </member>
     <member name="M:System.Drawing.Bitmap.LockBits(System.Drawing.Rectangle,System.Drawing.Imaging.ImageLockMode,System.Drawing.Imaging.PixelFormat,System.Drawing.Imaging.BitmapData)">
-      <summary>Locks a <see cref="T:System.Drawing.Bitmap" /> into system memory</summary>
+      <summary>Locks a <see cref="T:System.Drawing.Bitmap" /> into system memory.</summary>
       <param name="rect">A rectangle structure that specifies the portion of the <see cref="T:System.Drawing.Bitmap" /> to lock.</param>
       <param name="flags">One of the <see cref="T:System.Drawing.Imaging.ImageLockMode" /> values that specifies the access level (read/write) for the <see cref="T:System.Drawing.Bitmap" />.</param>
       <param name="format">One of the <see cref="T:System.Drawing.Imaging.PixelFormat" /> values that specifies the data format of the <see cref="T:System.Drawing.Bitmap" />.</param>
       <param name="bitmapData">A <see cref="T:System.Drawing.Imaging.BitmapData" /> that contains information about the lock operation.</param>
       <returns>A <see cref="T:System.Drawing.Imaging.BitmapData" /> that contains information about the lock operation.</returns>
       <exception cref="T:System.ArgumentException">
-        <see cref="T:System.Drawing.Imaging.PixelFormat" /> value is not a specific bits-per-pixel value.  
--or-  
+        <see cref="T:System.Drawing.Imaging.PixelFormat" /> value is not a specific bits-per-pixel value.
+-or-
 The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in for a bitmap.</exception>
       <exception cref="T:System.Exception">The operation failed.</exception>
     </member>
@@ -2859,8 +2859,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="emSize">The em-size of the new font in the units specified by the <paramref name="unit" /> parameter.</param>
       <param name="style">The <see cref="T:System.Drawing.FontStyle" /> of the new font.</param>
       <param name="unit">The <see cref="T:System.Drawing.GraphicsUnit" /> of the new font.</param>
-      <param name="gdiCharSet">A <see cref="T:System.Byte" /> that specifies a  
- GDI character set to use for the new font.</param>
+      <param name="gdiCharSet">A <see cref="T:System.Byte" /> that specifies a
+GDI character set to use for the new font.</param>
       <exception cref="T:System.ArgumentException">
         <paramref name="emSize" /> is less than or equal to 0, evaluates to infinity, or is not a valid number.</exception>
       <exception cref="T:System.ArgumentNullException">
@@ -2872,8 +2872,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="emSize">The em-size of the new font in the units specified by the <paramref name="unit" /> parameter.</param>
       <param name="style">The <see cref="T:System.Drawing.FontStyle" /> of the new font.</param>
       <param name="unit">The <see cref="T:System.Drawing.GraphicsUnit" /> of the new font.</param>
-      <param name="gdiCharSet">A <see cref="T:System.Byte" /> that specifies a  
- GDI character set to use for this font.</param>
+      <param name="gdiCharSet">A <see cref="T:System.Byte" /> that specifies a
+GDI character set to use for this font.</param>
       <param name="gdiVerticalFont">A Boolean value indicating whether the new font is derived from a GDI vertical font.</param>
       <exception cref="T:System.ArgumentException">
         <paramref name="emSize" /> is less than or equal to 0, evaluates to infinity, or is not a valid number.</exception>
@@ -3110,10 +3110,10 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <summary>Initializes a new <see cref="T:System.Drawing.FontFamily" /> with the specified name.</summary>
       <param name="name">The name of the new <see cref="T:System.Drawing.FontFamily" />.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string ("").  
--or-  
-<paramref name="name" /> specifies a font that is not installed on the computer running the application.  
--or-  
+        <paramref name="name" /> is an empty string ("").
+-or-
+<paramref name="name" /> specifies a font that is not installed on the computer running the application.
+-or-
 <paramref name="name" /> specifies a font that is not a TrueType font.</exception>
     </member>
     <member name="M:System.Drawing.FontFamily.#ctor(System.String,System.Drawing.Text.FontCollection)">
@@ -3121,10 +3121,10 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="name">A <see cref="T:System.String" /> that represents the name of the new <see cref="T:System.Drawing.FontFamily" />.</param>
       <param name="fontCollection">The <see cref="T:System.Drawing.Text.FontCollection" /> that contains this <see cref="T:System.Drawing.FontFamily" />.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is an empty string ("").  
--or-  
-<paramref name="name" /> specifies a font that is not installed on the computer running the application.  
--or-  
+        <paramref name="name" /> is an empty string ("").
+-or-
+<paramref name="name" /> specifies a font that is not installed on the computer running the application.
+-or-
 <paramref name="name" /> specifies a font that is not a TrueType font.</exception>
     </member>
     <member name="M:System.Drawing.FontFamily.Dispose">
@@ -3421,8 +3421,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and style of the curve.</param>
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that represent the points that determine the curve. The number of points in the array should be a multiple of 3 plus 1, such as 4, 7, or 10.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawBeziers(System.Drawing.Pen,System.Drawing.PointF[])">
@@ -3431,8 +3431,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and style of the curve.</param>
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that represent the points that determine the curve. The number of points in the array should be a multiple of 3 plus 1, such as 4, 7, or 10.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.Point[])">
@@ -3441,8 +3441,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and height of the curve.</param>
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that define the spline.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.Point[],System.Single,System.Drawing.Drawing2D.FillMode)">
@@ -3453,8 +3453,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="tension">Value greater than or equal to 0.0F that specifies the tension of the curve.</param>
       <param name="fillmode">Member of the <see cref="T:System.Drawing.Drawing2D.FillMode" /> enumeration that determines how the curve is filled. This parameter is required but ignored.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.PointF[])">
@@ -3463,8 +3463,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and height of the curve.</param>
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that define the spline.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.PointF[],System.Single,System.Drawing.Drawing2D.FillMode)">
@@ -3475,8 +3475,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="tension">Value greater than or equal to 0.0F that specifies the tension of the curve.</param>
       <param name="fillmode">Member of the <see cref="T:System.Drawing.Drawing2D.FillMode" /> enumeration that determines how the curve is filled. This parameter is required but is ignored.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawCurve(System.Drawing.Pen,System.Drawing.Point[])">
@@ -3485,8 +3485,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and height of the curve.</param>
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that define the spline.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawCurve(System.Drawing.Pen,System.Drawing.Point[],System.Int32,System.Int32,System.Single)">
@@ -3498,8 +3498,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="numberOfSegments">Number of segments after the starting point to include in the curve.</param>
       <param name="tension">Value greater than or equal to 0.0F that specifies the tension of the curve.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawCurve(System.Drawing.Pen,System.Drawing.Point[],System.Single)">
@@ -3509,8 +3509,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that define the spline.</param>
       <param name="tension">Value greater than or equal to 0.0F that specifies the tension of the curve.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawCurve(System.Drawing.Pen,System.Drawing.PointF[])">
@@ -3519,8 +3519,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and style of the curve.</param>
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that define the spline.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawCurve(System.Drawing.Pen,System.Drawing.PointF[],System.Int32,System.Int32)">
@@ -3531,8 +3531,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="offset">Offset from the first element in the array of the <paramref name="points" /> parameter to the starting point in the curve.</param>
       <param name="numberOfSegments">Number of segments after the starting point to include in the curve.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawCurve(System.Drawing.Pen,System.Drawing.PointF[],System.Int32,System.Int32,System.Single)">
@@ -3544,8 +3544,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="numberOfSegments">Number of segments after the starting point to include in the curve.</param>
       <param name="tension">Value greater than or equal to 0.0F that specifies the tension of the curve.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawCurve(System.Drawing.Pen,System.Drawing.PointF[],System.Single)">
@@ -3555,8 +3555,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that represent the points that define the curve.</param>
       <param name="tension">Value greater than or equal to 0.0F that specifies the tension of the curve.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawEllipse(System.Drawing.Pen,System.Drawing.Rectangle)">
@@ -4108,8 +4108,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and style of the line segments.</param>
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that represent the points to connect.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawLines(System.Drawing.Pen,System.Drawing.PointF[])">
@@ -4118,8 +4118,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and style of the line segments.</param>
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that represent the points to connect.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawPath(System.Drawing.Pen,System.Drawing.Drawing2D.GraphicsPath)">
@@ -4129,8 +4129,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="path">
         <see cref="T:System.Drawing.Drawing2D.GraphicsPath" /> to draw.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="path" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawPie(System.Drawing.Pen,System.Drawing.Rectangle,System.Single,System.Single)">
@@ -4195,8 +4195,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and style of the polygon.</param>
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that represent the vertices of the polygon.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawRectangle(System.Drawing.Pen,System.Drawing.Rectangle)">
@@ -4233,8 +4233,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and style of the outlines of the rectangles.</param>
       <param name="rects">Array of <see cref="T:System.Drawing.Rectangle" /> structures that represent the rectangles to draw.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="rects" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="rects" /> is a zero-length array.</exception>
@@ -4245,8 +4245,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Pen" /> that determines the color, width, and style of the outlines of the rectangles.</param>
       <param name="rects">Array of <see cref="T:System.Drawing.RectangleF" /> structures that represent the rectangles to draw.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="pen" /> is <see langword="null" />.  
--or-  
+        <paramref name="pen" /> is <see langword="null" />.
+-or-
 <paramref name="rects" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="rects" /> is a zero-length array.</exception>
@@ -4261,8 +4261,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="point">
         <see cref="T:System.Drawing.PointF" /> structure that specifies the upper-left corner of the drawn text.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="s" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF,System.Drawing.StringFormat)">
@@ -4277,8 +4277,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="format">
         <see cref="T:System.Drawing.StringFormat" /> that specifies formatting attributes, such as line spacing and alignment, that are applied to the drawn text.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="s" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.RectangleF)">
@@ -4291,8 +4291,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="layoutRectangle">
         <see cref="T:System.Drawing.RectangleF" /> structure that specifies the location of the drawn text.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="s" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.RectangleF,System.Drawing.StringFormat)">
@@ -4307,8 +4307,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="format">
         <see cref="T:System.Drawing.StringFormat" /> that specifies formatting attributes, such as line spacing and alignment, that are applied to the drawn text.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="s" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)">
@@ -4321,8 +4321,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="x">The x-coordinate of the upper-left corner of the drawn text.</param>
       <param name="y">The y-coordinate of the upper-left corner of the drawn text.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="s" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single,System.Drawing.StringFormat)">
@@ -4337,8 +4337,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="format">
         <see cref="T:System.Drawing.StringFormat" /> that specifies formatting attributes, such as line spacing and alignment, that are applied to the drawn text.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="s" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.EndContainer(System.Drawing.Drawing2D.GraphicsContainer)">
@@ -4785,8 +4785,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Brush" /> that determines the characteristics of the fill.</param>
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that define the spline.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode)">
@@ -4796,8 +4796,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that define the spline.</param>
       <param name="fillmode">Member of the <see cref="T:System.Drawing.Drawing2D.FillMode" /> enumeration that determines how the curve is filled.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode,System.Single)">
@@ -4808,8 +4808,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="fillmode">Member of the <see cref="T:System.Drawing.Drawing2D.FillMode" /> enumeration that determines how the curve is filled.</param>
       <param name="tension">Value greater than or equal to 0.0F that specifies the tension of the curve.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[])">
@@ -4818,8 +4818,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Brush" /> that determines the characteristics of the fill.</param>
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that define the spline.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode)">
@@ -4829,8 +4829,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that define the spline.</param>
       <param name="fillmode">Member of the <see cref="T:System.Drawing.Drawing2D.FillMode" /> enumeration that determines how the curve is filled.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode,System.Single)">
@@ -4840,8 +4840,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="fillmode">Member of the <see cref="T:System.Drawing.Drawing2D.FillMode" /> enumeration that determines how the curve is filled.</param>
       <param name="tension">Value greater than or equal to 0.0F that specifies the tension of the curve.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillEllipse(System.Drawing.Brush,System.Drawing.Rectangle)">
@@ -4891,8 +4891,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="path">
         <see cref="T:System.Drawing.Drawing2D.GraphicsPath" /> that represents the path to fill.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="path" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillPie(System.Drawing.Brush,System.Drawing.Rectangle,System.Single,System.Single)">
@@ -4938,8 +4938,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Brush" /> that determines the characteristics of the fill.</param>
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that represent the vertices of the polygon to fill.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillPolygon(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode)">
@@ -4949,8 +4949,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="points">Array of <see cref="T:System.Drawing.Point" /> structures that represent the vertices of the polygon to fill.</param>
       <param name="fillMode">Member of the <see cref="T:System.Drawing.Drawing2D.FillMode" /> enumeration that determines the style of the fill.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillPolygon(System.Drawing.Brush,System.Drawing.PointF[])">
@@ -4959,8 +4959,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Brush" /> that determines the characteristics of the fill.</param>
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that represent the vertices of the polygon to fill.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillPolygon(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode)">
@@ -4970,8 +4970,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="points">Array of <see cref="T:System.Drawing.PointF" /> structures that represent the vertices of the polygon to fill.</param>
       <param name="fillMode">Member of the <see cref="T:System.Drawing.Drawing2D.FillMode" /> enumeration that determines the style of the fill.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="points" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.FillRectangle(System.Drawing.Brush,System.Drawing.Rectangle)">
@@ -5020,8 +5020,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Brush" /> that determines the characteristics of the fill.</param>
       <param name="rects">Array of <see cref="T:System.Drawing.Rectangle" /> structures that represent the rectangles to fill.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="rects" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="rects" /> is a zero-length array.</exception>
@@ -5032,8 +5032,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
         <see cref="T:System.Drawing.Brush" /> that determines the characteristics of the fill.</param>
       <param name="rects">Array of <see cref="T:System.Drawing.RectangleF" /> structures that represent the rectangles to fill.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="rects" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="Rects" /> is a zero-length array.</exception>
@@ -5045,8 +5045,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="region">
         <see cref="T:System.Drawing.Region" /> that represents the area to fill.</param>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="brush" /> is <see langword="null" />.  
--or-  
+        <paramref name="brush" /> is <see langword="null" />.
+-or-
 <paramref name="region" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Graphics.Finalize">
@@ -5564,9 +5564,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <summary>Returns an icon representation of an image that is contained in the specified file.</summary>
       <param name="filePath">The path to the file that contains an image.</param>
       <returns>The <see cref="T:System.Drawing.Icon" /> representation of the image that is contained in the specified file.</returns>
-      <exception cref="T:System.ArgumentException">The <paramref name="filePath" /> does not indicate a valid file.  
- -or-  
- The <paramref name="filePath" /> indicates a Universal Naming Convention (UNC) path.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="filePath" /> does not indicate a valid file.
+-or-
+The <paramref name="filePath" /> indicates a Universal Naming Convention (UNC) path.</exception>
     </member>
     <member name="M:System.Drawing.Icon.Finalize">
       <summary>Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.</summary>
@@ -5649,9 +5649,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <summary>Creates an <see cref="T:System.Drawing.Image" /> from the specified file.</summary>
       <param name="filename">A string that contains the name of the file from which to create the <see cref="T:System.Drawing.Image" />.</param>
       <returns>The <see cref="T:System.Drawing.Image" /> this method creates.</returns>
-      <exception cref="T:System.OutOfMemoryException">The file does not have a valid image format.  
- -or-  
- GDI+ does not support the pixel format of the file.</exception>
+      <exception cref="T:System.OutOfMemoryException">The file does not have a valid image format.
+-or-
+GDI+ does not support the pixel format of the file.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The specified file does not exist.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="filename" /> is a <see cref="T:System.Uri" />.</exception>
@@ -5661,9 +5661,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="filename">A string that contains the name of the file from which to create the <see cref="T:System.Drawing.Image" />.</param>
       <param name="useEmbeddedColorManagement">Set to <see langword="true" /> to use color management information embedded in the image file; otherwise, <see langword="false" />.</param>
       <returns>The <see cref="T:System.Drawing.Image" /> this method creates.</returns>
-      <exception cref="T:System.OutOfMemoryException">The file does not have a valid image format.  
- -or-  
- GDI+ does not support the pixel format of the file.</exception>
+      <exception cref="T:System.OutOfMemoryException">The file does not have a valid image format.
+-or-
+GDI+ does not support the pixel format of the file.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The specified file does not exist.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="filename" /> is a <see cref="T:System.Uri" />.</exception>
@@ -5683,9 +5683,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <summary>Creates an <see cref="T:System.Drawing.Image" /> from the specified data stream.</summary>
       <param name="stream">A <see cref="T:System.IO.Stream" /> that contains the data for this <see cref="T:System.Drawing.Image" />.</param>
       <returns>The <see cref="T:System.Drawing.Image" /> this method creates.</returns>
-      <exception cref="T:System.ArgumentException">The stream does not have a valid image format  
- -or-  
- <paramref name="stream" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The stream does not have a valid image format
+-or-
+<paramref name="stream" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Image.FromStream(System.IO.Stream,System.Boolean)">
       <summary>Creates an <see cref="T:System.Drawing.Image" /> from the specified data stream, optionally using embedded color management information in that stream.</summary>
@@ -5693,9 +5693,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="useEmbeddedColorManagement">
         <see langword="true" /> to use color management information embedded in the data stream; otherwise, <see langword="false" />.</param>
       <returns>The <see cref="T:System.Drawing.Image" /> this method creates.</returns>
-      <exception cref="T:System.ArgumentException">The stream does not have a valid image format  
- -or-  
- <paramref name="stream" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The stream does not have a valid image format
+-or-
+<paramref name="stream" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Drawing.Image.FromStream(System.IO.Stream,System.Boolean,System.Boolean)">
       <summary>Creates an <see cref="T:System.Drawing.Image" /> from the specified data stream, optionally using embedded color management information and validating the image data.</summary>
@@ -5737,8 +5737,8 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <summary>Returns a thumbnail for this <see cref="T:System.Drawing.Image" />.</summary>
       <param name="thumbWidth">The width, in pixels, of the requested thumbnail image.</param>
       <param name="thumbHeight">The height, in pixels, of the requested thumbnail image.</param>
-      <param name="callback">A <see cref="T:System.Drawing.Image.GetThumbnailImageAbort" /> delegate.  
- Note You must create a delegate and pass a reference to the delegate as the <paramref name="callback" /> parameter, but the delegate is not used.</param>
+      <param name="callback">A <see cref="T:System.Drawing.Image.GetThumbnailImageAbort" /> delegate.
+Note You must create a delegate and pass a reference to the delegate as the <paramref name="callback" /> parameter, but the delegate is not used.</param>
       <param name="callbackData">Must be <see cref="F:System.IntPtr.Zero" />.</param>
       <returns>An <see cref="T:System.Drawing.Image" /> that represents the thumbnail.</returns>
     </member>
@@ -5799,9 +5799,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
     <member name="M:System.Drawing.Image.RemovePropertyItem(System.Int32)">
       <summary>Removes the specified property item from this <see cref="T:System.Drawing.Image" />.</summary>
       <param name="propid">The ID of the property item to remove.</param>
-      <exception cref="T:System.ArgumentException">The image does not contain the requested property item.  
- -or-  
- The image format for this image does not support property items.</exception>
+      <exception cref="T:System.ArgumentException">The image does not contain the requested property item.
+-or-
+The image format for this image does not support property items.</exception>
     </member>
     <member name="M:System.Drawing.Image.RotateFlip(System.Drawing.RotateFlipType)">
       <summary>Rotates, flips, or rotates and flips the <see cref="T:System.Drawing.Image" />.</summary>
@@ -5829,9 +5829,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="filename">A string that contains the name of the file to which to save this <see cref="T:System.Drawing.Image" />.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="filename" /> is <see langword="null." /></exception>
-      <exception cref="T:System.Runtime.InteropServices.ExternalException">The image was saved with the wrong image format.  
- -or-  
- The image was saved to the same file it was created from.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The image was saved with the wrong image format.
+-or-
+The image was saved to the same file it was created from.</exception>
     </member>
     <member name="M:System.Drawing.Image.Save(System.String,System.Drawing.Imaging.ImageCodecInfo,System.Drawing.Imaging.EncoderParameters)">
       <summary>Saves this <see cref="T:System.Drawing.Image" /> to the specified file, with the specified encoder and image-encoder parameters.</summary>
@@ -5840,9 +5840,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="encoderParams">An <see cref="T:System.Drawing.Imaging.EncoderParameters" /> to use for this <see cref="T:System.Drawing.Image" />.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="filename" /> or <paramref name="encoder" /> is <see langword="null." /></exception>
-      <exception cref="T:System.Runtime.InteropServices.ExternalException">The image was saved with the wrong image format.  
- -or-  
- The image was saved to the same file it was created from.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The image was saved with the wrong image format.
+-or-
+The image was saved to the same file it was created from.</exception>
     </member>
     <member name="M:System.Drawing.Image.Save(System.String,System.Drawing.Imaging.ImageFormat)">
       <summary>Saves this <see cref="T:System.Drawing.Image" /> to the specified file in the specified format.</summary>
@@ -5850,9 +5850,9 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="format">The <see cref="T:System.Drawing.Imaging.ImageFormat" /> for this <see cref="T:System.Drawing.Image" />.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="filename" /> or <paramref name="format" /> is <see langword="null." /></exception>
-      <exception cref="T:System.Runtime.InteropServices.ExternalException">The image was saved with the wrong image format.  
- -or-  
- The image was saved to the same file it was created from.</exception>
+      <exception cref="T:System.Runtime.InteropServices.ExternalException">The image was saved with the wrong image format.
+-or-
+The image was saved to the same file it was created from.</exception>
     </member>
     <member name="M:System.Drawing.Image.SaveAdd(System.Drawing.Image,System.Drawing.Imaging.EncoderParameters)">
       <summary>Adds a frame to the file or stream specified in a previous call to the <see cref="Overload:System.Drawing.Image.Save" /> method.</summary>
@@ -6163,10 +6163,13 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
     </member>
     <member name="P:System.Drawing.Imaging.ColorPalette.Flags">
       <summary>Gets a value that specifies how to interpret the color information in the array of colors.</summary>
-      <returns>The following flag values are valid:  
- 0x00000001 The color values in the array contain alpha information.  
- 0x00000002 The colors in the array are grayscale values.  
- 0x00000004 The colors in the array are halftone values.</returns>
+      <returns>The following flag values are valid:
+0x00000001
+The color values in the array contain alpha information.
+0x00000002
+The colors in the array are grayscale values.
+0x00000004
+The colors in the array are halftone values.</returns>
     </member>
     <member name="T:System.Drawing.Imaging.EmfPlusRecordType">
       <summary>Specifies the methods available for use with a metafile to read and write graphic commands.</summary>
@@ -9072,13 +9075,13 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <param name="right">The right margin, in hundredths of an inch.</param>
       <param name="top">The top margin, in hundredths of an inch.</param>
       <param name="bottom">The bottom margin, in hundredths of an inch.</param>
-      <exception cref="T:System.ArgumentException">The <paramref name="left" /> parameter value is less than 0.  
- -or-  
- The <paramref name="right" /> parameter value is less than 0.  
- -or-  
- The <paramref name="top" /> parameter value is less than 0.  
- -or-  
- The <paramref name="bottom" /> parameter value is less than 0.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="left" /> parameter value is less than 0.
+-or-
+The <paramref name="right" /> parameter value is less than 0.
+-or-
+The <paramref name="top" /> parameter value is less than 0.
+-or-
+The <paramref name="bottom" /> parameter value is less than 0.</exception>
     </member>
     <member name="P:System.Drawing.Printing.Margins.Bottom">
       <summary>Gets or sets the bottom margin, in hundredths of an inch.</summary>
@@ -10205,7 +10208,7 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <returns>The zero-based index of the newly added item.</returns>
     </member>
     <member name="M:System.Drawing.Printing.PrinterSettings.StringCollection.CopyTo(System.String[],System.Int32)">
-      <summary>Copies the contents of the current <see cref="T:System.Drawing.Printing.PrinterSettings.PrinterResolutionCollection" /> to the specified array, starting at the specified index</summary>
+      <summary>Copies the contents of the current <see cref="T:System.Drawing.Printing.PrinterSettings.PrinterResolutionCollection" /> to the specified array, starting at the specified index.</summary>
       <param name="strings">A zero-based array that receives the items copied from the <see cref="T:System.Drawing.Printing.PrinterSettings.StringCollection" />.</param>
       <param name="index">The index at which to start copying items.</param>
     </member>
@@ -10377,7 +10380,7 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <summary>All pages are printed.</summary>
     </member>
     <member name="F:System.Drawing.Printing.PrintRange.CurrentPage">
-      <summary>The currently displayed page is printed</summary>
+      <summary>The currently displayed page is printed.</summary>
     </member>
     <member name="F:System.Drawing.Printing.PrintRange.Selection">
       <summary>The selected pages are printed.</summary>
@@ -10417,18 +10420,18 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <summary>Completes the control sequence that determines when and how to print a document.</summary>
       <param name="document">A <see cref="T:System.Drawing.Printing.PrintDocument" /> that represents the document being printed.</param>
       <param name="e">A <see cref="T:System.Drawing.Printing.PrintEventArgs" /> that contains data about how to print the document.</param>
-      <exception cref="T:System.ComponentModel.Win32Exception">The native Win32 Application Programming Interface (API) could not complete the print job.  
- -or-  
- The native Windows API could not delete the specified device context (DC).</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The native Win32 Application Programming Interface (API) could not complete the print job.
+-or-
+The native Windows API could not delete the specified device context (DC).</exception>
     </member>
     <member name="M:System.Drawing.Printing.StandardPrintController.OnStartPage(System.Drawing.Printing.PrintDocument,System.Drawing.Printing.PrintPageEventArgs)">
       <summary>Begins the control sequence that determines when and how to print a page in a document.</summary>
       <param name="document">A <see cref="T:System.Drawing.Printing.PrintDocument" /> that represents the document being printed.</param>
       <param name="e">A <see cref="T:System.Drawing.Printing.PrintPageEventArgs" /> that contains data about how to print a page in the document. Initially, the <see cref="P:System.Drawing.Printing.PrintPageEventArgs.Graphics" /> property of this parameter will be <see langword="null" />. The value returned from the <see cref="M:System.Drawing.Printing.StandardPrintController.OnStartPage(System.Drawing.Printing.PrintDocument,System.Drawing.Printing.PrintPageEventArgs)" /> method will be used to set this property.</param>
       <returns>A <see cref="T:System.Drawing.Graphics" /> object that represents a page from a <see cref="T:System.Drawing.Printing.PrintDocument" />.</returns>
-      <exception cref="T:System.ComponentModel.Win32Exception">The native Win32 Application Programming Interface (API) could not prepare the printer driver to accept data.  
- -or-  
- The native Windows API could not update the specified printer or plotter device context (DC) using the specified information.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The native Win32 Application Programming Interface (API) could not prepare the printer driver to accept data.
+-or-
+The native Windows API could not update the specified printer or plotter device context (DC) using the specified information.</exception>
     </member>
     <member name="M:System.Drawing.Printing.StandardPrintController.OnStartPrint(System.Drawing.Printing.PrintDocument,System.Drawing.Printing.PrintEventArgs)">
       <summary>Begins the control sequence that determines when and how to print a document.</summary>
@@ -11016,7 +11019,7 @@ The incorrect <see cref="T:System.Drawing.Imaging.PixelFormat" /> is passed in f
       <summary>Specifies an inch as the unit of measure.</summary>
     </member>
     <member name="F:System.Drawing.StringUnit.Millimeter">
-      <summary>Specifies a millimeter as the unit of measure</summary>
+      <summary>Specifies a millimeter as the unit of measure.</summary>
     </member>
     <member name="F:System.Drawing.StringUnit.Pixel">
       <summary>Specifies a pixel as the unit of measure.</summary>

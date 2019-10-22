@@ -82,9 +82,9 @@
       <returns>
         <see langword="true" /> if the key can be exported; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.NotSupportedException">The key type is not supported.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider cannot be found.  
- -or-  
- The key container was not found.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider cannot be found.
+-or-
+The key container was not found.</exception>
     </member>
     <member name="P:System.Security.Cryptography.CspKeyContainerInfo.HardwareDevice">
       <summary>Gets a value indicating whether a key is a hardware key.</summary>
@@ -110,9 +110,9 @@
       <returns>
         <see langword="true" /> if the key pair is protected; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.NotSupportedException">The key type is not supported.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider cannot be found.  
- -or-  
- The key container was not found.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider cannot be found.
+-or-
+The key container was not found.</exception>
     </member>
     <member name="P:System.Security.Cryptography.CspKeyContainerInfo.ProviderName">
       <summary>Gets the provider name of a key.</summary>
@@ -137,9 +137,9 @@
       <summary>Gets a unique key container name.</summary>
       <returns>The unique key container name.</returns>
       <exception cref="T:System.NotSupportedException">The key type is not supported.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider cannot be found.  
- -or-  
- The key container was not found.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider cannot be found.
+-or-
+The key container was not found.</exception>
     </member>
     <member name="T:System.Security.Cryptography.CspParameters">
       <summary>Contains parameters that are passed to the cryptographic service provider (CSP) that performs cryptographic computations. This class cannot be inherited.</summary>
@@ -230,13 +230,13 @@
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
       <param name="rgbIV">The initialization vector to use for the symmetric algorithm.</param>
       <returns>A symmetric <see cref="T:System.Security.Cryptography.DES" /> decryptor object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.OFB" />.  
- -or-  
- The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> and the value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize" /> property is not 8.  
- -or-  
- An invalid key size was used.  
- -or-  
- The algorithm key size was not available.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.OFB" />.
+-or-
+The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> and the value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize" /> property is not 8.
+-or-
+An invalid key size was used.
+-or-
+The algorithm key size was not available.</exception>
     </member>
     <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.CreateEncryptor" />
     <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.CreateEncryptor(System.Byte[],System.Byte[])">
@@ -244,13 +244,13 @@
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
       <param name="rgbIV">The initialization vector to use for the symmetric algorithm.</param>
       <returns>A symmetric <see cref="T:System.Security.Cryptography.DES" /> encryptor object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.OFB" />.  
- -or-  
- The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> and the value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize" /> property is not 8.  
- -or-  
- An invalid key size was used.  
- -or-  
- The algorithm key size was not available.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.OFB" />.
+-or-
+The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> and the value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize" /> property is not 8.
+-or-
+An invalid key size was used.
+-or-
+The algorithm key size was not available.</exception>
     </member>
     <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.GenerateIV">
       <summary>Generates a random initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />) to use for the algorithm.</summary>
@@ -272,9 +272,9 @@
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.DSACryptoServiceProvider" /> class with the specified key size and parameters for the cryptographic service provider (CSP).</summary>
       <param name="dwKeySize">The size of the key for the cryptographic algorithm in bits.</param>
       <param name="parameters">The parameters for the CSP.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The CSP cannot be acquired.  
- -or-  
- The key cannot be created.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The CSP cannot be acquired.
+-or-
+The key cannot be created.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="dwKeySize" /> is out of range.</exception>
     </member>
@@ -311,9 +311,9 @@
     <member name="M:System.Security.Cryptography.DSACryptoServiceProvider.ImportParameters(System.Security.Cryptography.DSAParameters)">
       <summary>Imports the specified <see cref="T:System.Security.Cryptography.DSAParameters" />.</summary>
       <param name="parameters">The parameters for <see cref="T:System.Security.Cryptography.DSA" />.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- The <paramref name="parameters" /> parameter has missing fields.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.
+-or-
+The <paramref name="parameters" /> parameter has missing fields.</exception>
     </member>
     <member name="P:System.Security.Cryptography.DSACryptoServiceProvider.KeyExchangeAlgorithm">
       <summary>Gets the name of the key exchange algorithm.</summary>
@@ -364,9 +364,9 @@
       <param name="str">The name of the hash algorithm used to create the hash value of the data.</param>
       <returns>The <see cref="T:System.Security.Cryptography.DSA" /> signature for the specified hash value.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- There is no private key.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.
+-or-
+There is no private key.</exception>
     </member>
     <member name="P:System.Security.Cryptography.DSACryptoServiceProvider.UseMachineKeyStore">
       <summary>Gets or sets a value indicating whether the key should be persisted in the computer's key store instead of the user profile store.</summary>
@@ -387,12 +387,12 @@
       <param name="rgbSignature">The signature data to be verified.</param>
       <returns>
         <see langword="true" /> if the signature verifies as valid; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- The signature cannot be verified.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.
+-or-
+The signature cannot be verified.</exception>
     </member>
     <member name="M:System.Security.Cryptography.DSACryptoServiceProvider.VerifySignature(System.Byte[],System.Byte[])">
       <summary>Verifies the <see cref="T:System.Security.Cryptography.DSA" /> signature for the specified data.</summary>
@@ -499,13 +499,13 @@
       <param name="keySize">The size of the key, in bits, to derive.</param>
       <param name="rgbIV">The initialization vector (IV) to use to derive the key.</param>
       <returns>The derived key.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The <paramref name="keySize" /> parameter is incorrect.  
- -or-  
- The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- The <paramref name="algname" /> parameter is not a valid algorithm name.  
- -or-  
- The <paramref name="alghashname" /> parameter is not a valid hash algorithm name.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The <paramref name="keySize" /> parameter is incorrect.
+-or-
+The cryptographic service provider (CSP) cannot be acquired.
+-or-
+The <paramref name="algname" /> parameter is not a valid algorithm name.
+-or-
+The <paramref name="alghashname" /> parameter is not a valid hash algorithm name.</exception>
     </member>
     <member name="M:System.Security.Cryptography.PasswordDeriveBytes.Dispose(System.Boolean)">
       <summary>Releases the unmanaged resources used by the <see cref="T:System.Security.Cryptography.PasswordDeriveBytes" /> class and optionally releases the managed resources.</summary>
@@ -549,26 +549,26 @@
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
       <param name="rgbIV">The initialization vector to use for the symmetric algorithm.</param>
       <returns>A symmetric <see cref="T:System.Security.Cryptography.RC2" /> decryptor object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An <see cref="F:System.Security.Cryptography.CipherMode.OFB" /> cipher mode was used.  
- -or-  
- A <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> cipher mode with a feedback size other than 8 bits was used.  
- -or-  
- An invalid key size was used.  
- -or-  
- The algorithm key size was not available.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An <see cref="F:System.Security.Cryptography.CipherMode.OFB" /> cipher mode was used.
+-or-
+A <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> cipher mode with a feedback size other than 8 bits was used.
+-or-
+An invalid key size was used.
+-or-
+The algorithm key size was not available.</exception>
     </member>
     <member name="M:System.Security.Cryptography.RC2CryptoServiceProvider.CreateEncryptor(System.Byte[],System.Byte[])">
       <summary>Creates a symmetric <see cref="T:System.Security.Cryptography.RC2" /> encryptor object with the specified key (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" />) and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
       <param name="rgbIV">The initialization vector to use for the symmetric algorithm.</param>
       <returns>A symmetric <see cref="T:System.Security.Cryptography.RC2" /> encryptor object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">An <see cref="F:System.Security.Cryptography.CipherMode.OFB" /> cipher mode was used.  
- -or-  
- A <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> cipher mode with a feedback size other than 8 bits was used.  
- -or-  
- An invalid key size was used.  
- -or-  
- The algorithm key size was not available.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An <see cref="F:System.Security.Cryptography.CipherMode.OFB" /> cipher mode was used.
+-or-
+A <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> cipher mode with a feedback size other than 8 bits was used.
+-or-
+An invalid key size was used.
+-or-
+The algorithm key size was not available.</exception>
     </member>
     <member name="P:System.Security.Cryptography.RC2CryptoServiceProvider.EffectiveKeySize">
       <summary>Gets or sets the effective size, in bits, of the secret key used by the <see cref="T:System.Security.Cryptography.RC2" /> algorithm.</summary>
@@ -654,9 +654,9 @@
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.RSACryptoServiceProvider" /> class with the specified key size and parameters.</summary>
       <param name="dwKeySize">The size of the key to use in bits.</param>
       <param name="parameters">The parameters to be passed to the cryptographic service provider (CSP).</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The CSP cannot be acquired.  
- -or-  
- The key cannot be created.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The CSP cannot be acquired.
+-or-
+The key cannot be created.</exception>
     </member>
     <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.#ctor(System.Security.Cryptography.CspParameters)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.RSACryptoServiceProvider" /> class with the specified parameters.</summary>
@@ -673,13 +673,13 @@
       <param name="fOAEP">
         <see langword="true" /> to perform direct <see cref="T:System.Security.Cryptography.RSA" /> decryption using OAEP padding (only available on a computer running Microsoft Windows XP or later); otherwise, <see langword="false" /> to use PKCS#1 v1.5 padding.</param>
       <returns>The decrypted data, which is the original plain text before encryption.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- The <paramref name="fOAEP" /> parameter is <see langword="true" /> and the length of the <paramref name="rgb" /> parameter is greater than <see cref="P:System.Security.Cryptography.RSACryptoServiceProvider.KeySize" />.  
- -or-  
- The <paramref name="fOAEP" /> parameter is <see langword="true" /> and OAEP is not supported.  
- -or-  
- The key does not match the encrypted data. However, the exception wording may not be accurate. For example, it may say <c>Not enough storage is available to process this command</c>.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.
+-or-
+The <paramref name="fOAEP" /> parameter is <see langword="true" /> and the length of the <paramref name="rgb" /> parameter is greater than <see cref="P:System.Security.Cryptography.RSACryptoServiceProvider.KeySize" />.
+-or-
+The <paramref name="fOAEP" /> parameter is <see langword="true" /> and OAEP is not supported.
+-or-
+The key does not match the encrypted data. However, the exception wording may not be accurate. For example, it may say <c>Not enough storage is available to process this command</c>.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rgb" /> is <see langword="null" />.</exception>
     </member>
@@ -689,8 +689,8 @@
       <param name="padding">The padding.</param>
       <returns>The decrypted data.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The padding mode is not supported.</exception>
     </member>
@@ -706,11 +706,11 @@
       <param name="fOAEP">
         <see langword="true" /> to perform direct <see cref="T:System.Security.Cryptography.RSA" /> encryption using OAEP padding (only available on a computer running Windows XP or later); otherwise, <see langword="false" /> to use PKCS#1 v1.5 padding.</param>
       <returns>The encrypted data.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- The length of the <paramref name="rgb" /> parameter is greater than the maximum allowed length.  
- -or-  
- The <paramref name="fOAEP" /> parameter is <see langword="true" /> and OAEP padding is not supported.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.
+-or-
+The length of the <paramref name="rgb" /> parameter is greater than the maximum allowed length.
+-or-
+The <paramref name="fOAEP" /> parameter is <see langword="true" /> and OAEP padding is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rgb" /> is <see langword="null" />.</exception>
     </member>
@@ -720,8 +720,8 @@
       <param name="padding">The padding.</param>
       <returns>The encrypted data.</returns>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="data" /> is <see langword="null" />.  
--or-  
+        <paramref name="data" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The padding mode is not supported.</exception>
     </member>
@@ -751,9 +751,9 @@
     <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.ImportParameters(System.Security.Cryptography.RSAParameters)">
       <summary>Imports the specified <see cref="T:System.Security.Cryptography.RSAParameters" />.</summary>
       <param name="parameters">The parameters for <see cref="T:System.Security.Cryptography.RSA" />.</param>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- The <paramref name="parameters" /> parameter has missing fields.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.
+-or-
+The <paramref name="parameters" /> parameter has missing fields.</exception>
     </member>
     <member name="P:System.Security.Cryptography.RSACryptoServiceProvider.KeyExchangeAlgorithm">
       <summary>Gets the name of the key exchange algorithm available with this implementation of <see cref="T:System.Security.Cryptography.RSA" />.</summary>
@@ -813,8 +813,8 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="hash" /> is <see langword="null" />.  
--or-  
+        <paramref name="hash" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
         <paramref name="padding" /> does not equal <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pkcs1" />.</exception>
@@ -825,9 +825,9 @@
       <param name="str">The hash algorithm identifier (OID) used to create the hash value of the data.</param>
       <returns>The <see cref="T:System.Security.Cryptography.RSA" /> signature for the specified hash value.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- There is no private key.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.
+-or-
+There is no private key.</exception>
     </member>
     <member name="P:System.Security.Cryptography.RSACryptoServiceProvider.UseMachineKeyStore">
       <summary>Gets or sets a value indicating whether the key should be persisted in the computer's key store instead of the user profile store.</summary>
@@ -855,8 +855,8 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="hashAlgorithm" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="hash" /> is <see langword="null" />.  
--or-  
+        <paramref name="hash" /> is <see langword="null" />.
+-or-
 <paramref name="padding" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">
         <paramref name="padding" /> does not equal <see cref="P:System.Security.Cryptography.RSASignaturePadding.Pkcs1" />.</exception>
@@ -868,12 +868,12 @@
       <param name="rgbSignature">The signature data to be verified.</param>
       <returns>
         <see langword="true" /> if the signature is valid; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.  
- -or-  
- The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.  
- -or-  
- The signature cannot be verified.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.
+-or-
+The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cryptographic service provider (CSP) cannot be acquired.
+-or-
+The signature cannot be verified.</exception>
     </member>
     <member name="T:System.Security.Cryptography.SHA1CryptoServiceProvider">
       <summary>Computes the <see cref="T:System.Security.Cryptography.SHA1" /> hash value for the input data using the implementation provided by the cryptographic service provider (CSP). This class cannot be inherited.</summary>
@@ -925,29 +925,28 @@
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
       <param name="rgbIV">The initialization vector to use for the symmetric algorithm.</param>
       <returns>A symmetric <see cref="T:System.Security.Cryptography.TripleDES" /> decryptor object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.OFB" />.  
- -or-  
- The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> and the value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize" /> property is not 8.  
- -or-  
- An invalid key size was used.  
- -or-  
- The algorithm key size was not available.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.OFB" />.
+-or-
+The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> and the value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize" /> property is not 8.
+-or-
+An invalid key size was used.
+-or-
+The algorithm key size was not available.</exception>
     </member>
     <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateEncryptor" />
     <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateEncryptor(System.Byte[],System.Byte[])">
       <summary>Creates a symmetric <see cref="T:System.Security.Cryptography.TripleDES" /> encryptor object with the specified key (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" />) and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
-      <param name="rgbIV">The initialization vector to use for the symmetric algorithm.  
-   
- The initialization vector must be 8 bytes long. If it is longer than 8 bytes, it is truncated and an exception is not thrown. Before you call <see cref="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateEncryptor(System.Byte[],System.Byte[])" />, check the length of the initialization vector and throw an exception if it is too long.</param>
+      <param name="rgbIV">The initialization vector to use for the symmetric algorithm.
+ Note: The initialization vector must be 8 bytes long. If it is longer than 8 bytes, it is truncated and an exception is not thrown. Before you call <see cref="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateEncryptor(System.Byte[],System.Byte[])" />, check the length of the initialization vector and throw an exception if it is too long.</param>
       <returns>A symmetric <see cref="T:System.Security.Cryptography.TripleDES" /> encryptor object.</returns>
-      <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.OFB" />.  
- -or-  
- The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> and the value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize" /> property is not 8.  
- -or-  
- An invalid key size was used.  
- -or-  
- The algorithm key size was not available.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.OFB" />.
+-or-
+The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is <see cref="F:System.Security.Cryptography.CipherMode.CFB" /> and the value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize" /> property is not 8.
+-or-
+An invalid key size was used.
+-or-
+The algorithm key size was not available.</exception>
     </member>
     <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.FeedbackSize" />
     <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.GenerateIV">

@@ -387,18 +387,18 @@
     <member name="P:System.IO.Packaging.PackagePart.CompressionOption">
       <summary>Gets the compression option of the part content stream.</summary>
       <returns>The compression option of the part content stream.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
     </member>
     <member name="P:System.IO.Packaging.PackagePart.ContentType">
       <summary>Gets the MIME type of the content stream.</summary>
       <returns>The MIME type of the content data stream for the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).  
- -or-  
- The string returned by the derived class <see cref="M:System.IO.Packaging.PackagePart.GetContentTypeCore" /> method is empty.</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).
+-or-
+The string returned by the derived class <see cref="M:System.IO.Packaging.PackagePart.GetContentTypeCore" /> method is empty.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.CreateRelationship(System.Uri,System.IO.Packaging.TargetMode,System.String)">
       <summary>Creates a part-level relationship between this <see cref="T:System.IO.Packaging.PackagePart" /> to a specified target <see cref="T:System.IO.Packaging.PackagePart" /> or external resource.</summary>
@@ -406,15 +406,15 @@
       <param name="targetMode">One of the enumeration values. For example, <see cref="F:System.IO.Packaging.TargetMode.Internal" /> if the target part is inside the <see cref="T:System.IO.Packaging.Package" />; or <see cref="F:System.IO.Packaging.TargetMode.External" /> if the target is a resource outside the <see cref="T:System.IO.Packaging.Package" />.</param>
       <param name="relationshipType">The role of the relationship.</param>
       <returns>The part-level relationship between this <see cref="T:System.IO.Packaging.PackagePart" /> to the target <see cref="T:System.IO.Packaging.PackagePart" /> or external resource.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="targetUri" /> or <paramref name="relationshipType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="targetMode" /> parameter is not a valid <see cref="T:System.IO.Packaging.TargetMode" /> enumeration value.</exception>
-      <exception cref="T:System.ArgumentException">The part identified by the <paramref name="targetUri" /> is a relationship (the target of a relationship cannot be another relationship).  
- -or-  
- <paramref name="targetMode" /> is specified as <see cref="F:System.IO.Packaging.TargetMode.Internal" /> but <paramref name="targetUri" /> is an absolute external URI.</exception>
+      <exception cref="T:System.ArgumentException">The part identified by the <paramref name="targetUri" /> is a relationship (the target of a relationship cannot be another relationship).
+-or-
+<paramref name="targetMode" /> is specified as <see cref="F:System.IO.Packaging.TargetMode.Internal" /> but <paramref name="targetUri" /> is an absolute external URI.</exception>
       <exception cref="T:System.IO.IOException">The package is read-only (a new relationship cannot be added).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.CreateRelationship(System.Uri,System.IO.Packaging.TargetMode,System.String,System.String)">
@@ -424,27 +424,27 @@
       <param name="relationshipType">The role of the relationship.</param>
       <param name="id">A unique ID for the relationship.</param>
       <returns>The part-level relationship between this <see cref="T:System.IO.Packaging.PackagePart" /> to the target <see cref="T:System.IO.Packaging.PackagePart" /> or external resource.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="targetUri" /> or <paramref name="relationshipType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="targetMode" /> parameter is not a valid <see cref="T:System.IO.Packaging.TargetMode" /> enumeration value.</exception>
-      <exception cref="T:System.ArgumentException">The part identified by the <paramref name="targetUri" /> is a relationship (the target of a relationship cannot be another relationship).  
- -or-  
- <paramref name="targetMode" /> is specified as <see cref="F:System.IO.Packaging.TargetMode.Internal" /> but <paramref name="targetUri" /> is an absolute external URI.</exception>
+      <exception cref="T:System.ArgumentException">The part identified by the <paramref name="targetUri" /> is a relationship (the target of a relationship cannot be another relationship).
+-or-
+<paramref name="targetMode" /> is specified as <see cref="F:System.IO.Packaging.TargetMode.Internal" /> but <paramref name="targetUri" /> is an absolute external URI.</exception>
       <exception cref="T:System.IO.IOException">The package is read-only (a new relationship cannot be added).</exception>
       <exception cref="T:System.Xml.XmlException">
-        <paramref name="id" /> is not a valid XML identifier.  
--or-  
+        <paramref name="id" /> is not a valid XML identifier.
+-or-
 A part with the specified <paramref name="id" /> already exists.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.DeleteRelationship(System.String)">
       <summary>Deletes a specified part-level <see cref="T:System.IO.Packaging.PackageRelationship" />.</summary>
       <param name="id">The <see cref="P:System.IO.Packaging.PackageRelationship.Id" /> of the relationship to delete.</param>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="id" /> is <see langword="null" />.</exception>
       <exception cref="T:System.IO.IOException">The package is read-only (relationships cannot be deleted).</exception>
@@ -466,19 +466,19 @@ A part with the specified <paramref name="id" /> already exists.</exception>
         <paramref name="id" /> is not a valid XML identifier.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="relationshipType" /> is an empty string.</exception>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).  
- -or-  
- A relationship with the specified <paramref name="id" /> does not exist in the package.</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).
+-or-
+A relationship with the specified <paramref name="id" /> does not exist in the package.</exception>
       <exception cref="T:System.IO.IOException">The package is write-only (relationship information cannot be read).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetRelationships">
       <summary>Returns a collection of all the relationships that are owned by this part.</summary>
       <returns>A collection of all the relationships that are owned by the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.IO.IOException">The package is write-only (relationship information cannot be read).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetRelationshipsByType(System.String)">
@@ -489,47 +489,47 @@ A part with the specified <paramref name="id" /> already exists.</exception>
         <paramref name="relationshipType" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="relationshipType" /> is an empty string.</exception>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.IO.IOException">The package is write-only (relationship information cannot be read).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetStream">
       <summary>Returns the part content data stream.</summary>
       <returns>The content data stream for the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.IO.IOException">The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)" /> method of the derived subclass is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetStream(System.IO.FileMode)">
       <summary>Returns the content stream opened in a specified I/O <see cref="T:System.IO.FileMode" />.</summary>
       <param name="mode">The I/O mode in which to open the content stream.</param>
       <returns>The content stream of the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="mode" /> parameter is not a valid <see cref="T:System.IO.FileMode" /> enumeration value.</exception>
-      <exception cref="T:System.IO.IOException">The <paramref name="mode" /> parameter is not compatible with the package and part stream.  
- -or-  
- The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)" /> method of the derived subclass is <see langword="null" />.</exception>
+      <exception cref="T:System.IO.IOException">The <paramref name="mode" /> parameter is not compatible with the package and part stream.
+-or-
+The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)" /> method of the derived subclass is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetStream(System.IO.FileMode,System.IO.FileAccess)">
       <summary>Returns the part content stream opened with a specified <see cref="T:System.IO.FileMode" /> and <see cref="T:System.IO.FileAccess" />.</summary>
       <param name="mode">The I/O mode in which to open the content stream.</param>
       <param name="access">The access permissions to use in opening the content stream.</param>
       <returns>The content stream for the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
-      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="mode" /> parameter is not a valid <see cref="T:System.IO.FileMode" /> enumeration value.  
- -or-  
- The <paramref name="access" /> parameter is not a valid <see cref="T:System.IO.FileAccess" /> enumeration value.</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <paramref name="mode" /> parameter is not a valid <see cref="T:System.IO.FileMode" /> enumeration value.
+-or-
+The <paramref name="access" /> parameter is not a valid <see cref="T:System.IO.FileAccess" /> enumeration value.</exception>
       <exception cref="T:System.IO.IOException">
-        <paramref name="mode" /> or <paramref name="access" /> is not compatible with the package and part stream.  
--or-  
-The <paramref name="access" /> parameter is specified as <see cref="F:System.IO.FileAccess.Read" /> but the <paramref name="mode" /> parameter requires write access.  (<see cref="T:System.IO.FileMode" /> values of <see cref="F:System.IO.FileMode.Create" />, <see cref="F:System.IO.FileMode.CreateNew" />, <see cref="F:System.IO.FileMode.Truncate" />, and <see cref="F:System.IO.FileMode.Append" /> require <see cref="F:System.IO.FileAccess.Write" /> or <see cref="F:System.IO.FileAccess.ReadWrite" /> access.)  
--or-  
+        <paramref name="mode" /> or <paramref name="access" /> is not compatible with the package and part stream.
+-or-
+The <paramref name="access" /> parameter is specified as <see cref="F:System.IO.FileAccess.Read" /> but the <paramref name="mode" /> parameter requires write access.  (<see cref="T:System.IO.FileMode" /> values of <see cref="F:System.IO.FileMode.Create" />, <see cref="F:System.IO.FileMode.CreateNew" />, <see cref="F:System.IO.FileMode.Truncate" />, and <see cref="F:System.IO.FileMode.Append" /> require <see cref="F:System.IO.FileAccess.Write" /> or <see cref="F:System.IO.FileAccess.ReadWrite" /> access.)
+-or-
 The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)" /> method of the derived subclass is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.GetStreamCore(System.IO.FileMode,System.IO.FileAccess)">
@@ -541,9 +541,9 @@ The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.G
     <member name="P:System.IO.Packaging.PackagePart.Package">
       <summary>Gets the parent <see cref="T:System.IO.Packaging.Package" /> of the part.</summary>
       <returns>The parent package of the part.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackagePart.RelationshipExists(System.String)">
       <summary>Returns a value that indicates whether this part owns a relationship with a specified <see cref="P:System.IO.Packaging.PackageRelationship.Id" />.</summary>
@@ -554,17 +554,17 @@ The stream object returned by the <see cref="M:System.IO.Packaging.PackagePart.G
         <paramref name="id" /> is <see langword="null" />.</exception>
       <exception cref="T:System.Xml.XmlException">
         <paramref name="id" /> is not a valid XML identifier.</exception>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
       <exception cref="T:System.IO.IOException">The package is write-only (relationship information cannot be read).</exception>
     </member>
     <member name="P:System.IO.Packaging.PackagePart.Uri">
       <summary>Gets the URI of the part.</summary>
       <returns>The URI of the part relative to the package root.</returns>
-      <exception cref="T:System.InvalidOperationException">The part has been deleted.  
- -or-  
- The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
+      <exception cref="T:System.InvalidOperationException">The part has been deleted.
+-or-
+The <see cref="P:System.IO.Packaging.PackagePart.Package" /> is not open (<see cref="M:System.IO.Packaging.Package.Dispose(System.Boolean)" /> or <see cref="M:System.IO.Packaging.Package.Close" /> has been called).</exception>
     </member>
     <member name="T:System.IO.Packaging.PackagePartCollection">
       <summary>Represents a collection of <see cref="T:System.IO.Packaging.PackagePart" /> objects.</summary>
@@ -750,45 +750,45 @@ The <paramref name="sourceUri" /> is not the <see cref="T:System.IO.Packaging.Pa
       <summary>Returns a value that indicates whether two pack URIs are equivalent.</summary>
       <param name="firstPackUri">The first pack URI.</param>
       <param name="secondPackUri">The second pack URI.</param>
-      <returns>A signed integer indicating the relationship between <paramref name="firstPackUri" /> and <paramref name="secondPackUri" />.  
+      <returns>A signed integer indicating the relationship between <paramref name="firstPackUri" /> and <paramref name="secondPackUri" />.
   Value  
-
+  
   Meaning  
-
+  
   Less than 0  
-
+  
  <paramref name="firstPackUri" /> is less than <paramref name="secondPackUri" />.  
-
+  
   0  
-
+  
  <paramref name="firstPackUri" /> is equivalent to <paramref name="secondPackUri" />.  
-
+  
   Greater than 0  
-
+  
  <paramref name="firstPackUri" /> is greater than <paramref name="secondPackUri" />.</returns>
-      <exception cref="T:System.ArgumentException">Either <paramref name="firstPackUri" /> or <paramref name="secondPackUri" /> is not an absolute URI.  
- -or-  
- Either <paramref name="firstPackUri" /> or <paramref name="secondPackUri" /> do not begin with a "pack://" scheme.</exception>
+      <exception cref="T:System.ArgumentException">Either <paramref name="firstPackUri" /> or <paramref name="secondPackUri" /> is not an absolute URI.
+-or-
+Either <paramref name="firstPackUri" /> or <paramref name="secondPackUri" /> do not begin with a "pack://" scheme.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.ComparePartUri(System.Uri,System.Uri)">
       <summary>Returns a value that indicates whether two package part URIs are equivalent.</summary>
       <param name="firstPartUri">The URI of the first <see cref="T:System.IO.Packaging.PackagePart" />.</param>
       <param name="secondPartUri">The URI of the second <see cref="T:System.IO.Packaging.PackagePart" />.</param>
-      <returns>A value that indicates the relationship between <paramref name="firstPartUri" /> and <paramref name="secondPartUri" />.  
+      <returns>A value that indicates the relationship between <paramref name="firstPartUri" /> and <paramref name="secondPartUri" />.
   Value  
-
+  
   Meaning  
-
+  
   Less than 0  
-
+  
  <paramref name="firstPartUri" /> is less than <paramref name="secondPartUri" />.  
-
+  
   0  
-
+  
  <paramref name="firstPartUri" /> is equivalent to <paramref name="secondPartUri" />.  
-
+  
   Greater than 0  
-
+  
  <paramref name="firstPartUri" /> is greater than <paramref name="secondPartUri" />.</returns>
       <exception cref="T:System.ArgumentException">
         <paramref name="firstPartUri" /> or <paramref name="secondPartUri" /> is not a valid part URI syntax.</exception>
@@ -810,8 +810,8 @@ The <paramref name="sourceUri" /> is not the <see cref="T:System.IO.Packaging.Pa
       <exception cref="T:System.ArgumentNullException">
         <paramref name="packageUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="packageUri" /> is not an absolute URI.  
--or-  
+        <paramref name="packageUri" /> is not an absolute URI.
+-or-
 <paramref name="partUri" /> is not a valid part URI syntax.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.Create(System.Uri,System.Uri,System.String)">
@@ -823,10 +823,10 @@ The <paramref name="sourceUri" /> is not the <see cref="T:System.IO.Packaging.Pa
       <exception cref="T:System.ArgumentNullException">
         <paramref name="packageUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="packageUri" /> is not an absolute URI.  
--or-  
-<paramref name="partUri" /> is not a valid part URI syntax.  
--or-  
+        <paramref name="packageUri" /> is not an absolute URI.
+-or-
+<paramref name="partUri" /> is not a valid part URI syntax.
+-or-
 <paramref name="fragment" /> is empty or does begin with "#".</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.CreatePartUri(System.Uri)">
@@ -874,10 +874,10 @@ The partUri extracted from <paramref name="packUri" /> does not conform to the v
       <exception cref="T:System.ArgumentNullException">
         <paramref name="partUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="partUri" /> syntax is not valid for a package part URI.  
--or-  
-<paramref name="partUri" /> is an absolute URI.  
--or-  
+        <paramref name="partUri" /> syntax is not valid for a package part URI.
+-or-
+<paramref name="partUri" /> is an absolute URI.
+-or-
 <paramref name="partUri" /> references a relationship part.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.GetRelativeUri(System.Uri,System.Uri)">
@@ -896,12 +896,12 @@ The partUri extracted from <paramref name="packUri" /> does not conform to the v
       <exception cref="T:System.ArgumentNullException">
         <paramref name="relationshipPartUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="relationshipPartUri" /> is an absolute URI.  
--or-  
-<paramref name="relationshipPartUri" /> syntax is not valid for a <see cref="T:System.IO.Packaging.PackagePart" />.  
--or-  
-<paramref name="relationshipPartUri" /> does not reference a relationship part.  
--or-  
+        <paramref name="relationshipPartUri" /> is an absolute URI.
+-or-
+<paramref name="relationshipPartUri" /> syntax is not valid for a <see cref="T:System.IO.Packaging.PackagePart" />.
+-or-
+<paramref name="relationshipPartUri" /> does not reference a relationship part.
+-or-
 The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the relationship part references another relationship part (not valid).</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.IsRelationshipPartUri(System.Uri)">
@@ -912,8 +912,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <exception cref="T:System.ArgumentNullException">
         <paramref name="partUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="partUri" /> is an absolute URI.  
--or-  
+        <paramref name="partUri" /> is an absolute URI.
+-or-
 <paramref name="partUri" /> is an invalid <see cref="T:System.IO.Packaging.PackagePart" /> syntax.</exception>
     </member>
     <member name="M:System.IO.Packaging.PackUriHelper.ResolvePartUri(System.Uri,System.Uri)">
@@ -924,8 +924,8 @@ The <see cref="P:System.IO.Packaging.PackageRelationship.SourceUri" /> of the re
       <exception cref="T:System.ArgumentNullException">
         <paramref name="sourcePartUri" /> or <paramref name="targetUri" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
-        <paramref name="sourcePartUri" /> is not a valid part URI.  
--or-  
+        <paramref name="sourcePartUri" /> is not a valid part URI.
+-or-
 <paramref name="targetUri" /> is not a valid relative URI.</exception>
     </member>
     <member name="F:System.IO.Packaging.PackUriHelper.UriSchemePack">

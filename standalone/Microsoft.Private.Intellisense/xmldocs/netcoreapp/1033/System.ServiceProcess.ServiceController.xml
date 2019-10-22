@@ -171,8 +171,8 @@
       <param name="name">The name that identifies the service to the system. This can also be the display name for the service.</param>
       <param name="machineName">The computer on which the service resides.</param>
       <exception cref="T:System.ArgumentException">
-        <paramref name="name" /> is invalid.  
--or-  
+        <paramref name="name" /> is invalid.
+-or-
 <paramref name="machineName" /> is invalid.</exception>
     </member>
     <member name="P:System.ServiceProcess.ServiceController.CanPauseAndContinue">
@@ -300,8 +300,8 @@
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when accessing a system API.</exception>
       <exception cref="T:System.InvalidOperationException">The service cannot be started.</exception>
       <exception cref="T:System.ArgumentNullException">
-        <paramref name="args" /> is <see langword="null" />.  
--or-  
+        <paramref name="args" /> is <see langword="null" />.
+-or-
 A member of the array is <see langword="null" />.</exception>
     </member>
     <member name="P:System.ServiceProcess.ServiceController.StartType">
