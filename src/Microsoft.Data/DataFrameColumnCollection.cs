@@ -4,13 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Microsoft.Data
 {
     /// <summary>
     /// A DataFrameTable is just a container that holds a number of DataFrameColumns. It mainly acts as a convenient store to allow DataFrame to implement its algorithms
     /// </summary>
-    internal class DataFrameTable
+    internal class DataFrameColumnCollection : Collection<DataFrameColumn>
     {
         private List<DataFrameColumn> _columns;
 
@@ -20,18 +21,18 @@ namespace Microsoft.Data
 
         public long RowCount { get; internal set; }
 
-        public DataFrameTable()
+        public DataFrameColumnCollection() : base()
         {
             _columns = new List<DataFrameColumn>();
         }
 
-        public DataFrameTable(IList<DataFrameColumn> columns)
+        public DataFrameColumnCollection(IList<DataFrameColumn> columns) : base()
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));
             _columns = new List<DataFrameColumn>();
             for (int i = 0; i < columns.Count; i++)
             {
-                InsertColumn(i, columns[i]);
+                Add(columns[i]);
             }
         }
 
@@ -76,10 +77,10 @@ namespace Microsoft.Data
                 throw new ArgumentOutOfRangeException(nameof(columnIndex));
             }
             DataFrameColumn newColumn = new PrimitiveDataFrameColumn<T>(columnName, column);
-            InsertColumn(columnIndex, newColumn);
+            InsertItem(columnIndex, newColumn);
         }
 
-        public void InsertColumn(int columnIndex, DataFrameColumn column)
+        protected override void InsertItem(int columnIndex, DataFrameColumn column)
         {
             column = column ?? throw new ArgumentNullException(nameof(column));
             if ((uint)columnIndex > _columns.Count)
@@ -153,6 +154,26 @@ namespace Microsoft.Data
                 return columnIndex;
             }
             return -1;
+        }
+
+        protected override void ClearItems()
+        {
+            base.ClearItems();
+        }
+
+        protected override void InsertItem(int index, DataFrameColumn item)
+        {
+            base.InsertItem(index, item);
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            base.RemoveItem(index);
+        }
+
+        protected override void SetItem(int index, DataFrameColumn item)
+        {
+            base.SetItem(index, item);
         }
     }
 }

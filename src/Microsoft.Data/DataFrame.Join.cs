@@ -23,14 +23,14 @@ namespace Microsoft.Data
 
         private void SetSuffixForDuplicatedColumnNames(DataFrame dataFrame, DataFrameColumn column, string leftSuffix, string rightSuffix)
         {
-            int index = dataFrame._table.GetColumnIndex(column.Name);
+            int index = dataFrame._columnCollection.GetColumnIndex(column.Name);
             while (index != -1)
             {
                 // Pre-existing column. Change name
                 DataFrameColumn existingColumn = dataFrame.Columns[index];
-                dataFrame._table.SetColumnName(existingColumn, existingColumn.Name + leftSuffix);
+                dataFrame._columnCollection.SetColumnName(existingColumn, existingColumn.Name + leftSuffix);
                 column.SetName(column.Name + rightSuffix);
-                index = dataFrame._table.GetColumnIndex(column.Name);
+                index = dataFrame._columnCollection.GetColumnIndex(column.Name);
             }
         }
 
