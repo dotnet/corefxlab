@@ -104,7 +104,7 @@ namespace Microsoft.Data.Tests
 
             DataFrameColumn boolClone = boolColumn.Clone();
             boolClone.SetName("BoolClone");
-            df.Columns.Set(1, boolClone);
+            df.Columns[1] = boolClone;
             schema = dataView.Schema;
             Assert.Equal("BoolClone", schema[1].Name);
         }

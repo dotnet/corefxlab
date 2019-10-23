@@ -47,8 +47,6 @@ namespace Microsoft.Data
 
         internal IReadOnlyList<string> GetColumnNames() => _columnCollection.GetColumnNames();
 
-        internal int GetColumnIndex(string columnName) => _columnCollection.GetColumnIndex(columnName);
-
         #region Operators
         public object this[long rowIndex, int columnIndex]
         {
@@ -85,14 +83,14 @@ namespace Microsoft.Data
         {
             get
             {
-                int columnIndex = _columnCollection.GetColumnIndex(columnName);
+                int columnIndex = _columnCollection.IndexOf(columnName);
                 if (columnIndex == -1)
                     throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
                 return _columnCollection[columnIndex];
             }
             set
             {
-                int columnIndex = _columnCollection.GetColumnIndex(columnName);
+                int columnIndex = _columnCollection.IndexOf(columnName);
                 DataFrameColumn newColumn = value;
                 newColumn.SetName(columnName);
                 if (columnIndex == -1)
@@ -164,8 +162,8 @@ namespace Microsoft.Data
                 }
                 DataFrame columnDescription = column.Description();
                 ret = ret.Merge<string>(columnDescription, "Description", "Description", "_left", "_right", JoinAlgorithm.Inner);
-                int leftMergeColumn = ret._columnCollection.GetColumnIndex("Description" + "_left");
-                int rightMergeColumn = ret._columnCollection.GetColumnIndex("Description" + "_right");
+                int leftMergeColumn = ret._columnCollection.IndexOf("Description" + "_left");
+                int rightMergeColumn = ret._columnCollection.IndexOf("Description" + "_right");
                 if (leftMergeColumn != -1 && rightMergeColumn != -1)
                 {
                     ret.Columns.Remove("Description" + "_right");
@@ -259,7 +257,7 @@ namespace Microsoft.Data
 
         public GroupBy GroupBy(string columnName)
         {
-            int columnIndex = _columnCollection.GetColumnIndex(columnName);
+            int columnIndex = _columnCollection.IndexOf(columnName);
             if (columnIndex == -1)
                 throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
 

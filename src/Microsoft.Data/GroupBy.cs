@@ -101,7 +101,7 @@ namespace Microsoft.Data
                 // Assuming that the dataframe has not been modified after the groupby call
                 foreach (string columnName in columns)
                 {
-                    int columnIndex = _dataFrame.GetColumnIndex(columnName);
+                    int columnIndex = _dataFrame.Columns.IndexOf(columnName);
                     columnDelegate(columnIndex, rowNumber, rows, pairs.Key, firstGroup);
                 }
                 firstGroup = false;

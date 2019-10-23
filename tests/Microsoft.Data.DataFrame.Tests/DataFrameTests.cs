@@ -216,10 +216,10 @@ namespace Microsoft.Data.Tests
 
             Assert.Equal(2, dataFrame.Columns.Count);
             DataFrameColumn intColumnCopy = new PrimitiveDataFrameColumn<int>("IntColumn", Enumerable.Range(0, 10).Select(x => x));
-            Assert.Throws<ArgumentException>(() => dataFrame.Columns.Set(1, intColumnCopy));
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns[1] = intColumnCopy);
 
             DataFrameColumn differentIntColumn = new PrimitiveDataFrameColumn<int>("IntColumn1", Enumerable.Range(0, 10).Select(x => x));
-            dataFrame.Columns.Set(1, differentIntColumn);
+            dataFrame.Columns[1] = differentIntColumn;
             Assert.True(object.ReferenceEquals(differentIntColumn, dataFrame.Columns[1]));
 
             dataFrame.Columns.RemoveAt(1);
@@ -375,7 +375,7 @@ namespace Microsoft.Data.Tests
             Assert.Throws<NotSupportedException>(() => df.Add(true));
 
             var dataFrameColumn1 = new PrimitiveDataFrameColumn<double>("Double1", Enumerable.Range(0, 10).Select(x => (double)x));
-            df.Columns.Set(0, dataFrameColumn1);
+            df.Columns[0] = dataFrameColumn1;
             // Double + comparison ops should throw
             Assert.Throws<NotSupportedException>(() => df.And(true));
         }

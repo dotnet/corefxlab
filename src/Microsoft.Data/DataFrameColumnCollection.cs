@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A DataFrameTable is just a container that holds a number of DataFrameColumns. It mainly acts as a convenient store to allow DataFrame to implement its algorithms
+    /// A DataFrameColumnCollection is just a container that holds a number of DataFrameColumns. It mainly acts as a convenient store to allow DataFrame to implement its algorithms
     /// </summary>
     public class DataFrameColumnCollection : Collection<DataFrameColumn>
     {
@@ -19,14 +19,14 @@ namespace Microsoft.Data
 
         private Dictionary<string, int> _columnNameToIndexDictionary = new Dictionary<string, int>(StringComparer.Ordinal);
 
-        public long RowCount { get; internal set; }
+        internal long RowCount { get; set; }
 
-        public DataFrameColumnCollection(Action columnsChanged) : base()
+        internal DataFrameColumnCollection(Action columnsChanged) : base()
         {
             ColumnsChanged = columnsChanged;
         }
 
-        public DataFrameColumnCollection(IList<DataFrameColumn> columns, Action columnsChanged) : base()
+        internal DataFrameColumnCollection(IList<DataFrameColumn> columns, Action columnsChanged) : base()
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));
             ColumnsChanged = columnsChanged;
@@ -36,7 +36,7 @@ namespace Microsoft.Data
             }
         }
 
-        public IReadOnlyList<string> GetColumnNames()
+        internal IReadOnlyList<string> GetColumnNames()
         {
             var ret = new List<string>(Count);
             for (int i = 0; i < Count; i++)
@@ -46,7 +46,7 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public IList<object> GetRow(long rowIndex)
+        internal IList<object> GetRow(long rowIndex)
         {
             var ret = new List<object>();
             for (int i = 0; i < Count; i++)
@@ -96,7 +96,7 @@ namespace Microsoft.Data
             ColumnsChanged?.Invoke();
         }
 
-        public void Set(int columnIndex, DataFrameColumn column)
+        internal void Set(int columnIndex, DataFrameColumn column)
         {
             this[columnIndex] = column; // calls SetItem internally
         }
@@ -134,14 +134,18 @@ namespace Microsoft.Data
 
         public void Remove(string columnName)
         {
-            int columnIndex = GetColumnIndex(columnName);
+            int columnIndex = IndexOf(columnName);
             if (columnIndex != -1)
             {
                 RemoveAt(columnIndex); // calls RemoveItem internally
             }
         }
 
-        public int GetColumnIndex(string columnName)
+        /// <summary>
+        /// Searches for a <see cref="DataFrameColumn"/> with the specified <paramref name="columnName"/> and returns the zero-based index of the first occurrence if found. Returns -1 otherwise
+        /// </summary>
+        /// <param name="columnName"></param>
+        public int IndexOf(string columnName)
         {
             if (_columnNameToIndexDictionary.TryGetValue(columnName, out int columnIndex))
             {
