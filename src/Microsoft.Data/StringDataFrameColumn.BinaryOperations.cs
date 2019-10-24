@@ -42,54 +42,74 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
+        internal static PrimitiveDataFrameColumn<bool> ElementwiseEqualsImplementation(DataFrameColumn left, DataFrameColumn column)
         {
-            if (Length != column.Length)
+            if (left.Length != column.Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            for (long i = 0; i < Length; i++)
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(left.Name, left.Length);
+            for (long i = 0; i < left.Length; i++)
             {
-                ret[i] = (string)this[i] == column[i]?.ToString();
+                ret[i] = (string)left[i] == column[i]?.ToString();
+            }
+            return ret;
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
+        {
+            return ElementwiseEqualsImplementation(this, column);
+        }
+
+        internal static PrimitiveDataFrameColumn<bool> ElementwiseEqualsImplementation<T>(DataFrameColumn left, T value)
+        {
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(left.Name, left.Length);
+            string valString = value.ToString();
+            for (long i = 0; i < left.Length; i++)
+            {
+                ret[i] = (string)left[i] == valString;
             }
             return ret;
         }
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
         {
-            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            string valString = value.ToString();
-            for (long i = 0; i < Length; i++)
+            return ElementwiseEqualsImplementation(this, value);
+        }
+
+        internal static PrimitiveDataFrameColumn<bool> ElementwiseNotEqualsImplementation(DataFrameColumn left, DataFrameColumn column)
+        {
+            if (left.Length != column.Length)
             {
-                ret[i] = (string)this[i] == valString;
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(left.Name, left.Length);
+            for (long i = 0; i < left.Length; i++)
+            {
+                ret[i] = (string)left[i] != column[i].ToString();
             }
             return ret;
         }
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
-            if (Length != column.Length)
+            return ElementwiseNotEqualsImplementation(this, column);
+        }
+
+        internal static PrimitiveDataFrameColumn<bool> ElementwiseNotEqualsImplementation<T>(DataFrameColumn left, T value)
+        {
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(left.Name, left.Length);
+            string valString = value.ToString();
+            for (long i = 0; i < left.Length; i++)
             {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            for (long i = 0; i < Length; i++)
-            {
-                ret[i] = (string)this[i] != column[i].ToString();
+                ret[i] = (string)left[i] != valString;
             }
             return ret;
         }
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
         {
-            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            string valString = value.ToString();
-            for (long i = 0; i < Length; i++)
-            {
-                ret[i] = (string)this[i] != valString;
-            }
-            return ret;
+            return ElementwiseNotEqualsImplementation(this, value);
         }
     }
 }

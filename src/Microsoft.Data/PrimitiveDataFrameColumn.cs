@@ -652,5 +652,24 @@ namespace Microsoft.Data
 
         private static ValueGetter<double> CreateDecimalValueGetterDelegate(DataViewRowCursor cursor, PrimitiveDataFrameColumn<decimal> column) =>
             (ref double value) => value = (double?)column[cursor.Position] ?? double.NaN;
+
+        protected internal override void AddValueUsingCursor(DataViewRowCursor cursor, DataViewSchema.Column column)
+        {
+            long row = cursor.Position;
+            T value = default;
+            cursor.GetGetter<T>(column)(ref value);
+            if (Length > row)
+            {
+                this[row] = value;
+            }
+            else if (Length == row)
+            {
+                Append(value);
+            }
+            else
+            {
+                throw new IndexOutOfRangeException(nameof(row));
+            }
+        }
     }
 }

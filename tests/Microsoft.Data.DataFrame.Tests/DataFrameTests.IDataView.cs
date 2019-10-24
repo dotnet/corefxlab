@@ -224,5 +224,19 @@ namespace Microsoft.Data.Tests
             Assert.Equal("", preview.ColumnView[14].Values[5].ToString()); // null row
             Assert.Equal("foo", preview.ColumnView[14].Values[6].ToString());
         }
+
+        [Fact]
+        public void TestDataFrameFromIDataView()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
+            IDataView dfAsIDataView = df;
+            DataFrame newDf = DataFrame.FromIDataView(dfAsIDataView);
+            Assert.Equal(dfAsIDataView.GetRowCount(), newDf.RowCount);
+            Assert.Equal(dfAsIDataView.Schema.Count, newDf.Columns.Count);
+            for (int i = 0; i < df.Columns.Count; i++)
+            {
+                Assert.True(df.Columns[i].ElementwiseEquals(newDf.Columns[i]).All());
+            }
+        }
     }
 }

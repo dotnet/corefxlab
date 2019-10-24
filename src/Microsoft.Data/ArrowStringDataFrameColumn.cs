@@ -460,5 +460,26 @@ namespace Microsoft.Data
 
         private ValueGetter<ReadOnlyMemory<char>> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
             (ref ReadOnlyMemory<char> value) => value = this[cursor.Position].AsMemory();
+
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
+        {
+            return StringDataFrameColumn.ElementwiseEqualsImplementation(this, column);
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
+        {
+            return StringDataFrameColumn.ElementwiseEqualsImplementation(this, value);
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
+        {
+            return StringDataFrameColumn.ElementwiseNotEqualsImplementation(this, column);
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
+        {
+            return StringDataFrameColumn.ElementwiseNotEqualsImplementation(this, value);
+        }
     }
 }
