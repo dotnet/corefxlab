@@ -48,7 +48,7 @@ namespace Microsoft.Data
         {
             if (!(dataFrame is null))
             {
-                dataFrame.SetColumnName(this, newName);
+                dataFrame.Columns.SetColumnName(this, newName);
             }
             _name = newName;
         }

@@ -1300,18 +1300,34 @@ namespace Microsoft.Data.Tests
         public void TestDataFrameFilter()
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
-            DataFrame filtered = df[df["Bool"].ElementwiseEquals(true)];
+            DataFrame boolColumnFiltered = df[df["Bool"].ElementwiseEquals(true)];
             List<int> verify = new List<int> { 0, 2, 4, 6, 8 };
-            Assert.Equal(5, filtered.RowCount);
-            for (int i = 0; i < filtered.Columns.Count; i++)
+            Assert.Equal(5, boolColumnFiltered.RowCount);
+            for (int i = 0; i < boolColumnFiltered.Columns.Count; i++)
             {
-                DataFrameColumn column = filtered.Columns[i];
+                DataFrameColumn column = boolColumnFiltered.Columns[i];
                 if (column.Name == "Char" || column.Name == "Bool" || column.Name == "String")
                     continue;
                 for (int j = 0; j < column.Length; j++)
                 {
                     Assert.Equal(verify[j].ToString(), column[j].ToString());
                 }
+            }
+            DataFrame intEnumerableFiltered = df[Enumerable.Range(0, 10)];
+            DataFrame boolEnumerableFiltered = df[Enumerable.Range(0, 10).Select(x => true)];
+            DataFrame longEnumerableFiltered = df[Enumerable.Range(0, 10).Select(x => (long)x)];
+            Assert.Equal(intEnumerableFiltered.Columns.Count, df.Columns.Count);
+            Assert.Equal(boolEnumerableFiltered.Columns.Count, df.Columns.Count);
+            Assert.Equal(longEnumerableFiltered.Columns.Count, df.Columns.Count);
+            for (int i = 0; i < intEnumerableFiltered.Columns.Count; i++)
+            {
+                DataFrameColumn intFilteredColumn = intEnumerableFiltered.Columns[i];
+                DataFrameColumn dfColumn = df.Columns[i];
+                DataFrameColumn boolFilteredColumn = boolEnumerableFiltered.Columns[i];
+                DataFrameColumn longFilteredColumn = longEnumerableFiltered.Columns[i];
+                Assert.True(intFilteredColumn.ElementwiseEquals(dfColumn).All());
+                Assert.True(boolFilteredColumn.ElementwiseEquals(dfColumn).All());
+                Assert.True(longFilteredColumn.ElementwiseEquals(dfColumn).All());
             }
         }
 
@@ -1562,7 +1578,7 @@ namespace Microsoft.Data.Tests
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
             DataFrame intDf = MakeDataFrameWithTwoColumns(5, false);
-            DataFrameColumn intColumn = intDf["Int1"];
+            PrimitiveDataFrameColumn<int> intColumn = intDf["Int1"] as PrimitiveDataFrameColumn<int>;
             DataFrame clone = df[intColumn];
             Assert.Equal(5, clone.RowCount);
             Assert.Equal(df.Columns.Count, clone.Columns.Count);
