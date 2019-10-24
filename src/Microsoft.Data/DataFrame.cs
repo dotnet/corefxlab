@@ -30,74 +30,35 @@ namespace Microsoft.Data
     /// </summary>
     public partial class DataFrame
     {
-        private readonly DataFrameTable _table;
+        private readonly DataFrameColumnCollection _columnCollection;
         public DataFrame()
         {
-            _table = new DataFrameTable();
+            _columnCollection = new DataFrameColumnCollection(OnColumnsChanged);
         }
 
         public DataFrame(IList<DataFrameColumn> columns)
         {
-            _table = new DataFrameTable(columns);
+            _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
         }
 
-        public long RowCount => _table.RowCount;
+        public long RowCount => _columnCollection.RowCount;
 
-        public int ColumnCount => _table.ColumnCount;
+        public DataFrameColumnCollection Columns => _columnCollection;
 
-        public IList<string> Columns
-        {
-            get
-            {
-                var ret = new List<string>(ColumnCount);
-                for (int i = 0; i < ColumnCount; i++)
-                {
-                    ret.Add(_table.Column(i).Name);
-                }
-                return ret;
-            }
-        }
-
-        public DataFrameColumn Column(int index) => _table.Column(index);
-
-        public void InsertColumn(int columnIndex, DataFrameColumn column)
-        {
-            _table.InsertColumn(columnIndex, column);
-            OnColumnsChanged();
-        }
-
-        public void SetColumn(int columnIndex, DataFrameColumn column)
-        {
-            _table.SetColumn(columnIndex, column);
-            OnColumnsChanged();
-        }
-
-        public void RemoveColumn(int columnIndex)
-        {
-            _table.RemoveColumn(columnIndex);
-            OnColumnsChanged();
-        }
-
-        public void RemoveColumn(string columnName)
-        {
-            _table.RemoveColumn(columnName);
-            OnColumnsChanged();
-        }
-
-        internal int GetColumnIndex(string columnName) => _table.GetColumnIndex(columnName);
+        internal IReadOnlyList<string> GetColumnNames() => _columnCollection.GetColumnNames();
 
         #region Operators
         public object this[long rowIndex, int columnIndex]
         {
-            get => _table.Column(columnIndex)[rowIndex];
-            set => _table.Column(columnIndex)[rowIndex] = value;
+            get => _columnCollection[columnIndex][rowIndex];
+            set => _columnCollection[columnIndex][rowIndex] = value;
         }
 
         public IList<object> this[long rowIndex]
         {
             get
             {
-                return _table.GetRow(rowIndex);
+                return _columnCollection.GetRow(rowIndex);
             }
             //TODO?: set?
         }
@@ -122,23 +83,23 @@ namespace Microsoft.Data
         {
             get
             {
-                int columnIndex = _table.GetColumnIndex(columnName);
+                int columnIndex = _columnCollection.IndexOf(columnName);
                 if (columnIndex == -1)
                     throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
-                return _table.Column(columnIndex);
+                return _columnCollection[columnIndex];
             }
             set
             {
-                int columnIndex = _table.GetColumnIndex(columnName);
+                int columnIndex = _columnCollection.IndexOf(columnName);
                 DataFrameColumn newColumn = value;
                 newColumn.SetName(columnName);
                 if (columnIndex == -1)
                 {
-                    _table.InsertColumn(ColumnCount, newColumn);
+                    _columnCollection.Insert(Columns.Count, newColumn);
                 }
                 else
                 {
-                    _table.SetColumn(columnIndex, newColumn);
+                    _columnCollection[columnIndex] = newColumn;
                 }
             }
         }
@@ -167,15 +128,15 @@ namespace Microsoft.Data
 
         private DataFrame Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false)
         {
-            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(ColumnCount);
-            for (int i = 0; i < ColumnCount; i++)
+            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
+            for (int i = 0; i < Columns.Count; i++)
             {
-                newColumns.Add(Column(i).Clone(mapIndices, invertMapIndices));
+                newColumns.Add(Columns[i].Clone(mapIndices, invertMapIndices));
             }
             return new DataFrame(newColumns);
         }
 
-        public void SetColumnName(DataFrameColumn column, string newName) => _table.SetColumnName(column, newName);
+        public void SetColumnName(DataFrameColumn column, string newName) => _columnCollection.SetColumnName(column, newName);
 
         /// <summary>
         /// Generates descriptive statistics that summarize each numeric column
@@ -183,30 +144,30 @@ namespace Microsoft.Data
         public DataFrame Description()
         {
             DataFrame ret = new DataFrame();
-            if (ColumnCount == 0)
+            if (Columns.Count == 0)
                 return ret;
             int i = 0;
-            while (!Column(i).HasDescription())
+            while (!Columns[i].HasDescription())
             {
                 i++;
             }
-            ret = Column(i).Description();
+            ret = Columns[i].Description();
             i++;
-            for (; i < ColumnCount; i++)
+            for (; i < Columns.Count; i++)
             {
-                DataFrameColumn column = Column(i);
+                DataFrameColumn column = Columns[i];
                 if (!column.HasDescription())
                 {
                     continue;
                 }
                 DataFrame columnDescription = column.Description();
                 ret = ret.Merge<string>(columnDescription, "Description", "Description", "_left", "_right", JoinAlgorithm.Inner);
-                int leftMergeColumn = ret._table.GetColumnIndex("Description" + "_left");
-                int rightMergeColumn = ret._table.GetColumnIndex("Description" + "_right");
+                int leftMergeColumn = ret._columnCollection.IndexOf("Description" + "_left");
+                int rightMergeColumn = ret._columnCollection.IndexOf("Description" + "_right");
                 if (leftMergeColumn != -1 && rightMergeColumn != -1)
                 {
-                    ret.RemoveColumn("Description" + "_right");
-                    ret._table.SetColumnName(ret["Description_left"], "Description");
+                    ret.Columns.Remove("Description" + "_right");
+                    ret._columnCollection.SetColumnName(ret["Description_left"], "Description");
                 }
             }
             return ret;
@@ -217,10 +178,10 @@ namespace Microsoft.Data
         {
             DataFrameColumn column = this[columnName];
             DataFrameColumn sortIndices = column.GetAscendingSortIndices();
-            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(ColumnCount);
-            for (int i = 0; i < ColumnCount; i++)
+            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn oldColumn = Column(i);
+                DataFrameColumn oldColumn = Columns[i];
                 DataFrameColumn newColumn = oldColumn.Clone(sortIndices, !ascending, oldColumn.NullCount);
                 Debug.Assert(newColumn.NullCount == oldColumn.NullCount);
                 newColumns.Add(newColumn);
@@ -238,9 +199,9 @@ namespace Microsoft.Data
         {
             DataFrame ret = inPlace ? this : Clone();
 
-            for (int i = 0; i < ret.ColumnCount; i++)
+            for (int i = 0; i < ret.Columns.Count; i++)
             {
-                DataFrameColumn column = ret.Column(i);
+                DataFrameColumn column = ret.Columns[i];
                 if (column.IsNumericColumn())
                     column.Clip(lower, upper, inPlace: true);
             }
@@ -253,10 +214,10 @@ namespace Microsoft.Data
         public DataFrame AddPrefix(string prefix, bool inPlace = false)
         {
             DataFrame df = inPlace ? this : Clone();
-            for (int i = 0; i < df.ColumnCount; i++)
+            for (int i = 0; i < df.Columns.Count; i++)
             {
-                DataFrameColumn column = df.Column(i);
-                df._table.SetColumnName(column, prefix + column.Name);
+                DataFrameColumn column = df.Columns[i];
+                df._columnCollection.SetColumnName(column, prefix + column.Name);
                 df.OnColumnsChanged();
             }
             return df;
@@ -268,10 +229,10 @@ namespace Microsoft.Data
         public DataFrame AddSuffix(string suffix, bool inPlace = false)
         {
             DataFrame df = inPlace ? this : Clone();
-            for (int i = 0; i < df.ColumnCount; i++)
+            for (int i = 0; i < df.Columns.Count; i++)
             {
-                DataFrameColumn column = df.Column(i);
-                df._table.SetColumnName(column, column.Name + suffix);
+                DataFrameColumn column = df.Columns[i];
+                df._columnCollection.SetColumnName(column, column.Name + suffix);
                 df.OnColumnsChanged();
             }
             return df;
@@ -296,11 +257,11 @@ namespace Microsoft.Data
 
         public GroupBy GroupBy(string columnName)
         {
-            int columnIndex = _table.GetColumnIndex(columnName);
+            int columnIndex = _columnCollection.IndexOf(columnName);
             if (columnIndex == -1)
                 throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
 
-            DataFrameColumn column = _table.Column(columnIndex);
+            DataFrameColumn column = _columnCollection[columnIndex];
             return column.GroupBy(columnIndex, this);
         }
 
@@ -308,12 +269,12 @@ namespace Microsoft.Data
         internal void SetTableRowCount(long rowCount)
         {
             // Even if current RowCount == rowCount, do the validation
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                if (Column(i).Length != rowCount)
-                    throw new ArgumentException(String.Format("{0} {1}", Strings.MismatchedRowCount, Column(i).Name));
+                if (Columns[i].Length != rowCount)
+                    throw new ArgumentException(String.Format("{0} {1}", Strings.MismatchedRowCount, Columns[i].Name));
             }
-            _table.RowCount = rowCount;
+            _columnCollection.RowCount = rowCount;
         }
 
         /// <summary>
@@ -328,9 +289,9 @@ namespace Microsoft.Data
             {
                 filter.AppendMany(true, RowCount);
 
-                for (int i = 0; i < ColumnCount; i++)
+                for (int i = 0; i < Columns.Count; i++)
                 {
-                    DataFrameColumn column = Column(i);
+                    DataFrameColumn column = Columns[i];
                     filter.ApplyElementwise((bool? value, long index) =>
                     {
                         return value.Value && (column[index] == null ? false : true);
@@ -340,9 +301,9 @@ namespace Microsoft.Data
             else
             {
                 filter.AppendMany(false, RowCount);
-                for (int i = 0; i < ColumnCount; i++)
+                for (int i = 0; i < Columns.Count; i++)
                 {
-                    DataFrameColumn column = Column(i);
+                    DataFrameColumn column = Columns[i];
                     filter.ApplyElementwise((bool? value, long index) =>
                     {
                         return value.Value || (column[index] == null ? false : true);
@@ -355,22 +316,22 @@ namespace Microsoft.Data
         public DataFrame FillNulls(object value, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();
-            for (int i = 0; i < ret.ColumnCount; i++)
+            for (int i = 0; i < ret.Columns.Count; i++)
             {
-                ret.Column(i).FillNulls(value, inPlace: true);
+                ret.Columns[i].FillNulls(value, inPlace: true);
             }
             return ret;
         }
 
         public DataFrame FillNulls(IList<object> values, bool inPlace = false)
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
 
             DataFrame ret = inPlace ? this : Clone();
-            for (int i = 0; i < ret.ColumnCount; i++)
+            for (int i = 0; i < ret.Columns.Count; i++)
             {
-                Column(i).FillNulls(values[i], inPlace: true);
+                Columns[i].FillNulls(values[i], inPlace: true);
             }
             return ret;
         }
@@ -387,14 +348,14 @@ namespace Microsoft.Data
         {
             StringBuilder sb = new StringBuilder();
             int longestColumnName = 0;
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                longestColumnName = Math.Max(longestColumnName, Column(i).Name.Length);
+                longestColumnName = Math.Max(longestColumnName, Columns[i].Name.Length);
             }
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
                 // Left align by 10
-                sb.Append(string.Format(Column(i).Name.PadRight(longestColumnName)));
+                sb.Append(string.Format(Columns[i].Name.PadRight(longestColumnName)));
             }
             sb.AppendLine();
             long numberOfRows = Math.Min(RowCount, 25);

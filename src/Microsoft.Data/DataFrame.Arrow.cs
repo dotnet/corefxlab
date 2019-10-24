@@ -123,7 +123,7 @@ namespace Microsoft.Data
                     default:
                         throw new NotImplementedException(nameof(fieldType.Name));
                 }
-                ret.InsertColumn(ret.ColumnCount, dataFrameColumn);
+                ret.Columns.Insert(ret.Columns.Count, dataFrameColumn);
                 fieldIndex++;
             }
             return ret;
@@ -136,10 +136,10 @@ namespace Microsoft.Data
         {
             Apache.Arrow.Schema.Builder schemaBuilder = new Apache.Arrow.Schema.Builder();
 
-            int columnCount = ColumnCount;
+            int columnCount = Columns.Count;
             for (int i = 0; i < columnCount; i++)
             {
-                DataFrameColumn column = Column(i);
+                DataFrameColumn column = Columns[i];
                 Field field = column.GetArrowField();
                 schemaBuilder.Field(field);
             }
@@ -156,12 +156,12 @@ namespace Microsoft.Data
             {
                 for (int i = 0; i < columnCount; i++)
                 {
-                    DataFrameColumn column = Column(i);
+                    DataFrameColumn column = Columns[i];
                     numberOfRowsInThisRecordBatch = (int)Math.Min(numberOfRowsInThisRecordBatch, column.GetMaxRecordBatchLength(numberOfRowsProcessed));
                 }
                 for (int i = 0; i < columnCount; i++)
                 {
-                    DataFrameColumn column = Column(i);
+                    DataFrameColumn column = Columns[i];
                     arrays.Add(column.ToArrowArray(numberOfRowsProcessed, numberOfRowsInThisRecordBatch));
                 }
                 numberOfRowsProcessed += numberOfRowsInThisRecordBatch;

@@ -17,20 +17,20 @@ namespace Microsoft.Data
         public DataFrame Add<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Add(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -39,34 +39,34 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Add(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame Subtract<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Subtract(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -75,34 +75,34 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Subtract(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame Multiply<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Multiply(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -111,34 +111,34 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Multiply(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame Divide<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Divide(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -147,34 +147,34 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Divide(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame Modulo<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Modulo(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -183,33 +183,33 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Modulo(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame And(IReadOnlyList<bool> values, bool inPlace = false)
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.And(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -217,33 +217,33 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.And(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame Or(IReadOnlyList<bool> values, bool inPlace = false)
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Or(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -251,33 +251,33 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Or(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame Xor(IReadOnlyList<bool> values, bool inPlace = false)
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Xor(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -285,14 +285,14 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Xor(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -300,14 +300,14 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.LeftShift(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -315,31 +315,31 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.RightShift(value, inPlace);
                 if (inPlace)
-                    retDataFrame.SetColumn(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
-                    retDataFrame.InsertColumn(i, newColumn);
+                    retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame ElementwiseEquals<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseEquals(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -348,28 +348,28 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseEquals(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame ElementwiseNotEquals<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseNotEquals(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -378,28 +378,28 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseNotEquals(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame ElementwiseGreaterThanOrEqual<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThanOrEqual(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -408,28 +408,28 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThanOrEqual(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame ElementwiseLessThanOrEqual<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseLessThanOrEqual(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -438,28 +438,28 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseLessThanOrEqual(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame ElementwiseGreaterThan<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThan(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -468,28 +468,28 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThan(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
         public DataFrame ElementwiseLessThan<T>(IReadOnlyList<T> values)
             where T : unmanaged
         {
-            if (values.Count != ColumnCount)
+            if (values.Count != Columns.Count)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(values));
             }
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseLessThan(values[i]);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }
@@ -498,11 +498,11 @@ namespace Microsoft.Data
         {
             DataFrame retDataFrame = new DataFrame();
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (int i = 0; i < Columns.Count; i++)
             {
-                DataFrameColumn baseColumn = _table.Column(i);
+                DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.ElementwiseLessThan(value);
-                retDataFrame.InsertColumn(i, newColumn);
+                retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
         }

@@ -20,7 +20,7 @@ namespace Benchmarks.Microsoft.Data
             _dataFrame = new DataFrame();
             _column = new PrimitiveDataFrameColumn<int>("Int0", Enumerable.Range(0, 50000));
             _other = _column.Clone();
-            _dataFrame.InsertColumn(0, _column);
+            _dataFrame.Columns.Insert(0, _column);
         }
 
         [Benchmark]

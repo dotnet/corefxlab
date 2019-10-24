@@ -92,19 +92,19 @@ namespace Microsoft.Data.Tests
             DataViewSchema schema = dataView.Schema;
             Assert.Equal(14, schema.Count);
 
-            df.RemoveColumn("Bool");
+            df.Columns.Remove("Bool");
             schema = dataView.Schema;
             Assert.Equal(13, schema.Count);
 
             DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, (int)df.RowCount).Select(x => x % 2 == 1));
-            df.InsertColumn(0, boolColumn);
+            df.Columns.Insert(0, boolColumn);
             schema = dataView.Schema;
             Assert.Equal(14, schema.Count);
             Assert.Equal("Bool", schema[0].Name);
 
             DataFrameColumn boolClone = boolColumn.Clone();
             boolClone.SetName("BoolClone");
-            df.SetColumn(1, boolClone);
+            df.Columns[1] = boolClone;
             schema = dataView.Schema;
             Assert.Equal("BoolClone", schema[1].Name);
         }
