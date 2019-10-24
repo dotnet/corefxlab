@@ -201,11 +201,6 @@ namespace Microsoft.Data
         }
 
         /// <summary>
-        /// Updates <paramref name="column"/>'s name with <paramref name="newName"/>
-        /// </summary>
-        public void SetColumnName(DataFrameColumn column, string newName) => _columnCollection.SetColumnName(column, newName);
-
-        /// <summary>
         /// Generates descriptive statistics that summarize each numeric column
         /// </summary>
         public DataFrame Description()
