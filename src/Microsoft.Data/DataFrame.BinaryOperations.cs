@@ -28,7 +28,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Add(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -44,7 +44,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Add(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -64,7 +64,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Subtract(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -80,7 +80,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Subtract(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -100,7 +100,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Multiply(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -116,7 +116,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Multiply(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -136,7 +136,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Divide(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -152,7 +152,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Divide(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -172,7 +172,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Modulo(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -188,7 +188,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Modulo(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -207,7 +207,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.And(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -222,7 +222,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.And(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -241,7 +241,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Or(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -256,7 +256,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Or(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -275,7 +275,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Xor(values[i], inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -290,7 +290,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.Xor(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -305,7 +305,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.LeftShift(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }
@@ -320,7 +320,7 @@ namespace Microsoft.Data
                 DataFrameColumn baseColumn = _columnCollection[i];
                 DataFrameColumn newColumn = baseColumn.RightShift(value, inPlace);
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
             }

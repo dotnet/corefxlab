@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 namespace Microsoft.Data
 {
     /// <summary>
-    /// A DataFrameColumnCollection is just a container that holds a number of DataFrameColumns. It mainly acts as a convenient store to allow DataFrame to implement its algorithms
+    /// A DataFrameColumnCollection is just a container that holds a number of DataFrameColumn instances. 
     /// </summary>
     public class DataFrameColumnCollection : Collection<DataFrameColumn>
     {
@@ -94,11 +94,6 @@ namespace Microsoft.Data
             }
             base.InsertItem(columnIndex, column);
             ColumnsChanged?.Invoke();
-        }
-
-        internal void Set(int columnIndex, DataFrameColumn column)
-        {
-            this[columnIndex] = column; // calls SetItem internally
         }
 
         protected override void SetItem(int columnIndex, DataFrameColumn column)

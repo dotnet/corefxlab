@@ -99,7 +99,7 @@ namespace Microsoft.Data
                 }
                 else
                 {
-                    _columnCollection.Set(columnIndex, newColumn);
+                    _columnCollection[columnIndex] = newColumn;
                 }
             }
         }

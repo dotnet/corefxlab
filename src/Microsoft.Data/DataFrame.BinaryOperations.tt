@@ -82,7 +82,7 @@ namespace Microsoft.Data
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
                 if (inPlace)
-                    retDataFrame.Columns.Set(i, newColumn);
+                    retDataFrame.Columns[i] = newColumn;
                 else
                     retDataFrame.Columns.Insert(i, newColumn);
 <# } else { #>
