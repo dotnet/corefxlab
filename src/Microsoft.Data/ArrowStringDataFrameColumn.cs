@@ -363,7 +363,7 @@ namespace Microsoft.Data
             {
                 bool? value = boolColumn[i];
                 if (value == true)
-                    ret.Append(GetBytes(i));
+                    ret.Append(IsValid(i) ? GetBytes(i) : default(ReadOnlySpan<byte>));
             }
             return ret;
         }
@@ -380,9 +380,14 @@ namespace Microsoft.Data
                     return mapIndex;
                 }
                 if (invertMapIndices)
-                    ret.Append(GetBytes(mapIndices.Length - 1 - rowIndex));
+                {
+                    long index = mapIndices.Length - 1 - rowIndex;
+                    ret.Append(IsValid(index) ? GetBytes(index) : default(ReadOnlySpan<byte>));
+                }
                 else
-                    ret.Append(GetBytes(rowIndex));
+                {
+                    ret.Append(IsValid(rowIndex) ? GetBytes(rowIndex) : default(ReadOnlySpan<byte>));
+                }
                 return mapIndex;
             });
             return ret;
