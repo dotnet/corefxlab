@@ -162,7 +162,7 @@ namespace Microsoft.Data
         /// <param name="upper"></param>
         public virtual DataFrameColumn Filter<U>(U lower, U upper) => FilterImplementation(lower, upper);
 
-        protected virtual DataFrameColumn FilterImplementation<U>(U lower, U uppwe) => throw new NotImplementedException();
+        protected virtual DataFrameColumn FilterImplementation<U>(U lower, U upper) => throw new NotImplementedException();
 
         /// <summary>
         /// Determines if the column is of a numeric type
