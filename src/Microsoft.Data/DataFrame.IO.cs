@@ -134,11 +134,10 @@ namespace Microsoft.Data
 
             List<DataFrameColumn> columns;
             long streamStart = csvStream.Position;
-            StreamReader streamReader = new StreamReader(csvStream);
             // First pass: schema and number of rows.
-            using (var st = streamReader)
+            using (var streamReader = new StreamReader(csvStream))
             {
-                string line = st.ReadLine();
+                string line = streamReader.ReadLine();
                 while (line != null)
                 {
                     if ((numberOfRowsToRead == -1) || rowline < numberOfRowsToRead)
@@ -161,7 +160,7 @@ namespace Microsoft.Data
                     ++rowline;
                     if (rowline == numberOfRowsToRead)
                         break;
-                    line = st.ReadLine();
+                    line = streamReader.ReadLine();
                 }
 
                 if (linesForGuessType.Count == 0)
@@ -197,7 +196,7 @@ namespace Microsoft.Data
                 streamReader.BaseStream.Seek(streamStart, SeekOrigin.Begin);
 
                 // Fills values.
-                line = st.ReadLine();
+                line = streamReader.ReadLine();
                 rowline = 0;
                 while (line != null && (numberOfRowsToRead == -1 || rowline < numberOfRowsToRead))
                 {
@@ -211,7 +210,7 @@ namespace Microsoft.Data
                         AppendRow(columns, header == true ? rowline - 1 : rowline, spl);
                     }
                     ++rowline;
-                    line = st.ReadLine();
+                    line = streamReader.ReadLine();
                 }
 
                 if (addIndexColumn)
