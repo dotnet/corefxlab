@@ -91,6 +91,10 @@ namespace Microsoft.Data
 
         protected virtual DataFrameColumn CloneImplementation(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend) => throw new NotImplementedException();
 
+        /// <summary>
+        /// Returns a copy of this column sorted by its values
+        /// </summary>
+        /// <param name="ascending"></param>
         public virtual DataFrameColumn Sort(bool ascending = true)
         {
             PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();

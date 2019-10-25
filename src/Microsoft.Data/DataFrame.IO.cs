@@ -96,10 +96,12 @@ namespace Microsoft.Data
                                 int numRows = -1, int guessRows = 10,
                                 bool addIndexColumn = false)
         {
-            Stream fileStream = new FileStream(filename, FileMode.Open);
-            return LoadStream(fileStream,
-                              separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numberOfRowsToRead: numRows,
-                              guessRows: guessRows, addIndexColumn: addIndexColumn);
+            using (Stream fileStream = new FileStream(filename, FileMode.Open))
+            {
+                return LoadStream(fileStream,
+                                  separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numberOfRowsToRead: numRows,
+                                  guessRows: guessRows, addIndexColumn: addIndexColumn);
+            }
         }
 
         /// <summary>

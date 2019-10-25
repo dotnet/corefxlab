@@ -433,7 +433,7 @@ namespace Microsoft.Data
             }
         }
 
-        public new StringDataFrameColumn FillNulls(object value, bool inPlace = false)
+        public StringDataFrameColumn FillNulls(string value, bool inPlace = false)
         {
             if (value.GetType() != typeof(string) || value == null)
                 throw new ArgumentException(nameof(value));
@@ -450,7 +450,10 @@ namespace Microsoft.Data
 
         protected override DataFrameColumn FillNullsImplementation(object value, bool inPlace)
         {
-            return FillNulls(value, inPlace);
+            if (value is string)
+                return FillNulls((string)value, inPlace);
+            else
+                throw new ArgumentException(String.Format(Strings.MismatchedValueType, typeof(string)), nameof(value));
         }
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)

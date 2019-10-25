@@ -177,7 +177,6 @@ namespace Microsoft.Data
                 throw new ArgumentOutOfRangeException(nameof(startIndex));
             }
 
-            //return _columnContainer[startIndex, length];
             var ret = new List<object>(length);
             long endIndex = Math.Min(Length, startIndex + length);
             for (long i = startIndex; i < endIndex; i++)

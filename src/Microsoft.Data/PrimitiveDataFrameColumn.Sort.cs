@@ -16,7 +16,7 @@ namespace Microsoft.Data
         public new PrimitiveDataFrameColumn<T> Sort(bool ascending = true)
         {
             PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
-            return Clone(sortIndices, !ascending, NullCount) as PrimitiveDataFrameColumn<T>;
+            return Clone(sortIndices, !ascending, NullCount);
         }
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()
