@@ -98,14 +98,14 @@ namespace Microsoft.Data
         {
             using (Stream fileStream = new FileStream(filename, FileMode.Open))
             {
-                return LoadStream(fileStream,
+                return LoadCsv(fileStream,
                                   separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numberOfRowsToRead: numRows,
                                   guessRows: guessRows, addIndexColumn: addIndexColumn);
             }
         }
 
         /// <summary>
-        /// Reads a text file as a DataFrame.
+        /// Reads a seekable stream of CSV data into a DataFrame.
         /// Follows pandas API.
         /// </summary>
         /// <param name="csvStream">stream of CSV data to be read in</param>
@@ -117,7 +117,7 @@ namespace Microsoft.Data
         /// <param name="guessRows">number of rows used to guess types</param>
         /// <param name="addIndexColumn">add one column with the row index</param>
         /// <returns>DataFrame</returns>
-        public static DataFrame LoadStream(Stream csvStream,
+        public static DataFrame LoadCsv(Stream csvStream,
                                 char separator = ',', bool header = true,
                                 string[] columnNames = null, Type[] dataTypes = null,
                                 long numberOfRowsToRead = -1, int guessRows = 10, bool addIndexColumn = false)
@@ -135,7 +135,7 @@ namespace Microsoft.Data
             List<DataFrameColumn> columns;
             long streamStart = csvStream.Position;
             // First pass: schema and number of rows.
-            using (var streamReader = new StreamReader(csvStream))
+            using (var streamReader = new StreamReader(csvStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: true))
             {
                 string line = streamReader.ReadLine();
                 while (line != null)

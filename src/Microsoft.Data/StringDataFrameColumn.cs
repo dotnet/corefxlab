@@ -435,23 +435,22 @@ namespace Microsoft.Data
 
         public StringDataFrameColumn FillNulls(string value, bool inPlace = false)
         {
-            if (value.GetType() != typeof(string) || value == null)
-                throw new ArgumentException(nameof(value));
-            string stringValue = (string)value;
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
             StringDataFrameColumn column = inPlace ? this : Clone();
 
             for (long i = 0; i < column.Length; i++)
             {
                 if (column[i] == null)
-                    column[i] = stringValue;
+                    column[i] = value;
             }
             return column;
         }
 
         protected override DataFrameColumn FillNullsImplementation(object value, bool inPlace)
         {
-            if (value is string)
-                return FillNulls((string)value, inPlace);
+            if (value is string valueString)
+                return FillNulls(valueString, inPlace);
             else
                 throw new ArgumentException(String.Format(Strings.MismatchedValueType, typeof(string)), nameof(value));
         }
