@@ -1601,14 +1601,16 @@ namespace Microsoft.Data.Tests
 
         }
 
-        [Fact]
-        public void TestClone()
+        [Theory]
+        [InlineData(10, 5)]
+        [InlineData(20, 20)]
+        public void TestClone(int dfLength, int intDfLength)
         {
-            DataFrame df = MakeDataFrameWithAllColumnTypes(10, withNulls: false);
-            DataFrame intDf = MakeDataFrameWithTwoColumns(5, false);
+            DataFrame df = MakeDataFrameWithAllColumnTypes(dfLength, withNulls: true);
+            DataFrame intDf = MakeDataFrameWithTwoColumns(intDfLength, false);
             PrimitiveDataFrameColumn<int> intColumn = intDf["Int1"] as PrimitiveDataFrameColumn<int>;
             DataFrame clone = df[intColumn];
-            Assert.Equal(5, clone.RowCount);
+            Assert.Equal(intDfLength, clone.RowCount);
             Assert.Equal(df.Columns.Count, clone.Columns.Count);
             for (int i = 0; i < df.Columns.Count; i++)
             {
