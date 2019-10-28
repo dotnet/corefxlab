@@ -26,7 +26,17 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public DataFrameColumn Add(string value, bool inPlace = false)
+        public static StringDataFrameColumn operator+(StringDataFrameColumn column, string value)
+        {
+            return column.Add(value);
+        }
+
+        public static StringDataFrameColumn operator+(string value, StringDataFrameColumn column)
+        {
+            return column.Add(value);
+        }
+
+        public StringDataFrameColumn Add(string value, bool inPlace = false)
         {
             StringDataFrameColumn ret = inPlace ? this : Clone();
             for (int i = 0; i < ret._stringBuffers.Count; i++)
