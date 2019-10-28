@@ -135,7 +135,7 @@ namespace Microsoft.Data
             List<DataFrameColumn> columns;
             long streamStart = csvStream.Position;
             // First pass: schema and number of rows.
-            using (var streamReader = new StreamReader(csvStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: true))
+            using (var streamReader = new StreamReader(csvStream, encoding: null, detectEncodingFromByteOrderMarks: true, bufferSize: -1, leaveOpen: true))
             {
                 string line = streamReader.ReadLine();
                 while (line != null)
