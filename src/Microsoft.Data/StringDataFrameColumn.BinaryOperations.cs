@@ -26,20 +26,24 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override DataFrameColumn Add<T>(T value, bool inPlace = false)
+        public DataFrameColumn Add(string value, bool inPlace = false)
         {
             StringDataFrameColumn ret = inPlace ? this : Clone();
-            string valString = value.ToString();
             for (int i = 0; i < ret._stringBuffers.Count; i++)
             {
                 IList<string> buffer = ret._stringBuffers[i];
                 int bufferLen = buffer.Count;
                 for (int j = 0; j < bufferLen; j++)
                 {
-                    buffer[j] += valString;
+                    buffer[j] += value;
                 }
             }
             return ret;
+        }
+
+        public override DataFrameColumn Add<T>(T value, bool inPlace = false)
+        {
+            return Add(value.ToString(), inPlace);
         }
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
@@ -56,13 +60,27 @@ namespace Microsoft.Data
             return ret;
         }
 
-        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
+        public PrimitiveDataFrameColumn<bool> ElementwiseEquals(string value)
         {
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            string valString = value.ToString();
             for (long i = 0; i < Length; i++)
             {
-                ret[i] = (string)this[i] == valString;
+                ret[i] = (string)this[i] == value;
+            }
+            return ret;
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
+        {
+            return ElementwiseEquals(value.ToString());
+        }
+
+        public PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(string value)
+        {
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
+            for (long i = 0; i < Length; i++)
+            {
+                ret[i] = (string)this[i] != value;
             }
             return ret;
         }
@@ -83,13 +101,7 @@ namespace Microsoft.Data
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
         {
-            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            string valString = value.ToString();
-            for (long i = 0; i < Length; i++)
-            {
-                ret[i] = (string)this[i] != valString;
-            }
-            return ret;
+            return ElementwiseNotEquals(value.ToString());
         }
     }
 }
