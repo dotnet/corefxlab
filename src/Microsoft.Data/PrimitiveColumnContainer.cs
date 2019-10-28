@@ -329,7 +329,7 @@ namespace Microsoft.Data
             return NullBitMapBuffers[arrayIndex].ReadOnlyBuffer;
         }
 
-        public IList<T?> this[long startIndex, int length]
+        public IReadOnlyList<T?> this[long startIndex, int length]
         {
             get
             {
