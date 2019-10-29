@@ -33,7 +33,17 @@ namespace Microsoft.Data
 
         public static StringDataFrameColumn operator+(string value, StringDataFrameColumn column)
         {
-            return column.Add(value);
+            StringDataFrameColumn ret = column.Clone();
+            for (int i = 0; i < ret._stringBuffers.Count; i++)
+            {
+                IList<string> buffer = ret._stringBuffers[i];
+                int bufferLen = buffer.Count;
+                for (int j = 0; j < bufferLen; j++)
+                {
+                    buffer[j] = value + buffer[j];
+                }
+            }
+            return ret;
         }
 
         public StringDataFrameColumn Add(string value, bool inPlace = false)
@@ -65,7 +75,7 @@ namespace Microsoft.Data
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)
             {
-                ret[i] = (string)this[i] == column[i]?.ToString();
+                ret[i] = this[i] == column[i]?.ToString();
             }
             return ret;
         }
@@ -75,7 +85,7 @@ namespace Microsoft.Data
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)
             {
-                ret[i] = (string)this[i] == value;
+                ret[i] = this[i] == value;
             }
             return ret;
         }
@@ -90,7 +100,7 @@ namespace Microsoft.Data
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)
             {
-                ret[i] = (string)this[i] != value;
+                ret[i] = this[i] != value;
             }
             return ret;
         }
@@ -104,7 +114,7 @@ namespace Microsoft.Data
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)
             {
-                ret[i] = (string)this[i] != column[i].ToString();
+                ret[i] = this[i] != column[i].ToString();
             }
             return ret;
         }

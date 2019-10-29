@@ -466,6 +466,11 @@ namespace Microsoft.Data.Tests
                 Assert.Equal(addString[i], typedStringColumn[i] + "suffix");
             }
             Assert.True(newCol.ElementwiseEquals(addString).All());
+            addString = "prefix" + typedStringColumn;
+            for (int i = 0; i < addString.Length; i++)
+            {
+                Assert.Equal(addString[i], "prefix" + typedStringColumn[i]);
+            }
         }
 
         [Fact]
