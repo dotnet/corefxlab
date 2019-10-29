@@ -33,7 +33,12 @@ namespace Microsoft.Data
 
         public static StringDataFrameColumn operator+(string value, StringDataFrameColumn column)
         {
-            StringDataFrameColumn ret = column.Clone();
+            return Add(value, column);
+        }
+
+        public static StringDataFrameColumn Add(string value, StringDataFrameColumn right)
+        {
+            StringDataFrameColumn ret = right.Clone();
             for (int i = 0; i < ret._stringBuffers.Count; i++)
             {
                 IList<string> buffer = ret._stringBuffers[i];
