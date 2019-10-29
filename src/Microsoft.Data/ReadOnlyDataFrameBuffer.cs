@@ -45,12 +45,6 @@ namespace Microsoft.Data
             get => (MemoryMarshal.Cast<byte, T>(ReadOnlyBuffer.Span)).Slice(0, Length);
         }
 
-        //public ReadOnlySpan<T> RawReadOnlySpan
-        //{
-        //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //    get => MemoryMarshal.Cast<byte, T>(ReadOnlyBuffer.Span);
-        //}
-
         public int Length { get; internal set; }
 
         public ReadOnlyDataFrameBuffer(int numberOfValues = 8)
