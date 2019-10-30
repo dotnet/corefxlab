@@ -99,9 +99,9 @@ namespace Microsoft.Data
                 }
                 if (!buffer.IsEmpty)
                 {
-                    // Create a new bitMap with all the bits upto length set
+                    // Create a new bitMap with all the bits up to length set
                     var bitMap = new byte[bitMapBufferLength];
-                    bitMap.AsSpan().Slice(0, bitMapBufferLength - 1).Fill(255);
+                    bitMap.AsSpan().Fill(255);
                     int lastByte = 1 << (length - (bitMapBufferLength - 1) * 8); 
                     bitMap[bitMapBufferLength - 1] = (byte)(lastByte - 1);
                     nullDataFrameBuffer = new DataFrameBuffer<byte>(bitMap, bitMapBufferLength);
@@ -113,6 +113,10 @@ namespace Microsoft.Data
             }
             else
             {
+                if (nullBitMap.Length < bitMapBufferLength)
+                {
+                    throw new ArgumentException(Strings.InconsistentNullBitMapAndLength, nameof(nullBitMap));
+                }
                 nullDataFrameBuffer = new ReadOnlyDataFrameBuffer<byte>(nullBitMap, bitMapBufferLength);
             }
             NullBitMapBuffers.Add(nullDataFrameBuffer);

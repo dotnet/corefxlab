@@ -138,5 +138,21 @@ namespace Microsoft.Data.Tests
             Assert.Equal(0, emptyDataFrame["EmptyDataAndNullColumns"].Length);
             Assert.Equal(0, emptyDataFrame["EmptyDataAndNullColumns"].NullCount);
         }
+
+        [Fact]
+        public void TestInconsistentNullBitMapLength()
+        {
+            // Arrow allocates buffers of length 64 by default. 64 * 8 = 512 bits in the NullBitMapBuffer. Anything lesser than 512 will not trigger a throw
+            Int32Array int32 = new Int32Array.Builder().AppendRange(Enumerable.Range(0, 520)).Build();
+            RecordBatch originalBatch = new RecordBatch.Builder()
+                .Append("EmptyDataColumn", true, new Int32Array(
+                    valueBuffer: int32.ValueBuffer,
+                    nullBitmapBuffer: new ArrowBuffer.Builder<byte>().Append(0x00).Build(),
+                    length: 520,
+                    nullCount: 520,
+                    offset: 0)).Build();
+
+            Assert.ThrowsAny<ArgumentException>(() => DataFrame.FromArrowRecordBatch(originalBatch));
+        }
     }
 }

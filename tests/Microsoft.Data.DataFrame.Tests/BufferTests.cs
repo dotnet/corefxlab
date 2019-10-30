@@ -82,6 +82,17 @@ namespace Microsoft.Data.Tests
         }
 
         [Fact]
+        public void TestNullCountWithIndexers()
+        {
+            PrimitiveDataFrameColumn<int> intColumn = new PrimitiveDataFrameColumn<int>("Int", 5);
+            Assert.Equal(5, intColumn.NullCount);
+            intColumn[2] = null;
+            Assert.Equal(5, intColumn.NullCount);
+            intColumn[2] = 5;
+            Assert.Equal(4, intColumn.NullCount);
+        }
+
+        [Fact]
         public void TestValidity()
         {
             PrimitiveDataFrameColumn<int> dataFrameColumn1 = new PrimitiveDataFrameColumn<int>("Int1", Enumerable.Range(0, 10).Select(x => x));
@@ -214,7 +225,7 @@ namespace Microsoft.Data.Tests
                 {
                     for (int k = 0; k < 8; k++)
                     {
-                        if (j * 8 + k == column.Length) 
+                        if (j * 8 + k == column.Length)
                             break;
                         Assert.True(GetBit(bitMapSpan[j], k));
                     }
