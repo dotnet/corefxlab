@@ -106,7 +106,7 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inconsisten Null bitmaps and NullCounts.
+        ///   Looks up a localized string similar to Inconsistent Null bitmaps and NullCounts.
         /// </summary>
         public static string InconsistentNullBitMapAndNullCount {
             get {

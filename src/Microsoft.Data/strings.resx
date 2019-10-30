@@ -133,7 +133,7 @@
     <value>Column is immutable</value>
   </data>
   <data name="InconsistentNullBitMapAndNullCount" xml:space="preserve">
-    <value>Inconsisten Null bitmaps and NullCounts</value>
+    <value>Inconsistent Null bitmaps and NullCounts</value>
   </data>
   <data name="InvalidColumnName" xml:space="preserve">
     <value>Column does not exist</value>
