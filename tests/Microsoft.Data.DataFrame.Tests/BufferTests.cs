@@ -20,24 +20,24 @@ namespace Microsoft.Data.Tests
             dataFrameColumn1.Append(null);
             Assert.Equal(1, dataFrameColumn1.NullCount);
 
-            PrimitiveDataFrameColumn<int> df2 = new PrimitiveDataFrameColumn<int>("Int2");
-            Assert.Equal(0, df2.NullCount);
+            PrimitiveDataFrameColumn<int> column2 = new PrimitiveDataFrameColumn<int>("Int2");
+            Assert.Equal(0, column2.NullCount);
 
-            PrimitiveDataFrameColumn<int> df3 = new PrimitiveDataFrameColumn<int>("Int3", 10);
-            Assert.Equal(0, df3.NullCount);
+            PrimitiveDataFrameColumn<int> column3 = new PrimitiveDataFrameColumn<int>("Int3", 10);
+            Assert.Equal(10, column3.NullCount);
 
             // Test null counts with assignments on Primitive Columns
-            df2.Append(null);
-            df2.Append(1);
-            Assert.Equal(1, df2.NullCount);
-            df2[1] = 10;
-            Assert.Equal(1, df2.NullCount);
-            df2[1] = null;
-            Assert.Equal(2, df2.NullCount);
-            df2[1] = 5;
-            Assert.Equal(1, df2.NullCount);
-            df2[0] = null;
-            Assert.Equal(1, df2.NullCount);
+            column2.Append(null);
+            column2.Append(1);
+            Assert.Equal(1, column2.NullCount);
+            column2[1] = 10;
+            Assert.Equal(1, column2.NullCount);
+            column2[1] = null;
+            Assert.Equal(2, column2.NullCount);
+            column2[1] = 5;
+            Assert.Equal(1, column2.NullCount);
+            column2[0] = null;
+            Assert.Equal(1, column2.NullCount);
 
             // Test null counts with assignments on String Columns
             StringDataFrameColumn strCol = new StringDataFrameColumn("String", 0);
@@ -79,6 +79,17 @@ namespace Microsoft.Data.Tests
             Assert.Null(intColumn[4]);
             Assert.Equal(3, intColumn[5]);
 
+        }
+
+        [Fact]
+        public void TestNullCountWithIndexers()
+        {
+            PrimitiveDataFrameColumn<int> intColumn = new PrimitiveDataFrameColumn<int>("Int", 5);
+            Assert.Equal(5, intColumn.NullCount);
+            intColumn[2] = null;
+            Assert.Equal(5, intColumn.NullCount);
+            intColumn[2] = 5;
+            Assert.Equal(4, intColumn.NullCount);
         }
 
         [Fact]
@@ -214,6 +225,8 @@ namespace Microsoft.Data.Tests
                 {
                     for (int k = 0; k < 8; k++)
                     {
+                        if (j * 8 + k == column.Length)
+                            break;
                         Assert.True(GetBit(bitMapSpan[j], k));
                     }
                 }

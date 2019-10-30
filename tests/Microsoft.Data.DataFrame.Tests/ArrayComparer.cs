@@ -64,7 +64,20 @@ namespace Microsoft.Data.Tests
             Assert.Equal(expectedArray.NullCount, actualArray.NullCount);
             Assert.Equal(expectedArray.Offset, actualArray.Offset);
 
-            Assert.True(expectedArray.NullBitmapBuffer.Span.SequenceEqual(actualArray.NullBitmapBuffer.Span));
+            if (expectedArray.NullCount > 0)
+            {
+                Assert.True(expectedArray.NullBitmapBuffer.Span.SequenceEqual(actualArray.NullBitmapBuffer.Span));
+            }
+            else 
+            { 
+                // expectedArray may have passed in a null bitmap. DataFrame might have populated it with Length set bits 
+                Assert.Equal(0, expectedArray.NullCount); 
+                Assert.Equal(0, actualArray.NullCount); 
+                for (int i = 0; i < actualArray.Length; i++) 
+                { 
+                    Assert.True(actualArray.IsValid(i)); 
+                } 
+            }
             Assert.True(expectedArray.Values.Slice(0, expectedArray.Length).SequenceEqual(actualArray.Values.Slice(0, actualArray.Length)));
         }
 
