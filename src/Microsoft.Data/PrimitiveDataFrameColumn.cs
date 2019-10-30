@@ -198,7 +198,7 @@ namespace Microsoft.Data
             }
             else
             {
-                throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
+                throw new ArgumentException(string.Format(Strings.MismatchedValueType, DataType), nameof(value));
             }
         }
 
@@ -213,7 +213,7 @@ namespace Microsoft.Data
                 }
                 else
                 {
-                    throw new ArgumentException(Strings.MismatchedValueType + $" {DataType.ToString()}", nameof(value));
+                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, DataType), nameof(value));
                 }
             }
         }
@@ -244,7 +244,7 @@ namespace Microsoft.Data
             return (double)Convert.ChangeType((T)Sum(), typeof(double)) / Length;
         }
 
-        public override void Resize(long length)
+        protected internal override void Resize(long length)
         {
             _columnContainer.Resize(length);
             Length = _columnContainer.Length;
@@ -518,7 +518,7 @@ namespace Microsoft.Data
             if (typeof(T) == typeof(U) || convertedLower != null)
                 return Clip((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)), inPlace);
             else
-                throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
+                throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(U));
         }
 
         /// <summary>
@@ -548,7 +548,7 @@ namespace Microsoft.Data
             if (typeof(T) == typeof(U) || convertedLower != null)
                 return Filter((T)convertedLower, (T)Convert.ChangeType(upper, typeof(T)));
             else
-                throw new ArgumentException(Strings.MismatchedValueType + typeof(T).ToString(), nameof(U));
+                throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(U));
         }
 
         public override DataFrame Description()
