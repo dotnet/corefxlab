@@ -99,7 +99,7 @@ namespace Microsoft.Data
                 }
                 if (!buffer.IsEmpty)
                 {
-                    // Create a new bitMap with all the bits set
+                    // Create a new bitMap with all the bits upto length set
                     var bitMap = new byte[bitMapBufferLength];
                     bitMap.AsSpan().Slice(0, bitMapBufferLength - 1).Fill(255);
                     int lastByte = 1 << (length - (bitMapBufferLength - 1) * 8); 
