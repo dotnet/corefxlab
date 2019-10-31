@@ -248,7 +248,7 @@ namespace Microsoft.Data
                             column[rowIndex] = null;
                             continue;
                         }
-                        throw new ArgumentException(Strings.MismatchedValueType + typeof(bool), nameof(val));
+                        throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(bool)), nameof(val));
                     }
                 }
                 else if (dType == typeof(float))
@@ -266,7 +266,7 @@ namespace Microsoft.Data
                             column[rowIndex] = null;
                             continue;
                         }
-                        throw new ArgumentException(Strings.MismatchedValueType + typeof(float), nameof(val));
+                        throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(float)), nameof(val));
                     }
                 }
                 else if (dType == typeof(string))

@@ -402,6 +402,131 @@ namespace Microsoft.Data
             return ret;
         }
 
+        private void ResizeByOneAndAppend(DataFrameColumn column, object value)
+        {
+            long length = column.Length;
+            column.Resize(length + 1);
+            column[length] = value;
+        }
+
+        /// <summary> 
+        /// Appends a row inplace to the DataFrame 
+        /// </summary> 
+        /// <remarks>If a column's value doesn't match its column's data type, a conversion will be attempted</remarks> 
+        /// <remarks>If <paramref name="row"/> is null, a null value is appended to each column</remarks>
+        /// <param name="row"></param> 
+        public void Append(IEnumerable<object> row = null)
+        {
+            IEnumerator<DataFrameColumn> columnEnumerator = Columns.GetEnumerator();
+            bool columnMoveNext = columnEnumerator.MoveNext();
+            if (row != null)
+            {
+                // Go through row first to make sure there are no data type incompatibilities
+                IEnumerator<object> rowEnumerator = row.GetEnumerator();
+                bool rowMoveNext = rowEnumerator.MoveNext();
+                List<object> cachedObjectConversions = new List<object>();
+                while (columnMoveNext && rowMoveNext)
+                {
+                    DataFrameColumn column = columnEnumerator.Current;
+                    object value = rowEnumerator.Current;
+                    if (value != null)
+                    {
+                        value = Convert.ChangeType(value, column.DataType);
+                        if (value is null)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
+                        }
+                    }
+                    cachedObjectConversions.Add(value);
+                    columnMoveNext = columnEnumerator.MoveNext();
+                    rowMoveNext = rowEnumerator.MoveNext();
+                }
+                if (rowMoveNext)
+                {
+                    throw new ArgumentException(string.Format(Strings.ExceedsNumberOfColumns, Columns.Count), nameof(row));
+                }
+                columnEnumerator.Reset();
+                columnMoveNext = columnEnumerator.MoveNext();
+                rowEnumerator.Reset();
+                rowMoveNext = rowEnumerator.MoveNext();
+                int cacheIndex = 0;
+                while (columnMoveNext && rowMoveNext)
+                {
+                    DataFrameColumn column = columnEnumerator.Current;
+                    object value = cachedObjectConversions[cacheIndex];
+                    ResizeByOneAndAppend(column, value);
+                    columnMoveNext = columnEnumerator.MoveNext();
+                    rowMoveNext = rowEnumerator.MoveNext();
+                    cacheIndex++;
+                }
+            }
+            while (columnMoveNext)
+            {
+                // Fill the remaining columns with null
+                DataFrameColumn column = columnEnumerator.Current;
+                ResizeByOneAndAppend(column, null);
+                columnMoveNext = columnEnumerator.MoveNext();
+            }
+            Columns.RowCount++;
+        }
+
+        /// <summary> 
+        /// Appends a row inplace by enumerating column names and values from <paramref name="row"/> 
+        /// </summary> 
+        /// <remarks>If a column's value doesn't match its column's data type, a conversion will be attempted</remarks> 
+        /// <param name="row"></param> 
+        public void Append(IEnumerable<KeyValuePair<string, object>> row)
+        {
+            if (row == null)
+            {
+                throw new ArgumentNullException(nameof(row));
+            }
+
+            List<object> cachedObjectConversions = new List<object>();
+            foreach (KeyValuePair<string, object> columnAndValue in row)
+            {
+                string columnName = columnAndValue.Key;
+                int index = Columns.IndexOf(columnName);
+                if (index == -1)
+                {
+                    throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
+                }
+
+                DataFrameColumn column = Columns[index];
+                object value = columnAndValue.Value;
+                if (value != null)
+                {
+                    value = Convert.ChangeType(value, column.DataType);
+                    if (value is null)
+                    {
+                        throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
+                    }
+                }
+                cachedObjectConversions.Add(value);
+            }
+
+            int cacheIndex = 0;
+            foreach (KeyValuePair<string, object> columnAndValue in row)
+            {
+                string columnName = columnAndValue.Key;
+                int index = Columns.IndexOf(columnName);
+
+                DataFrameColumn column = Columns[index];
+                object value = cachedObjectConversions[cacheIndex];
+                ResizeByOneAndAppend(column, value);
+                cacheIndex++;
+            }
+
+            foreach (DataFrameColumn column in Columns)
+            {
+                if (column.Length == RowCount)
+                {
+                    ResizeByOneAndAppend(column, null);
+                }
+            }
+            Columns.RowCount++;
+        }
+
         /// <summary>
         /// Invalidates any cached data after a column has changed.
         /// </summary>

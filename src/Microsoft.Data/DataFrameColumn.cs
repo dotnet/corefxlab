@@ -76,10 +76,10 @@ namespace Microsoft.Data
         protected abstract IEnumerator GetEnumeratorCore();
 
         /// <summary>
-        /// Called internally from Merge and GroupBy. Resizes the column to the specified length to allow setting values by indexing
+        /// Called internally from Append, Merge and GroupBy. Resizes the column to the specified length to allow setting values by indexing
         /// </summary>
-        /// <param name="length"></param>
-        public virtual void Resize(long length) => throw new NotImplementedException();
+        /// <param name="length">The new length of the column</param>
+        protected internal virtual void Resize(long length) => throw new NotImplementedException();
 
         /// <summary>
         /// Clone column to produce a copy potentially changing the order by supplying mapIndices and an invert flag

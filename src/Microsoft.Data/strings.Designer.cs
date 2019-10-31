@@ -97,6 +97,15 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter.Count exceeds the number of columns({0}) in the DataFrame .
+        /// </summary>
+        public static string ExceedsNumberOfColumns {
+            get {
+                return ResourceManager.GetString("ExceedsNumberOfColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Column is immutable.
         /// </summary>
         public static string ImmutableColumn {
@@ -169,7 +178,7 @@ namespace Microsoft.Data {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected value to be of type .
+        ///   Looks up a localized string similar to Expected value to be of type {0}.
         /// </summary>
         public static string MismatchedValueType {
             get {

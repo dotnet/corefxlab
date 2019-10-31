@@ -129,6 +129,9 @@
   <data name="EmptyFile" xml:space="preserve">
     <value>Empty file</value>
   </data>
+  <data name="ExceedsNumberOfColumns" xml:space="preserve">
+    <value>Parameter.Count exceeds the number of columns({0}) in the DataFrame </value>
+  </data>
   <data name="ImmutableColumn" xml:space="preserve">
     <value>Column is immutable</value>
   </data>
@@ -154,7 +157,7 @@
     <value>rowCount differs from Column length for Column </value>
   </data>
   <data name="MismatchedValueType" xml:space="preserve">
-    <value>Expected value to be of type </value>
+    <value>Expected value to be of type {0}</value>
   </data>
   <data name="MultipleMismatchedValueType" xml:space="preserve">
     <value>Expected value to be of type {0}, {1} or {2}</value>
