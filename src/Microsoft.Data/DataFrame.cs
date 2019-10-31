@@ -424,7 +424,7 @@ namespace Microsoft.Data
                 // Go through row first to make sure there are no data type incompatibilities
                 IEnumerator<object> rowEnumerator = row.GetEnumerator();
                 bool rowMoveNext = rowEnumerator.MoveNext();
-                Dictionary<string, object> cachedObjectConversions = new Dictionary<string, object>();
+                List<object> cachedObjectConversions = new List<object>();
                 while (columnMoveNext && rowMoveNext)
                 {
                     DataFrameColumn column = columnEnumerator.Current;
@@ -437,7 +437,7 @@ namespace Microsoft.Data
                             throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
                         }
                     }
-                    cachedObjectConversions.Add(column.Name, value);
+                    cachedObjectConversions.Add(value);
                     columnMoveNext = columnEnumerator.MoveNext();
                     rowMoveNext = rowEnumerator.MoveNext();
                 }
@@ -449,13 +449,15 @@ namespace Microsoft.Data
                 columnMoveNext = columnEnumerator.MoveNext();
                 rowEnumerator.Reset();
                 rowMoveNext = rowEnumerator.MoveNext();
+                int cacheIndex = 0;
                 while (columnMoveNext && rowMoveNext)
                 {
                     DataFrameColumn column = columnEnumerator.Current;
-                    object value = cachedObjectConversions[column.Name];
+                    object value = cachedObjectConversions[cacheIndex];
                     ResizeByOneAndAppend(column, value);
                     columnMoveNext = columnEnumerator.MoveNext();
                     rowMoveNext = rowEnumerator.MoveNext();
+                    cacheIndex++;
                 }
             }
             while (columnMoveNext)
@@ -480,6 +482,7 @@ namespace Microsoft.Data
                 throw new ArgumentNullException(nameof(row));
             }
 
+            List<object> cachedObjectConversions = new List<object>();
             foreach (KeyValuePair<string, object> columnAndValue in row)
             {
                 string columnName = columnAndValue.Key;
@@ -499,20 +502,19 @@ namespace Microsoft.Data
                         throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
                     }
                 }
+                cachedObjectConversions.Add(value);
             }
 
+            int cacheIndex = 0;
             foreach (KeyValuePair<string, object> columnAndValue in row)
             {
                 string columnName = columnAndValue.Key;
                 int index = Columns.IndexOf(columnName);
 
                 DataFrameColumn column = Columns[index];
-                object value = columnAndValue.Value;
-                if (value != null)
-                {
-                    value = Convert.ChangeType(value, column.DataType);
-                }
+                object value = cachedObjectConversions[cacheIndex];
                 ResizeByOneAndAppend(column, value);
+                cacheIndex++;
             }
 
             foreach (DataFrameColumn column in Columns)
