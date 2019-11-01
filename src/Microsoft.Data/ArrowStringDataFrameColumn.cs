@@ -472,7 +472,7 @@ namespace Microsoft.Data
 
         public PrimitiveDataFrameColumn<bool> ElementwiseEquals(string value)
         {
-            ReadOnlySpan<byte> bytes = Encoding.UTF8.GetBytes(value);
+            ReadOnlySpan<byte> bytes = value != null ? Encoding.UTF8.GetBytes(value) : default(ReadOnlySpan<byte>);
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)
             {
@@ -508,7 +508,7 @@ namespace Microsoft.Data
 
         public PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(string value)
         {
-            ReadOnlySpan<byte> bytes = Encoding.UTF8.GetBytes(value);
+            ReadOnlySpan<byte> bytes = value != null ? Encoding.UTF8.GetBytes(value) : default(ReadOnlySpan<byte>);
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
             for (long i = 0; i < Length; i++)
             {
