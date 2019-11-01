@@ -469,5 +469,77 @@ namespace Microsoft.Data
 
         private ValueGetter<ReadOnlyMemory<char>> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
             (ref ReadOnlyMemory<char> value) => value = this[cursor.Position].AsMemory();
+
+        public PrimitiveDataFrameColumn<bool> ElementwiseEquals(string value)
+        {
+            ReadOnlySpan<byte> bytes = Encoding.UTF8.GetBytes(value);
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
+            for (long i = 0; i < Length; i++)
+            {
+                var strBytes = GetBytes(i);
+                if (strBytes.Length != bytes.Length)
+                {
+                    ret[i] = false;
+                    continue;
+                }
+                bool isEqual = true;
+                for (int j = 0; j < bytes.Length; j++)
+                {
+                    isEqual = strBytes[j] == bytes[j];
+                    if (!isEqual)
+                    {
+                        break;
+                    }
+                }
+                ret[i] = isEqual;
+            }
+            return ret;
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
+        {
+            return ElementwiseEquals(value.ToString());
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
+        {
+            return StringDataFrameColumn.ElementwiseEqualsImplementation(this, column);
+        }
+
+        public PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(string value)
+        {
+            ReadOnlySpan<byte> bytes = Encoding.UTF8.GetBytes(value);
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
+            for (long i = 0; i < Length; i++)
+            {
+                var strBytes = GetBytes(i);
+                if (strBytes.Length != bytes.Length)
+                {
+                    ret[i] = true;
+                    continue;
+                }
+                bool isEqual = true;
+                for (int j = 0; j < bytes.Length; j++)
+                {
+                    isEqual = strBytes[j] == bytes[j];
+                    if (!isEqual)
+                    {
+                        break;
+                    }
+                }
+                ret[i] = !isEqual;
+            }
+            return ret;
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
+        {
+            return ElementwiseNotEquals(value.ToString());
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
+        {
+            return StringDataFrameColumn.ElementwiseNotEqualsImplementation(this, column);
+        }
     }
 }

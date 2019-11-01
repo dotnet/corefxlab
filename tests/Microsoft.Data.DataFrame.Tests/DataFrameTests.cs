@@ -423,6 +423,51 @@ namespace Microsoft.Data.Tests
         }
 
         [Fact]
+        public void TestBinaryOperationsOnArrowStringColumn()
+        {
+            var df = new DataFrame();
+            var strArrayBuilder = new StringArray.Builder();
+            for (int i = 0; i < 10; i++)
+            {
+                strArrayBuilder.Append(i.ToString());
+            }
+            StringArray strArray = strArrayBuilder.Build();
+
+            ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("String", strArray.ValueBuffer.Memory, strArray.ValueOffsetsBuffer.Memory, strArray.NullBitmapBuffer.Memory, strArray.Length, strArray.NullCount);
+            df.Columns.Insert(0, stringColumn);
+
+            DataFrameColumn newCol = stringColumn.ElementwiseEquals(4);
+            Assert.Equal(true, newCol[4]);
+            Assert.Equal(false, newCol[0]);
+            Assert.Equal(false, newCol[5]);
+
+            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseEquals("4");
+            Assert.Equal(true, newCol[4]);
+            Assert.Equal(false, newCol[0]);
+
+            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseEquals("foo");
+            Assert.False(newCol.All());
+
+            ArrowStringDataFrameColumn stringColumnCopy = new ArrowStringDataFrameColumn("String", strArray.ValueBuffer.Memory, strArray.ValueOffsetsBuffer.Memory, strArray.NullBitmapBuffer.Memory, strArray.Length, strArray.NullCount);
+            newCol = stringColumn.ElementwiseEquals(stringColumnCopy);
+            Assert.True(newCol.All());
+
+            newCol = stringColumn.ElementwiseNotEquals(5);
+            Assert.Equal(true, newCol[0]);
+            Assert.Equal(false, newCol[5]);
+
+            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseNotEquals("5");
+            Assert.Equal(true, newCol[0]);
+            Assert.Equal(false, newCol[5]);
+
+            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseNotEquals("foo");
+            Assert.True(newCol.All());
+
+            newCol = stringColumn.ElementwiseNotEquals(stringColumnCopy);
+            Assert.False(newCol.All());
+        }
+
+        [Fact]
         public void TestBinaryOperationsOnStringColumn()
         {
             var df = new DataFrame();
