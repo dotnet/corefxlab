@@ -441,13 +441,13 @@ namespace Microsoft.Data.Tests
             Assert.Equal(false, newCol[0]);
             Assert.Equal(false, newCol[5]);
 
-            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseEquals("4");
+            newCol = stringColumn.ElementwiseEquals("4");
             Assert.Equal(true, newCol[4]);
             Assert.Equal(false, newCol[0]);
 
-            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseEquals("foo");
+            newCol = stringColumn.ElementwiseEquals("foo");
             Assert.False(newCol.All());
-            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseEquals(null);
+            newCol = stringColumn.ElementwiseEquals(null);
             Assert.False(newCol.All());
 
             ArrowStringDataFrameColumn stringColumnCopy = new ArrowStringDataFrameColumn("String", strArray.ValueBuffer.Memory, strArray.ValueOffsetsBuffer.Memory, strArray.NullBitmapBuffer.Memory, strArray.Length, strArray.NullCount);
@@ -458,13 +458,13 @@ namespace Microsoft.Data.Tests
             Assert.Equal(true, newCol[0]);
             Assert.Equal(false, newCol[5]);
 
-            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseNotEquals("5");
+            newCol = stringColumn.ElementwiseNotEquals("5");
             Assert.Equal(true, newCol[0]);
             Assert.Equal(false, newCol[5]);
 
-            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseNotEquals("foo");
+            newCol = stringColumn.ElementwiseNotEquals("foo");
             Assert.True(newCol.All());
-            newCol = (stringColumn as ArrowStringDataFrameColumn).ElementwiseNotEquals(null);
+            newCol = stringColumn.ElementwiseNotEquals(null);
             Assert.True(newCol.All());
 
             newCol = stringColumn.ElementwiseNotEquals(stringColumnCopy);

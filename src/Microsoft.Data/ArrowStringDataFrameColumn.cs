@@ -470,6 +470,9 @@ namespace Microsoft.Data
         private ValueGetter<ReadOnlyMemory<char>> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
             (ref ReadOnlyMemory<char> value) => value = this[cursor.Position].AsMemory();
 
+        /// <summary>
+        /// Returns a boolean column that is the result of an elementwise equality comparison of each value in the column with <paramref name="value"/>
+        /// </summary>
         public PrimitiveDataFrameColumn<bool> ElementwiseEquals(string value)
         {
             ReadOnlySpan<byte> bytes = value != null ? Encoding.UTF8.GetBytes(value) : default(ReadOnlySpan<byte>);
@@ -477,21 +480,7 @@ namespace Microsoft.Data
             for (long i = 0; i < Length; i++)
             {
                 var strBytes = GetBytes(i);
-                if (strBytes.Length != bytes.Length)
-                {
-                    ret[i] = false;
-                    continue;
-                }
-                bool isEqual = true;
-                for (int j = 0; j < bytes.Length; j++)
-                {
-                    isEqual = strBytes[j] == bytes[j];
-                    if (!isEqual)
-                    {
-                        break;
-                    }
-                }
-                ret[i] = isEqual;
+                ret[i] = value == null ? !IsValid(i) : strBytes.SequenceEqual(bytes);
             }
             return ret;
         }
@@ -506,6 +495,9 @@ namespace Microsoft.Data
             return StringDataFrameColumn.ElementwiseEqualsImplementation(this, column);
         }
 
+        /// <summary>
+        /// Returns a boolean column that is the result of an elementwise not-equal comparison of each value in the column with <paramref name="value"/>
+        /// </summary>
         public PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(string value)
         {
             ReadOnlySpan<byte> bytes = value != null ? Encoding.UTF8.GetBytes(value) : default(ReadOnlySpan<byte>);
@@ -513,21 +505,7 @@ namespace Microsoft.Data
             for (long i = 0; i < Length; i++)
             {
                 var strBytes = GetBytes(i);
-                if (strBytes.Length != bytes.Length)
-                {
-                    ret[i] = true;
-                    continue;
-                }
-                bool isEqual = true;
-                for (int j = 0; j < bytes.Length; j++)
-                {
-                    isEqual = strBytes[j] == bytes[j];
-                    if (!isEqual)
-                    {
-                        break;
-                    }
-                }
-                ret[i] = !isEqual;
+                ret[i] = value == null ? IsValid(i) : !strBytes.SequenceEqual(bytes);
             }
             return ret;
         }
