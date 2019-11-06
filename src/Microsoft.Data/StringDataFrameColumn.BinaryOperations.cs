@@ -71,18 +71,24 @@ namespace Microsoft.Data
             return Add(value.ToString(), inPlace);
         }
 
-        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
+        internal static PrimitiveDataFrameColumn<bool> ElementwiseEqualsImplementation(DataFrameColumn left, DataFrameColumn right)
         {
-            if (Length != column.Length)
+            if (left.Length != right.Length)
             {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(right));
             }
-            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            for (long i = 0; i < Length; i++)
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(left.Name, left.Length);
+            for (long i = 0; i < left.Length; i++)
             {
-                ret[i] = this[i] == column[i]?.ToString();
+                ret[i] = (string)left[i] == right[i]?.ToString();
             }
             return ret;
+            
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
+        {
+            return ElementwiseEqualsImplementation(this, column);
         }
 
         public PrimitiveDataFrameColumn<bool> ElementwiseEquals(string value)
@@ -100,6 +106,20 @@ namespace Microsoft.Data
             return ElementwiseEquals(value.ToString());
         }
 
+        internal static PrimitiveDataFrameColumn<bool> ElementwiseNotEqualsImplementation(DataFrameColumn left, DataFrameColumn column)
+        {
+            if (left.Length != column.Length)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(left.Name, left.Length);
+            for (long i = 0; i < left.Length; i++)
+            {
+                ret[i] = (string)left[i] != column[i].ToString();
+            }
+            return ret;
+        }
+
         public PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(string value)
         {
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
@@ -112,16 +132,7 @@ namespace Microsoft.Data
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
-            if (Length != column.Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            for (long i = 0; i < Length; i++)
-            {
-                ret[i] = this[i] != column[i].ToString();
-            }
-            return ret;
+            return ElementwiseNotEqualsImplementation(this, column);
         }
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)

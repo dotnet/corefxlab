@@ -469,5 +469,75 @@ namespace Microsoft.Data
 
         private ValueGetter<ReadOnlyMemory<char>> CreateValueGetterDelegate(DataViewRowCursor cursor) =>
             (ref ReadOnlyMemory<char> value) => value = this[cursor.Position].AsMemory();
+
+        /// <summary>
+        /// Returns a boolean column that is the result of an elementwise equality comparison of each value in the column with <paramref name="value"/>
+        /// </summary>
+        public PrimitiveDataFrameColumn<bool> ElementwiseEquals(string value)
+        {
+            ReadOnlySpan<byte> bytes = value != null ? Encoding.UTF8.GetBytes(value) : default(ReadOnlySpan<byte>);
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
+            if (value == null)
+            {
+                for (long i = 0; i < Length; i++)
+                {
+                    ret[i] = !IsValid(i);
+                }
+            }
+            else
+            {
+                for (long i = 0; i < Length; i++)
+                {
+                    var strBytes = GetBytes(i);
+                    ret[i] = strBytes.SequenceEqual(bytes);
+                }
+            }
+            return ret;
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
+        {
+            return ElementwiseEquals(value.ToString());
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
+        {
+            return StringDataFrameColumn.ElementwiseEqualsImplementation(this, column);
+        }
+
+        /// <summary>
+        /// Returns a boolean column that is the result of an elementwise not-equal comparison of each value in the column with <paramref name="value"/>
+        /// </summary>
+        public PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(string value)
+        {
+            ReadOnlySpan<byte> bytes = value != null ? Encoding.UTF8.GetBytes(value) : default(ReadOnlySpan<byte>);
+            PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
+            if (value == null)
+            {
+                for (long i = 0; i < Length; i++)
+                {
+                    ret[i] = IsValid(i);
+                }
+            }
+            else
+            {
+                for (long i = 0; i < Length; i++)
+                {
+                    var strBytes = GetBytes(i);
+                    ret[i] = !strBytes.SequenceEqual(bytes);
+                }
+            }
+            return ret;
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
+        {
+            return ElementwiseNotEquals(value.ToString());
+        }
+
+        public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
+        {
+            return StringDataFrameColumn.ElementwiseNotEqualsImplementation(this, column);
+        }
     }
 }
