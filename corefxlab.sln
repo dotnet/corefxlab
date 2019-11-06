@@ -99,9 +99,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Numerics.Experimenta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Numerics.Experimental.Tests", "tests\System.Numerics.Experimental.Tests\System.Numerics.Experimental.Tests.csproj", "{6411FD4E-0CDF-4478-9192-4411DC932314}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.DataFrame", "src\Microsoft.Data\Microsoft.Data.DataFrame.csproj", "{AD22AAD4-FCB0-4DB4-BC38-AB6ACD153899}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.Analysis", "src\Microsoft.Data.Analysis\Microsoft.Data.Analysis.csproj", "{AD22AAD4-FCB0-4DB4-BC38-AB6ACD153899}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.DataFrame.Tests", "tests\Microsoft.Data.DataFrame.Tests\Microsoft.Data.DataFrame.Tests.csproj", "{485FC567-4AEC-4335-B767-283173F64C42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.Analysis.Tests", "tests\Microsoft.Data.Analysis.Tests\Microsoft.Data.Analysis.Tests.csproj", "{485FC567-4AEC-4335-B767-283173F64C42}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALCProxy.Communication", "src\ALCProxy.Communication\ALCProxy.Communication.csproj", "{53180841-8CB6-4A84-8BA7-3D85F0E94879}"
 EndProject
