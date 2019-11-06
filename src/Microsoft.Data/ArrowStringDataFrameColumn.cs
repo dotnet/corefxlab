@@ -477,10 +477,20 @@ namespace Microsoft.Data
         {
             ReadOnlySpan<byte> bytes = value != null ? Encoding.UTF8.GetBytes(value) : default(ReadOnlySpan<byte>);
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            for (long i = 0; i < Length; i++)
+            if (value == null)
             {
-                var strBytes = GetBytes(i);
-                ret[i] = value == null ? !IsValid(i) : strBytes.SequenceEqual(bytes);
+                for (long i = 0; i < Length; i++)
+                {
+                    ret[i] = !IsValid(i);
+                }
+            }
+            else
+            {
+                for (long i = 0; i < Length; i++)
+                {
+                    var strBytes = GetBytes(i);
+                    ret[i] = strBytes.SequenceEqual(bytes);
+                }
             }
             return ret;
         }
@@ -502,10 +512,20 @@ namespace Microsoft.Data
         {
             ReadOnlySpan<byte> bytes = value != null ? Encoding.UTF8.GetBytes(value) : default(ReadOnlySpan<byte>);
             PrimitiveDataFrameColumn<bool> ret = new PrimitiveDataFrameColumn<bool>(Name, Length);
-            for (long i = 0; i < Length; i++)
+            if (value == null)
             {
-                var strBytes = GetBytes(i);
-                ret[i] = value == null ? IsValid(i) : !strBytes.SequenceEqual(bytes);
+                for (long i = 0; i < Length; i++)
+                {
+                    ret[i] = IsValid(i);
+                }
+            }
+            else
+            {
+                for (long i = 0; i < Length; i++)
+                {
+                    var strBytes = GetBytes(i);
+                    ret[i] = !strBytes.SequenceEqual(bytes);
+                }
             }
             return ret;
         }
