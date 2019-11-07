@@ -24,6 +24,11 @@ jobs:
         - name: _TeamName
           value: DotNetCore
         - group: DotNet-MyGet-Publish
+        - group: DotNet-Symbol-Server-Pats
+        - name: _SymwebSymbolServerPath
+          value: https://microsoft.artifacts.visualstudio.com/DefaultCollection
+        - name: _MsdlSymbolServerPath
+          value: https://microsoftpublicsymbols.artifacts.visualstudio.com/DefaultCollection
 
       - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
         - name: _buildArguments
@@ -58,3 +63,9 @@ jobs:
       - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
         - script: package.cmd -Configuration $(_BuildConfig) -ApiKey $(dotnet-myget-org-api-key) -BuildVersion $(Build.BuildNumber) -Sign -SignType $(_SignType)
           displayName: Build and publish packages
+
+        - script: dotnetcli\dotnet.exe tools\publishing\publish.proj /t:PublishSymbolPackages /p:SymbolServerPath=$(_SymwebSymbolServerPath) /p:SymbolServerPAT=$(symweb-symbol-server-pat)
+          displayName: Publish symbols to symweb
+
+        - script: dotnetcli\dotnet.exe tools\publishing\publish.proj /t:PublishSymbolPackages /p:SymbolServerPath=$(_MsdlSymbolServerPath) /p:SymbolServerPAT=$(microsoft-symbol-server-pat)
+          displayName: Publish symbols to msdl

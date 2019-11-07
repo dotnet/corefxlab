@@ -7,7 +7,7 @@
     <VersionPrefix>0.1.1</VersionPrefix>
     <Authors>Microsoft</Authors>
     <PackageReleaseNotes>Pre-release package, for testing only</PackageReleaseNotes>
-    <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
+    <PackageIcon>Icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/dotnet/corefxlab</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -18,10 +18,12 @@
     <LangVersion>latest</LangVersion>
     <!-- We are usually using a preview SDK -->
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <PackagesPath Condition="'$(PackagesPath)' == ''">$(RepoRoot)packages</PackagesPath>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="$(RepoRoot)THIRD-PARTY-NOTICES.TXT" Pack="true" PackagePath="\" />
     <Content Include="$(RepoRoot)LICENSE" Pack="true" PackagePath="\" />
+    <Content Include="$(RepoRoot)tools/PackageIcon.png" Pack="true" PackagePath="$(PackageIcon)" Visible="false" />
   </ItemGroup>
 </Project>
