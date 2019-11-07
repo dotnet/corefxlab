@@ -64,8 +64,8 @@ jobs:
         - script: package.cmd -Configuration $(_BuildConfig) -ApiKey $(dotnet-myget-org-api-key) -BuildVersion $(Build.BuildNumber) -Sign -SignType $(_SignType)
           displayName: Build and publish packages
 
-        - script: dotnetcli\dotnet.exe msbuild tools\publishing\publish.proj /t:PublishSymbolPackages /p:SymbolServerPath=$(_SymwebSymbolServerPath) /p:SymbolServerPAT=$(symweb-symbol-server-pat)
+        - script: dotnetcli\dotnet.exe msbuild tools\package-steps.proj /t:PublishSymbols /p:SymbolServerPath=$(_SymwebSymbolServerPath) /p:SymbolServerPAT=$(symweb-symbol-server-pat)
           displayName: Publish symbols to symweb
 
-        - script: dotnetcli\dotnet.exe msbuild tools\publishing\publish.proj /t:PublishSymbolPackages /p:SymbolServerPath=$(_MsdlSymbolServerPath) /p:SymbolServerPAT=$(microsoft-symbol-server-pat)
+        - script: dotnetcli\dotnet.exe msbuild tools\package-steps.proj /t:PublishSymbols /p:SymbolServerPath=$(_MsdlSymbolServerPath) /p:SymbolServerPAT=$(microsoft-symbol-server-pat)
           displayName: Publish symbols to msdl

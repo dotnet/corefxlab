@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <EnablePublishSymbols Condition="'$(EnablePublishSymbols)'==''" >true</EnablePublishSymbols>
     <NuGetPushTimeoutSeconds Condition="'$(NuGetPushTimeoutSeconds)' == ''">600</NuGetPushTimeoutSeconds>
   </PropertyGroup>
 
@@ -9,28 +8,18 @@
     <PackageReference Include="Microsoft.SymbolUploader.Build.Task" Version="$(MicrosoftSymbolUploaderBuildTaskVersion)" GeneratePathProperty="true" />
   </ItemGroup>
 
-  <Target Name="PublishSymbolPackages"
-          Condition="'$(EnablePublishSymbols)'=='true'"
-          DependsOnTargets="SetupPublishSymbols">
-    <Message Text="Attempting to Publish Symbols" />
-    <Error Condition="!Exists('$(PackagesPath)')" Text="'PackagesPath' folder '$(PackagesPath)' does not exist." />
-    <Error Condition="'$(SymbolServerPath)'==''" Text="Missing property SymbolServerPath" />
-    <Error Condition="'$(SymbolServerPAT)'==''" Text="Missing property SymbolServerPAT" />
-    <CallTarget Targets="PublishSymbols" />
-  </Target>
+  <ItemGroup>
+    <SymbolPackagesToPublish Include="$(PackagesPath)\*.symbols.nupkg" />
+  </ItemGroup>
 
-  <Target Name="SetupPublishSymbols">
+  <Target Name="SetupPublishSymbols" BeforeTargets="PublishSymbols">
     <PropertyGroup>
-      <SymbolExpirationInDays Condition="'$(SymbolExpirationInDays)'=='' and '$(SymbolExpirationDate)'==''">180</SymbolExpirationInDays>
+      <SymbolExpirationInDays Condition="'$(SymbolExpirationInDays)' == '' and '$(SymbolExpirationDate)' == ''">180</SymbolExpirationInDays>
       <ConvertPortablePdbsToWindowsPdbs>true</ConvertPortablePdbsToWindowsPdbs>
     </PropertyGroup>
 
-    <ItemGroup>
-      <SymbolPackagesToPublish Include="$(PackagesPath)\*.symbols.nupkg" />
-    </ItemGroup>
-
     <Message Importance="High" Text="Publishing %(SymbolPackagesToPublish.Identity) to $(SymbolServerPath)"/>
-    <Error Condition="'@(SymbolPackagesToPublish)'==''" Text="There are no symbol nuget packages to publish" />
+    <Error Condition="'@(SymbolPackagesToPublish)' == ''" Text="There are no symbol nuget packages to publish" />
   </Target>
 
 </Project>

@@ -8,7 +8,7 @@
              Properties="ForceEvaluation=True" />
   </Target>
 
-  <Target Name="PublishSymbols">
+  <Target Name="PublishSymbolPackages">
     <MSBuild Projects="$(MSBuildThisFileDirectory)publishing/publish.proj"
              Targets="Restore" />
 
