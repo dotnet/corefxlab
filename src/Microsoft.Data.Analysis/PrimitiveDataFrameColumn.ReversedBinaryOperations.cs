@@ -8,7 +8,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.Data
+namespace Microsoft.Data.Analysis
 {
     public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn
         where T : unmanaged
