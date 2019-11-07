@@ -60,7 +60,7 @@ namespace Microsoft.Data.Analysis
                     else
                     {
                         PrimitiveDataFrameColumn<decimal> clonedDecimalColumn = CloneAsDecimalColumn();
-                       clonedDecimalColumn._columnContainer.Reverse<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value));
+                        clonedDecimalColumn._columnContainer.Reverse<#=method.MethodName#>(DecimalConverter<U>.Instance.GetDecimal(value));
                         return clonedDecimalColumn;
                     }
 <# foreach (TypeConfiguration type in typeConfiguration) { #>

@@ -36,7 +36,7 @@ namespace Microsoft.Data.Analysis
                     else
                     {
                         PrimitiveDataFrameColumn<decimal> clonedDecimalColumn = CloneAsDecimalColumn();
-                       clonedDecimalColumn._columnContainer.ReverseAdd(DecimalConverter<U>.Instance.GetDecimal(value));
+                        clonedDecimalColumn._columnContainer.ReverseAdd(DecimalConverter<U>.Instance.GetDecimal(value));
                         return clonedDecimalColumn;
                     }
                 case PrimitiveDataFrameColumn<byte> byteColumn:
@@ -103,7 +103,7 @@ namespace Microsoft.Data.Analysis
                     else
                     {
                         PrimitiveDataFrameColumn<decimal> clonedDecimalColumn = CloneAsDecimalColumn();
-                       clonedDecimalColumn._columnContainer.ReverseSubtract(DecimalConverter<U>.Instance.GetDecimal(value));
+                        clonedDecimalColumn._columnContainer.ReverseSubtract(DecimalConverter<U>.Instance.GetDecimal(value));
                         return clonedDecimalColumn;
                     }
                 case PrimitiveDataFrameColumn<byte> byteColumn:
@@ -170,7 +170,7 @@ namespace Microsoft.Data.Analysis
                     else
                     {
                         PrimitiveDataFrameColumn<decimal> clonedDecimalColumn = CloneAsDecimalColumn();
-                       clonedDecimalColumn._columnContainer.ReverseMultiply(DecimalConverter<U>.Instance.GetDecimal(value));
+                        clonedDecimalColumn._columnContainer.ReverseMultiply(DecimalConverter<U>.Instance.GetDecimal(value));
                         return clonedDecimalColumn;
                     }
                 case PrimitiveDataFrameColumn<byte> byteColumn:
@@ -237,7 +237,7 @@ namespace Microsoft.Data.Analysis
                     else
                     {
                         PrimitiveDataFrameColumn<decimal> clonedDecimalColumn = CloneAsDecimalColumn();
-                       clonedDecimalColumn._columnContainer.ReverseDivide(DecimalConverter<U>.Instance.GetDecimal(value));
+                        clonedDecimalColumn._columnContainer.ReverseDivide(DecimalConverter<U>.Instance.GetDecimal(value));
                         return clonedDecimalColumn;
                     }
                 case PrimitiveDataFrameColumn<byte> byteColumn:
@@ -304,7 +304,7 @@ namespace Microsoft.Data.Analysis
                     else
                     {
                         PrimitiveDataFrameColumn<decimal> clonedDecimalColumn = CloneAsDecimalColumn();
-                       clonedDecimalColumn._columnContainer.ReverseModulo(DecimalConverter<U>.Instance.GetDecimal(value));
+                        clonedDecimalColumn._columnContainer.ReverseModulo(DecimalConverter<U>.Instance.GetDecimal(value));
                         return clonedDecimalColumn;
                     }
                 case PrimitiveDataFrameColumn<byte> byteColumn:
