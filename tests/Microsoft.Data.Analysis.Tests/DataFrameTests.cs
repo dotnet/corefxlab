@@ -653,8 +653,6 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.ThrowsAny<ArgumentException>(() => column.ReverseAdd(5.5, inPlace: true));
         }
 
-
-
         [Fact]
         public void TestColumnReverseOrderState()
         {
