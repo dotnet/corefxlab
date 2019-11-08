@@ -217,7 +217,7 @@ namespace Microsoft.Data.Analysis
 <# } else if (method.MethodType == MethodType.Binary) { #>
                         if (inPlace)
                         {
-                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(column.DataType));
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
                         }
 <# } #>
 <# if (method.MethodType == MethodType.ComparisonScalar || method.MethodType == MethodType.Comparison) { #>
@@ -296,7 +296,7 @@ namespace Microsoft.Data.Analysis
 <# } else if (method.MethodType == MethodType.Binary) { #>
                         if (inPlace)
                         {
-                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(column.DataType));
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
                         }
 <# } #>
                         if (typeof(U) == typeof(decimal))
