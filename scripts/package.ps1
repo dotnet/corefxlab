@@ -38,13 +38,14 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "*.cspr
 
     if (!$?) {
         Write-Error "Failed to create NuGet package for project $file"
+        exit $lastExitCode
     }
 }
 
 if ($Sign)
 {
     Write-Host "** Signing packages with SignType = $SignType **"
-    & $dotnetExePath msbuild "$repoRoot\tools\signing\sign.proj" /p:SignType="$SignType" /p:PackagesPath="$packagesPath" /p:FilesToSignFilter="$FilesToSignFilter"
+    & $dotnetExePath msbuild "$repoRoot\tools\package-steps.proj" /p:SignType="$SignType" /p:PackagesPath="$packagesPath" /p:FilesToSignFilter="$FilesToSignFilter" /t:Sign
 
     if (!$?) {
         Write-Error "Failed to sign the packages"
