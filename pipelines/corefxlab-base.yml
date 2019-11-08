@@ -69,3 +69,10 @@ jobs:
 
         - script: dotnetcli\dotnet.exe msbuild tools\package-steps.proj /t:PublishSymbolPackages /p:SymbolServerPath=$(_MsdlSymbolServerPath) /p:SymbolServerPAT=$(microsoft-symbol-server-pat)
           displayName: Publish symbols to msdl
+
+        - task: PublishBuildArtifacts@1
+          displayName: Publish packages to artifacts container
+          inputs:
+            pathToPublish: $(Build.SourcesDirectory)/packages
+            artifactName: packages
+            artifactType: container
