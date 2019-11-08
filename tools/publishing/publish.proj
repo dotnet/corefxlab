@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <NuGetPushTimeoutSeconds Condition="'$(NuGetPushTimeoutSeconds)' == ''">600</NuGetPushTimeoutSeconds>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SymbolUploader.Build.Task" Version="$(MicrosoftSymbolUploaderBuildTaskVersion)" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SymbolPackagesToPublish Include="$(PackagesPath)\*.symbols.nupkg" />
+  </ItemGroup>
+
+  <Target Name="SetupPublishSymbols" BeforeTargets="PublishSymbols">
+    <PropertyGroup>
+      <SymbolExpirationInDays Condition="'$(SymbolExpirationInDays)' == '' and '$(SymbolExpirationDate)' == ''">180</SymbolExpirationInDays>
+      <ConvertPortablePdbsToWindowsPdbs>true</ConvertPortablePdbsToWindowsPdbs>
+    </PropertyGroup>
+
+    <Message Importance="High" Text="Publishing %(SymbolPackagesToPublish.Identity) to $(SymbolServerPath)"/>
+    <Error Condition="'@(SymbolPackagesToPublish)' == ''" Text="There are no symbol nuget packages to publish" />
+  </Target>
+
+</Project>

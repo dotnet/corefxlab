@@ -1,0 +1,19 @@
+<Project >
+  <Target Name="Sign">
+    <MSBuild Projects="$(MSBuildThisFileDirectory)signing/sign.proj"
+             Targets="Restore" />
+
+    <MSBuild Projects="$(MSBuildThisFileDirectory)signing/sign.proj"
+             Targets="Sign"
+             Properties="ForceEvaluation=True" />
+  </Target>
+
+  <Target Name="PublishSymbolPackages">
+    <MSBuild Projects="$(MSBuildThisFileDirectory)publishing/publish.proj"
+             Targets="Restore" />
+
+    <MSBuild Projects="$(MSBuildThisFileDirectory)publishing/publish.proj"
+             Targets="PublishSymbols"
+             Properties="ForceEvaluation=True" />
+  </Target>
+</Project>
