@@ -6,11 +6,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Apache.Arrow" Version="0.14.1" />
     <PackageReference Include="System.Memory" Version="4.5.2" />

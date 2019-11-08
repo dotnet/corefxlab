@@ -19,6 +19,9 @@
     <!-- We are usually using a preview SDK -->
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <PackagesPath Condition="'$(PackagesPath)' == ''">$(RepoRoot)packages</PackagesPath>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryUrl>https://github.com/dotnet/corefxlab</RepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
