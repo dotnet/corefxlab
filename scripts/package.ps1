@@ -3,6 +3,7 @@
     [string]$ApiKey,
     [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1'),
     [string]$FilesToSignFilter="*.nupkg",
+    [string]$IsStableRelease="false",
     [string]$SignType="test",
     [switch]$Sign
 )
@@ -34,7 +35,7 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "*.cspr
     }
 
     Write-Host "Creating NuGet package for $file..."
-    Invoke-Expression "$dotnetExePath pack $file -c $Configuration -o $packagesPath --include-symbols --version-suffix $BuildVersion"
+    Invoke-Expression "$dotnetExePath pack $file -c $Configuration -o $packagesPath --include-symbols --version-suffix $BuildVersion /p:IsStableRelease=$IsStableRelease"
 
     if (!$?) {
         Write-Error "Failed to create NuGet package for project $file"
