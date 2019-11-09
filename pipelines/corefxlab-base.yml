@@ -61,7 +61,7 @@ jobs:
         displayName: Build and Test
       
       - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
-        - script: package.cmd -Configuration $(_BuildConfig) -ApiKey $(dotnet-myget-org-api-key) -BuildVersion $(Build.BuildNumber) -Sign -SignType $(_SignType)
+        - script: package.cmd -Configuration $(_BuildConfig) -ApiKey $(dotnet-myget-org-api-key) -BuildVersion $(Build.BuildNumber) -Sign -SignType $(_SignType) -IsStableRelease $(_IsStableRelease)
           displayName: Build and publish packages
 
         - script: dotnetcli\dotnet.exe msbuild tools\package-steps.proj /t:PublishSymbolPackages /p:SymbolServerPath=$(_SymwebSymbolServerPath) /p:SymbolServerPAT=$(symweb-symbol-server-pat)
