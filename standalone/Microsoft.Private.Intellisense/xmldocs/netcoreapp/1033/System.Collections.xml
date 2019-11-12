@@ -157,33 +157,53 @@ The number of elements in the source <see cref="T:System.Collections.BitArray" /
       <exception cref="T:System.ArgumentException">
         <paramref name="value" /> and the current <see cref="T:System.Collections.BitArray" /> do not have the same number of elements.</exception>
     </member>
-    <member name="T:System.Collections.Generic.CollectionExtensions" />
+    <member name="T:System.Collections.Generic.CollectionExtensions">
+      <summary>Provides extension methods for generic collections.</summary>
+    </member>
     <member name="M:System.Collections.Generic.CollectionExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0)">
-      <param name="dictionary" />
-      <param name="key" />
-      <typeparam name="TKey" />
-      <typeparam name="TValue" />
+      <summary>Tries to get the value associated with the specified <paramref name="key" /> in the <paramref name="dictionary" />.</summary>
+      <param name="dictionary">A dictionary with keys of type <typeparamref name="TKey" /> and values of type <typeparamref name="TValue" />.</param>
+      <param name="key">The key of the value to get.</param>
+      <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+      <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+      <returns>A <typeparamref name="TValue" /> instance. When the method is successful, the returned object is the value associated with the specified <paramref name="key" />. When the method fails, it returns the <see langword="default" /> value for <typeparamref name="TValue" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dictionary" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.CollectionExtensions.GetValueOrDefault``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1},``0,``1)">
-      <param name="dictionary" />
-      <param name="key" />
-      <param name="defaultValue" />
-      <typeparam name="TKey" />
-      <typeparam name="TValue" />
+      <summary>Tries to get the value associated with the specified key in the <paramref name="dictionary" />.</summary>
+      <param name="dictionary">A dictionary with keys of type <typeparamref name="TKey" /> and values of type <typeparamref name="TValue" />.</param>
+      <param name="key">The key of the value to get.</param>
+      <param name="defaultValue">The default value to return when the <paramref name="dictionary" /> cannot find a value associated with the specified <paramref name="key" />.</param>
+      <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+      <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+      <returns>A <typeparamref name="TValue" /> instance. When the method is successful, the returned object is the value associated with the specified <paramref name="key" />. When the method fails, it returns <paramref name="defaultValue" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dictionary" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.CollectionExtensions.Remove``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1@)">
-      <param name="dictionary" />
-      <param name="key" />
-      <param name="value" />
-      <typeparam name="TKey" />
-      <typeparam name="TValue" />
+      <summary>Tries to remove the value with the specified <paramref name="key" /> from the <paramref name="dictionary" />.</summary>
+      <param name="dictionary">A dictionary with keys of type <typeparamref name="TKey" /> and values of type <typeparamref name="TValue" />.</param>
+      <param name="key">The key of the value to remove.</param>
+      <param name="value">When this method returns <see langword="true" />, the removed value; when this method returns <see langword="false" />, the <see langword="default" /> value for <typeparamref name="TValue" />.</param>
+      <typeparam name="TKey">The type of the keys in the <paramref name="dictionary" />.</typeparam>
+      <typeparam name="TValue">The type of the values in the <paramref name="dictionary" />.</typeparam>
+      <returns>
+        <see langword="true" /> when a value is found in the <paramref name="dictionary" /> with the specified <paramref name="key" />; <see langword="false" /> when the <paramref name="dictionary" /> cannot find a value associated with the specified <paramref name="key" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dictionary" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Collections.Generic.CollectionExtensions.TryAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
-      <param name="dictionary" />
-      <param name="key" />
-      <param name="value" />
-      <typeparam name="TKey" />
-      <typeparam name="TValue" />
+      <summary>Tries to add the specified <paramref name="key" /> and <paramref name="value" /> to the <paramref name="dictionary" />.</summary>
+      <param name="dictionary">A dictionary with keys of type <typeparamref name="TKey" /> and values of type <typeparamref name="TValue" />.</param>
+      <param name="key">The key of the value to add.</param>
+      <param name="value">The value to add.</param>
+      <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+      <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+      <returns>
+        <see langword="true" /> when the <paramref name="key" /> and <paramref name="value" /> are successfully added to the <paramref name="dictionary" />; <see langword="false" /> when the <paramref name="dictionary" /> already contains the specified <paramref name="key" />, in which case nothing gets added.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dictionary" /> is <see langword="null" />.</exception>
     </member>
     <member name="T:System.Collections.Generic.Comparer`1">
       <summary>Provides a base class for implementations of the <see cref="T:System.Collections.Generic.IComparer`1" /> generic interface.</summary>

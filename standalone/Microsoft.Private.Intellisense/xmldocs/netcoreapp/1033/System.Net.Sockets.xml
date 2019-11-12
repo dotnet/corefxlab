@@ -1964,16 +1964,31 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.Receive(System.Span{System.Byte})">
-      <param name="buffer" />
+      <summary>Receives data from a bound <see cref="T:System.Net.Sockets.Socket" /> into a receive buffer.</summary>
+      <param name="buffer">A span of bytes that is the storage location for the received data.</param>
+      <returns>The number of bytes received.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
+      <exception cref="T:System.Security.SecurityException">A caller in the call stack does not have the required permissions.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.Receive(System.Span{System.Byte},System.Net.Sockets.SocketFlags)">
-      <param name="buffer" />
-      <param name="socketFlags" />
+      <summary>Receives data from a bound <see cref="T:System.Net.Sockets.Socket" /> into a receive buffer, using the specified <see cref="T:System.Net.Sockets.SocketFlags" />.</summary>
+      <param name="buffer">A span of bytes that is the storage location for the received data.</param>
+      <param name="socketFlags">A bitwise combination of the enumeration values that specifies send and receive behaviors.</param>
+      <returns>The number of bytes received.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
+      <exception cref="T:System.Security.SecurityException">A caller in the call stack does not have the required permissions.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.Receive(System.Span{System.Byte},System.Net.Sockets.SocketFlags,System.Net.Sockets.SocketError@)">
-      <param name="buffer" />
-      <param name="socketFlags" />
-      <param name="errorCode" />
+      <summary>Receives data from a bound <see cref="T:System.Net.Sockets.Socket" /> into a receive buffer, using the specified <see cref="T:System.Net.Sockets.SocketFlags" />.</summary>
+      <param name="buffer">A span of bytes that is the storage location for the received data.</param>
+      <param name="socketFlags">A bitwise combination of the enumeration values that specifies send and receive behaviors.</param>
+      <param name="errorCode">When this method returns, contains one of the enumeration values that defines error codes for the socket.</param>
+      <returns>The number of bytes received.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
+      <exception cref="T:System.Security.SecurityException">A caller in the call stack does not have the required permissions.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.ReceiveAsync(System.Net.Sockets.SocketAsyncEventArgs)">
       <summary>Begins an asynchronous request to receive data from a connected <see cref="T:System.Net.Sockets.Socket" /> object.</summary>
@@ -2277,16 +2292,28 @@ An operating system error occurs while accessing the socket.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.Send(System.ReadOnlySpan{System.Byte})">
-      <param name="buffer" />
+      <summary>Sends data to a connected <see cref="T:System.Net.Sockets.Socket" />.</summary>
+      <param name="buffer">A span of bytes that contains the data to be sent.</param>
+      <returns>The number of bytes sent to the <see cref="T:System.Net.Sockets.Socket" />.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.Send(System.ReadOnlySpan{System.Byte},System.Net.Sockets.SocketFlags)">
-      <param name="buffer" />
-      <param name="socketFlags" />
+      <summary>Sends data to a connected <see cref="T:System.Net.Sockets.Socket" /> using the specified <see cref="T:System.Net.Sockets.SocketFlags" />.</summary>
+      <param name="buffer">A span of bytes that contains the data to be sent.</param>
+      <param name="socketFlags">A bitwise combination of the enumeration values that specifies send and receive behaviors.</param>
+      <returns>The number of bytes sent to the <see cref="T:System.Net.Sockets.Socket" />.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.Send(System.ReadOnlySpan{System.Byte},System.Net.Sockets.SocketFlags,System.Net.Sockets.SocketError@)">
-      <param name="buffer" />
-      <param name="socketFlags" />
-      <param name="errorCode" />
+      <summary>Sends data to a connected <see cref="T:System.Net.Sockets.Socket" /> using the specified <see cref="T:System.Net.Sockets.SocketFlags" />.</summary>
+      <param name="buffer">A span of bytes that contains the data to be sent.</param>
+      <param name="socketFlags">A bitwise combination of the enumeration values that specifies send and receive behaviors.</param>
+      <param name="errorCode">When this method returns, contains one of the enumeration values that defines error codes for the socket.</param>
+      <returns>The number of bytes sent to the <see cref="T:System.Net.Sockets.Socket" />.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">An error occurred when attempting to access the socket.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.Socket" /> has been closed.</exception>
     </member>
     <member name="M:System.Net.Sockets.Socket.SendAsync(System.Net.Sockets.SocketAsyncEventArgs)">
       <summary>Sends data asynchronously to a connected <see cref="T:System.Net.Sockets.Socket" /> object.</summary>
@@ -2555,7 +2582,10 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <summary>Gets the type of socket operation most recently performed with this context object.</summary>
       <returns>A <see cref="T:System.Net.Sockets.SocketAsyncOperation" /> instance that indicates the type of socket operation most recently performed with this context object.</returns>
     </member>
-    <member name="P:System.Net.Sockets.SocketAsyncEventArgs.MemoryBuffer" />
+    <member name="P:System.Net.Sockets.SocketAsyncEventArgs.MemoryBuffer">
+      <summary>Gets the region of memory to use as a buffer with an asynchronous socket method.</summary>
+      <returns>A region of memory that represents the data buffer to use with an asynchronous socket method.</returns>
+    </member>
     <member name="P:System.Net.Sockets.SocketAsyncEventArgs.Offset">
       <summary>Gets the offset, in bytes, into the data buffer referenced by the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.Buffer" /> property.</summary>
       <returns>An <see cref="T:System.Int32" /> that contains the offset, in bytes, into the data buffer referenced by the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.Buffer" /> property.</returns>
@@ -2599,7 +2629,8 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <exception cref="T:System.ArgumentOutOfRangeException">An argument was out of range. This exception occurs if the <paramref name="offset" /> parameter is less than zero or greater than the length of the array in the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.Buffer" /> property. This exception also occurs if the <paramref name="count" /> parameter is less than zero or greater than the length of the array in the <see cref="P:System.Net.Sockets.SocketAsyncEventArgs.Buffer" /> property minus the <paramref name="offset" /> parameter.</exception>
     </member>
     <member name="M:System.Net.Sockets.SocketAsyncEventArgs.SetBuffer(System.Memory{System.Byte})">
-      <param name="buffer" />
+      <summary>Sets the region of memory to use as a buffer with an asynchronous socket method.</summary>
+      <param name="buffer">The region of memory to use as a buffer with an asynchronous socket method.</param>
     </member>
     <member name="P:System.Net.Sockets.SocketAsyncEventArgs.SocketError">
       <summary>Gets or sets the result of the asynchronous socket operation.</summary>
@@ -2966,10 +2997,12 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <returns>A task that represents the asynchronous receive operation. The value of the <paramref name="TResult" /> parameter contains the number of bytes received.</returns>
     </member>
     <member name="M:System.Net.Sockets.SocketTaskExtensions.ReceiveAsync(System.Net.Sockets.Socket,System.Memory{System.Byte},System.Net.Sockets.SocketFlags,System.Threading.CancellationToken)">
-      <param name="socket" />
-      <param name="buffer" />
-      <param name="socketFlags" />
-      <param name="cancellationToken" />
+      <summary>Receives data from a connected socket.</summary>
+      <param name="socket">The socket to perform the receive operation on.</param>
+      <param name="buffer">A region of memory that is the storage location for the received data.</param>
+      <param name="socketFlags">A bitwise combination of the <see cref="T:System.Net.Sockets.SocketFlags" /> values.</param>
+      <param name="cancellationToken">A cancellation token that can be used to signal the asynchronous operation should be canceled.</param>
+      <returns>A task that completes with the number of bytes received, or 0 if the end of the stream has been reached.</returns>
     </member>
     <member name="M:System.Net.Sockets.SocketTaskExtensions.ReceiveFromAsync(System.Net.Sockets.Socket,System.ArraySegment{System.Byte},System.Net.Sockets.SocketFlags,System.Net.EndPoint)">
       <summary>Receives data from a specified network device.</summary>
@@ -3002,10 +3035,12 @@ An operating system error occurs while accessing the <see cref="T:System.Net.Soc
       <returns>An asynchronous task that completes with number of bytes sent to the socket if the operation was successful. Otherwise, the task will complete with an invalid socket error.</returns>
     </member>
     <member name="M:System.Net.Sockets.SocketTaskExtensions.SendAsync(System.Net.Sockets.Socket,System.ReadOnlyMemory{System.Byte},System.Net.Sockets.SocketFlags,System.Threading.CancellationToken)">
-      <param name="socket" />
-      <param name="buffer" />
-      <param name="socketFlags" />
-      <param name="cancellationToken" />
+      <summary>Sends data to a connected socket.</summary>
+      <param name="socket">The socket to perform the operation on.</param>
+      <param name="buffer">A region of memory that contains the data to send.</param>
+      <param name="socketFlags">A bitwise combination of the <see cref="T:System.Net.Sockets.SocketFlags" /> values.</param>
+      <param name="cancellationToken">A cancellation token that can be used to signal the asynchronous operation should be canceled.</param>
+      <returns>A task that completes with number of bytes sent to the socket if the operation was successful. Otherwise, the task will complete with an invalid socket error.</returns>
     </member>
     <member name="M:System.Net.Sockets.SocketTaskExtensions.SendToAsync(System.Net.Sockets.Socket,System.ArraySegment{System.Byte},System.Net.Sockets.SocketFlags,System.Net.EndPoint)">
       <summary>Sends data asynchronously to a specific remote host.</summary>
@@ -3792,7 +3827,8 @@ The <see cref="T:System.Net.Sockets.TcpClient" /> used to send and receive data.
       <summary>Represents a Unix Domain Socket endpoint as a path.</summary>
     </member>
     <member name="M:System.Net.Sockets.UnixDomainSocketEndPoint.#ctor(System.String)">
-      <param name="path" />
+      <summary>Initializes a new instance of the <see cref="T:System.Net.Sockets.UnixDomainSocketEndPoint" /> with the file path to connect a unix domain socket over.</summary>
+      <param name="path">The path to connect a unix domain socket over.</param>
     </member>
   </members>
 </doc>

@@ -161,7 +161,7 @@
     </member>
     <member name="M:System.Diagnostics.Eventing.Reader.EventLogException.#ctor(System.Int32)">
       <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.Eventing.Reader.EventLogException" /> class with the error code for the exception.</summary>
-      <param name="errorCode">The error code for the error that occurred while reading or configuring event log related information. For more information and a list of event log related error codes, see http://go.microsoft.com/fwlink/?LinkId=82629.</param>
+      <param name="errorCode">The error code for the error that occurred while reading or configuring event log related information. For more information and a list of event log related error codes, see https://go.microsoft.com/fwlink/?LinkId=82629.</param>
     </member>
     <member name="M:System.Diagnostics.Eventing.Reader.EventLogException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
       <summary>Initializes a new instance of the <see cref="T:System.Diagnostics.Eventing.Reader.EventLogException" /> class with serialized data.</summary>

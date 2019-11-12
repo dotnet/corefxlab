@@ -782,7 +782,7 @@
       <returns>The text command to execute. The default value is an empty string ("").</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.CommandTimeout">
-      <summary>When overridden in a derived class, gets or sets the wait time before terminating the attempt to execute a command and generating an error.</summary>
+      <summary>When overridden in a derived class, gets or sets the wait time (in seconds) before terminating the attempt to execute a command and generating an error.</summary>
       <returns>The time in seconds to wait for the command to execute.</returns>
     </member>
     <member name="P:System.Data.Common.DbCommand.CommandType">
@@ -1145,7 +1145,7 @@ Do not invoke other methods and properties of the <see langword="DbCommand" /> o
       <returns>The connection string used to establish the initial connection. The exact contents of the connection string depend on the specific data source for this connection. The default value is an empty string.</returns>
     </member>
     <member name="P:System.Data.Common.DbConnection.ConnectionTimeout">
-      <summary>Gets the time to wait while establishing a connection before terminating the attempt and generating an error.</summary>
+      <summary>Gets the time to wait (in seconds) while establishing a connection before terminating the attempt and generating an error.</summary>
       <returns>The time (in seconds) to wait for a connection to open. The default value is determined by the specific type of connection that you are using.</returns>
     </member>
     <member name="M:System.Data.Common.DbConnection.CreateCommand">
@@ -1801,7 +1801,7 @@ When setting this to a value other than 1, all the commands associated with the 
       <summary>Releases all resources used by the current instance of the <see cref="T:System.Data.Common.DbDataReader" /> class.</summary>
     </member>
     <member name="M:System.Data.Common.DbDataReader.Dispose(System.Boolean)">
-      <summary>Releases the managed resources used by the <see cref="T:System.Data.Common.DbDataReader" /> and optionally releases the unmanaged resources.</summary>
+      <summary>Releases the unmanaged resources used by the <see cref="T:System.Data.Common.DbDataReader" /> and optionally releases the managed resources.</summary>
       <param name="disposing">
         <see langword="true" /> to release managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
     </member>
@@ -2865,25 +2865,37 @@ There was an asynchronous operation in progress. This applies to all Get* method
   
   Fully qualified name of the factory class, which contains enough information to instantiate the object.</returns>
     </member>
-    <member name="M:System.Data.Common.DbProviderFactories.GetProviderInvariantNames" />
+    <member name="M:System.Data.Common.DbProviderFactories.GetProviderInvariantNames">
+      <summary>Returns the invariant provider names for all registered instances of <see cref="T:System.Data.Common.DbProviderFactory" />.</summary>
+      <returns>The invariant provider names for all registered instances of <see cref="T:System.Data.Common.DbProviderFactory" />.</returns>
+    </member>
     <member name="M:System.Data.Common.DbProviderFactories.RegisterFactory(System.String,System.Data.Common.DbProviderFactory)">
-      <param name="providerInvariantName" />
-      <param name="factory" />
+      <summary>Registers an instance of <see cref="T:System.Data.Common.DbProviderFactory" /> under the specified invariant provider name.</summary>
+      <param name="providerInvariantName">The invariant provider name under which to register the provider.</param>
+      <param name="factory">The instance of the provider factory to be registered.</param>
     </member>
     <member name="M:System.Data.Common.DbProviderFactories.RegisterFactory(System.String,System.String)">
-      <param name="providerInvariantName" />
-      <param name="factoryTypeAssemblyQualifiedName" />
+      <summary>Registers a <see cref="T:System.Data.Common.DbProviderFactory" /> with the given assembly-qualified name under the specified invariant provider name.</summary>
+      <param name="providerInvariantName">The invariant provider name under which to register the provider.</param>
+      <param name="factoryTypeAssemblyQualifiedName">The assembly-qualified name for a <see cref="T:System.Data.Common.DbProviderFactory" />.</param>
     </member>
     <member name="M:System.Data.Common.DbProviderFactories.RegisterFactory(System.String,System.Type)">
-      <param name="providerInvariantName" />
-      <param name="providerFactoryClass" />
+      <summary>Registers a <see cref="T:System.Data.Common.DbProviderFactory" /> with the given type under the specified invariant provider name.</summary>
+      <param name="providerInvariantName">The invariant provider name under which to register the provider.</param>
+      <param name="providerFactoryClass">The type representing a <see cref="T:System.Data.Common.DbProviderFactory" />.</param>
     </member>
     <member name="M:System.Data.Common.DbProviderFactories.TryGetFactory(System.String,System.Data.Common.DbProviderFactory@)">
-      <param name="providerInvariantName" />
-      <param name="factory" />
+      <summary>Attempts to get the <see cref="T:System.Data.Common.DbProviderFactory" /> registered under the specified invariant provider name.</summary>
+      <param name="providerInvariantName">The invariant provider name to look up.</param>
+      <param name="factory">When this method returns, contains the <see cref="T:System.Data.Common.DbProviderFactory" /> associated with the specified invariant provider name, if the name is found; otherwise, <see langword="null" />. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if a provider is registered under the specified invariant provider name; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Data.Common.DbProviderFactories.UnregisterFactory(System.String)">
-      <param name="providerInvariantName" />
+      <summary>Removes a <see cref="T:System.Data.Common.DbProviderFactory" /> registration for the given provider invariant name.</summary>
+      <param name="providerInvariantName">The invariant provider name of the registration to remove.</param>
+      <returns>
+        <see langword="true" /> if the registration is successfully found and removed; otherwise, <see langword="false" />. This method returns <see langword="false" /> if a registration for <paramref name="providerInvariantName" /> is not found.</returns>
     </member>
     <member name="T:System.Data.Common.DbProviderFactory">
       <summary>Represents a set of methods for creating instances of a provider's implementation of the data source classes.</summary>
@@ -8050,7 +8062,7 @@ The tables don't belong to the same <see cref="T:System.Data.DataSet" />.</excep
       <returns>The text command to execute. The default value is an empty string ("").</returns>
     </member>
     <member name="P:System.Data.IDbCommand.CommandTimeout">
-      <summary>Gets or sets the wait time before terminating the attempt to execute a command and generating an error.</summary>
+      <summary>Gets or sets the wait time (in seconds) before terminating the attempt to execute a command and generating an error.</summary>
       <returns>The time (in seconds) to wait for the command to execute. The default value is 30 seconds.</returns>
       <exception cref="T:System.ArgumentException">The property value assigned is less than 0.</exception>
     </member>
@@ -8129,7 +8141,7 @@ The <see cref="P:System.Data.OleDb.OleDbCommand.Connection" /> is not <see cref=
       <returns>A string containing connection settings.</returns>
     </member>
     <member name="P:System.Data.IDbConnection.ConnectionTimeout">
-      <summary>Gets the time to wait while trying to establish a connection before terminating the attempt and generating an error.</summary>
+      <summary>Gets the time to wait (in seconds) while trying to establish a connection before terminating the attempt and generating an error.</summary>
       <returns>The time (in seconds) to wait for a connection to open. The default value is 15 seconds.</returns>
     </member>
     <member name="M:System.Data.IDbConnection.CreateCommand">

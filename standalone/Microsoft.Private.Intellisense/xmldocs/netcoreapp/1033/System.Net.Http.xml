@@ -1132,7 +1132,7 @@ The value of the <see langword="Pragma" /> header for an HTTP response.</returns
     </member>
     <member name="M:System.Net.Http.Headers.ProductInfoHeaderValue.#ctor(System.Net.Http.Headers.ProductHeaderValue)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Http.Headers.ProductInfoHeaderValue" /> class.</summary>
-      <param name="product">A <see cref="T:System.Net.Http.Headers.ProductInfoHeaderValue" /> object used to initialize the new instance.</param>
+      <param name="product">A <see cref="T:System.Net.Http.Headers.ProductHeaderValue" /> object used to initialize the new instance.</param>
     </member>
     <member name="M:System.Net.Http.Headers.ProductInfoHeaderValue.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Http.Headers.ProductInfoHeaderValue" /> class.</summary>

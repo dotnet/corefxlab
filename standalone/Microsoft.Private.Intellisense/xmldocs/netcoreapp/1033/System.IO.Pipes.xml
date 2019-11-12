@@ -554,7 +554,9 @@ The pipe handle has not been set.</exception>
     <member name="F:System.IO.Pipes.PipeOptions.Asynchronous">
       <summary>Indicates that the pipe can be used for asynchronous reading and writing.</summary>
     </member>
-    <member name="F:System.IO.Pipes.PipeOptions.CurrentUserOnly" />
+    <member name="F:System.IO.Pipes.PipeOptions.CurrentUserOnly">
+      <summary>When used to create a <see cref="T:System.IO.Pipes.NamedPipeServerStream" /> instance, indicates that the pipe can only be connected to a client created by the same user. When used to create a <see cref="T:System.IO.Pipes.NamedPipeClientStream" /> instance, indicates that the pipe can only connect to a server created by the same user. On Windows, it verifies both the user account and elevation level.</summary>
+    </member>
     <member name="F:System.IO.Pipes.PipeOptions.None">
       <summary>Indicates that there are no additional parameters.</summary>
     </member>

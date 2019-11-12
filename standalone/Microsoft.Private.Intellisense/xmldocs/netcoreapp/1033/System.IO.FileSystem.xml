@@ -75,7 +75,7 @@ The directory is being used by another process.</exception>
 The specified path is invalid (for example, it is on an unmapped drive).</exception>
     </member>
     <member name="M:System.IO.Directory.EnumerateDirectories(System.String)">
-      <summary>Returns an enumerable collection of directory names in a specified path.</summary>
+      <summary>Returns an enumerable collection of directory full names in a specified path.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <returns>An enumerable collection of the full names (including paths) for the directories in the directory specified by <paramref name="path" />.</returns>
       <exception cref="T:System.ArgumentException">
@@ -91,7 +91,7 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.Directory.EnumerateDirectories(System.String,System.String)">
-      <summary>Returns an enumerable collection of directory names that match a search pattern in a specified path.</summary>
+      <summary>Returns an enumerable collection of directory full names that match a search pattern in a specified path.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <param name="searchPattern">The search string to match against the names of directories in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
       <returns>An enumerable collection of the full names (including paths) for the directories in the directory specified by <paramref name="path" /> and that match the specified search pattern.</returns>
@@ -117,7 +117,7 @@ The specified path is invalid (for example, it is on an unmapped drive).</except
       <param name="enumerationOptions" />
     </member>
     <member name="M:System.IO.Directory.EnumerateDirectories(System.String,System.String,System.IO.SearchOption)">
-      <summary>Returns an enumerable collection of directory names that match a search pattern in a specified path, and optionally searches subdirectories.</summary>
+      <summary>Returns an enumerable collection of directory full names that match a search pattern in a specified path, and optionally searches subdirectories.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <param name="searchPattern">The search string to match against the names of directories in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
       <param name="searchOption">One of the enumeration values that specifies whether the search operation should include only the current directory or should include all subdirectories.
@@ -142,7 +142,7 @@ The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.Directory.EnumerateFiles(System.String)">
-      <summary>Returns an enumerable collection of file names in a specified path.</summary>
+      <summary>Returns an enumerable collection of full file names in a specified path.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <returns>An enumerable collection of the full names (including paths) for the files in the directory specified by <paramref name="path" />.</returns>
       <exception cref="T:System.ArgumentException">
@@ -158,7 +158,7 @@ The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</
       <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
     </member>
     <member name="M:System.IO.Directory.EnumerateFiles(System.String,System.String)">
-      <summary>Returns an enumerable collection of file names that match a search pattern in a specified path.</summary>
+      <summary>Returns an enumerable collection of full file names that match a search pattern in a specified path.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <param name="searchPattern">The search string to match against the names of files in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
       <returns>An enumerable collection of the full names (including paths) for the files in the directory specified by <paramref name="path" /> and that match the specified search pattern.</returns>
@@ -184,7 +184,7 @@ The default value is <see cref="F:System.IO.SearchOption.TopDirectoryOnly" />.</
       <param name="enumerationOptions" />
     </member>
     <member name="M:System.IO.Directory.EnumerateFiles(System.String,System.String,System.IO.SearchOption)">
-      <summary>Returns an enumerable collection of file names that match a search pattern in a specified path, and optionally searches subdirectories.</summary>
+      <summary>Returns an enumerable collection of full file names that match a search pattern in a specified path, and optionally searches subdirectories.</summary>
       <param name="path">The relative or absolute path to the directory to search. This string is not case-sensitive.</param>
       <param name="searchPattern">The search string to match against the names of files in <paramref name="path" />.  This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.</param>
       <param name="searchOption">One of the enumeration values that specifies whether the search operation should include only the current directory or should include all subdirectories.
@@ -1061,9 +1061,15 @@ The directory being moved and the destination directory have the same name.</exc
       <typeparam name="TResult">The type that this enumerable encapsulates.</typeparam>
     </member>
     <member name="M:System.IO.Enumeration.FileSystemEnumerable`1.#ctor(System.String,System.IO.Enumeration.FileSystemEnumerable{`0}.FindTransform,System.IO.EnumerationOptions)">
-      <param name="directory" />
-      <param name="transform" />
-      <param name="options" />
+      <summary>Initializes a new instance of the <see cref="T:System.IO.Enumeration.FileSystemEnumerable`1" /> class with specific search and filtering options.</summary>
+      <param name="directory">The path of the directory where the enumeration will be performed.</param>
+      <param name="transform">A delegate method for transforming raw find data into a result.</param>
+      <param name="options">An object describing the enumeration options.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="directory" /> or <paramref name="transform" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">The <paramref name="directory" /> path is empty.
+-or-
+<paramref name="directory" /> contains a null character "\0".</exception>
     </member>
     <member name="T:System.IO.Enumeration.FileSystemEnumerable`1.FindPredicate">
       <summary>Encapsulates a method for filtering out find results.</summary>
@@ -1095,7 +1101,8 @@ The directory being moved and the destination directory have the same name.</exc
       <returns>An enumerator instance.</returns>
     </member>
     <member name="T:System.IO.Enumeration.FileSystemEnumerator`1">
-      <typeparam name="TResult" />
+      <summary>Enumerates the file system elements of the provided type that are being searched and filtered by a <see cref="T:System.IO.Enumeration.FileSystemEnumerable`1" />.</summary>
+      <typeparam name="TResult">The type of the result produced by this file system enumerator.</typeparam>
     </member>
     <member name="M:System.IO.Enumeration.FileSystemEnumerator`1.#ctor(System.String,System.IO.EnumerationOptions)">
       <summary>Encapsulates a find operation.</summary>
@@ -1150,7 +1157,7 @@ The directory being moved and the destination directory have the same name.</exc
     </member>
     <member name="M:System.IO.Enumeration.FileSystemEnumerator`1.TransformEntry(System.IO.Enumeration.FileSystemEntry@)">
       <summary>When overridden in a derived class, generates the result type from the current entry.</summary>
-      <param name="entry" />
+      <param name="entry">A file system entry reference.</param>
       <returns>The result type from the current entry.</returns>
     </member>
     <member name="T:System.IO.Enumeration.FileSystemName">

@@ -95,8 +95,13 @@
       <param name="item">The new item.</param>
     </member>
     <member name="M:System.Collections.ObjectModel.KeyedCollection`2.TryGetValue(`0,`1@)">
-      <param name="key" />
-      <param name="item" />
+      <summary>Tries to get an item from the collection using the specified key.</summary>
+      <param name="key">The key of the item to search in the collection.</param>
+      <param name="item">When this method returns <see langword="true" />, the item from the collection that matches the provided key; when this method returns <see langword="false" />, the <see langword="default" /> value for the type of the collection.</param>
+      <returns>
+        <see langword="true" /> if an item for the specified key was found in the collection; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="key" /> is <see langword="null" />.</exception>
     </member>
     <member name="T:System.Collections.ObjectModel.ObservableCollection`1">
       <summary>Represents a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.</summary>

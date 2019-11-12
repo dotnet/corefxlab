@@ -3411,7 +3411,10 @@ The <see cref="T:System.Collections.IList" /> has a fixed size.</exception>
       <returns>The enumerated constant <see cref="F:System.TypeCode.Boolean" />.</returns>
     </member>
     <member name="M:System.Boolean.Parse(System.ReadOnlySpan{System.Char})">
-      <param name="value" />
+      <summary>Converts the specified span representation of a logical value to its <see cref="T:System.Boolean" /> equivalent.</summary>
+      <param name="value">A span containing the characters representing the value to convert.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="value" /> is equivalent to <see cref="F:System.Boolean.TrueString" />; <see langword="false" /> if <paramref name="value" /> is equivalent to <see cref="F:System.Boolean.FalseString" />.</returns>
     </member>
     <member name="M:System.Boolean.Parse(System.String)">
       <summary>Converts the specified string representation of a logical value to its <see cref="T:System.Boolean" /> equivalent.</summary>
@@ -3519,15 +3522,21 @@ The <see cref="T:System.Collections.IList" /> has a fixed size.</exception>
       <summary>Represents the Boolean value <see langword="true" /> as a string. This field is read-only.</summary>
     </member>
     <member name="M:System.Boolean.TryFormat(System.Span{System.Char},System.Int32@)">
-      <param name="destination" />
-      <param name="charsWritten" />
+      <summary>Tries to format the value of the current boolean instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Boolean.TryParse(System.ReadOnlySpan{System.Char},System.Boolean@)">
-      <param name="value" />
-      <param name="result" />
+      <summary>Tries to convert the specified span representation of a logical value to its <see cref="T:System.Boolean" /> equivalent.</summary>
+      <param name="value">A span containing the characters representing the value to convert.</param>
+      <param name="result">When this method returns, if the conversion succeeded, contains <see langword="true" /> if <paramref name="value" /> is equal to <see cref="F:System.Boolean.TrueString" /> or <see langword="false" /> if <paramref name="value" /> is equal to <see cref="F:System.Boolean.FalseString" />. If the conversion failed, contains <see langword="false" />. The conversion fails if <paramref name="value" /> is <see langword="null" /> or is not equal to the value of either the <see cref="F:System.Boolean.TrueString" /> or <see cref="F:System.Boolean.FalseString" /> field.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="value" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Boolean.TryParse(System.String,System.Boolean@)">
-      <summary>Tries to convert the specified string representation of a logical value to its <see cref="T:System.Boolean" /> equivalent. A return value indicates whether the conversion succeeded or failed.</summary>
+      <summary>Tries to convert the specified string representation of a logical value to its <see cref="T:System.Boolean" /> equivalent.</summary>
       <param name="value">A string containing the value to convert.</param>
       <param name="result">When this method returns, if the conversion succeeded, contains <see langword="true" /> if <paramref name="value" /> is equal to <see cref="F:System.Boolean.TrueString" /> or <see langword="false" /> if <paramref name="value" /> is equal to <see cref="F:System.Boolean.FalseString" />. If the conversion failed, contains <see langword="false" />. The conversion fails if <paramref name="value" /> is <see langword="null" /> or is not equal to the value of either the <see cref="F:System.Boolean.TrueString" /> or <see cref="F:System.Boolean.FalseString" /> field.</param>
       <returns>
@@ -3799,9 +3808,11 @@ This API is not CLS-compliant.</summary>
       <summary>Represents the smallest possible value of a <see cref="T:System.Byte" />. This field is constant.</summary>
     </member>
     <member name="M:System.Byte.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its <see cref="T:System.Byte" /> equivalent.</summary>
+      <param name="s">A span containing the characters representing the value to convert.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific information about the format of <paramref name="s" />. If <paramref name="provider" /> is <see langword="null" />, the thread current culture is used.</param>
+      <returns>A byte value that is equivalent to the number contained in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.Byte.Parse(System.String)">
       <summary>Converts the string representation of a number to its <see cref="T:System.Byte" /> equivalent.</summary>
@@ -3969,24 +3980,33 @@ This API is not CLS-compliant.</summary>
         <paramref name="format" /> includes an unsupported specifier. Supported format specifiers are listed in the Remarks section.</exception>
     </member>
     <member name="M:System.Byte.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current 8-bit unsigned integer instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Byte.TryParse(System.ReadOnlySpan{System.Char},System.Byte@)">
-      <param name="s" />
-      <param name="result" />
+      <summary>Tries to convert the span representation of a number to its <see cref="T:System.Byte" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.Byte" /> value equivalent to the number contained in <paramref name="s" /> if the conversion succeeded, or zero if the conversion failed. This parameter is passed uninitialized; any value originally supplied in <paramref name="result" /> will be overwritten.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Byte.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Byte@)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
-      <param name="result" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its <see cref="T:System.Byte" /> equivalent. A return value indicates whether the conversion succeeded or failed.</summary>
+      <param name="s">A span containing the characters representing the number to convert. The span is interpreted using the <see cref="F:System.Globalization.NumberStyles.Integer" /> style.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />. If <paramref name="provider" /> is <see langword="null" />, the thread current culture is used.</param>
+      <param name="result">When this method returns, contains the 8-bit unsigned integer value equivalent to the number contained in <paramref name="s" /> if the conversion succeeded, or zero if the conversion failed. The conversion fails if the <paramref name="s" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />, is not of the correct format, or represents a number less than <see cref="F:System.Byte.MinValue" /> or greater than <see cref="F:System.Byte.MaxValue" />. This parameter is passed uninitialized; any value originally supplied in <paramref name="result" /> will be overwritten.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Byte.TryParse(System.String,System.Byte@)">
       <summary>Tries to convert the string representation of a number to its <see cref="T:System.Byte" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
-      <param name="s">A string that contains a number to convert. The string is interpreted using the <see cref="F:System.Globalization.NumberStyles.Integer" /> style.</param>
+      <param name="s">A string that contains a number to convert.</param>
       <param name="result">When this method returns, contains the <see cref="T:System.Byte" /> value equivalent to the number contained in <paramref name="s" /> if the conversion succeeded, or zero if the conversion failed. This parameter is passed uninitialized; any value originally supplied in <paramref name="result" /> will be overwritten.</param>
       <returns>
         <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />.</returns>
@@ -6450,16 +6470,20 @@ For example, if <paramref name="month" /> equals 2 for February, the return valu
         <paramref name="styles" /> contains an invalid combination of <see cref="T:System.Globalization.DateTimeStyles" /> values. For example, both <see cref="F:System.Globalization.DateTimeStyles.AssumeLocal" /> and <see cref="F:System.Globalization.DateTimeStyles.AssumeUniversal" />.</exception>
     </member>
     <member name="M:System.DateTime.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.IFormatProvider,System.Globalization.DateTimeStyles)">
-      <param name="s" />
-      <param name="format" />
-      <param name="provider" />
-      <param name="style" />
+      <summary>Converts the specified span representation of a date and time to its <see cref="T:System.DateTime" /> equivalent using the specified format, culture-specific format information, and style. The format of the string representation must match the specified format exactly or an exception is thrown.</summary>
+      <param name="s">A span containing the characters that represent a date and time to convert.</param>
+      <param name="format">A span containing the characters that represent a format specifier that defines the required format of <paramref name="s" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <param name="style">A bitwise combination of the enumeration values that provides additional information about <paramref name="s" />, about style elements that may be present in <paramref name="s" />, or about the conversion from <paramref name="s" /> to a <see cref="T:System.DateTime" /> value. A typical value to specify is <see cref="F:System.Globalization.DateTimeStyles.None" />.</param>
+      <returns>An object that is equivalent to the date and time contained in <paramref name="s" />, as specified by <paramref name="format" />, <paramref name="provider" />, and <paramref name="style" />.</returns>
     </member>
     <member name="M:System.DateTime.ParseExact(System.ReadOnlySpan{System.Char},System.String[],System.IFormatProvider,System.Globalization.DateTimeStyles)">
-      <param name="s" />
-      <param name="formats" />
-      <param name="provider" />
-      <param name="style" />
+      <summary>Converts the specified span representation of a date and time to its <see cref="T:System.DateTime" /> equivalent using the specified array of formats, culture-specific format information, and style. The format of the string representation must match at least one of the specified formats exactly or an exception is thrown.</summary>
+      <param name="s">A span containing the characters that represent a date and time to convert.</param>
+      <param name="formats">An array of allowable formats of <paramref name="s" />.</param>
+      <param name="provider">An object that supplies culture-specific format information about <paramref name="s" />.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the permitted format of <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.DateTimeStyles.None" />.</param>
+      <returns>An object that is equivalent to the date and time contained in <paramref name="s" />, as specified by <paramref name="formats" />, <paramref name="provider" />, and <paramref name="style" />.</returns>
     </member>
     <member name="M:System.DateTime.ParseExact(System.String,System.String,System.IFormatProvider)">
       <summary>Converts the specified string representation of a date and time to its <see cref="T:System.DateTime" /> equivalent using the specified format and culture-specific format information. The format of the string representation must match the specified format exactly.</summary>
@@ -6721,20 +6745,28 @@ The hour component and the AM/PM designator in <paramref name="s" /> do not agre
       <returns>An object whose <see cref="P:System.DateTime.Kind" /> property is <see cref="F:System.DateTimeKind.Utc" />, and whose value is the UTC equivalent to the value of the current <see cref="T:System.DateTime" /> object, or <see cref="F:System.DateTime.MaxValue" /> if the converted value is too large to be represented by a <see cref="T:System.DateTime" /> object, or <see cref="F:System.DateTime.MinValue" /> if the converted value is too small to be represented by a <see cref="T:System.DateTime" /> object.</returns>
     </member>
     <member name="M:System.DateTime.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current datetime instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.DateTime.TryParse(System.ReadOnlySpan{System.Char},System.DateTime@)">
-      <param name="s" />
-      <param name="result" />
+      <param name="s">A string containing a date and time to convert.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.DateTime" /> value equivalent to the date and time contained in <paramref name="s" />, if the conversion succeeded, or <see cref="F:System.DateTime.MinValue" /> if the conversion failed. The conversion fails if the <paramref name="s" /> parameter is <see langword="null" />, is an empty string (""), or does not contain a valid string representation of a date and time. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if the <paramref name="s" /> parameter was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.DateTime.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,System.Globalization.DateTimeStyles,System.DateTime@)">
-      <param name="s" />
-      <param name="provider" />
-      <param name="styles" />
-      <param name="result" />
+      <summary>Converts the span representation of a date and time to its <see cref="T:System.DateTime" /> equivalent using the specified culture-specific format information and formatting style, and returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="s">A span containing the characters representing the date and time to convert.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <param name="styles">A bitwise combination of enumeration values that defines how to interpret the parsed date in relation to the current time zone or the current date. A typical value to specify is <see cref="F:System.Globalization.DateTimeStyles.None" />.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.DateTime" /> value equivalent to the date and time contained in <paramref name="s" />, if the conversion succeeded, or <see cref="F:System.DateTime.MinValue" /> if the conversion failed. The conversion fails if the <paramref name="s" /> parameter is <see langword="null" />, is an empty string (""), or does not contain a valid string representation of a date and time. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if the <paramref name="s" /> parameter was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.DateTime.TryParse(System.String,System.DateTime@)">
       <summary>Converts the specified string representation of a date and time to its <see cref="T:System.DateTime" /> equivalent and returns a value that indicates whether the conversion succeeded.</summary>
@@ -6759,11 +6791,14 @@ The hour component and the AM/PM designator in <paramref name="s" /> do not agre
         <paramref name="provider" /> is a neutral culture and cannot be used in a parsing operation.</exception>
     </member>
     <member name="M:System.DateTime.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.IFormatProvider,System.Globalization.DateTimeStyles,System.DateTime@)">
-      <param name="s" />
-      <param name="format" />
-      <param name="provider" />
-      <param name="style" />
-      <param name="result" />
+      <summary>Converts the specified span representation of a date and time to its <see cref="T:System.DateTime" /> equivalent using the specified format, culture-specific format information, and style. The format of the string representation must match the specified format exactly. The method returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="s">A span containing the characters representing a date and time to convert.</param>
+      <param name="format">The required format of <paramref name="s" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <param name="style">A bitwise combination of one or more enumeration values that indicate the permitted format of <paramref name="s" />.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.DateTime" /> value equivalent to the date and time contained in <paramref name="s" />, if the conversion succeeded, or <see cref="F:System.DateTime.MinValue" /> if the conversion failed. The conversion fails if either the <paramref name="s" /> or <paramref name="format" /> parameter is <see langword="null" />, is an empty string, or does not contain a date and time that correspond to the pattern specified in <paramref name="format" />. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.DateTime.TryParseExact(System.ReadOnlySpan{System.Char},System.String[],System.IFormatProvider,System.Globalization.DateTimeStyles,System.DateTime@)">
       <param name="s" />
@@ -7251,9 +7286,11 @@ The UTC date and time that results from applying the offset is later than <see c
       <exception cref="T:System.ArgumentOutOfRangeException">The resulting <see cref="T:System.DateTimeOffset" /> value is less than <see cref="F:System.DateTimeOffset.MinValue" /> or greater than <see cref="F:System.DateTimeOffset.MaxValue" />.</exception>
     </member>
     <member name="M:System.DateTimeOffset.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider,System.Globalization.DateTimeStyles)">
-      <param name="input" />
-      <param name="formatProvider" />
-      <param name="styles" />
+      <summary>Converts the specified span representation of a date and time to its <see cref="T:System.DateTimeOffset" /> equivalent using the specified culture-specific format information and formatting style.</summary>
+      <param name="input">A span containing the characters that represent a date and time to convert.</param>
+      <param name="formatProvider">An object that provides culture-specific format information about <paramref name="input" />.</param>
+      <param name="styles">A bitwise combination of enumeration values that indicates the permitted format of <paramref name="input" />. A typical value to specify is <see cref="F:System.Globalization.DateTimeStyles.None" />.</param>
+      <returns>An object that is equivalent to the date and time that is contained in <paramref name="input" /> as specified by <paramref name="formatProvider" /> and <paramref name="styles" />.</returns>
     </member>
     <member name="M:System.DateTimeOffset.Parse(System.String)">
       <summary>Converts the specified string representation of a date, time, and offset to its <see cref="T:System.DateTimeOffset" /> equivalent.</summary>
@@ -7529,20 +7566,29 @@ The resulting <see cref="T:System.DateTimeOffset" /> object has a <see cref="P:S
       <returns>The number of seconds that have elapsed since 1970-01-01T00:00:00Z.</returns>
     </member>
     <member name="M:System.DateTimeOffset.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="formatProvider" />
+      <summary>Tries to format the value of the current datetime offset instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="formatProvider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.DateTimeOffset.TryParse(System.ReadOnlySpan{System.Char},System.DateTimeOffset@)">
-      <param name="input" />
-      <param name="result" />
+      <summary>Tries to convert a specified span representation of a date and time to its <see cref="T:System.DateTimeOffset" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="input">A span containing the characters representing the date and time to convert.</param>
+      <param name="result">When the method returns, contains the <see cref="T:System.DateTimeOffset" /> equivalent to the date and time of <paramref name="input" />, if the conversion succeeded, or <see cref="F:System.DateTimeOffset.MinValue" />, if the conversion failed. The conversion fails if the <paramref name="input" /> parameter is <see langword="null" /> or does not contain a valid string representation of a date and time. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if the <paramref name="input" /> parameter is successfully converted; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.DateTimeOffset.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,System.Globalization.DateTimeStyles,System.DateTimeOffset@)">
-      <param name="input" />
-      <param name="formatProvider" />
-      <param name="styles" />
-      <param name="result" />
+      <summary>Tries to convert a specified span representation of a date and time to its <see cref="T:System.DateTimeOffset" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="input">A span containing the characters representing the date and time to convert.</param>
+      <param name="formatProvider">An object that provides culture-specific formatting information about <paramref name="input" />.</param>
+      <param name="styles">A bitwise combination of enumeration values that indicates the permitted format of <paramref name="input" />.</param>
+      <param name="result">When the method returns, contains the <see cref="T:System.DateTimeOffset" /> value equivalent to the date and time of <paramref name="input" />, if the conversion succeeded, or <see cref="F:System.DateTimeOffset.MinValue" />, if the conversion failed. The conversion fails if the <paramref name="input" /> parameter is <see langword="null" /> or does not contain a valid string representation of a date and time. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if the <paramref name="input" /> parameter is successfully converted; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.DateTimeOffset.TryParse(System.String,System.DateTimeOffset@)">
       <summary>Tries to converts a specified string representation of a date and time to its <see cref="T:System.DateTimeOffset" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
@@ -7568,7 +7614,7 @@ The resulting <see cref="T:System.DateTimeOffset" /> object has a <see cref="P:S
     </member>
     <member name="M:System.DateTimeOffset.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.IFormatProvider,System.Globalization.DateTimeStyles,System.DateTimeOffset@)">
       <summary>Converts the representation of a date and time in a character span to its <see cref="T:System.DateTimeOffset" /> equivalent using the specified format, culture-specific format information, and style. The format of the date and time representation must match the specified format exactly.</summary>
-      <param name="input">A character span that contains the representation of a date and time to convert.</param>
+      <param name="input">A span containing the characters that represent a date and time to convert.</param>
       <param name="format">A format specifier that defines the required format of <paramref name="input" />.</param>
       <param name="formatProvider">An object that supplies culture-specific formatting information about <paramref name="input" />.</param>
       <param name="styles">A bitwise combination of enumeration values that indicates the permitted format of <paramref name="input" />. A typical value to specify is <see cref="F:System.Globalization.DateTimeStyles.None" /></param>
@@ -7583,11 +7629,14 @@ The resulting <see cref="T:System.DateTimeOffset" /> object has a <see cref="P:S
 <paramref name="styles" /> includes mutually exclusive <see cref="T:System.Globalization.DateTimeStyles" /> values.</exception>
     </member>
     <member name="M:System.DateTimeOffset.TryParseExact(System.ReadOnlySpan{System.Char},System.String[],System.IFormatProvider,System.Globalization.DateTimeStyles,System.DateTimeOffset@)">
-      <param name="input" />
-      <param name="formats" />
-      <param name="formatProvider" />
-      <param name="styles" />
-      <param name="result" />
+      <summary>Converts the representation of a date and time in a character span to its <see cref="T:System.DateTimeOffset" /> equivalent using the specified formats, culture-specific format information, and style. The format of the date and time representation must match one of the specified formats exactly.</summary>
+      <param name="input">A span containing the characters that represent a date and time to convert.</param>
+      <param name="formats">A array of standard or custom format strings that define the acceptable formats of <paramref name="input" />.</param>
+      <param name="formatProvider">An object that supplies culture-specific formatting information about <paramref name="input" />.</param>
+      <param name="styles">A bitwise combination of enumeration values that indicates the permitted format of <paramref name="input" />. A typical value to specify is <see cref="F:System.Globalization.DateTimeStyles.None" /></param>
+      <param name="result">When the method returns, contains the <see cref="T:System.DateTimeOffset" /> equivalent to the date and time of <paramref name="input" />, if the conversion succeeded, or <see cref="F:System.DateTimeOffset.MinValue" /> if the conversion failed. The conversion fails if the</param>
+      <returns>
+        <see langword="true" /> if the <paramref name="input" /> parameter is successfully converted; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentException">
         <paramref name="styles" /> includes an undefined <see cref="T:System.Globalization.DateTimeStyles" /> value.
 -or-
@@ -8250,9 +8299,11 @@ This API is not CLS-compliant.</summary>
       <returns>The value of the operand, <paramref name="d" />.</returns>
     </member>
     <member name="M:System.Decimal.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number to its <see cref="T:System.Decimal" /> equivalent using the specified style and culture-specific format.</summary>
+      <param name="s">The span containing the characters representing the number to convert.</param>
+      <param name="style">A bitwise combination of <see cref="T:System.Globalization.NumberStyles" /> values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Number" />.</param>
+      <param name="provider">An <see cref="T:System.IFormatProvider" /> object that supplies culture-specific information about the format of <paramref name="s" />.</param>
+      <returns>The <see cref="T:System.Decimal" /> number equivalent to the number contained in <paramref name="s" /> as specified by <paramref name="style" /> and <paramref name="provider" />.</returns>
     </member>
     <member name="M:System.Decimal.Parse(System.String)">
       <summary>Converts the string representation of a number to its <see cref="T:System.Decimal" /> equivalent.</summary>
@@ -8557,20 +8608,29 @@ This API is not CLS-compliant.</summary>
       <returns>The result of <paramref name="d" /> rounded toward zero, to the nearest whole number.</returns>
     </member>
     <member name="M:System.Decimal.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current decimal instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Decimal.TryParse(System.ReadOnlySpan{System.Char},System.Decimal@)">
-      <param name="s" />
-      <param name="result" />
+      <summary>Converts the span representation of a number to its <see cref="T:System.Decimal" /> equivalent using the specified style and culture-specific format. A return value indicates whether the conversion succeeded or failed.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.Decimal" /> number that is equivalent to the numeric value contained in <paramref name="s" />, if the conversion succeeded, or zero if the conversion failed. The conversion fails if the <paramref name="s" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />, is not a number in a format compliant with <paramref name="style" />, or represents a number less than <see cref="F:System.Decimal.MinValue" /> or greater than <see cref="F:System.Decimal.MaxValue" />. This parameter is passed uininitialized; any value originally supplied in <paramref name="result" /> is overwritten.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Decimal.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Decimal@)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
-      <param name="result" />
+      <summary>Converts the span representation of a number to its <see cref="T:System.Decimal" /> equivalent using the specified style and culture-specific format. A return value indicates whether the conversion succeeded or failed.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the permitted format of <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Number" />.</param>
+      <param name="provider">An object that supplies culture-specific parsing information about <paramref name="s" />.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.Decimal" /> number that is equivalent to the numeric value contained in <paramref name="s" />, if the conversion succeeded, or zero if the conversion failed. The conversion fails if the <paramref name="s" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />, is not a number in a format compliant with <paramref name="style" />, or represents a number less than <see cref="F:System.Decimal.MinValue" /> or greater than <see cref="F:System.Decimal.MaxValue" />. This parameter is passed uininitialized; any value originally supplied in <paramref name="result" /> is overwritten.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Decimal.TryParse(System.String,System.Decimal@)">
       <summary>Converts the string representation of a number to its <see cref="T:System.Decimal" /> equivalent. A return value indicates whether the conversion succeeded or failed.</summary>
@@ -9338,9 +9398,11 @@ Note that, unlike the <see cref="F:System.Diagnostics.DebuggableAttribute.Debugg
         <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Double.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its double-precision floating-point number equivalent.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="style">A bitwise combination of enumeration values that indicate the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Float" /> combined with <see cref="F:System.Globalization.NumberStyles.AllowThousands" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <returns>A double-precision floating-point number that is equivalent to the numeric value or symbol specified in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.Double.Parse(System.String)">
       <summary>Converts the string representation of a number to its double-precision floating-point number equivalent.</summary>
@@ -9503,20 +9565,29 @@ Note that, unlike the <see cref="F:System.Diagnostics.DebuggableAttribute.Debugg
       <returns>The string representation of the value of this instance as specified by <paramref name="format" /> and <paramref name="provider" />.</returns>
     </member>
     <member name="M:System.Double.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current double instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Double.TryParse(System.ReadOnlySpan{System.Char},System.Double@)">
-      <param name="s" />
-      <param name="result" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its double-precision floating-point number equivalent. A return value indicates whether the conversion succeeded or failed.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="result">When this method returns, contains a double-precision floating-point number equivalent of the numeric value or symbol contained in <paramref name="s" />, if the conversion succeeded, or zero if the conversion failed. The conversion fails if the <paramref name="s" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />, is not in a format compliant with <paramref name="style" />, represents a number less than <see cref="F:System.SByte.MinValue" /> or greater than <see cref="F:System.SByte.MaxValue" />, or if <paramref name="style" /> is not a valid combination of <see cref="T:System.Globalization.NumberStyles" /> enumerated constants. This parameter is passed uninitialized; any value originally supplied in <paramref name="result" /> will be overwritten.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Double.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Double@)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
-      <param name="result" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its double-precision floating-point number equivalent. A return value indicates whether the conversion succeeded or failed.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="style">A bitwise combination of <see cref="T:System.Globalization.NumberStyles" /> values that indicates the permitted format of <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Float" /> combined with <see cref="F:System.Globalization.NumberStyles.AllowThousands" />.</param>
+      <param name="provider">An <see cref="T:System.IFormatProvider" /> that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <param name="result">When this method returns, contains a double-precision floating-point number equivalent of the numeric value or symbol contained in <paramref name="s" />, if the conversion succeeded, or zero if the conversion failed. The conversion fails if the <paramref name="s" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />, is not in a format compliant with <paramref name="style" />, represents a number less than <see cref="F:System.SByte.MinValue" /> or greater than <see cref="F:System.SByte.MaxValue" />, or if <paramref name="style" /> is not a valid combination of <see cref="T:System.Globalization.NumberStyles" /> enumerated constants. This parameter is passed uninitialized; any value originally supplied in <paramref name="result" /> will be overwritten.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Double.TryParse(System.String,System.Double@)">
       <summary>Converts the string representation of a number to its double-precision floating-point number equivalent. A return value indicates whether the conversion succeeded or failed.</summary>
@@ -9961,15 +10032,22 @@ The type of <paramref name="value" /> is not an underlying type of <paramref nam
         <paramref name="format" /> equals "X", but the enumeration type is unknown.</exception>
     </member>
     <member name="M:System.Enum.TryParse(System.Type,System.String,System.Boolean,System.Object@)">
-      <param name="enumType" />
-      <param name="value" />
-      <param name="ignoreCase" />
-      <param name="result" />
+      <summary>Converts the string representation of the name or numeric value of one or more enumerated constants to an equivalent enumerated object.</summary>
+      <param name="enumType">The enum type to use for parsing.</param>
+      <param name="value">The string representation of the name or numeric value of one or more enumerated constants.</param>
+      <param name="ignoreCase">
+        <see langword="true" /> to read <paramref name="value" /> in case insensitive mode; <see langword="false" /> to read <paramref name="value" /> in case sensitive mode.</param>
+      <param name="result">When this method returns <see langword="true" />, an object containing an enumeration constant representing the parsed value.</param>
+      <returns>
+        <see langword="true" /> if the conversion succeeded; <see langword="false" /> otherwise.</returns>
     </member>
     <member name="M:System.Enum.TryParse(System.Type,System.String,System.Object@)">
-      <param name="enumType" />
-      <param name="value" />
-      <param name="result" />
+      <summary>Converts the string representation of the name or numeric value of one or more enumerated constants to an equivalent enumerated object.</summary>
+      <param name="enumType">The enum type to use for parsing.</param>
+      <param name="value">The string representation of the name or numeric value of one or more enumerated constants.</param>
+      <param name="result">When this method returns <see langword="true" />, an object containing an enumeration constant representing the parsed value.</param>
+      <returns>
+        <see langword="true" /> if the conversion succeeded; <see langword="false" /> otherwise.</returns>
     </member>
     <member name="M:System.Enum.TryParse``1(System.String,``0@)">
       <summary>Converts the string representation of the name or numeric value of one or more enumerated constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.</summary>
@@ -11357,7 +11435,9 @@ A read-only memberwise clone of the <see cref="T:System.Globalization.Calendar" 
       <returns>A <see cref="T:System.Globalization.UnicodeCategory" /> value indicating the category of the specified character.</returns>
     </member>
     <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.Int32)">
-      <param name="codePoint" />
+      <summary>Gets the Unicode category of the specified character.</summary>
+      <param name="codePoint">A number representing the 32-bit code point value of the Unicode character.</param>
+      <returns>A <see cref="T:System.Globalization.UnicodeCategory" /> value indicating the category of the specified character.</returns>
     </member>
     <member name="M:System.Globalization.CharUnicodeInfo.GetUnicodeCategory(System.String,System.Int32)">
       <summary>Gets the Unicode category of the character at the specified index of the specified string.</summary>
@@ -12275,7 +12355,7 @@ null, if <paramref name="formatType" /> is any other object.</returns>
     </member>
     <member name="P:System.Globalization.CultureInfo.Name">
       <summary>Gets the culture name in the format languagecode2-country/regioncode2.</summary>
-      <returns>The culture name in the format languagecode2-country/regioncode2. languagecode2 is a lowercase two-letter code derived from ISO 639-1. country/regioncode2 is derived from ISO 3166 and usually consists of two uppercase letters, or a BCP-47 language tag.</returns>
+      <returns>The culture name in the format languagecode2-country/regioncode2, if the current <see cref="T:System.Globalization.CultureInfo" /> is culture-dependent; or an empty string, if it's an invariant culture. languagecode2 is a lowercase two-letter code derived from ISO 639-1. country/regioncode2 is derived from ISO 3166 and usually consists of two uppercase letters, or a BCP-47 language tag.</returns>
     </member>
     <member name="P:System.Globalization.CultureInfo.NativeName">
       <summary>Gets the culture name, consisting of the language, the country/region, and the optional script, that the culture is set to display.</summary>
@@ -16188,15 +16268,15 @@ where the value of the GUID is represented as a series of lowercase hexadecimal 
     </member>
     <member name="M:System.Guid.TryParse(System.ReadOnlySpan{System.Char},System.Guid@)">
       <summary>Converts the specified read-only span of characters containing the representation of a GUID to the equivalent <see cref="T:System.Guid" /> structure.</summary>
-      <param name="input">A span containing the characters representing GUID to convert.</param>
-      <param name="result">The structure to contain the parsed value. If the method returns <see langword="true" />, <paramref name="result" /> contains a valid <see cref="T:System.Guid" />. If the method returns <see langword="false" />, <paramref name="result" /> equals <see cref="F:System.Guid.Empty" />.</param>
+      <param name="input">A span containing the characters representing the GUID to convert.</param>
+      <param name="result">A <see cref="T:System.Guid" /> instance to contain the parsed value. If the method returns <see langword="true" />, <paramref name="result" /> contains a valid <see cref="T:System.Guid" />. If the method returns <see langword="false" />, <paramref name="result" /> equals <see cref="F:System.Guid.Empty" />.</param>
       <returns>
         <see langword="true" /> if the parse operation was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Guid.TryParse(System.String,System.Guid@)">
       <summary>Converts the string representation of a GUID to the equivalent <see cref="T:System.Guid" /> structure.</summary>
-      <param name="input">The GUID to convert.</param>
-      <param name="result">The structure that will contain the parsed value. If the method returns <see langword="true" />, <paramref name="result" /> contains a valid <see cref="T:System.Guid" />. If the method returns <see langword="false" />, <paramref name="result" /> equals <see cref="F:System.Guid.Empty" />.</param>
+      <param name="input">A string containing the GUID to convert.</param>
+      <param name="result">A <see cref="T:System.Guid" /> instance to contain the parsed value. If the method returns <see langword="true" />, <paramref name="result" /> contains a valid <see cref="T:System.Guid" />. If the method returns <see langword="false" />, <paramref name="result" /> equals <see cref="F:System.Guid.Empty" />.</param>
       <returns>
         <see langword="true" /> if the parse operation was successful; otherwise, <see langword="false" />.</returns>
     </member>
@@ -16768,9 +16848,11 @@ A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the nume
       <summary>Represents the smallest possible value of <see cref="T:System.Int16" />. This field is constant.</summary>
     </member>
     <member name="M:System.Int16.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its 16-bit signed integer equivalent.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An <see cref="T:System.IFormatProvider" /> that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <returns>A 16-bit signed integer equivalent to the number specified in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.Int16.Parse(System.String)">
       <summary>Converts the string representation of a number to its 16-bit signed integer equivalent.</summary>
@@ -16931,10 +17013,13 @@ A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the nume
       <returns>The string representation of the value of this instance as specified by <paramref name="format" /> and <paramref name="provider" />.</returns>
     </member>
     <member name="M:System.Int16.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current short number instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Int16.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Int16@)">
       <param name="s" />
@@ -17042,9 +17127,11 @@ A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the nume
       <summary>Represents the smallest possible value of <see cref="T:System.Int32" />. This field is constant.</summary>
     </member>
     <member name="M:System.Int32.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its 32-bit signed integer equivalent.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific information about the format of <paramref name="s" />.</param>
+      <returns>A 32-bit signed integer equivalent to the number specified in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.Int32.Parse(System.String)">
       <summary>Converts the string representation of a number to its 32-bit signed integer equivalent.</summary>
@@ -17209,10 +17296,13 @@ A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the nume
         <paramref name="format" /> is invalid or not supported.</exception>
     </member>
     <member name="M:System.Int32.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current integer number instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Int32.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Int32@)">
       <param name="s" />
@@ -17320,9 +17410,11 @@ A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the nume
       <summary>Represents the smallest possible value of an <see langword="Int64" />. This field is constant.</summary>
     </member>
     <member name="M:System.Int64.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its 64-bit signed integer equivalent.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An <see cref="T:System.IFormatProvider" /> that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <returns>A 64-bit signed integer equivalent to the number specified in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.Int64.Parse(System.String)">
       <summary>Converts the string representation of a number to its 64-bit signed integer equivalent.</summary>
@@ -17487,10 +17579,13 @@ A null reference (<see langword="Nothing" /> in Visual Basic) to obtain the nume
         <paramref name="format" /> is invalid or not supported.</exception>
     </member>
     <member name="M:System.Int64.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current long number instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Int64.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Int64@)">
       <param name="s" />
@@ -18004,7 +18099,7 @@ The <paramref name="context" /> parameter is <see langword="null" />.</exception
     <member name="M:System.IO.FileStream.#ctor(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class for the specified file handle, with the specified read/write permission.</summary>
       <param name="handle">A file handle for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="access">A constant that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
+      <param name="access">A bitwise combination of the enumeration values that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
       <exception cref="T:System.ArgumentException">
         <paramref name="access" /> is not a field of <see cref="T:System.IO.FileAccess" />.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
@@ -18031,7 +18126,7 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess,System.Int32,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class for the specified file handle, with the specified read/write permission, buffer size, and synchronous or asynchronous state.</summary>
       <param name="handle">A file handle for the file that this <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="access">A constant that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
+      <param name="access">A bitwise combination of the enumeration values that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
       <param name="bufferSize">A positive <see cref="T:System.Int32" /> value greater than 0 indicating the buffer size. The default buffer size is 4096.</param>
       <param name="isAsync">
         <see langword="true" /> if the handle was opened asynchronously (that is, in overlapped I/O mode); otherwise, <see langword="false" />.</param>
@@ -18048,7 +18143,7 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.IntPtr,System.IO.FileAccess)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class for the specified file handle, with the specified read/write permission.</summary>
       <param name="handle">A file handle for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="access">A constant that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
+      <param name="access">A bitwise combination of the enumeration values that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
       <exception cref="T:System.ArgumentException">
         <paramref name="access" /> is not a field of <see cref="T:System.IO.FileAccess" />.</exception>
       <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
@@ -18060,7 +18155,7 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.IntPtr,System.IO.FileAccess,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class for the specified file handle, with the specified read/write permission and <see langword="FileStream" /> instance ownership.</summary>
       <param name="handle">A file handle for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="access">A constant that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
+      <param name="access">A bitwise combination of the enumeration values that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
       <param name="ownsHandle">
         <see langword="true" /> if the file handle will be owned by this <see langword="FileStream" /> instance; otherwise, <see langword="false" />.</param>
       <exception cref="T:System.ArgumentException">
@@ -18074,7 +18169,7 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.IntPtr,System.IO.FileAccess,System.Boolean,System.Int32)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class for the specified file handle, with the specified read/write permission, <see langword="FileStream" /> instance ownership, and buffer size.</summary>
       <param name="handle">A file handle for the file that this <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="access">A constant that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
+      <param name="access">A bitwise combination of the enumeration values that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
       <param name="ownsHandle">
         <see langword="true" /> if the file handle will be owned by this <see langword="FileStream" /> instance; otherwise, <see langword="false" />.</param>
       <param name="bufferSize">A positive <see cref="T:System.Int32" /> value greater than 0 indicating the buffer size. The default buffer size is 4096.</param>
@@ -18089,7 +18184,7 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.IntPtr,System.IO.FileAccess,System.Boolean,System.Int32,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class for the specified file handle, with the specified read/write permission, <see langword="FileStream" /> instance ownership, buffer size, and synchronous or asynchronous state.</summary>
       <param name="handle">A file handle for the file that this <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="access">A constant that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
+      <param name="access">A bitwise combination of the enumeration values that sets the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object.</param>
       <param name="ownsHandle">
         <see langword="true" /> if the file handle will be owned by this <see langword="FileStream" /> instance; otherwise, <see langword="false" />.</param>
       <param name="bufferSize">A positive <see cref="T:System.Int32" /> value greater than 0 indicating the buffer size. The default buffer size is 4096.</param>
@@ -18107,7 +18202,7 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class with the specified path and creation mode.</summary>
       <param name="path">A relative or absolute path for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="mode">A constant that determines how to open or create the file.</param>
+      <param name="mode">One of the enumeration values that determines how to open or create the file.</param>
       <exception cref="T:System.ArgumentException">
         <paramref name="path" /> is an empty string (""), contains only white space, or contains one or more invalid characters.
 -or-
@@ -18131,8 +18226,8 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class with the specified path, creation mode, and read/write permission.</summary>
       <param name="path">A relative or absolute path for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="mode">A constant that determines how to open or create the file.</param>
-      <param name="access">A constant that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
+      <param name="mode">One of the enumeration values that determines how to open or create the file.</param>
+      <param name="access">A bitwise combination of the enumeration values that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
@@ -18155,9 +18250,9 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class with the specified path, creation mode, read/write permission, and sharing permission.</summary>
       <param name="path">A relative or absolute path for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="mode">A constant that determines how to open or create the file.</param>
-      <param name="access">A constant that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
-      <param name="share">A constant that determines how the file will be shared by processes.</param>
+      <param name="mode">One of the enumeration values that determines how to open or create the file.</param>
+      <param name="access">A bitwise combination of the enumeration values that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
+      <param name="share">A bitwise combination of the enumeration values that determines how the file will be shared by processes.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
@@ -18182,9 +18277,9 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class with the specified path, creation mode, read/write and sharing permission, and buffer size.</summary>
       <param name="path">A relative or absolute path for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="mode">A constant that determines how to open or create the file.</param>
-      <param name="access">A constant that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
-      <param name="share">A constant that determines how the file will be shared by processes.</param>
+      <param name="mode">One of the enumeration values that determines how to open or create the file.</param>
+      <param name="access">A bitwise combination of the enumeration values that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
+      <param name="share">A bitwise combination of the enumeration values that determines how the file will be shared by processes.</param>
       <param name="bufferSize">A positive <see cref="T:System.Int32" /> value greater than 0 indicating the buffer size. The default buffer size is 4096.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
@@ -18212,9 +18307,9 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.Boolean)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class with the specified path, creation mode, read/write and sharing permission, buffer size, and synchronous or asynchronous state.</summary>
       <param name="path">A relative or absolute path for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="mode">A constant that determines how to open or create the file.</param>
-      <param name="access">A constant that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
-      <param name="share">A constant that determines how the file will be shared by processes.</param>
+      <param name="mode">One of the enumeration values that determines how to open or create the file.</param>
+      <param name="access">A bitwise combination of the enumeration values that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
+      <param name="share">A bitwise combination of the enumeration values that determines how the file will be shared by processes.</param>
       <param name="bufferSize">A positive <see cref="T:System.Int32" /> value greater than 0 indicating the buffer size. The default buffer size is 4096.</param>
       <param name="useAsync">Specifies whether to use asynchronous I/O or synchronous I/O. However, note that the underlying operating system might not support asynchronous I/O, so when specifying <see langword="true" />, the handle might be opened synchronously depending on the platform. When opened asynchronously, the <see cref="M:System.IO.FileStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /> and <see cref="M:System.IO.FileStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /> methods perform better on large reads or writes, but they might be much slower for small reads or writes. If the application is designed to take advantage of asynchronous I/O, set the <paramref name="useAsync" /> parameter to <see langword="true" />. Using asynchronous I/O correctly can speed up applications by as much as a factor of 10, but using it without redesigning the application for asynchronous I/O can decrease performance by as much as a factor of 10.</param>
       <exception cref="T:System.ArgumentNullException">
@@ -18243,11 +18338,11 @@ The stream has been closed.</exception>
     <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.IO.FileOptions)">
       <summary>Initializes a new instance of the <see cref="T:System.IO.FileStream" /> class with the specified path, creation mode, read/write and sharing permission, the access other FileStreams can have to the same file, the buffer size, and additional file options.</summary>
       <param name="path">A relative or absolute path for the file that the current <see langword="FileStream" /> object will encapsulate.</param>
-      <param name="mode">A constant that determines how to open or create the file.</param>
-      <param name="access">A constant that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
-      <param name="share">A constant that determines how the file will be shared by processes.</param>
+      <param name="mode">One of the enumeration values that determines how to open or create the file.</param>
+      <param name="access">A bitwise combination of the enumeration values that determines how the file can be accessed by the <see langword="FileStream" /> object. This also determines the values returned by the <see cref="P:System.IO.FileStream.CanRead" /> and <see cref="P:System.IO.FileStream.CanWrite" /> properties of the <see langword="FileStream" /> object. <see cref="P:System.IO.FileStream.CanSeek" /> is <see langword="true" /> if <paramref name="path" /> specifies a disk file.</param>
+      <param name="share">A bitwise combination of the enumeration values that determines how the file will be shared by processes.</param>
       <param name="bufferSize">A positive <see cref="T:System.Int32" /> value greater than 0 indicating the buffer size. The default buffer size is 4096.</param>
-      <param name="options">A value that specifies additional file options.</param>
+      <param name="options">A bitwise combination of the enumeration values that specifies additional file options.</param>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="path" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentException">
@@ -20895,8 +20990,8 @@ Version 2.0 or later of the common language runtime is currently loaded and <par
 Version 2.0 or later of the common language runtime is currently loaded and <paramref name="assemblyRef" /> was compiled with a later version.</exception>
     </member>
     <member name="M:System.Reflection.Assembly.Load(System.String)">
-      <summary>Loads an assembly given the long form of its name.</summary>
-      <param name="assemblyString">The long form of the assembly name.</param>
+      <summary>Loads an assembly with the specified name.</summary>
+      <param name="assemblyString">The long or short form of the assembly name.</param>
       <returns>The loaded assembly.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="assemblyString" /> is <see langword="null" />.</exception>
@@ -27993,9 +28088,11 @@ The <see cref="P:System.Runtime.GCSettings.LatencyMode" /> property cannot be se
       <summary>Represents the smallest possible value of <see cref="T:System.SByte" />. This field is constant.</summary>
     </member>
     <member name="M:System.SByte.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number that is in a specified style and culture-specific format to its 8-bit signed equivalent.</summary>
+      <param name="s">A span containing the characters representing the number to convert. The span is interpreted by using the style specified by <paramref name="style" />.</param>
+      <param name="style">A bitwise combination of the enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />. If <paramref name="provider" /> is <see langword="null" />, the thread current culture is used.</param>
+      <returns>An 8-bit signed byte value that is equivalent to the number specified in the <paramref name="s" /> parameter.</returns>
     </member>
     <member name="M:System.SByte.Parse(System.String)">
       <summary>Converts the string representation of a number to its 8-bit signed integer equivalent.</summary>
@@ -28160,10 +28257,13 @@ The <see cref="P:System.Runtime.GCSettings.LatencyMode" /> property cannot be se
         <paramref name="format" /> is invalid.</exception>
     </member>
     <member name="M:System.SByte.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current 8-bit signed integer instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.SByte.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.SByte@)">
       <param name="s" />
@@ -28632,9 +28732,11 @@ The <see cref="P:System.Runtime.GCSettings.LatencyMode" /> property cannot be se
         <see langword="true" /> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Single.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its single-precision floating-point number equivalent.</summary>
+      <param name="s">A span containing the characters representing the number to convert.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Float" /> combined with <see cref="F:System.Globalization.NumberStyles.AllowThousands" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <returns>A single-precision floating-point number equivalent to the numeric value or symbol specified in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.Single.Parse(System.String)">
       <summary>Converts the string representation of a number to its single-precision floating-point number equivalent.</summary>
@@ -28797,10 +28899,13 @@ The <see cref="P:System.Runtime.GCSettings.LatencyMode" /> property cannot be se
       <returns>The string representation of the value of this instance as specified by <paramref name="format" /> and <paramref name="provider" />.</returns>
     </member>
     <member name="M:System.Single.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current float number instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Single.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Single@)">
       <param name="s" />
@@ -30871,12 +30976,14 @@ The length of <paramref name="bytes" /> - <paramref name="byteIndex" /> is less 
 <see cref="P:System.Text.Decoder.Fallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Decoder.Convert(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
-      <param name="bytes" />
-      <param name="chars" />
-      <param name="flush" />
-      <param name="bytesUsed" />
-      <param name="charsUsed" />
-      <param name="completed" />
+      <summary>Converts a span of encoded bytes to UTF-16 encoded characters and stores the result in another span buffer.</summary>
+      <param name="bytes">A read-only bytes span containing the sequence to convert.</param>
+      <param name="chars">The span to store the converted characters.</param>
+      <param name="flush">
+        <see langword="true" /> to indicate no further data is to be converted; otherwise, <see langword="false" />.</param>
+      <param name="bytesUsed">When this method returns, contains the number of bytes that were produced by the conversion. This parameter is passed uninitialized.</param>
+      <param name="charsUsed">When this method returns, contains the number of characters from <paramref name="chars" /> that were used in the conversion. This parameter is passed uninitialized.</param>
+      <param name="completed">When this method returns, contains <see langword="true" /> if all the specified characters were converted; otherwise, <see langword="false" />. This parameter is passed uninitialized.</param>
     </member>
     <member name="P:System.Text.Decoder.Fallback">
       <summary>Gets or sets a <see cref="T:System.Text.DecoderFallback" /> object for the current <see cref="T:System.Text.Decoder" /> object.</summary>
@@ -30938,8 +31045,11 @@ The length of <paramref name="bytes" /> - <paramref name="byteIndex" /> is less 
 <see cref="P:System.Text.Decoder.Fallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Decoder.GetCharCount(System.ReadOnlySpan{System.Byte},System.Boolean)">
-      <param name="bytes" />
-      <param name="flush" />
+      <summary>When overridden in a derived class, calculates the number of characters produced by decoding the sequence of bytes in the span. A parameter indicates whether to clear the internal state of the decoder after the calculation.</summary>
+      <param name="bytes">A byte span to decode.</param>
+      <param name="flush">
+        <see langword="true" /> to simulate clearing the internal state of the encoder after the calculation; otherwise, <see langword="false" />.</param>
+      <returns>The number of characters produced by decoding the specified sequence of bytes and any bytes in the internal buffer.</returns>
     </member>
     <member name="M:System.Text.Decoder.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32,System.Boolean)">
       <summary>When overridden in a derived class, decodes a sequence of bytes starting at the specified byte pointer and any bytes in the internal buffer into a set of characters that are stored starting at the specified character pointer. A parameter indicates whether to clear the internal state of the decoder after the conversion.</summary>
@@ -31013,9 +31123,12 @@ The length of <paramref name="bytes" /> - <paramref name="byteIndex" /> is less 
 <see cref="P:System.Text.Decoder.Fallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Decoder.GetChars(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Boolean)">
-      <param name="bytes" />
-      <param name="chars" />
-      <param name="flush" />
+      <summary>When overridden in a derived class, decodes a sequence of span bytes and any bytes in the internal buffer into a set of characters that are stored starting at the specified character pointer. A parameter indicates whether to clear the internal state of the decoder after the conversion.</summary>
+      <param name="bytes">A byte span to decode.</param>
+      <param name="chars">A span to write the resulting set of characters.</param>
+      <param name="flush">
+        <see langword="true" /> to clear the internal state of the decoder after the conversion; otherwise, <see langword="false" />.</param>
+      <returns>The actual number of characters written at the span indicated by the <paramref name="chars" /> parameter.</returns>
     </member>
     <member name="M:System.Text.Decoder.Reset">
       <summary>When overridden in a derived class, sets the decoder back to its initial state.</summary>
@@ -31273,12 +31386,14 @@ The length of <paramref name="bytes" /> - <paramref name="byteIndex" /> is less 
 <see cref="P:System.Text.Encoder.Fallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoder.Convert(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Boolean,System.Int32@,System.Int32@,System.Boolean@)">
-      <param name="chars" />
-      <param name="bytes" />
-      <param name="flush" />
-      <param name="charsUsed" />
-      <param name="bytesUsed" />
-      <param name="completed" />
+      <summary>Converts a span of Unicode characters to an encoded byte sequence and stores the result in another buffer.</summary>
+      <param name="chars">The span of UTF-16 encoded characters to convert.</param>
+      <param name="bytes">The span buffer to store the converted bytes.</param>
+      <param name="flush">
+        <see langword="true" /> to indicate no further data is to be converted; otherwise, <see langword="false" />.</param>
+      <param name="charsUsed">When this method returns, contains the number of characters from <paramref name="chars" /> that were used in the conversion. This parameter is passed uninitialized.</param>
+      <param name="bytesUsed">When this method returns, contains the number of bytes that were used in the conversion. This parameter is passed uninitialized.</param>
+      <param name="completed">When this method returns, contains <see langword="true" /> if all the characters in <paramref name="chars" /> were converted; otherwise, <see langword="false" />. This parameter is passed uninitialized.</param>
     </member>
     <member name="P:System.Text.Encoder.Fallback">
       <summary>Gets or sets a <see cref="T:System.Text.EncoderFallback" /> object for the current <see cref="T:System.Text.Encoder" /> object.</summary>
@@ -31327,8 +31442,11 @@ The length of <paramref name="bytes" /> - <paramref name="byteIndex" /> is less 
 <see cref="P:System.Text.Encoder.Fallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoder.GetByteCount(System.ReadOnlySpan{System.Char},System.Boolean)">
-      <param name="chars" />
-      <param name="flush" />
+      <summary>When overridden in a derived class, calculates the number of bytes produced by encoding a set of characters in the 'chars' span. A parameter indicates whether to clear the internal state of the encoder after the calculation.</summary>
+      <param name="chars">A character span to encode.</param>
+      <param name="flush">
+        <see langword="true" /> to simulate clearing the internal state of the encoder after the calculation; otherwise, <see langword="false" />.</param>
+      <returns>The number of bytes produced by encoding the specified characters and any characters in the internal buffer.</returns>
     </member>
     <member name="M:System.Text.Encoder.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32,System.Boolean)">
       <summary>When overridden in a derived class, encodes a set of characters starting at the specified character pointer and any characters in the internal buffer into a sequence of bytes that are stored starting at the specified byte pointer. A parameter indicates whether to clear the internal state of the encoder after the conversion.</summary>
@@ -31378,9 +31496,12 @@ The length of <paramref name="bytes" /> - <paramref name="byteIndex" /> is less 
 <see cref="P:System.Text.Encoder.Fallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoder.GetBytes(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Boolean)">
-      <param name="chars" />
-      <param name="bytes" />
-      <param name="flush" />
+      <summary>When overridden in a derived class, encodes a set of characters in the input characters span and any characters in the internal buffer into a sequence of bytes that are stored in the input byte span. A parameter indicates whether to clear the internal state of the encoder after the conversion.</summary>
+      <param name="chars">A character span to encode.</param>
+      <param name="bytes">A byte span to write the resulting sequence of bytes to.</param>
+      <param name="flush">
+        <see langword="true" /> to clear the internal state of the encoder after the conversion; otherwise, <see langword="false" />.</param>
+      <returns>The actual number of bytes written at the location indicated by the <paramref name="bytes" /> parameter.</returns>
     </member>
     <member name="M:System.Text.Encoder.Reset">
       <summary>When overridden in a derived class, sets the encoder back to its initial state.</summary>
@@ -31773,7 +31894,9 @@ dstEncoding. <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <se
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoding.GetByteCount(System.ReadOnlySpan{System.Char})">
-      <param name="chars" />
+      <summary>When overridden in a derived class, calculates the number of bytes produced by encoding the characters in the specified character span.</summary>
+      <param name="chars">The span of characters to encode.</param>
+      <returns>The number of bytes produced by encoding the specified character span.</returns>
     </member>
     <member name="M:System.Text.Encoding.GetByteCount(System.String)">
       <summary>When overridden in a derived class, calculates the number of bytes produced by encoding the characters in the specified string.</summary>
@@ -31786,9 +31909,11 @@ dstEncoding. <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <se
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoding.GetByteCount(System.String,System.Int32,System.Int32)">
-      <param name="s" />
-      <param name="index" />
-      <param name="count" />
+      <summary>When overridden in a derived class, calculates the number of bytes produced by encoding a set of characters from the specified string.</summary>
+      <param name="s">The string containing the set of characters to encode.</param>
+      <param name="index">The index of the first character to encode.</param>
+      <param name="count">The number of characters to encode.</param>
+      <returns>The number of bytes produced by encoding the string.</returns>
     </member>
     <member name="M:System.Text.Encoding.GetBytes(System.Char*,System.Int32,System.Byte*,System.Int32)">
       <summary>When overridden in a derived class, encodes a set of characters starting at the specified character pointer into a sequence of bytes that are stored starting at the specified byte pointer.</summary>
@@ -31860,8 +31985,10 @@ dstEncoding. <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <se
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoding.GetBytes(System.ReadOnlySpan{System.Char},System.Span{System.Byte})">
-      <param name="chars" />
-      <param name="bytes" />
+      <summary>When overridden in a derived class, encodes into a span of bytes a set of characters from the specified read-only span.</summary>
+      <param name="chars">The span containing the set of characters to encode.</param>
+      <param name="bytes">The byte span to hold the encoded bytes.</param>
+      <returns>The number of encoded bytes.</returns>
     </member>
     <member name="M:System.Text.Encoding.GetBytes(System.String)">
       <summary>When overridden in a derived class, encodes all the characters in the specified string into a sequence of bytes.</summary>
@@ -31874,9 +32001,11 @@ dstEncoding. <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <se
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoding.GetBytes(System.String,System.Int32,System.Int32)">
-      <param name="s" />
-      <param name="index" />
-      <param name="count" />
+      <summary>When overridden in a derived class, encodes into an array of bytes the number of characters specified by <paramref name="count" /> in the specified string, starting from the specified <paramref name="index" />.</summary>
+      <param name="s">The string containing the characters to encode.</param>
+      <param name="index">The index inside the string to start the encoding from.</param>
+      <param name="count">The number of characters to encode.</param>
+      <returns>A byte array containing the results of encoding the specified set of characters.</returns>
     </member>
     <member name="M:System.Text.Encoding.GetBytes(System.String,System.Int32,System.Int32,System.Byte[],System.Int32)">
       <summary>When overridden in a derived class, encodes a set of characters from the specified string into the specified byte array.</summary>
@@ -31942,7 +32071,9 @@ dstEncoding. <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <se
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoding.GetCharCount(System.ReadOnlySpan{System.Byte})">
-      <param name="bytes" />
+      <summary>When overridden in a derived class, calculates the number of characters produced by decoding the provided read-only byte span.</summary>
+      <param name="bytes">A read-only byte span to decode.</param>
+      <returns>The number of characters produced by decoding the byte span.</returns>
     </member>
     <member name="M:System.Text.Encoding.GetChars(System.Byte*,System.Int32,System.Char*,System.Int32)">
       <summary>When overridden in a derived class, decodes a sequence of bytes starting at the specified byte pointer into a set of characters that are stored starting at the specified character pointer.</summary>
@@ -32014,8 +32145,10 @@ dstEncoding. <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <se
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoding.GetChars(System.ReadOnlySpan{System.Byte},System.Span{System.Char})">
-      <param name="bytes" />
-      <param name="chars" />
+      <summary>When overridden in a derived class, decodes all the bytes in the specified read-only byte span into a character span.</summary>
+      <param name="bytes">A read-only span containing the sequence of bytes to decode.</param>
+      <param name="chars">The character span receiving the decoded bytes.</param>
+      <returns>The number of decoded bytes.</returns>
     </member>
     <member name="M:System.Text.Encoding.GetDecoder">
       <summary>When overridden in a derived class, obtains a decoder that converts an encoded sequence of bytes into a sequence of characters.</summary>
@@ -32149,7 +32282,9 @@ A byte array of length zero, if a preamble is not required.</returns>
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
     <member name="M:System.Text.Encoding.GetString(System.ReadOnlySpan{System.Byte})">
-      <param name="bytes" />
+      <summary>When overridden in a derived class, decodes all the bytes in the specified byte span into a string.</summary>
+      <param name="bytes">A read-only byte span to decode to a Unicode string.</param>
+      <returns>A string that contains the decoded bytes from the provided read-only span.</returns>
     </member>
     <member name="P:System.Text.Encoding.HeaderName">
       <summary>When overridden in a derived class, gets a name for the current encoding that can be used with mail agent header tags.</summary>
@@ -32198,7 +32333,10 @@ An empty string (""), if the current <see cref="T:System.Text.Encoding" /> canno
       <returns>
         <see langword="true" /> if the current <see cref="T:System.Text.Encoding" /> uses single-byte code points; otherwise, <see langword="false" />.</returns>
     </member>
-    <member name="P:System.Text.Encoding.Preamble" />
+    <member name="P:System.Text.Encoding.Preamble">
+      <summary>When overridden in a derived class, returns a span containing the sequence of bytes that specifies the encoding used.</summary>
+      <returns>A byte span containing a sequence of bytes that specifies the encoding used, or a span of length zero, if a preamble is not required.</returns>
+    </member>
     <member name="M:System.Text.Encoding.RegisterProvider(System.Text.EncodingProvider)">
       <summary>Registers an encoding provider.</summary>
       <param name="provider">A subclass of <see cref="T:System.Text.EncodingProvider" /> that provides access to additional character encodings.</param>
@@ -33022,30 +33160,42 @@ The index of a format item is less than 0 (zero), or greater than or equal to th
       <exception cref="T:System.ArgumentOutOfRangeException">The length of the expanded string would exceed <see cref="P:System.Text.StringBuilder.MaxCapacity" />.</exception>
     </member>
     <member name="M:System.Text.StringBuilder.AppendJoin(System.Char,System.Object[])">
-      <param name="separator" />
-      <param name="values" />
+      <summary>Concatenates the string representations of the elements in the provided array of objects, using the specified char separator between each member, then appends the result to the current instance of the string builder.</summary>
+      <param name="separator">The character to use as a separator. <paramref name="separator" /> is included in the joined strings only if <paramref name="values" /> has more than one element.</param>
+      <param name="values">An array that contains the strings to concatenate and append to the current instance of the string builder.</param>
+      <returns>A reference to this instance after the append operation has completed.</returns>
     </member>
     <member name="M:System.Text.StringBuilder.AppendJoin(System.Char,System.String[])">
-      <param name="separator" />
-      <param name="values" />
+      <summary>Concatenates the strings of the provided array, using the specified char separator between each string, then appends the result to the current instance of the string builder.</summary>
+      <param name="separator">The character to use as a separator. <paramref name="separator" /> is included in the joined strings only if <paramref name="values" /> has more than one element.</param>
+      <param name="values">An array that contains the strings to concatenate and append to the current instance of the string builder.</param>
+      <returns>A reference to this instance after the append operation has completed.</returns>
     </member>
     <member name="M:System.Text.StringBuilder.AppendJoin(System.String,System.Object[])">
-      <param name="separator" />
-      <param name="values" />
+      <summary>Concatenates the string representations of the elements in the provided array of objects, using the specified separator between each member, then appends the result to the current instance of the string builder.</summary>
+      <param name="separator">The string to use as a separator. <paramref name="separator" /> is included in the joined strings only if <paramref name="values" /> has more than one element.</param>
+      <param name="values">An array that contains the strings to concatenate and append to the current instance of the string builder.</param>
+      <returns>A reference to this instance after the append operation has completed.</returns>
     </member>
     <member name="M:System.Text.StringBuilder.AppendJoin(System.String,System.String[])">
-      <param name="separator" />
-      <param name="values" />
+      <summary>Concatenates the strings of the provided array, using the specified separator between each string, then appends the result to the current instance of the string builder.</summary>
+      <param name="separator">The string to use as a separator. <paramref name="separator" /> is included in the joined strings only if <paramref name="values" /> has more than one element.</param>
+      <param name="values">An array that contains the strings to concatenate and append to the current instance of the string builder.</param>
+      <returns>A reference to this instance after the append operation has completed.</returns>
     </member>
     <member name="M:System.Text.StringBuilder.AppendJoin``1(System.Char,System.Collections.Generic.IEnumerable{``0})">
-      <param name="separator" />
-      <param name="values" />
-      <typeparam name="T" />
+      <summary>Concatenates and appends the members of a collection, using the specified char separator between each member.</summary>
+      <param name="separator">The character to use as a separator. <paramref name="separator" /> is included in the concatenated and appended strings only if <paramref name="values" /> has more than one element.</param>
+      <param name="values">A collection that contains the objects to concatenate and append to the current instance of the string builder.</param>
+      <typeparam name="T">The type of the members of <paramref name="values" />.</typeparam>
+      <returns>A reference to this instance after the append operation has completed.</returns>
     </member>
     <member name="M:System.Text.StringBuilder.AppendJoin``1(System.String,System.Collections.Generic.IEnumerable{``0})">
-      <param name="separator" />
-      <param name="values" />
-      <typeparam name="T" />
+      <summary>Concatenates and appends the members of a collection, using the specified separator between each member.</summary>
+      <param name="separator">The string to use as a separator. <paramref name="separator" /> is included in the concatenated and appended strings only if <paramref name="values" /> has more than one element.</param>
+      <param name="values">A collection that contains the objects to concatenate and append to the current instance of the string builder.</param>
+      <typeparam name="T">The type of the members of <paramref name="values" />.</typeparam>
+      <returns>A reference to this instance after the append operation has completed.</returns>
     </member>
     <member name="M:System.Text.StringBuilder.AppendLine">
       <summary>Appends the default line terminator to the end of the current <see cref="T:System.Text.StringBuilder" /> object.</summary>
@@ -33112,9 +33262,10 @@ The value specified for a set operation is greater than the maximum capacity.</e
 <paramref name="destinationIndex" /> + <paramref name="count" /> is greater than the length of <paramref name="destination" />.</exception>
     </member>
     <member name="M:System.Text.StringBuilder.CopyTo(System.Int32,System.Span{System.Char},System.Int32)">
-      <param name="sourceIndex" />
-      <param name="destination" />
-      <param name="count" />
+      <summary>Copies the characters from a specified segment of this instance to a destination <see cref="T:System.Char" /> span.</summary>
+      <param name="sourceIndex">The starting position in this instance where characters will be copied from. The index is zero-based.</param>
+      <param name="destination">The writable span where characters will be copied.</param>
+      <param name="count">The number of characters to be copied.</param>
     </member>
     <member name="M:System.Text.StringBuilder.EnsureCapacity(System.Int32)">
       <summary>Ensures that the capacity of this instance of <see cref="T:System.Text.StringBuilder" /> is at least the specified value.</summary>
@@ -33252,8 +33403,10 @@ Enlarging the value of this instance would exceed <see cref="P:System.Text.Strin
       <exception cref="T:System.OutOfMemoryException">Enlarging the value of this instance would exceed <see cref="P:System.Text.StringBuilder.MaxCapacity" />.</exception>
     </member>
     <member name="M:System.Text.StringBuilder.Insert(System.Int32,System.ReadOnlySpan{System.Char})">
-      <param name="index" />
-      <param name="value" />
+      <summary>Inserts the sequence of characters into this instance at the specified character position.</summary>
+      <param name="index">The position in this instance where insertion begins.</param>
+      <param name="value">The character span to insert.</param>
+      <returns>A reference to this instance after the insert operation has completed.</returns>
     </member>
     <member name="M:System.Text.StringBuilder.Insert(System.Int32,System.SByte)">
       <summary>Inserts the string representation of a specified 8-bit signed integer into this instance at the specified character position.</summary>
@@ -37488,8 +37641,10 @@ One or more of the objects in the <paramref name="waitHandles" /> array is <see 
       <returns>The time interval specified by <paramref name="t" />.</returns>
     </member>
     <member name="M:System.TimeSpan.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="input" />
-      <param name="formatProvider" />
+      <summary>Converts the span representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified culture-specific format information.</summary>
+      <param name="input">A span containing the characters that represent the time interval to convert.</param>
+      <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+      <returns>A time interval that corresponds to <paramref name="input" />, as specified by <paramref name="formatProvider" />.</returns>
     </member>
     <member name="M:System.TimeSpan.Parse(System.String)">
       <summary>Converts the string representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent.</summary>
@@ -37566,7 +37721,7 @@ At least one of the days, hours, minutes, or seconds components in <paramref nam
     <member name="M:System.TimeSpan.ParseExact(System.String,System.String[],System.IFormatProvider)">
       <summary>Converts the string representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified array of format strings and culture-specific format information. The format of the string representation must match one of the specified formats exactly.</summary>
       <param name="input">A string that specifies the time interval to convert.</param>
-      <param name="formats">A array of standard or custom format strings that defines the required format of <paramref name="input" />.</param>
+      <param name="formats">An array of standard or custom format strings that defines the required format of <paramref name="input" />.</param>
       <param name="formatProvider">An object that provides culture-specific formatting information.</param>
       <returns>A time interval that corresponds to <paramref name="input" />, as specified by <paramref name="formats" /> and <paramref name="formatProvider" />.</returns>
       <exception cref="T:System.ArgumentNullException">
@@ -37581,7 +37736,7 @@ At least one of the days, hours, minutes, or seconds components in <paramref nam
     <member name="M:System.TimeSpan.ParseExact(System.String,System.String[],System.IFormatProvider,System.Globalization.TimeSpanStyles)">
       <summary>Converts the string representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified formats, culture-specific format information, and styles. The format of the string representation must match one of the specified formats exactly.</summary>
       <param name="input">A string that specifies the time interval to convert.</param>
-      <param name="formats">A array of standard or custom format strings that define the required format of <paramref name="input" />.</param>
+      <param name="formats">An array of standard or custom format strings that define the required format of <paramref name="input" />.</param>
       <param name="formatProvider">An object that provides culture-specific formatting information.</param>
       <param name="styles">A bitwise combination of enumeration values that defines the style elements that may be present in input.</param>
       <returns>A time interval that corresponds to <paramref name="input" />, as specified by <paramref name="formats" />, <paramref name="formatProvider" />, and <paramref name="styles" />.</returns>
@@ -37663,10 +37818,13 @@ At least one of the days, hours, minutes, or seconds components in <paramref nam
       <returns>The total number of seconds represented by this instance.</returns>
     </member>
     <member name="M:System.TimeSpan.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="formatProvider" />
+      <summary>Tries to format the value of the current timespan number instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="formatProvider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.TimeSpan.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,System.TimeSpan@)">
       <param name="input" />
@@ -37693,30 +37851,42 @@ At least one of the days, hours, minutes, or seconds components in <paramref nam
         <see langword="true" /> if <paramref name="s" /> was converted successfully; otherwise, <see langword="false" />. This operation returns <see langword="false" /> if the <paramref name="s" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />, has an invalid format, represents a time interval that is less than <see cref="F:System.TimeSpan.MinValue" /> or greater than <see cref="F:System.TimeSpan.MaxValue" />, or has at least one days, hours, minutes, or seconds component outside its valid range.</returns>
     </member>
     <member name="M:System.TimeSpan.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.IFormatProvider,System.Globalization.TimeSpanStyles,System.TimeSpan@)">
-      <param name="input" />
-      <param name="format" />
-      <param name="formatProvider" />
-      <param name="styles" />
-      <param name="result" />
+      <summary>Converts the specified span representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified format, culture-specific format information, and styles, and returns a value that indicates whether the conversion succeeded. The format of the string representation must match the specified format exactly.</summary>
+      <param name="input">A span containing the characters that represent a time interval to convert.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format of <paramref name="input" />.</param>
+      <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+      <param name="styles">One or more enumeration values that indicate the style of <paramref name="input" />.</param>
+      <param name="result">When this method returns, contains an object that represents the time interval specified by <paramref name="input" />, or <see cref="F:System.TimeSpan.Zero" /> if the conversion failed. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="input" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.TimeSpan.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.IFormatProvider,System.TimeSpan@)">
-      <param name="input" />
-      <param name="format" />
-      <param name="formatProvider" />
-      <param name="result" />
+      <summary>Converts the specified span representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified format and culture-specific format information, and returns a value that indicates whether the conversion succeeded. The format of the string representation must match the specified format exactly.</summary>
+      <param name="input">A span containing the characters that represent a time interval to convert.</param>
+      <param name="format">A span containing the characters that represent a standard or custom format string that defines the acceptable format of <paramref name="input" />.</param>
+      <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+      <param name="result">When this method returns, contains an object that represents the time interval specified by <paramref name="input" />, or <see cref="F:System.TimeSpan.Zero" /> if the conversion failed. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="input" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.TimeSpan.TryParseExact(System.ReadOnlySpan{System.Char},System.String[],System.IFormatProvider,System.Globalization.TimeSpanStyles,System.TimeSpan@)">
-      <param name="input" />
-      <param name="formats" />
-      <param name="formatProvider" />
-      <param name="styles" />
-      <param name="result" />
+      <summary>Converts the specified span representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified formats, culture-specific format information, and styles, and returns a value that indicates whether the conversion succeeded. The format of the string representation must match one of the specified formats exactly.</summary>
+      <param name="input">A span containing the characters that represent a time interval to convert.</param>
+      <param name="formats">An array of standard or custom format strings that define the acceptable formats of <paramref name="input" />.</param>
+      <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+      <param name="styles">One or more enumeration values that indicate the style of <paramref name="input" />.</param>
+      <param name="result">When this method returns, contains an object that represents the time interval specified by <paramref name="input" />, or <see cref="F:System.TimeSpan.Zero" /> if the conversion failed. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="input" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.TimeSpan.TryParseExact(System.ReadOnlySpan{System.Char},System.String[],System.IFormatProvider,System.TimeSpan@)">
-      <param name="input" />
-      <param name="formats" />
-      <param name="formatProvider" />
-      <param name="result" />
+      <summary>Converts the specified span representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified formats and culture-specific format information, and returns a value that indicates whether the conversion succeeded. The format of the string representation must match one of the specified formats exactly.</summary>
+      <param name="input">A span containing the characters that represent a time interval to convert.</param>
+      <param name="formats">An array of standard or custom format strings that define the acceptable formats of <paramref name="input" />.</param>
+      <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+      <param name="result">When this method returns, contains an object that represents the time interval specified by <paramref name="input" />, or <see cref="F:System.TimeSpan.Zero" /> if the conversion failed. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="input" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.TimeSpan.TryParseExact(System.String,System.String,System.IFormatProvider,System.Globalization.TimeSpanStyles,System.TimeSpan@)">
       <summary>Converts the string representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified format, culture-specific format information, and styles, and returns a value that indicates whether the conversion succeeded. The format of the string representation must match the specified format exactly.</summary>
@@ -37740,7 +37910,7 @@ At least one of the days, hours, minutes, or seconds components in <paramref nam
     <member name="M:System.TimeSpan.TryParseExact(System.String,System.String[],System.IFormatProvider,System.Globalization.TimeSpanStyles,System.TimeSpan@)">
       <summary>Converts the specified string representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified formats, culture-specific format information, and styles, and returns a value that indicates whether the conversion succeeded. The format of the string representation must match one of the specified formats exactly.</summary>
       <param name="input">A string that specifies the time interval to convert.</param>
-      <param name="formats">A array of standard or custom format strings that define the acceptable formats of <paramref name="input" />.</param>
+      <param name="formats">An array of standard or custom format strings that define the acceptable formats of <paramref name="input" />.</param>
       <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
       <param name="styles">One or more enumeration values that indicate the style of <paramref name="input" />.</param>
       <param name="result">When this method returns, contains an object that represents the time interval specified by <paramref name="input" />, or <see cref="F:System.TimeSpan.Zero" /> if the conversion failed. This parameter is passed uninitialized.</param>
@@ -37750,7 +37920,7 @@ At least one of the days, hours, minutes, or seconds components in <paramref nam
     <member name="M:System.TimeSpan.TryParseExact(System.String,System.String[],System.IFormatProvider,System.TimeSpan@)">
       <summary>Converts the specified string representation of a time interval to its <see cref="T:System.TimeSpan" /> equivalent by using the specified formats and culture-specific format information, and returns a value that indicates whether the conversion succeeded. The format of the string representation must match one of the specified formats exactly.</summary>
       <param name="input">A string that specifies the time interval to convert.</param>
-      <param name="formats">A array of standard or custom format strings that define the acceptable formats of <paramref name="input" />.</param>
+      <param name="formats">An array of standard or custom format strings that define the acceptable formats of <paramref name="input" />.</param>
       <param name="formatProvider">An object that provides culture-specific formatting information.</param>
       <param name="result">When this method returns, contains an object that represents the time interval specified by <paramref name="input" />, or <see cref="F:System.TimeSpan.Zero" /> if the conversion failed. This parameter is passed uninitialized.</param>
       <returns>
@@ -42639,9 +42809,11 @@ The field described by an element of <paramref name="flds" /> is not a value typ
       <summary>Represents the smallest possible value of <see cref="T:System.UInt16" />. This field is constant.</summary>
     </member>
     <member name="M:System.UInt16.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its 16-bit unsigned integer equivalent.</summary>
+      <param name="s">A span containing the characters that represent the number to convert. The span is interpreted by using the style specified by the <paramref name="style" /> parameter.</param>
+      <param name="style">A bitwise combination of enumeration values that indicate the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <returns>A 16-bit unsigned integer equivalent to the number specified in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.UInt16.Parse(System.String)">
       <summary>Converts the string representation of a number to its 16-bit unsigned integer equivalent.</summary>
@@ -42806,10 +42978,13 @@ This method is not CLS-compliant. The CLS-compliant alternative is <see cref="M:
         <paramref name="format" /> is invalid.</exception>
     </member>
     <member name="M:System.UInt16.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current unsigned short number instance into the provided span of characters.</summary>
+      <param name="destination">&gt;When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.UInt16.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.UInt16@)">
       <param name="s" />
@@ -42917,9 +43092,11 @@ This method is not CLS-compliant. The CLS-compliant alternative is <see cref="M:
       <summary>Represents the smallest possible value of <see cref="T:System.UInt32" />. This field is constant.</summary>
     </member>
     <member name="M:System.UInt32.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its 32-bit unsigned integer equivalent.</summary>
+      <param name="s">A span containing the characters that represent the number to convert. The span is interpreted by using the style specified by the <paramref name="style" /> parameter.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <returns>A 32-bit unsigned integer equivalent to the number specified in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.UInt32.Parse(System.String)">
       <summary>Converts the string representation of a number to its 32-bit unsigned integer equivalent.</summary>
@@ -43079,10 +43256,13 @@ This method is not CLS-compliant. The CLS-compliant alternative is <see cref="M:
       <exception cref="T:System.FormatException">The <paramref name="format" /> parameter is invalid.</exception>
     </member>
     <member name="M:System.UInt32.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current unsigned integer number instance into the provided span of characters.</summary>
+      <param name="destination">&gt;When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the charactes that represent a standard or custom format string that defines the acceptable format for <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.UInt32.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.UInt32@)">
       <param name="s" />
@@ -43190,9 +43370,11 @@ This method is not CLS-compliant. The CLS-compliant alternative is <see cref="M:
       <summary>Represents the smallest possible value of <see cref="T:System.UInt64" />. This field is constant.</summary>
     </member>
     <member name="M:System.UInt64.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="s" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the span representation of a number in a specified style and culture-specific format to its 64-bit unsigned integer equivalent.</summary>
+      <param name="s">A span containing the characters that represent the number to convert. The span is interpreted by using the style specified by the <paramref name="style" /> parameter.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="s" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="s" />.</param>
+      <returns>A 64-bit unsigned integer equivalent to the number specified in <paramref name="s" />.</returns>
     </member>
     <member name="M:System.UInt64.Parse(System.String)">
       <summary>Converts the string representation of a number to its 64-bit unsigned integer equivalent.</summary>
@@ -43343,10 +43525,13 @@ This method is not CLS-compliant. The CLS-compliant alternative is <see cref="M:
       <exception cref="T:System.FormatException">The <paramref name="format" /> parameter is invalid.</exception>
     </member>
     <member name="M:System.UInt64.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Tries to format the value of the current unsigned long number instance into the provided span of characters.</summary>
+      <param name="destination">When this method returns, this instance's value formatted as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
+      <param name="format">A span containing the characters that represent a standard or custom format string that defines the acceptable format of <paramref name="destination" />.</param>
+      <param name="provider">An optional object that supplies culture-specific formatting information for <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.UInt64.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.UInt64@)">
       <param name="s" />
@@ -45916,14 +46101,14 @@ For example, if you create <see cref="T:System.Version" /> object using the cons
       <summary>Tries to format this version instance into a span of characters.</summary>
       <param name="destination">When this method returns, the formatted version in the span of characters.</param>
       <param name="fieldCount">The number of components to return. This value ranges from 0 to 4.</param>
-      <param name="charsWritten">When this method returns, the number of chars that were written in <paramref name="destination" />.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
       <returns>
         <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Version.TryFormat(System.Span{System.Char},System.Int32@)">
       <summary>Tries to format this version instance into a span of characters.</summary>
       <param name="destination">When this method returns, the formatted version in the span of characters.</param>
-      <param name="charsWritten">When this method returns, the number of chars that were written in <paramref name="destination" />.</param>
+      <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination" />.</param>
       <returns>
         <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>

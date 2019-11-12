@@ -57,7 +57,7 @@
     <member name="M:System.Resources.Extensions.PreserializedResourceWriter.AddBinaryFormattedResource(System.String,System.Byte[],System.String)">
       <summary>Adds a resource of the specified type, represented by a byte array, that will be  passed to <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" /> when reading the resource.</summary>
       <param name="name">The resource name.</param>
-      <param name="value">A byte array containing the value of the resource in <see cref="System.Byte[]" /> form understood by <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" />.</param>
+      <param name="value">A byte array containing the value of the resource in <c>Byte[]</c> form understood by <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" />.</param>
       <param name="typeName">The optional assembly qualified type name of the resource. The default value is <see langword="null" />.</param>
       <exception cref="T:System.ArgumentNullException">or  is <see langword="null" />.</exception>
     </member>
