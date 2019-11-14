@@ -31,7 +31,7 @@ jobs:
           
           - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
             - name: _buildArguments
-              value: -Configuration $(_BuildConfig) -BuildVersion $(Build.BuildNumber)
+              value: -Configuration $(_BuildConfig) /p:VersionSuffix=$(Build.BuildNumber) -ci -sign /p:BuildPackages=true -pack
             - name: _SignType
               value: real
             - name: _TeamName
@@ -45,7 +45,7 @@ jobs:
 
           - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
             - name: _buildArguments
-              value: $(_BuildConfig)
+              value: $(_BuildConfig) /p:UpdateXlfOnBuild=true
 
         pool: ${{ parameters.pool }}
 
@@ -61,20 +61,4 @@ jobs:
         steps:
           - script: $(_buildScript) $(_buildArguments)
             displayName: Build and Test
-          
-          - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
-            - script: package.cmd -Configuration $(_BuildConfig) -ApiKey $(dotnet-myget-org-api-key) -BuildVersion $(Build.BuildNumber) -Sign -SignType $(_SignType) -IsStableRelease $(_IsStableRelease)
-              displayName: Build and publish Nuget packages
-
-            - script: dotnetcli\dotnet.exe msbuild tools\package-steps.proj /t:PublishSymbolPackages /p:SymbolServerPath=$(_SymwebSymbolServerPath) /p:SymbolServerPAT=$(symweb-symbol-server-pat)
-              displayName: Publish symbols to symweb
-
-            - script: dotnetcli\dotnet.exe msbuild tools\package-steps.proj /t:PublishSymbolPackages /p:SymbolServerPath=$(_MsdlSymbolServerPath) /p:SymbolServerPAT=$(microsoft-symbol-server-pat)
-              displayName: Publish symbols to msdl
-
-            - task: PublishBuildArtifacts@1
-              displayName: Publish packages to artifacts container
-              inputs:
-                pathToPublish: $(Build.SourcesDirectory)/packages
-                artifactName: packages
-                artifactType: container
+        

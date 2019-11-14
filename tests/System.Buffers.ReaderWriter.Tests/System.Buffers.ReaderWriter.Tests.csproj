@@ -20,11 +20,6 @@
     <Compile Include="..\System.Buffers.Primitives.Tests\BufferUtilities.cs" Link="BufferUtilities.cs" />
     <Compile Include="..\System.Buffers.Primitives.Tests\SpanLiteralExtensions.cs" Link="SpanLiteralExtensions.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
-    <PackageReference Include="xunit" Version="$(XunitVersion)" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
-  </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Binary.Base64\System.Binary.Base64.csproj" />
