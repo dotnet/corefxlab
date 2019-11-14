@@ -15,7 +15,7 @@ stages:
 - stage: build
   displayName: build
   jobs:
-  - template: /pipelines/corefxlab-base.yml
+  - template: corefxlab-base.yml
     parameters:
       name: Windows_NT
       displayName: Innerloop Windows_NT
@@ -31,7 +31,7 @@ stages:
           name: Hosted VS2017
 
   - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-    - template: /pipelines/corefxlab-base.yml
+    - template: corefxlab-base.yml
       parameters:
         name: MacOS
         displayName: Innerloop OSX
@@ -39,10 +39,18 @@ stages:
         pool:
           name: Hosted macOS
 
-    - template: /pipelines/corefxlab-base.yml
+    - template: corefxlab-base.yml
       parameters:
         name: Ubuntu1604
         displayName: Innerloop Ubuntu16.04
         targetOS: Ubuntu
         pool:
           name: Hosted Ubuntu 1604
+
+  # Publish and validation steps. Only run in official builds
+- ${{ if and(ne(variables['System.TeamProject'], 'public'), notIn(variables['Build.Reason'], 'PullRequest')) }}:
+  - template: \eng\common\templates\post-build\post-build.yml
+    parameters:
+      validateDependsOn:
+        - build
+      enableSymbolValidation: false # https://github.com/dotnet/arcade/issues/2871
