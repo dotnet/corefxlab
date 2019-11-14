@@ -11,35 +11,38 @@ trigger:
 pr:
 - master
 
-jobs:
-- template: /pipelines/corefxlab-base.yml
-  parameters:
-    name: Windows_NT
-    displayName: Innerloop Windows_NT
-    targetOS: Windows_NT
-
-    ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-      isOfficialBuild: true
-      pool:
-        name: NetCoreInternal-Pool
-        queue: buildpool.windows.10.amd64.vs2017
-    ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-      pool:
-        name: Hosted VS2017
-
-- ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
+stages:
+- stage: build
+  displayName: build
+  jobs:
   - template: /pipelines/corefxlab-base.yml
     parameters:
-      name: MacOS
-      displayName: Innerloop OSX
-      targetOS: OSX
-      pool:
-        name: Hosted macOS
+      name: Windows_NT
+      displayName: Innerloop Windows_NT
+      targetOS: Windows_NT
 
-  - template: /pipelines/corefxlab-base.yml
-    parameters:
-      name: Ubuntu1604
-      displayName: Innerloop Ubuntu16.04
-      targetOS: Ubuntu
-      pool:
-        name: Hosted Ubuntu 1604
+      ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
+        isOfficialBuild: true
+        pool:
+          name: NetCoreInternal-Pool
+          queue: buildpool.windows.10.amd64.vs2017
+      ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
+        pool:
+          name: Hosted VS2017
+
+  - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
+    - template: /pipelines/corefxlab-base.yml
+      parameters:
+        name: MacOS
+        displayName: Innerloop OSX
+        targetOS: OSX
+        pool:
+          name: Hosted macOS
+
+    - template: /pipelines/corefxlab-base.yml
+      parameters:
+        name: Ubuntu1604
+        displayName: Innerloop Ubuntu16.04
+        targetOS: Ubuntu
+        pool:
+          name: Hosted Ubuntu 1604
