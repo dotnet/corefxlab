@@ -5,12 +5,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Serialization.Formatters;
 using System.Text;
 using Apache.Arrow;
 using Microsoft.ML;
-using Microsoft.VisualBasic;
 using Xunit;
 
 namespace Microsoft.Data.Analysis.Tests
@@ -1666,7 +1663,7 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
 
             // Add a column manually here until we fix https://github.com/dotnet/corefxlab/issues/2784
-            PrimitiveDataFrameColumn<DateTime> dateTimes = new PrimitiveDataFrameColumn<DateTime>("DateTimes"); // Default length is 0.
+            PrimitiveDataFrameColumn<DateTime> dateTimes = new PrimitiveDataFrameColumn<DateTime>("DateTimes");
             for (int i = 0; i < 10; i++)
             {
                 dateTimes.Append(DateTime.Parse("2019/01/01"));
@@ -1707,7 +1704,7 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
 
             // Add a column manually here until we fix https://github.com/dotnet/corefxlab/issues/2784
-            PrimitiveDataFrameColumn<DateTime> dateTimes = new PrimitiveDataFrameColumn<DateTime>("DateTimes"); // Default length is 0.
+            PrimitiveDataFrameColumn<DateTime> dateTimes = new PrimitiveDataFrameColumn<DateTime>("DateTimes");
             for (int i = 0; i < 10; i++)
             {
                 dateTimes.Append(DateTime.Parse("2019/01/01"));

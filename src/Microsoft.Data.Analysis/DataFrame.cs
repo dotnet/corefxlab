@@ -204,7 +204,6 @@ namespace Microsoft.Data.Analysis
             return new DataFrame(newColumns);
         }
 
-
         /// <summary>
         /// Generates a concise summary of each column in the DataFrame
         /// </summary>
