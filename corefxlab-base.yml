@@ -29,9 +29,27 @@ jobs:
             - name: _buildScript
               value: ./build.sh
           
+          # Only enable publishing in non-public, non PR scenarios.
+          - ${{ if and(eq(parameters.isOfficialBuild, 'true'), eq(parameters.targetOS, 'Windows_NT')) }}:
+            # DotNet-Blob-Feed provides: dotnetfeed-storage-access-key-1
+            # Publish-Build-Assets provides: MaestroAccessToken, BotAccount-dotnet-maestro-bot-PAT
+            # DotNet-HelixApi-Access provides: HelixApiAccessToken
+            - group: DotNet-Blob-Feed
+            - group: Publish-Build-Assets
+            - group: DotNet-HelixApi-Access
+            - _PublishBlobFeedUrl: https://dotnetfeed.blob.core.windows.net/dotnet-experimental/index.json
+            - _InternalBuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName)
+                /p:DotNetPublishToBlobFeed=$(_DotNetPublishToBlobFeed)
+                /p:DotNetPublishBlobFeedKey=$(dotnetfeed-storage-access-key-1)
+                /p:DotNetPublishBlobFeedUrl=$(_PublishBlobFeedUrl)
+                /p:DotNetPublishUsingPipelines=true
+                /p:DotNetArtifactsCategory=$(_DotNetArtifactsCategory)
+                /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
+
+          
           - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
             - name: _buildArguments
-              value: -Configuration $(_BuildConfig) /p:VersionSuffix=$(Build.BuildNumber) -ci -sign /p:BuildPackages=true -pack
+              value: -Configuration $(_BuildConfig) -ci -sign /p:BuildPackages=true /p:UpdateXlfOnBuild=true -pack -publish $(_InternalBuildArgs)
             - name: _SignType
               value: real
             - name: _TeamName
@@ -42,6 +60,10 @@ jobs:
               value: https://microsoft.artifacts.visualstudio.com/DefaultCollection
             - name: _MsdlSymbolServerPath
               value: https://microsoftpublicsymbols.artifacts.visualstudio.com/DefaultCollection
+            - name: _DotNetPublishToBlobFeed
+              value: true
+            - name: _DotNetArtifactsCategory
+              value: EXPERIMENTAL
 
           - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
             - name: _buildArguments

@@ -1,7 +1,3 @@
-# This will assign the build version on this format.
-# The package version we produce depend on this number.
-name: $(Date:eyyMMdd)$(Rev:-r)
-
 trigger:
   batch: true
   branches:
