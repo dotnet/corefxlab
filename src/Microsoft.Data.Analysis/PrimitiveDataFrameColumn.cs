@@ -551,7 +551,7 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(U));
         }
 
-        public override PrimitiveDataFrameColumn<float> Description()
+        public override DataFrameColumn Description()
         {
             float? max;
             float? min;

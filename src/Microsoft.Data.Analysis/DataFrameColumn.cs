@@ -196,9 +196,9 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns a <see cref="PrimitiveDataFrameColumn{T}"/> with statistics that describe the column
+        /// Returns a <see cref= "DataFrameColumn"/> with statistics that describe the column
         /// </summary>
-        public virtual PrimitiveDataFrameColumn<float> Description() => throw new NotImplementedException();
+        public virtual DataFrameColumn Description() => throw new NotImplementedException();
 
         internal virtual PrimitiveDataFrameColumn<long> GetAscendingSortIndices() => throw new NotImplementedException();
 

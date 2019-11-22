@@ -218,7 +218,7 @@ namespace Microsoft.Data.Analysis
                 {
                     firstColumn = false;
                     StringDataFrameColumn strColumn = new StringDataFrameColumn("Info", 2);
-                    strColumn[0] = "DataType";
+                    strColumn[0] = Strings.DataType;
                     strColumn[1] = Strings.DescriptionMethodLength;
                     ret.Columns.Add(strColumn);
                 }
