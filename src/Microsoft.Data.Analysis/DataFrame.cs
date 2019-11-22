@@ -211,17 +211,18 @@ namespace Microsoft.Data.Analysis
         {
             DataFrame ret = new DataFrame();
 
-            for (int i = 0; i < Columns.Count; i++)
+            bool firstColumn = true;
+            foreach (DataFrameColumn column in Columns)
             {
-                DataFrameColumn column = Columns[i];
-                if (i == 0)
+                if (firstColumn)
                 {
+                    firstColumn = false;
                     StringDataFrameColumn strColumn = new StringDataFrameColumn("Info", 2);
                     strColumn[0] = "DataType";
                     strColumn[1] = Strings.DescriptionMethodLength;
                     ret.Columns.Add(strColumn);
                 }
-                column.Info(ret);
+                ret.Columns.Add(column.Info());
             }
             return ret;
         }
@@ -250,11 +251,10 @@ namespace Microsoft.Data.Analysis
                     stringColumn.Append("Mean");
                     ret.Columns.Add(stringColumn);
                 }
-                column.Description(ret);
+                ret.Columns.Add(column.Description());
             }
             return ret;
         }
-
 
         public DataFrame Sort(string columnName, bool ascending = true)
         {

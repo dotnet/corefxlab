@@ -551,7 +551,7 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(U));
         }
 
-        public override void Description(DataFrame dataFrame)
+        public override PrimitiveDataFrameColumn<float> Description()
         {
             float? max;
             float? min;
@@ -585,7 +585,7 @@ namespace Microsoft.Data.Analysis
             column.Append(max);
             column.Append(min);
             column.Append(mean);
-            dataFrame.Columns.Add(column);
+            return column;
         }
 
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)

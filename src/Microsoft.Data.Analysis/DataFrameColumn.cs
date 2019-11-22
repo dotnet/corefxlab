@@ -185,23 +185,20 @@ namespace Microsoft.Data.Analysis
         public virtual bool HasDescription() => false;
 
         /// <summary>
-        /// Generates a concise summary of this column.
+        /// Returns a <seealso cref="StringDataFrameColumn"/> containing the DataType and Length of this column
         /// </summary>
-        /// <param name="dataFrame"></param>
-        /// <remarks>The <seealso cref="DataFrame.Info"/> method expects this method to append values in a particular order </remarks>
-        public virtual void Info(DataFrame dataFrame)
+        public virtual StringDataFrameColumn Info()
         {
             StringDataFrameColumn dataColumn = new StringDataFrameColumn(Name, 2);
             dataColumn[0] = DataType.ToString();
             dataColumn[1] = (Length - NullCount).ToString();
-            dataFrame.Columns.Add(dataColumn);
+            return dataColumn;
         }
 
         /// <summary>
-        /// Populates <paramref name="dataFrame"/> with statistics that describe the column
+        /// Returns a <see cref="PrimitiveDataFrameColumn{T}"/> with statistics that describe the column
         /// </summary>
-        /// <remarks>The <seealso cref="DataFrame.Description"/> method expects this method to append values in a particular order </remarks>
-        public virtual void Description(DataFrame dataFrame) => throw new NotImplementedException();
+        public virtual PrimitiveDataFrameColumn<float> Description() => throw new NotImplementedException();
 
         internal virtual PrimitiveDataFrameColumn<long> GetAscendingSortIndices() => throw new NotImplementedException();
 
