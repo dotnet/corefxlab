@@ -18,6 +18,5 @@
     <MicroBuildCoreVersion>0.2.0</MicroBuildCoreVersion>
     <MicrosoftDotNetSignToolVersion>1.0.0-beta.19058.5</MicrosoftDotNetSignToolVersion>
     <MicrosoftSymbolUploaderBuildTaskVersion>1.0.0-beta-64414-01</MicrosoftSymbolUploaderBuildTaskVersion>
-    <MicrosoftSourceLinkVersion>1.0.0-beta2-19367-01</MicrosoftSourceLinkVersion>
   </PropertyGroup>
 </Project>
