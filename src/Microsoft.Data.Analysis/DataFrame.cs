@@ -261,6 +261,7 @@ namespace Microsoft.Data.Analysis
         /// <typeparam name="U"></typeparam>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
+        /// <param name="inPlace">Indicates if the operation should be performed in place</param>
         public DataFrame Clip<U>(U lower, U upper, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();

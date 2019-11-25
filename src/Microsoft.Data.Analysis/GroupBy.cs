@@ -37,7 +37,7 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         /// <param name="numberOfRowsInEachGroup"></param>
         /// <returns></returns>
-        public abstract DataFrame Tail(int numberOfRows);
+        public abstract DataFrame Tail(int numberOfRowsInEachGroup);
 
         /// <summary>
         /// Compute the max of group values

@@ -53,7 +53,7 @@ namespace Microsoft.Data.Analysis
         /// Returns an enumerable of immutable memory buffers representing the underlying values
         /// </summary>
         /// <remarks>Null values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
-        /// <returns>IEnumerable<ReadOnlyMemory<typeparamref name="T"/>></returns>
+        /// <returns>IEnumerable<see cref="ReadOnlyMemory{T}"/></returns>
         public IEnumerable<ReadOnlyMemory<T>> GetReadOnlyDataBuffers()
         {
             for (int i = 0; i < _columnContainer.Buffers.Count; i++)
@@ -64,10 +64,10 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns an enumerable of immutable ReadOnlyMemory<byte> buffers representing null values in the Apache Arrow format
+        /// Returns an enumerable of immutable <see cref="ReadOnlyMemory{Byte}"/> buffers representing null values in the Apache Arrow format
         /// </summary>
-        /// <remarks>Each ReadOnlyMemory<byte> encodes the null values for its corresponding Data buffer</remarks>
-        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        /// <remarks>Each <see cref="ReadOnlyMemory{Byte}"/> encodes the null values for its corresponding Data buffer</remarks>
+        /// <returns>IEnumerable<see cref="ReadOnlyMemory{Byte}"/></returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
         {
             for (int i = 0; i < _columnContainer.NullBitMapBuffers.Count; i++)
@@ -289,6 +289,7 @@ namespace Microsoft.Data.Analysis
         /// Returns a new column with nulls replaced by value
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="inPlace">Indicates if the operation should be performed in place</param>
         public PrimitiveDataFrameColumn<T> FillNulls(T value, bool inPlace = false)
         {
             PrimitiveDataFrameColumn<T> column = inPlace ? this : Clone();
@@ -492,6 +493,7 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
+        /// <param name="inPlace">Indicates if the operation should be performed in place</param>
         public PrimitiveDataFrameColumn<T> Clip(T lower, T upper, bool inPlace = false)
         {
             PrimitiveDataFrameColumn<T> ret = inPlace ? this : Clone();

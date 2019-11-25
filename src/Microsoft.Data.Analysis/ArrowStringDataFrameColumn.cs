@@ -122,7 +122,7 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         /// <remarks>Null values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
         /// <remarks>The offsets buffers returned by GetReadOnlyOffsetBuffers can be used to delineate each value</remarks>
-        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        /// <returns>IEnumerable<see cref="ReadOnlyMemory{Byte}"/></returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyDataBuffers()
         {
             for (int i = 0; i < _dataBuffers.Count; i++)
@@ -133,10 +133,10 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns an enumerable of immutable ReadOnlyMemory<byte> buffers representing null values in the Apache Arrow format
+        /// Returns an enumerable of immutable <seealso cref="ReadOnlyMemory{Byte}"/> buffers representing null values in the Apache Arrow format
         /// </summary>
-        /// <remarks>Each ReadOnlyMemory<byte> encodes the indices of null values in its corresponding Data buffer</remarks>
-        /// <returns>IEnumerable<ReadOnlyMemory<byte>></returns>
+        /// <remarks>Each <seealso cref="ReadOnlyMemory{Byte}"/> encodes the indices of null values in its corresponding Data buffer</remarks>
+        /// <returns>IEnumerable<see cref="ReadOnlyMemory{Byte}"/></returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
         {
             for (int i = 0; i < _nullBitMapBuffers.Count; i++)
@@ -147,10 +147,10 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns an enumerable of immutable ReadOnlyMemory<int> representing offsets into its corresponding Data buffer.
+        /// Returns an enumerable of immutable <see cref="ReadOnlyMemory{Int32}"/> representing offsets into its corresponding Data buffer.
         /// The Apache Arrow format specifies how the offset buffer encodes the length of each value in the Data buffer
         /// </summary>
-        /// <returns>IEnumerable<ReadOnlyMemory<int>></returns>
+        /// <returns>IEnumerable<see cref="ReadOnlyMemory{Int32}"/></returns>
         public IEnumerable<ReadOnlyMemory<int>> GetReadOnlyOffsetsBuffers()
         {
             for (int i = 0; i < _offsetsBuffers.Count; i++)

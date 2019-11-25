@@ -86,6 +86,7 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         /// <param name="mapIndices"></param>
         /// <param name="invertMapIndices"></param>
+        /// <param name="numberOfNullsToAppend"></param>
         /// <returns></returns>
         public virtual DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => CloneImplementation(mapIndices, invertMapIndices, numberOfNullsToAppend);
 
@@ -111,10 +112,11 @@ namespace Microsoft.Data.Analysis
         public virtual GroupBy GroupBy(int columnIndex, DataFrame parent) => throw new NotImplementedException();
 
         /// <summary>
-        /// Returns a new column with nulls replaced by value
+        /// Returns a new column with nulls replaced by <paramref name="value"/>
         /// </summary>
         /// <remarks>Tries to convert value to the column's DataType</remarks>
         /// <param name="value"></param>
+        /// <param name="inPlace">Indicates if the operation should be performed in place</param>
         public virtual DataFrameColumn FillNulls(object value, bool inPlace = false) => FillNullsImplementation(value, inPlace);
 
         protected virtual DataFrameColumn FillNullsImplementation(object value, bool inPlace) => throw new NotImplementedException();
@@ -150,6 +152,7 @@ namespace Microsoft.Data.Analysis
         /// <typeparam name="U"></typeparam>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
+        /// <param name="inPlace">Indicates if the operation should be performed in place</param>
         public virtual DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => ClipImplementation(lower, upper, inPlace);
 
         protected virtual DataFrameColumn ClipImplementation<U>(U lower, U upper, bool inPlace) => throw new NotImplementedException();
