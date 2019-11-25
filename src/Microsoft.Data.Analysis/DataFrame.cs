@@ -42,19 +42,36 @@ namespace Microsoft.Data.Analysis
             _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
         }
 
+        /// <summary>
+        /// Returns the number of rows in this <seealso cref="DataFrame"/>
+        /// </summary>
         public long RowCount => _columnCollection.RowCount;
 
+        /// <summary>
+        /// Returns the columns contained in the <seealso cref="DataFrame"/> as a <seealso cref="DataFrameColumnCollection"/>
+        /// </summary>
         public DataFrameColumnCollection Columns => _columnCollection;
 
         internal IReadOnlyList<string> GetColumnNames() => _columnCollection.GetColumnNames();
 
         #region Operators
+        /// <summary>
+        /// Indexer to get/set values
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <returns></returns>
         public object this[long rowIndex, int columnIndex]
         {
             get => _columnCollection[columnIndex][rowIndex];
             set => _columnCollection[columnIndex][rowIndex] = value;
         }
 
+        /// <summary>
+        /// Returns a row in this <seealso cref="DataFrame"/>
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
         public IList<object> this[long rowIndex]
         {
             get
