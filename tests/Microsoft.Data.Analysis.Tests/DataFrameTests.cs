@@ -1881,5 +1881,15 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(5, df.Columns[0].NullCount);
             Assert.Equal(6, df.Columns[1].NullCount);
         }
+
+        [Fact]
+        public void TestAppendEmptyValue()
+        {
+            DataFrame df = MakeDataFrame<int, bool>(10);
+            df.Append(new List<object> { "", true });
+            Assert.Equal(11, df.RowCount);
+            Assert.Equal(2, df.Columns[0].NullCount);
+            Assert.Equal(1, df.Columns[1].NullCount);
+        }
     }
 }

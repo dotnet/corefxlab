@@ -429,6 +429,10 @@ namespace Microsoft.Data.Analysis
                 {
                     DataFrameColumn column = columnEnumerator.Current;
                     object value = rowEnumerator.Current;
+                    if (value is string stringValue && string.IsNullOrEmpty(stringValue))
+                    {
+                        value = null;
+                    }
                     if (value != null)
                     {
                         value = Convert.ChangeType(value, column.DataType);
