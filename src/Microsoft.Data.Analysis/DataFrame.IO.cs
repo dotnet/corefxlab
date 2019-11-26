@@ -202,9 +202,9 @@ namespace Microsoft.Data.Analysis
             if (header == true && numberOfRowsToRead != -1)
                 numberOfRowsToRead++;
 
+            DataFrame ret;
             List<DataFrameColumn> columns;
             long streamStart = csvStream.Position;
-            DataFrame ret;
             // First pass: schema and number of rows.
             using (var streamReader = new StreamReader(csvStream, encoding: null, detectEncodingFromByteOrderMarks: true, bufferSize: -1, leaveOpen: true))
             {
@@ -232,17 +232,19 @@ namespace Microsoft.Data.Analysis
                             }
                         }
                         ++rowline;
-                        if (rowline == numberOfRowsToRead)
+                        if (rowline == guessRows)
+                        {
                             break;
+                        }
                         line = streamReader.ReadLine();
                     }
 
                     if (linesForGuessType.Count == 0)
                     {
                         throw new FormatException(Strings.EmptyFile);
-
                     }
                 }
+                
                 columns = new List<DataFrameColumn>(numberOfColumns);
                 // Guesses types or looks up dataTypes and adds columns.
                 for (int i = 0; i < numberOfColumns; ++i)
