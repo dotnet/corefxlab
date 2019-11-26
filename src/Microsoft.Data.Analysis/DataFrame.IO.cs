@@ -286,59 +286,5 @@ namespace Microsoft.Data.Analysis
             }
             return ret;
         }
-
-        private static void AppendRow(List<DataFrameColumn> columns, long rowIndex, string[] values)
-        {
-            for (int i = 0; i < columns.Count; i++)
-            {
-                DataFrameColumn column = columns[i];
-                string val = values[i];
-                Type dType = column.DataType;
-                if (dType == typeof(bool))
-                {
-                    bool boolParse = bool.TryParse(val, out bool boolResult);
-                    if (boolParse)
-                    {
-                        column[rowIndex] = boolResult;
-                        continue;
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(val))
-                        {
-                            column[rowIndex] = null;
-                            continue;
-                        }
-                        throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(bool)), nameof(val));
-                    }
-                }
-                else if (dType == typeof(float))
-                {
-                    bool floatParse = float.TryParse(val, out float floatResult);
-                    if (floatParse)
-                    {
-                        column[rowIndex] = floatResult;
-                        continue;
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(val))
-                        {
-                            column[rowIndex] = null;
-                            continue;
-                        }
-                        throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(float)), nameof(val));
-                    }
-                }
-                else if (dType == typeof(string))
-                {
-                    column[rowIndex] = values[i];
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-            }
-        }
     }
 }
