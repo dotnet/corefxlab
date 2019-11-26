@@ -52,8 +52,6 @@ jobs:
               value: -Configuration $(_BuildConfig) -ci -sign /p:BuildPackages=true /p:UpdateXlfOnBuild=true -pack -publish $(_InternalBuildArgs)
             - name: _SignType
               value: real
-            - name: _TeamName
-              value: DotNetCore
             - group: DotNet-MyGet-Publish
             - group: DotNet-Symbol-Server-Pats
             - name: _SymwebSymbolServerPath
@@ -62,8 +60,6 @@ jobs:
               value: https://microsoftpublicsymbols.artifacts.visualstudio.com/DefaultCollection
             - name: _DotNetPublishToBlobFeed
               value: true
-            - name: _DotNetArtifactsCategory
-              value: EXPERIMENTAL
 
           - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
             - name: _buildArguments

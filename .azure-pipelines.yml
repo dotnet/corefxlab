@@ -7,6 +7,12 @@ trigger:
 pr:
 - master
 
+variables:
+  - name: _DotNetArtifactsCategory
+    value: EXPERIMENTAL
+  - name: _TeamName
+    value: DotNetCore
+
 stages:
 - stage: build
   displayName: build
