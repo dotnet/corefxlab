@@ -322,13 +322,26 @@ namespace Microsoft.Data.Analysis
             return new DataFrame(new List<DataFrameColumn> { keys, counts });
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override bool HasDescription() => IsNumericColumn();
 
+        /// <summary>
+        /// Prints a preview of the column contents as a formatted string.
+        /// </summary>
         public override string ToString()
         {
             return $"{Name}: {_columnContainer.ToString()}";
         }
 
+        /// <summary>
+        /// Returns a clone of this column
+        /// </summary>
+        /// <param name="mapIndices">A column who values are used as indices </param>
+        /// <param name="invertMapIndices"></param>
+        /// <param name="numberOfNullsToAppend"></param>
+        /// <returns></returns>
         public new PrimitiveDataFrameColumn<T> Clone(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
         {
             PrimitiveDataFrameColumn<T> clone;
@@ -353,6 +366,9 @@ namespace Microsoft.Data.Analysis
             return clone;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         protected override DataFrameColumn CloneImplementation(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
         {
             return Clone(mapIndices, invertMapIndices, numberOfNullsToAppend);
@@ -448,6 +464,9 @@ namespace Microsoft.Data.Analysis
             return new PrimitiveDataFrameColumn<decimal>(Name, newColumnContainer);
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
         {
             Dictionary<T, ICollection<long>> dictionary = GroupColumnValues<T>();

@@ -41,9 +41,15 @@ namespace Microsoft.Data.Analysis
             where T : unmanaged
 <# } #>
 <# if (method.MethodType == MethodType.Binary) {#>
+        /// <summary>
+        /// <#=method.MethodComments#>
+        /// </summary>
         public virtual DataFrameColumn <#=method.MethodName#>(DataFrameColumn column, bool inPlace = false)
 <# } #>
 <# if (method.MethodType == MethodType.Comparison) {#>
+        /// <summary>
+        /// <#=method.MethodComments#>
+        /// </summary>
         public virtual PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(DataFrameColumn column)
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>

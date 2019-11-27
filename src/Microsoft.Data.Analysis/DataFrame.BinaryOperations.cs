@@ -12,6 +12,7 @@ namespace Microsoft.Data.Analysis
 {
     public partial class DataFrame
     {
+        #pragma warning disable 1591
         public DataFrame Add<T>(IReadOnlyList<T> values, bool inPlace = false)
             where T : unmanaged
         {

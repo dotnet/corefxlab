@@ -12,6 +12,9 @@ namespace Microsoft.Data.Analysis
 {
     public abstract partial class DataFrameColumn
     {
+        /// <summary>
+        /// Performs element wise addition
+        /// </summary>
         public virtual DataFrameColumn Add(DataFrameColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
@@ -35,6 +38,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise subtraction
+        /// </summary>
         public virtual DataFrameColumn Subtract(DataFrameColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
@@ -58,6 +64,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise multiplication
+        /// </summary>
         public virtual DataFrameColumn Multiply(DataFrameColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
@@ -81,6 +90,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise division
+        /// </summary>
         public virtual DataFrameColumn Divide(DataFrameColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
@@ -104,6 +116,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise modulus
+        /// </summary>
         public virtual DataFrameColumn Modulo(DataFrameColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
@@ -127,6 +142,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise boolean And
+        /// </summary>
         public virtual DataFrameColumn And(DataFrameColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
@@ -148,6 +166,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise boolean Or
+        /// </summary>
         public virtual DataFrameColumn Or(DataFrameColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
@@ -169,6 +190,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise boolean Xor
+        /// </summary>
         public virtual DataFrameColumn Xor(DataFrameColumn column, bool inPlace = false)
         {
             throw new NotImplementedException();
@@ -206,6 +230,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise equals
+        /// </summary>
         public virtual PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
         {
             throw new NotImplementedException();
@@ -220,6 +247,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise not-equals
+        /// </summary>
         public virtual PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
             throw new NotImplementedException();
@@ -234,6 +264,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise greater than or equal
+        /// </summary>
         public virtual PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqual(DataFrameColumn column)
         {
             throw new NotImplementedException();
@@ -248,6 +281,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise less than or equal
+        /// </summary>
         public virtual PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqual(DataFrameColumn column)
         {
             throw new NotImplementedException();
@@ -262,6 +298,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise greater than
+        /// </summary>
         public virtual PrimitiveDataFrameColumn<bool> ElementwiseGreaterThan(DataFrameColumn column)
         {
             throw new NotImplementedException();
@@ -276,6 +315,9 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs element wise less than
+        /// </summary>
         public virtual PrimitiveDataFrameColumn<bool> ElementwiseLessThan(DataFrameColumn column)
         {
             throw new NotImplementedException();

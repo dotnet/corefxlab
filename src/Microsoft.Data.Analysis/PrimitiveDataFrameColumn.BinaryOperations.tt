@@ -22,8 +22,14 @@ namespace Microsoft.Data.Analysis
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) {#>
 <# if (method.MethodType == MethodType.Binary) {#>
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override DataFrameColumn <#=method.MethodName#>(DataFrameColumn column, bool inPlace = false)
 <# } else { #>
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(DataFrameColumn column)
 <# } #>
         {
@@ -45,11 +51,20 @@ namespace Microsoft.Data.Analysis
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
 <# if (method.IsBitwise == true) { #>
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(bool value, bool inPlace = false)
 <# } else { #>
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override DataFrameColumn <#=method.MethodName#><U>(U value, bool inPlace = false)
 <# } #>
 <# } else {#>
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#><U>(U value)
 <# } #>
         {
@@ -61,6 +76,9 @@ namespace Microsoft.Data.Analysis
         }
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override DataFrameColumn <#=method.MethodName#>(int value, bool inPlace = false)
         {
             return <#=method.MethodName#>Implementation(value, inPlace);

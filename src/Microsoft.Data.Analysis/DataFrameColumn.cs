@@ -17,6 +17,12 @@ namespace Microsoft.Data.Analysis
     /// </summary>
     public abstract partial class DataFrameColumn : IEnumerable
     {
+        /// <summary>
+        /// The base <see cref="DataFrameColumn"/> constructor.
+        /// </summary>
+        /// <param name="name">The name of this column.</param>
+        /// <param name="length">The length of this column.</param>
+        /// <param name="type">The type of data this column holds.</param>
         public DataFrameColumn(string name, long length, Type type)
         {
             Length = length;
@@ -25,6 +31,10 @@ namespace Microsoft.Data.Analysis
         }
 
         private long _length;
+
+        /// <summary>
+        /// The length of this column
+        /// </summary>
         public long Length
         {
             get => _length;
@@ -36,14 +46,26 @@ namespace Microsoft.Data.Analysis
             }
         }
 
+        /// <summary>
+        /// The number of <see langword="null" /> values in this column.
+        /// </summary>
         public abstract long NullCount
         {
             get;
         }
 
         private string _name;
+
+        /// <summary>
+        /// The name of this column;
+        /// </summary>
         public string Name => _name;
 
+        /// <summary>
+        /// Updates the name of this column.
+        /// </summary>
+        /// <param name="newName">The new name.</param>
+        /// <param name="dataFrame">If passed in, update the column name in <see cref="DataFrame.Columns"/></param>
         public void SetName(string newName, DataFrame dataFrame = null)
         {
             if (!(dataFrame is null))
@@ -53,19 +75,50 @@ namespace Microsoft.Data.Analysis
             _name = newName;
         }
 
+        /// <summary>
+        /// The type of data this column holds.
+        /// </summary>
         public Type DataType { get; }
 
+        /// <summary>
+        /// Indexer to get/set values at <paramref name="rowIndex"/>
+        /// </summary>
+        /// <param name="rowIndex">The index to look up</param>
+        /// <returns>The value at <paramref name="rowIndex"/></returns>
         public object this[long rowIndex]
         {
             get => GetValue(rowIndex);
             set => SetValue(rowIndex, value);
         }
 
+        /// <summary>
+        /// Returns the value at <paramref name="rowIndex"/>.
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        /// <returns>The value at <paramref name="rowIndex"/>.</returns>
         protected abstract object GetValue(long rowIndex);
+
+        /// <summary>
+        /// Returns <paramref name="length"/> number of values starting from <paramref name="startIndex"/>.
+        /// </summary>
+        /// <param name="startIndex">The first index to return values from.</param>
+        /// <param name="length">The number of values to return.</param>
+        /// <returns>A read only list of values</returns>
         protected abstract IReadOnlyList<object> GetValues(long startIndex, int length);
 
+        /// <summary>
+        /// Sets the value at <paramref name="rowIndex"/> with <paramref name="value"/>
+        /// </summary>
+        /// <param name="rowIndex">The row index</param>
+        /// <param name="value">The new value.</param>
         protected abstract void SetValue(long rowIndex, object value);
 
+        /// <summary>
+        /// Returns <paramref name="length"/> number of values starting from <paramref name="startIndex"/>.
+        /// </summary>
+        /// <param name="startIndex">The first index to return values from.</param>
+        /// <param name="length">The number of values to return.</param>
+        /// <returns>A read only list of values</returns>
         public IReadOnlyList<object> this[long startIndex, int length]
         {
             get => GetValues(startIndex, length);
@@ -73,6 +126,9 @@ namespace Microsoft.Data.Analysis
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorCore();
 
+        /// <summary>
+        /// Returns an enumerator that iterates this column.
+        /// </summary>
         protected abstract IEnumerator GetEnumeratorCore();
 
         /// <summary>
@@ -82,14 +138,21 @@ namespace Microsoft.Data.Analysis
         protected internal virtual void Resize(long length) => throw new NotImplementedException();
 
         /// <summary>
-        /// Clone column to produce a copy potentially changing the order by supplying mapIndices and an invert flag
+        /// Clone column to produce a copy potentially changing the order of values by supplying mapIndices and an invert flag
         /// </summary>
         /// <param name="mapIndices"></param>
         /// <param name="invertMapIndices"></param>
         /// <param name="numberOfNullsToAppend"></param>
-        /// <returns></returns>
+        /// <returns>A new <see cref="DataFrameColumn"/></returns>
         public virtual DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0) => CloneImplementation(mapIndices, invertMapIndices, numberOfNullsToAppend);
 
+        /// <summary>
+        /// Clone column to produce a copy potentially changing the order of values by supplying mapIndices and an invert flag
+        /// </summary>
+        /// <param name="mapIndices"></param>
+        /// <param name="invertMapIndices"></param>
+        /// <param name="numberOfNullsToAppend"></param>
+        /// <returns>A new <see cref="DataFrameColumn"/></returns>
         protected virtual DataFrameColumn CloneImplementation(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend) => throw new NotImplementedException();
 
         /// <summary>
@@ -155,6 +218,13 @@ namespace Microsoft.Data.Analysis
         /// <param name="inPlace">Indicates if the operation should be performed in place</param>
         public virtual DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => ClipImplementation(lower, upper, inPlace);
 
+        /// <summary>
+        /// Clips values beyond the specified thresholds
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
+        /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
+        /// <param name="inPlace">Indicates if the operation should be performed in place</param>
         protected virtual DataFrameColumn ClipImplementation<U>(U lower, U upper, bool inPlace) => throw new NotImplementedException();
 
         /// <summary>
@@ -165,6 +235,12 @@ namespace Microsoft.Data.Analysis
         /// <param name="upper"></param>
         public virtual DataFrameColumn Filter<U>(U lower, U upper) => FilterImplementation(lower, upper);
 
+        /// <summary>
+        /// Returns a new column filtered by the lower and upper bounds
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="lower"></param>
+        /// <param name="upper"></param>
         protected virtual DataFrameColumn FilterImplementation<U>(U lower, U upper) => throw new NotImplementedException();
 
         /// <summary>

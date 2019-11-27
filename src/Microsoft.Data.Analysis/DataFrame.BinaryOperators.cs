@@ -12,6 +12,7 @@ namespace Microsoft.Data.Analysis
 {
     public partial class DataFrame
     {
+        #pragma warning disable 1591
         public static DataFrame operator +(DataFrame df, bool value)
         {
             return df.Add(value);

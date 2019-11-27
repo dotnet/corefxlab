@@ -32,11 +32,18 @@ namespace Microsoft.Data.Analysis
     public partial class DataFrame
     {
         private readonly DataFrameColumnCollection _columnCollection;
+        /// <summary>
+        /// Constructs an empty <see cref="DataFrame"/>
+        /// </summary>
         public DataFrame()
         {
             _columnCollection = new DataFrameColumnCollection(OnColumnsChanged);
         }
 
+        /// <summary>
+        /// Constructs a <see cref="DataFrame"/> with <paramref name="columns"/>.
+        /// </summary>
+        /// <param name="columns">The columns of this <see cref="DataFrame"/>.</param>
         public DataFrame(IList<DataFrameColumn> columns)
         {
             _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
@@ -58,9 +65,9 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Indexer to get/set values
         /// </summary>
-        /// <param name="rowIndex"></param>
-        /// <param name="columnIndex"></param>
-        /// <returns></returns>
+        /// <param name="rowIndex">Zero based row index</param>
+        /// <param name="columnIndex">Zero based column index</param>
+        /// <returns>The value stored at the intersection of <paramref name="rowIndex"/> and <paramref name="columnIndex"/></returns>
         public object this[long rowIndex, int columnIndex]
         {
             get => _columnCollection[columnIndex][rowIndex];
@@ -153,6 +160,11 @@ namespace Microsoft.Data.Analysis
             }
         }
 
+        /// <summary>
+        /// Indexer to insert/return a <see cref="DataFrameColumn"/> by name.
+        /// </summary>
+        /// <param name="columnName">The name of the column.</param>
+        /// <returns>The column with the specified <paramref name="columnName"/>.</returns>
         public DataFrameColumn this[string columnName]
         {
             get
@@ -256,7 +268,12 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-
+        /// <summary>
+        /// Sorts the <see cref="DataFrame"/> by using values in <paramref name="columnName"/>.
+        /// </summary>
+        /// <param name="columnName">The column to use for sorting</param>
+        /// <param name="ascending">A boolean to indicate the order of sorting</param>
+        /// <returns>A sorted <see cref="DataFrame"/></returns>
         public DataFrame Sort(string columnName, bool ascending = true)
         {
             DataFrameColumn column = this[columnName];
@@ -339,6 +356,11 @@ namespace Microsoft.Data.Analysis
             return Clone(indices);
         }
 
+        /// <summary>
+        /// Groups the rows of the <see cref="DataFrame"/> by unique values in the <paramref name="columnName"/> column.
+        /// </summary>
+        /// <param name="columnName">The column used to group unique values</param>
+        /// <returns>A GroupBy object that stores the group information.</returns>
         public GroupBy GroupBy(string columnName)
         {
             int columnIndex = _columnCollection.IndexOf(columnName);
@@ -397,6 +419,12 @@ namespace Microsoft.Data.Analysis
             return this[filter];
         }
 
+        /// <summary>
+        /// Fills <see langword="null" /> values with <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">The value to replace <see langword="null" /> with.</param>
+        /// <param name="inPlace">A boolean flag to indicate if the operation should be in place</param>
+        /// <returns>A new <see cref="DataFrame"/> if <paramref name="inPlace"/> is not set. Returns this <see cref="DataFrame"/> otherwise.</returns>
         public DataFrame FillNulls(object value, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();
@@ -407,6 +435,12 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
+        /// <summary>
+        /// Fills <see langword="null" /> values in each column with values from <paramref name="values"/>.
+        /// </summary>
+        /// <param name="values">The values to replace <see langword="null" /> with, one value per column. Should be equal to the number of columns in this <see cref="DataFrame"/>. </param>
+        /// <param name="inPlace">A boolean flag to indicate if the operation should be in place</param>
+        /// <returns>A new <see cref="DataFrame"/> if <paramref name="inPlace"/> is not set. Returns this <see cref="DataFrame"/> otherwise.</returns>
         public DataFrame FillNulls(IList<object> values, bool inPlace = false)
         {
             if (values.Count != Columns.Count)
@@ -553,6 +587,10 @@ namespace Microsoft.Data.Analysis
             _schema = null;
         }
 
+        /// <summary>
+        /// A preview of the contents of this <see cref="DataFrame"/> as a string.
+        /// </summary>
+        /// <returns>A preview of the contents of this <see cref="DataFrame"/>.</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
