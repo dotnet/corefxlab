@@ -272,3 +272,4 @@ launchSettings.json
 
 .dotnet/
 artifacts/
+/.packages

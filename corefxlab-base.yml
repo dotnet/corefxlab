@@ -49,7 +49,7 @@ jobs:
           
           - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
             - name: _buildArguments
-              value: -Configuration $(_BuildConfig) -ci -sign /p:BuildPackages=true /p:UpdateXlfOnBuild=true -pack -publish $(_InternalBuildArgs)
+              value: -Configuration $(_BuildConfig) -ci -sign /p:BuildPackages=true -pack -publish $(_InternalBuildArgs)
             - name: _SignType
               value: real
             - group: DotNet-MyGet-Publish
@@ -63,7 +63,7 @@ jobs:
 
           - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
             - name: _buildArguments
-              value: $(_BuildConfig) /p:UpdateXlfOnBuild=true
+              value: -Configuration $(_BuildConfig) /p:UpdateXlfOnBuild=true
 
         pool: ${{ parameters.pool }}
 
