@@ -49,6 +49,9 @@ namespace Microsoft.Data.Analysis
 
         public DataFrameColumnCollection Columns => _columnCollection;
 
+        /// <summary>
+        /// Returns a <see cref="DataFrameRowCollection"/> that contains the rows in this <see cref="DataFrame"/>
+        /// </summary>
         public DataFrameRowCollection Rows => _rowCollection;
 
         internal IReadOnlyList<string> GetColumnNames() => _columnCollection.GetColumnNames();
