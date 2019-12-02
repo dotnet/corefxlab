@@ -175,7 +175,7 @@ namespace Microsoft.Data.Analysis
         public virtual GroupBy GroupBy(int columnIndex, DataFrame parent) => throw new NotImplementedException();
 
         /// <summary>
-        /// Returns a new column with nulls replaced by <paramref name="value"/>
+        /// Returns a new column with <see langword="null" /> elements replaced by <paramref name="value"/>.
         /// </summary>
         /// <remarks>Tries to convert value to the column's DataType</remarks>
         /// <param name="value"></param>

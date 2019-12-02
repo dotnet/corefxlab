@@ -139,11 +139,11 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns an enumerable of immutable buffers representing the underlying values in the Apache Arrow format
+        /// Returns an enumeration of immutable buffers representing the underlying values in the Apache Arrow format
         /// </summary>
-        /// <remarks>Null values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
+        /// <remarks><see langword="null" /> values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
         /// <remarks>The offsets buffers returned by GetReadOnlyOffsetBuffers can be used to delineate each value</remarks>
-        /// <returns>IEnumerable<see cref="ReadOnlyMemory{Byte}"/></returns>
+        /// <returns>An enumeration of <see cref="ReadOnlyMemory{Byte}"/> objects</returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyDataBuffers()
         {
             for (int i = 0; i < _dataBuffers.Count; i++)
@@ -154,10 +154,10 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns an enumerable of immutable <seealso cref="ReadOnlyMemory{Byte}"/> buffers representing null values in the Apache Arrow format
+        /// Returns an enumeration of immutable <see cref="ReadOnlyMemory{Byte}"/> buffers representing <see langword="null" /> values in the Apache Arrow format
         /// </summary>
-        /// <remarks>Each <seealso cref="ReadOnlyMemory{Byte}"/> encodes the indices of null values in its corresponding Data buffer</remarks>
-        /// <returns>IEnumerable<see cref="ReadOnlyMemory{Byte}"/></returns>
+        /// <remarks>Each <see cref="ReadOnlyMemory{Byte}"/> encodes the indices of <see langword="null" /> values in its corresponding Data buffer</remarks>
+        /// <returns>An enumeration of <see cref="ReadOnlyMemory{Byte}"/> objects.</returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
         {
             for (int i = 0; i < _nullBitMapBuffers.Count; i++)
@@ -168,10 +168,10 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns an enumerable of immutable <see cref="ReadOnlyMemory{Int32}"/> representing offsets into its corresponding Data buffer.
+        /// Returns an enumeration of immutable <see cref="ReadOnlyMemory{Int32}"/> representing offsets into its corresponding Data buffer.
         /// The Apache Arrow format specifies how the offset buffer encodes the length of each value in the Data buffer
         /// </summary>
-        /// <returns>IEnumerable<see cref="ReadOnlyMemory{Int32}"/></returns>
+        /// <returns>An enumeration of <see cref="ReadOnlyMemory{Int32}"/> objects.</returns>
         public IEnumerable<ReadOnlyMemory<int>> GetReadOnlyOffsetsBuffers()
         {
             for (int i = 0; i < _offsetsBuffers.Count; i++)

@@ -52,7 +52,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Returns an enumerable of immutable memory buffers representing the underlying values
         /// </summary>
-        /// <remarks>Null values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
+        /// <remarks><see langword="null" /> values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
         /// <returns>IEnumerable<see cref="ReadOnlyMemory{T}"/></returns>
         public IEnumerable<ReadOnlyMemory<T>> GetReadOnlyDataBuffers()
         {
@@ -64,9 +64,9 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns an enumerable of immutable <see cref="ReadOnlyMemory{Byte}"/> buffers representing null values in the Apache Arrow format
+        /// Returns an enumerable of immutable <see cref="ReadOnlyMemory{Byte}"/> buffers representing <see langword="null" /> values in the Apache Arrow format
         /// </summary>
-        /// <remarks>Each <see cref="ReadOnlyMemory{Byte}"/> encodes the null values for its corresponding Data buffer</remarks>
+        /// <remarks>Each <see cref="ReadOnlyMemory{Byte}"/> encodes the <see langword="null" /> values for its corresponding Data buffer</remarks>
         /// <returns>IEnumerable<see cref="ReadOnlyMemory{Byte}"/></returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
         {

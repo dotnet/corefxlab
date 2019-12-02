@@ -50,12 +50,12 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns the number of rows in this <seealso cref="DataFrame"/>
+        /// Returns the number of rows in this <see cref="DataFrame"/>
         /// </summary>
         public long RowCount => _columnCollection.RowCount;
 
         /// <summary>
-        /// Returns the columns contained in the <seealso cref="DataFrame"/> as a <seealso cref="DataFrameColumnCollection"/>
+        /// Returns the columns contained in the <see cref="DataFrame"/> as a <see cref="DataFrameColumnCollection"/>
         /// </summary>
         public DataFrameColumnCollection Columns => _columnCollection;
 
@@ -63,7 +63,7 @@ namespace Microsoft.Data.Analysis
 
         #region Operators
         /// <summary>
-        /// Indexer to get/set values
+        /// An Indexer to get or set values.
         /// </summary>
         /// <param name="rowIndex">Zero based row index</param>
         /// <param name="columnIndex">Zero based column index</param>
@@ -75,7 +75,7 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns a row in this <seealso cref="DataFrame"/>
+        /// Returns a row in this <see cref="DataFrame"/>.
         /// </summary>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
