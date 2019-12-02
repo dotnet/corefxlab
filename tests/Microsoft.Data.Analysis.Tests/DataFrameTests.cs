@@ -186,15 +186,15 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal("Int1", dataFrame.Columns[0].Name);
 
             var headList = dataFrame.Head(5);
-            Assert.Equal(14, (int)headList[4][1]);
+            Assert.Equal(14, (int)headList.Rows[4][1]);
 
             var tailList = dataFrame.Tail(5);
-            Assert.Equal(19, (int)tailList[4][1]);
+            Assert.Equal(19, (int)tailList.Rows[4][1]);
 
             dataFrame[2, 1] = 1000;
             Assert.Equal(1000, dataFrame[2, 1]);
 
-            var row = dataFrame[4];
+            var row = dataFrame.Rows[4];
             Assert.Equal(14, (int)row[1]);
 
             var column = dataFrame["Int2"] as PrimitiveDataFrameColumn<int>;
@@ -1867,6 +1867,23 @@ namespace Microsoft.Data.Analysis.Tests
                 Assert.Equal(dataFrameColumn, df.Columns[i++]);
             }
 
+        }
+
+        [Fact]
+        public void TestRows()
+        {
+            DataFrame df = MakeDataFrameWithAllColumnTypes(10);
+            DataFrameRowCollection rows = df.Rows;
+            Assert.Equal(10, rows.Length);
+            DataFrameRow firstRow = rows[0];
+            object firstValue = firstRow[0];
+            Assert.Equal(df[0, 0], firstValue);
+            long rowCount = 0;
+            foreach (DataFrameRow row in rows)
+            {
+                rowCount++;
+            }
+            Assert.Equal(df.RowCount, rowCount);
         }
 
         [Fact]

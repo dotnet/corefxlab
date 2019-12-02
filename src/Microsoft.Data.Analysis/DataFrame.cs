@@ -32,19 +32,24 @@ namespace Microsoft.Data.Analysis
     public partial class DataFrame
     {
         private readonly DataFrameColumnCollection _columnCollection;
+        private readonly DataFrameRowCollection _rowCollection;
         public DataFrame()
         {
             _columnCollection = new DataFrameColumnCollection(OnColumnsChanged);
+            _rowCollection = new DataFrameRowCollection(this);
         }
 
         public DataFrame(IList<DataFrameColumn> columns)
         {
             _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
+            _rowCollection = new DataFrameRowCollection(this);
         }
 
         public long RowCount => _columnCollection.RowCount;
 
         public DataFrameColumnCollection Columns => _columnCollection;
+
+        public DataFrameRowCollection Rows => _rowCollection;
 
         internal IReadOnlyList<string> GetColumnNames() => _columnCollection.GetColumnNames();
 
@@ -53,15 +58,6 @@ namespace Microsoft.Data.Analysis
         {
             get => _columnCollection[columnIndex][rowIndex];
             set => _columnCollection[columnIndex][rowIndex] = value;
-        }
-
-        public IList<object> this[long rowIndex]
-        {
-            get
-            {
-                return _columnCollection.GetRow(rowIndex);
-            }
-            //TODO?: set?
         }
 
         /// <summary>
@@ -568,7 +564,7 @@ namespace Microsoft.Data.Analysis
             long numberOfRows = Math.Min(RowCount, 25);
             for (int i = 0; i < numberOfRows; i++)
             {
-                IList<object> row = this[i];
+                IList<object> row = Rows.GetRow(i);
                 foreach (object obj in row)
                 {
                     sb.Append((obj ?? "null").ToString().PadRight(longestColumnName));
