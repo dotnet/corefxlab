@@ -197,12 +197,11 @@ namespace Microsoft.Data.Analysis
 
             var linesForGuessType = new List<string[]>();
             long rowline = 0;
-            int numberOfColumns = dataTypes != null ? dataTypes.Length : 0;
+            int numberOfColumns = dataTypes?.Length ?? 0;
 
             if (header == true && numberOfRowsToRead != -1)
                 numberOfRowsToRead++;
 
-            DataFrame ret;
             List<DataFrameColumn> columns;
             long streamStart = csvStream.Position;
             // First pass: schema and number of rows.
@@ -244,7 +243,7 @@ namespace Microsoft.Data.Analysis
                         throw new FormatException(Strings.EmptyFile);
                     }
                 }
-                
+
                 columns = new List<DataFrameColumn>(numberOfColumns);
                 // Guesses types or looks up dataTypes and adds columns.
                 for (int i = 0; i < numberOfColumns; ++i)
@@ -253,7 +252,7 @@ namespace Microsoft.Data.Analysis
                     columns.Add(CreateColumn(kind, columnNames, i));
                 }
 
-                ret = new DataFrame(columns);
+                DataFrame ret = new DataFrame(columns);
                 line = null;
                 streamReader.DiscardBufferedData();
                 streamReader.BaseStream.Seek(streamStart, SeekOrigin.Begin);
@@ -285,8 +284,8 @@ namespace Microsoft.Data.Analysis
                     }
                     columns.Insert(0, indexColumn);
                 }
+                return ret;
             }
-            return ret;
         }
     }
 }

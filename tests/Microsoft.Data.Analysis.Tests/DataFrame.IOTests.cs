@@ -86,13 +86,21 @@ CMT,1,1,181,0.6,CSH,4.5";
 
             foreach (var column in df.Columns)
             {
-                Assert.Equal(1, column.NullCount);
+                if (column.DataType != typeof(string))
+                {
+                    Assert.Equal(1, column.NullCount);
+                }
+                else
+                {
+                    Assert.Equal(0, column.NullCount);
+                }
             }
             var nullRow = df[3];
-            foreach (var value in nullRow)
-            {
-                Assert.Null(value);
-            }
+            Assert.Null(nullRow[1]);
+            Assert.Null(nullRow[2]);
+            Assert.Null(nullRow[3]);
+            Assert.Null(nullRow[4]);
+            Assert.Null(nullRow[6]);
         }
     }
 }

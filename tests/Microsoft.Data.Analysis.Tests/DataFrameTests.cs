@@ -1890,6 +1890,19 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(11, df.RowCount);
             Assert.Equal(2, df.Columns[0].NullCount);
             Assert.Equal(1, df.Columns[1].NullCount);
+
+            StringDataFrameColumn column = new StringDataFrameColumn("Strings", Enumerable.Range(0, 11).Select(x => x.ToString()));
+            df.Columns.Add(column);
+
+            df.Append(new List<object> { 1, true, "" });
+            Assert.Equal(12, df.RowCount);
+            Assert.Equal(2, df.Columns[0].NullCount);
+            Assert.Equal(1, df.Columns[1].NullCount);
+            Assert.Equal(0, df.Columns[2].NullCount);
+
+            df.Append(new List<object> { 1, true, null });
+            Assert.Equal(13, df.RowCount);
+            Assert.Equal(1, df.Columns[2].NullCount);
         }
     }
 }
