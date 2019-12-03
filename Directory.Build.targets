@@ -18,19 +18,4 @@
   <PropertyGroup>
     <Version Condition="'$(IsStableRelease)' == 'true' and '$(IsShipping)' == 'true'">$(VersionPrefix)</Version>
   </PropertyGroup>
-
-  <Target Name="_TranslateAzureDevOpsUrlToGitHubUrl"
-          DependsOnTargets="$(SourceControlManagerUrlTranslationTargets)"
-          BeforeTargets="SourceControlManagerPublishTranslatedUrls">
-
-    <PropertyGroup>
-      <ScmRepositoryUrl>$([System.Text.RegularExpressions.Regex]::Replace($(ScmRepositoryUrl), $(_TranslateUrlPattern), $(_TranslateUrlReplacement)))</ScmRepositoryUrl>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <SourceRoot Update="@(SourceRoot)">
-        <ScmRepositoryUrl>$([System.Text.RegularExpressions.Regex]::Replace(%(SourceRoot.ScmRepositoryUrl), $(_TranslateUrlPattern), $(_TranslateUrlReplacement)))</ScmRepositoryUrl>
-      </SourceRoot>
-    </ItemGroup>
-  </Target>
 </Project>
