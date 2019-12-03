@@ -36,17 +36,6 @@ namespace Microsoft.Data.Analysis
             }
         }
 
-        internal List<object> GetRow(long rowIndex)
-        {
-            DataFrameColumnCollection columns = _dataFrame.Columns;
-            List<object> ret = new List<object>(columns.Count);
-            foreach (var column in columns)
-            {
-                ret.Add(column[rowIndex]);
-            }
-            return ret;
-        }
-
         /// <summary>
         /// Returns an enumerator of <see cref="DataFrameRow"/> objects
         /// </summary>

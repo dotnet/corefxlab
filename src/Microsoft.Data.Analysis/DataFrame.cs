@@ -567,8 +567,7 @@ namespace Microsoft.Data.Analysis
             long numberOfRows = Math.Min(RowCount, 25);
             for (int i = 0; i < numberOfRows; i++)
             {
-                IList<object> row = Rows.GetRow(i);
-                foreach (object obj in row)
+                foreach (object obj in Rows[i])
                 {
                     sb.Append((obj ?? "null").ToString().PadRight(longestColumnName));
                 }
