@@ -76,4 +76,3 @@ jobs:
         steps:
           - script: $(_buildScript) $(_buildArguments)
             displayName: Build and Test
-        
