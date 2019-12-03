@@ -2,13 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Microsoft.Data.Analysis
 {
-
     /// <summary>
     /// Represents the rows of a <see cref="DataFrame"/>
     /// </summary>
@@ -22,7 +22,7 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         internal DataFrameRowCollection(DataFrame dataFrame)
         {
-            _dataFrame = dataFrame;
+            _dataFrame = dataFrame ?? throw new ArgumentNullException(nameof(dataFrame));
         }
 
         /// <summary>
@@ -40,8 +40,8 @@ namespace Microsoft.Data.Analysis
 
         internal List<object> GetRow(long rowIndex)
         {
-            var ret = new List<object>();
-            var columns = _dataFrame.Columns;
+            DataFrameColumnCollection columns = _dataFrame.Columns;
+            List<object> ret = new List<object>(columns.Count);
             foreach (var column in columns)
             {
                 ret.Add(column[rowIndex]);
@@ -54,11 +54,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public IEnumerator<DataFrameRow> GetEnumerator()
         {
-            DataFrameRow _currentRow = new DataFrameRow(null);
+            DataFrameRow currentRow = new DataFrameRow(null);
             while (_currentIndex < _dataFrame.RowCount)
             {
-                _currentRow._row = GetRow(_currentIndex);
-                yield return _currentRow;
+                currentRow._row = GetRow(_currentIndex);
+                yield return currentRow;
                 _currentIndex++;
             }
         }
