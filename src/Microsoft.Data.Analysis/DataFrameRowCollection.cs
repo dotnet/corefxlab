@@ -5,7 +5,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Microsoft.Data.Analysis
 {
@@ -14,7 +13,7 @@ namespace Microsoft.Data.Analysis
     /// </summary>
     public class DataFrameRowCollection : IEnumerable<DataFrameRow>
     {
-        private long _currentIndex = 0;
+        private long _currentRowIndex;
         private DataFrame _dataFrame;
 
         /// <summary>
@@ -33,8 +32,7 @@ namespace Microsoft.Data.Analysis
         {
             get
             {
-                List<object> row = GetRow(index);
-                return new DataFrameRow(row);
+                return new DataFrameRow(_dataFrame, index);
             }
         }
 
@@ -54,12 +52,10 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public IEnumerator<DataFrameRow> GetEnumerator()
         {
-            DataFrameRow currentRow = new DataFrameRow(null);
-            while (_currentIndex < _dataFrame.RowCount)
+            while (_currentRowIndex < _dataFrame.RowCount)
             {
-                currentRow._row = GetRow(_currentIndex);
-                yield return currentRow;
-                _currentIndex++;
+                yield return new DataFrameRow(_dataFrame, _currentRowIndex);
+                _currentRowIndex++;
             }
         }
 
@@ -67,63 +63,6 @@ namespace Microsoft.Data.Analysis
         /// The number of rows in this <see cref="DataFrame"/>.
         /// </summary>
         public long Length => _dataFrame.RowCount;
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    }
-
-
-    /// <summary>
-    /// A DataFrameRow is a collection of values that represent a row in a <see cref="DataFrame"/>.
-    /// </summary>
-    public class DataFrameRow : IEnumerable<object>
-    {
-        internal List<object> _row;
-        internal DataFrameRow(List<object> row)
-        {
-            _row = row;
-        }
-
-        /// <summary>
-        /// Returns an enumerator of the values in this row.
-        /// </summary>
-        public IEnumerator<object> GetEnumerator()
-        {
-            foreach (object value in _row)
-            {
-                yield return value;
-            }
-        }
-
-        /// <summary>
-        /// An indexer to return the value at <paramref name="index"/>.
-        /// </summary>
-        /// <param name="index">The index of the value to return</param>
-        /// <returns>The value at this <paramref name="index"/>.</returns>
-        public object this[int index]
-        {
-            get
-            {
-                return _row[index];
-            }
-        }
-
-        /// <summary>
-        /// The number of values in this row.
-        /// </summary>
-        public int Count => _row.Count;
-
-        /// <summary>
-        /// A simple string representation of the values in this row
-        /// </summary>
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (object value in _row)
-            {
-                sb.Append(value != null ? value.ToString() : "null").Append(" ");
-            }
-            return sb.ToString();
-        }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
