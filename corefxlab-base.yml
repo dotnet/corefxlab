@@ -60,7 +60,7 @@ jobs:
 
           - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
             - name: _buildArguments
-              value: -Configuration $(_BuildConfig) /p:UpdateXlfOnBuild=true
+              value: -Configuration $(_BuildConfig)
 
         pool: ${{ parameters.pool }}
 
