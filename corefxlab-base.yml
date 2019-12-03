@@ -44,10 +44,7 @@ jobs:
                 /p:DotNetPublishBlobFeedUrl=$(_PublishBlobFeedUrl)
                 /p:DotNetPublishUsingPipelines=true
                 /p:DotNetArtifactsCategory=$(_DotNetArtifactsCategory)
-                /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
-
-          
-          - ${{ if eq(parameters.isOfficialBuild, 'true') }}:
+                /p:OfficialBuildId=$(BUILD.BUILDNUMBER)          
             - name: _buildArguments
               value: -Configuration $(_BuildConfig) -ci -sign /p:BuildPackages=true -pack -publish $(_InternalBuildArgs)
             - name: _SignType
