@@ -45,8 +45,6 @@ namespace Microsoft.Data.Analysis
             _rowCollection = new DataFrameRowCollection(this);
         }
 
-        public long RowCount => _columnCollection.RowCount;
-
         public DataFrameColumnCollection Columns => _columnCollection;
 
         /// <summary>
@@ -176,9 +174,9 @@ namespace Microsoft.Data.Analysis
         public DataFrame Tail(int numberOfRows)
         {
             PrimitiveDataFrameColumn<long> filter = new PrimitiveDataFrameColumn<long>("Filter", numberOfRows);
-            for (long i = RowCount - numberOfRows; i < RowCount; i++)
+            for (long i = Rows.Count - numberOfRows; i < Rows.Count; i++)
             {
-                filter[i - (RowCount - numberOfRows)] = i;
+                filter[i - (Rows.Count - numberOfRows)] = i;
             }
             return Clone(filter);
         }
@@ -327,7 +325,7 @@ namespace Microsoft.Data.Analysis
         {
             Random rand = new Random();
             PrimitiveDataFrameColumn<long> indices = new PrimitiveDataFrameColumn<long>("Indices", numberOfRows);
-            int randMaxValue = (int)Math.Min(Int32.MaxValue, RowCount);
+            int randMaxValue = (int)Math.Min(Int32.MaxValue, Rows.Count);
             for (long i = 0; i < numberOfRows; i++)
             {
                 indices[i] = rand.Next(randMaxValue);
@@ -368,7 +366,7 @@ namespace Microsoft.Data.Analysis
             PrimitiveDataFrameColumn<bool> filter = new PrimitiveDataFrameColumn<bool>("Filter");
             if (options == DropNullOptions.Any)
             {
-                filter.AppendMany(true, RowCount);
+                filter.AppendMany(true, Rows.Count);
 
                 for (int i = 0; i < Columns.Count; i++)
                 {
@@ -381,7 +379,7 @@ namespace Microsoft.Data.Analysis
             }
             else
             {
-                filter.AppendMany(false, RowCount);
+                filter.AppendMany(false, Rows.Count);
                 for (int i = 0; i < Columns.Count; i++)
                 {
                     DataFrameColumn column = Columns[i];
@@ -534,7 +532,7 @@ namespace Microsoft.Data.Analysis
 
             foreach (DataFrameColumn column in Columns)
             {
-                if (column.Length == RowCount)
+                if (column.Length == Rows.Count)
                 {
                     ResizeByOneAndAppend(column, null);
                 }
@@ -564,7 +562,7 @@ namespace Microsoft.Data.Analysis
                 sb.Append(string.Format(Columns[i].Name.PadRight(longestColumnName)));
             }
             sb.AppendLine();
-            long numberOfRows = Math.Min(RowCount, 25);
+            long numberOfRows = Math.Min(Rows.Count, 25);
             for (int i = 0; i < numberOfRows; i++)
             {
                 foreach (object obj in Rows[i])
