@@ -53,11 +53,6 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// The number of values in this row.
-        /// </summary>
-        public int Count => _dataFrame.Columns.Count;
-
-        /// <summary>
         /// A simple string representation of the values in this row
         /// </summary>
         public override string ToString()
@@ -65,7 +60,7 @@ namespace Microsoft.Data.Analysis
             StringBuilder sb = new StringBuilder();
             foreach (object value in this)
             {
-                sb.Append(value != null ? value.ToString() : "null").Append(" ");
+                sb.Append(value?.ToString() ?? "null").Append(" ");
             }
             return sb.ToString();
         }

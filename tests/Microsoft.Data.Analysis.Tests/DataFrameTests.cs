@@ -1881,6 +1881,12 @@ namespace Microsoft.Data.Analysis.Tests
             long rowCount = 0;
             foreach (DataFrameRow row in rows)
             {
+                int columnIndex = 0;
+                foreach (var value in row)
+                {
+                    Assert.Equal(df.Columns[columnIndex][rowCount], value);
+                    columnIndex++;
+                }
                 rowCount++;
             }
             Assert.Equal(df.Rows.Count, rowCount);
@@ -1902,7 +1908,7 @@ namespace Microsoft.Data.Analysis.Tests
 
             foreach (DataFrameRow row in rows)
             {
-                for (int i = 0; i < row.Count; i++)
+                for (int i = 0; i < df.Columns.Count; i++)
                 {
                     DataFrameColumn column = df.Columns[i];
                     row[i] = Convert.ChangeType(12, column.DataType);
