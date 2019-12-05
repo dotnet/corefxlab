@@ -1874,7 +1874,7 @@ namespace Microsoft.Data.Analysis.Tests
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
             DataFrameRowCollection rows = df.Rows;
-            Assert.Equal(10, rows.Length);
+            Assert.Equal(10, rows.Count);
             DataFrameRow firstRow = rows[0];
             object firstValue = firstRow[0];
             Assert.Equal(df[0, 0], firstValue);
@@ -1884,8 +1884,39 @@ namespace Microsoft.Data.Analysis.Tests
                 rowCount++;
             }
             Assert.Equal(df.RowCount, rowCount);
+
+            DataFrameRow nullRow = rows[5];
+            int intColumnIndex = df.Columns.IndexOf("Int");
+            Assert.Equal(1, df.Columns[intColumnIndex].NullCount);
+            nullRow[intColumnIndex] = 5;
+            Assert.Equal(0, df.Columns[intColumnIndex].NullCount);
+            nullRow[intColumnIndex] = null;
+            Assert.Equal(1, df.Columns[intColumnIndex].NullCount);
         }
 
+        [Fact]
+        public void TestMutationOnRows()
+        {
+            DataFrame df = MakeDataFrameWithNumericColumns(10);
+            DataFrameRowCollection rows = df.Rows;
+
+            foreach (DataFrameRow row in rows)
+            {
+                for (int i = 0; i < row.Count; i++)
+                {
+                    DataFrameColumn column = df.Columns[i];
+                    row[i] = Convert.ChangeType(12, column.DataType);
+                }
+            }
+
+            foreach (var column in df.Columns)
+            {
+                foreach (var value in column)
+                {
+                    Assert.Equal("12", value.ToString());
+                }
+            }
+        }
         [Fact]
         public void TestAppendRow()
         {

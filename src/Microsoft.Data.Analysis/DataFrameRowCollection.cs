@@ -13,8 +13,7 @@ namespace Microsoft.Data.Analysis
     /// </summary>
     public class DataFrameRowCollection : IEnumerable<DataFrameRow>
     {
-        private long _currentRowIndex;
-        private DataFrame _dataFrame;
+        private readonly DataFrame _dataFrame;
 
         /// <summary>
         /// Initializes a <see cref="DataFrameRowCollection"/>.
@@ -41,17 +40,16 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public IEnumerator<DataFrameRow> GetEnumerator()
         {
-            while (_currentRowIndex < _dataFrame.RowCount)
+            for (long i = 0; i < Count; i++)
             {
-                yield return new DataFrameRow(_dataFrame, _currentRowIndex);
-                _currentRowIndex++;
+                yield return new DataFrameRow(_dataFrame, i);
             }
         }
 
         /// <summary>
         /// The number of rows in this <see cref="DataFrame"/>.
         /// </summary>
-        public long Length => _dataFrame.RowCount;
+        public long Count => _dataFrame.Columns.RowCount;
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

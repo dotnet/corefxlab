@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Microsoft.Data.Analysis
@@ -14,10 +15,11 @@ namespace Microsoft.Data.Analysis
     /// </summary>
     public class DataFrameRow : IEnumerable<object>
     {
-        private DataFrame _dataFrame;
-        private long _rowIndex;
+        private readonly DataFrame _dataFrame;
+        private readonly long _rowIndex;
         internal DataFrameRow(DataFrame df, long rowIndex)
         {
+            Debug.Assert(rowIndex < df.Columns.RowCount);
             _dataFrame = df;
             _rowIndex = rowIndex;
         }
