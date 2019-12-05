@@ -106,15 +106,13 @@
       <param name="byteCount">The number of bytes to copy.</param>
     </member>
     <member name="M:System.Runtime.CompilerServices.Unsafe.CopyBlockUnaligned(System.Byte@,System.Byte@,System.UInt32)">
-      <summary>Copies bytes from the source address to the destination address
-without assuming architecture dependent alignment of the addresses.</summary>
+      <summary>Copies bytes from the source address to the destination address without assuming architecture dependent alignment of the addresses.</summary>
       <param name="destination">The destination address to copy to.</param>
       <param name="source">The source address to copy from.</param>
       <param name="byteCount">The number of bytes to copy.</param>
     </member>
     <member name="M:System.Runtime.CompilerServices.Unsafe.CopyBlockUnaligned(System.Void*,System.Void*,System.UInt32)">
-      <summary>Copies bytes from the source address to the destination address
-without assuming architecture dependent alignment of the addresses.</summary>
+      <summary>Copies bytes from the source address to the destination address without assuming architecture dependent alignment of the addresses.</summary>
       <param name="destination">The destination address to copy to.</param>
       <param name="source">The source address to copy from.</param>
       <param name="byteCount">The number of bytes to copy.</param>
@@ -132,15 +130,13 @@ without assuming architecture dependent alignment of the addresses.</summary>
       <param name="byteCount">The number of bytes to initialize.</param>
     </member>
     <member name="M:System.Runtime.CompilerServices.Unsafe.InitBlockUnaligned(System.Byte@,System.Byte,System.UInt32)">
-      <summary>Initializes a block of memory at the given location with a given initial value
-without assuming architecture dependent alignment of the address.</summary>
+      <summary>Initializes a block of memory at the given location with a given initial value without assuming architecture dependent alignment of the address.</summary>
       <param name="startAddress">The address of the start of the memory block to initialize.</param>
       <param name="value">The value to initialize the block to.</param>
       <param name="byteCount">The number of bytes to initialize.</param>
     </member>
     <member name="M:System.Runtime.CompilerServices.Unsafe.InitBlockUnaligned(System.Void*,System.Byte,System.UInt32)">
-      <summary>Initializes a block of memory at the given location with a given initial value
-without assuming architecture dependent alignment of the address.</summary>
+      <summary>Initializes a block of memory at the given location with a given initial value without assuming architecture dependent alignment of the address.</summary>
       <param name="startAddress">The address of the start of the memory block to initialize.</param>
       <param name="value">The value to initialize the block to.</param>
       <param name="byteCount">The number of bytes to initialize.</param>
@@ -168,15 +164,13 @@ without assuming architecture dependent alignment of the address.</summary>
       <returns>An object of type <typeparamref name="T" /> read from the given location.</returns>
     </member>
     <member name="M:System.Runtime.CompilerServices.Unsafe.ReadUnaligned``1(System.Byte@)">
-      <summary>Reads a value of type <typeparamref name="T" /> from the given location
-without assuming architecture dependent alignment of the addresses.</summary>
+      <summary>Reads a value of type <typeparamref name="T" /> from the given location without assuming architecture dependent alignment of the addresses.</summary>
       <param name="source">The location to read from.</param>
       <typeparam name="T">The type to read.</typeparam>
       <returns>An object of type <typeparamref name="T" /> read from the given location.</returns>
     </member>
     <member name="M:System.Runtime.CompilerServices.Unsafe.ReadUnaligned``1(System.Void*)">
-      <summary>Reads a value of type <typeparamref name="T" /> from the given location
-without assuming architecture dependent alignment of the addresses.</summary>
+      <summary>Reads a value of type <typeparamref name="T" /> from the given location without assuming architecture dependent alignment of the addresses.</summary>
       <param name="source">The location to read from.</param>
       <typeparam name="T">The type to read.</typeparam>
       <returns>An object of type <typeparamref name="T" /> read from the given location.</returns>
@@ -235,15 +229,13 @@ without assuming architecture dependent alignment of the addresses.</summary>
       <typeparam name="T">The type of value to write.</typeparam>
     </member>
     <member name="M:System.Runtime.CompilerServices.Unsafe.WriteUnaligned``1(System.Byte@,``0)">
-      <summary>Writes a value of type <typeparamref name="T" /> to the given location
-without assuming architecture dependent alignment of the addresses.</summary>
+      <summary>Writes a value of type <typeparamref name="T" /> to the given location without assuming architecture dependent alignment of the addresses.</summary>
       <param name="destination">The location to write to.</param>
       <param name="value">The value to write.</param>
       <typeparam name="T">The type of value to write.</typeparam>
     </member>
     <member name="M:System.Runtime.CompilerServices.Unsafe.WriteUnaligned``1(System.Void*,``0)">
-      <summary>Writes a value of type <typeparamref name="T" /> to the given location
-without assuming architecture dependent alignment of the addresses.</summary>
+      <summary>Writes a value of type <typeparamref name="T" /> to the given location without assuming architecture dependent alignment of the addresses.</summary>
       <param name="destination">The location to write to.</param>
       <param name="value">The value to write.</param>
       <typeparam name="T">The type of value to write.</typeparam>

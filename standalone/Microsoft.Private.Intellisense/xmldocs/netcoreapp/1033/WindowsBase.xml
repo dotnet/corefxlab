@@ -896,9 +896,9 @@
       <returns>A Freezable trace source.</returns>
     </member>
     <member name="M:System.Diagnostics.PresentationTraceSources.GetTraceLevel(System.Object)">
-      <summary>Gets the value of the <see cref="F:System.Diagnostics.PresentationTraceSources.TraceLevelProperty" /> attached property for a specified element.</summary>
+      <summary>Gets the value of the <see cref="System.Diagnostics.PresentationTraceSources.TraceLevel" /> attached property for a specified element.</summary>
       <param name="element">The element from which the property value is read.</param>
-      <returns>The <see cref="F:System.Diagnostics.PresentationTraceSources.TraceLevelProperty" /> property value for the element.</returns>
+      <returns>The <see cref="System.Diagnostics.PresentationTraceSources.TraceLevel" /> property value for the element.</returns>
     </member>
     <member name="P:System.Diagnostics.PresentationTraceSources.HwndHostSource">
       <summary>Gets an hwnd host trace source.</summary>
@@ -924,7 +924,7 @@
       <returns>A routed event trace source.</returns>
     </member>
     <member name="M:System.Diagnostics.PresentationTraceSources.SetTraceLevel(System.Object,System.Diagnostics.PresentationTraceLevel)">
-      <summary>Sets the value of the <see cref="F:System.Diagnostics.PresentationTraceSources.TraceLevelProperty" /> attached property to a specified element.</summary>
+      <summary>Sets the value of the <see cref="System.Diagnostics.PresentationTraceSources.TraceLevel" /> attached property to a specified element.</summary>
       <param name="element">The element to which the attached property is written.</param>
       <param name="traceLevel">The needed <see cref="T:System.Diagnostics.PresentationTraceLevel" /> value.</param>
     </member>
@@ -933,7 +933,7 @@
       <returns>A shell trace source.</returns>
     </member>
     <member name="F:System.Diagnostics.PresentationTraceSources.TraceLevelProperty">
-      <summary>Identifies the <see cref="F:System.Diagnostics.PresentationTraceSources.TraceLevelProperty" /> attached property.</summary>
+      <summary>Identifies the <see cref="System.Diagnostics.PresentationTraceSources.TraceLevel" /> attached property.</summary>
     </member>
     <member name="T:System.IO.FileFormatException">
       <summary>The exception that is thrown when an input file or a data stream that is supposed to conform to a certain file format specification is malformed.</summary>
@@ -7435,7 +7435,7 @@ Dispatcher processing has been disabled.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="callback" /> is <see langword="null" />.
 -or-
-      &lt;code data-dev-comment-type="paramref"&gt;dispatcher&lt;/code&gt; is &lt;code data-dev-comment-type="langword"&gt;null&lt;/code&gt;.</exception>
+<paramref name="dispatcher" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="interval" /> is less than 0 or greater than <see cref="F:System.Int32.MaxValue" />.</exception>
     </member>

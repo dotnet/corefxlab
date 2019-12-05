@@ -326,7 +326,7 @@ The caller does not have the required permission to access the file specified in
       <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceFileName" />, the specified path, file name, or both exceed the system-defined maximum length.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
         <paramref name="sourceFileName" /> is invalid (for example, it is on an unmapped drive).</exception>
-      <exception cref="T:System.IO.IOException">The file specified by <paramref name="sourceFileName" /> cannot be opened, or is too large to be updated (current limit is Int32.MaxValue).</exception>
+      <exception cref="T:System.IO.IOException">The file specified by <paramref name="sourceFileName" /> cannot be opened, or is too large to be updated (current limit is <see cref="F:System.Int32.MaxValue" />).</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="sourceFileName" /> specifies a directory.
 -or-
@@ -353,7 +353,7 @@ The zip archive does not support writing.</exception>
       <exception cref="T:System.IO.DirectoryNotFoundException">
         <paramref name="sourceFileName" /> is invalid (for example, it is on an unmapped drive).</exception>
       <exception cref="T:System.IO.PathTooLongException">In <paramref name="sourceFileName" />, the specified path, file name, or both exceed the system-defined maximum length.</exception>
-      <exception cref="T:System.IO.IOException">The file specified by <paramref name="sourceFileName" /> cannot be opened, or is too large to be updated (current limit is Int32.MaxValue).</exception>
+      <exception cref="T:System.IO.IOException">The file specified by <paramref name="sourceFileName" /> cannot be opened, or is too large to be updated (current limit is <see cref="F:System.Int32.MaxValue" />).</exception>
       <exception cref="T:System.UnauthorizedAccessException">
         <paramref name="sourceFileName" /> specifies a directory.
 -or-

@@ -97,8 +97,7 @@
     </member>
     <member name="P:System.Collections.CollectionBase.Count">
       <summary>Gets the number of elements contained in the <see cref="T:System.Collections.CollectionBase" /> instance. This property cannot be overridden.</summary>
-      <returns>The number of elements contained in the <see cref="T:System.Collections.CollectionBase" /> instance.
-Retrieving the value of this property is an O(1) operation.</returns>
+      <returns>The number of elements contained in the <see cref="T:System.Collections.CollectionBase" /> instance. Retrieving the value of this property is an O(1) operation.</returns>
     </member>
     <member name="M:System.Collections.CollectionBase.GetEnumerator">
       <summary>Returns an enumerator that iterates through the <see cref="T:System.Collections.CollectionBase" /> instance.</summary>
@@ -106,8 +105,7 @@ Retrieving the value of this property is an O(1) operation.</returns>
     </member>
     <member name="P:System.Collections.CollectionBase.InnerList">
       <summary>Gets an <see cref="T:System.Collections.ArrayList" /> containing the list of elements in the <see cref="T:System.Collections.CollectionBase" /> instance.</summary>
-      <returns>An <see cref="T:System.Collections.ArrayList" /> representing the <see cref="T:System.Collections.CollectionBase" /> instance itself.
-Retrieving the value of this property is an O(1) operation.</returns>
+      <returns>An <see cref="T:System.Collections.ArrayList" /> representing the <see cref="T:System.Collections.CollectionBase" /> instance itself. Retrieving the value of this property is an O(1) operation.</returns>
     </member>
     <member name="P:System.Collections.CollectionBase.List">
       <summary>Gets an <see cref="T:System.Collections.IList" /> containing the list of elements in the <see cref="T:System.Collections.CollectionBase" /> instance.</summary>
@@ -511,8 +509,7 @@ The number of elements in the source <see cref="T:System.Collections.Queue" /> i
     </member>
     <member name="P:System.Collections.ReadOnlyCollectionBase.Count">
       <summary>Gets the number of elements contained in the <see cref="T:System.Collections.ReadOnlyCollectionBase" /> instance.</summary>
-      <returns>The number of elements contained in the <see cref="T:System.Collections.ReadOnlyCollectionBase" /> instance.
-Retrieving the value of this property is an O(1) operation.</returns>
+      <returns>The number of elements contained in the <see cref="T:System.Collections.ReadOnlyCollectionBase" /> instance. Retrieving the value of this property is an O(1) operation.</returns>
     </member>
     <member name="M:System.Collections.ReadOnlyCollectionBase.GetEnumerator">
       <summary>Returns an enumerator that iterates through the <see cref="T:System.Collections.ReadOnlyCollectionBase" /> instance.</summary>

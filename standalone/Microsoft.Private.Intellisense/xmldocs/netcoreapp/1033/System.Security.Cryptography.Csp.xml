@@ -11,7 +11,11 @@
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.AesCryptoServiceProvider" /> class.</summary>
       <exception cref="T:System.PlatformNotSupportedException">There is no supported key size for the current platform.</exception>
     </member>
-    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.BlockSize" />
+    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.BlockSize">
+      <summary>Gets or sets the block size, in bits, of the cryptographic operation.</summary>
+      <returns>The block size, in bits.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The block size is invalid.</exception>
+    </member>
     <member name="M:System.Security.Cryptography.AesCryptoServiceProvider.CreateDecryptor">
       <summary>Creates a symmetric AES decryptor object using the current key and initialization vector (IV).</summary>
       <returns>A symmetric AES decryptor object.</returns>
@@ -40,7 +44,11 @@
       <exception cref="T:System.ArgumentException">
         <paramref name="key" /> is invalid.</exception>
     </member>
-    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.FeedbackSize" />
+    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.FeedbackSize">
+      <summary>Gets or sets the feedback size, in bits, of the cryptographic operation for the Cipher Feedback (CFB) and Output Feedback (OFB) cipher modes.</summary>
+      <returns>The feedback size in bits.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The feedback size is larger than the block size.</exception>
+    </member>
     <member name="M:System.Security.Cryptography.AesCryptoServiceProvider.GenerateIV">
       <summary>Generates a random initialization vector (IV) to use for the algorithm.</summary>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The initialization vector (IV) could not be generated.</exception>
@@ -49,7 +57,12 @@
       <summary>Generates a random key to use for the algorithm.</summary>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The key could not be generated.</exception>
     </member>
-    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.IV" />
+    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.IV">
+      <summary>Gets or sets the initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />) for the symmetric algorithm.</summary>
+      <returns>The initialization vector.</returns>
+      <exception cref="T:System.ArgumentNullException">An attempt was made to set the initialization vector to <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An attempt was made to set the initialization vector to an invalid size.</exception>
+    </member>
     <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.Key">
       <summary>Gets or sets the symmetric key that is used for encryption and decryption.</summary>
       <returns>The symmetric key that is used for encryption and decryption.</returns>
@@ -60,10 +73,24 @@
       <summary>Gets or sets the size, in bits, of the secret key.</summary>
       <returns>The size, in bits, of the key.</returns>
     </member>
-    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.LegalBlockSizes" />
-    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.LegalKeySizes" />
-    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.Mode" />
-    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.Padding" />
+    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.LegalBlockSizes">
+      <summary>Gets the block sizes, in bits, that are supported by the symmetric algorithm.</summary>
+      <returns>An array that contains the block sizes supported by the algorithm.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.LegalKeySizes">
+      <summary>Gets the key sizes, in bits, that are supported by the symmetric algorithm.</summary>
+      <returns>An array that contains the key sizes supported by the algorithm.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.Mode">
+      <summary>Gets or sets the mode for operation of the symmetric algorithm.</summary>
+      <returns>The mode for operation of the symmetric algorithm. The default is <see cref="F:System.Security.Cryptography.CipherMode.CBC" />.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cipher mode is not one of the <see cref="T:System.Security.Cryptography.CipherMode" /> values.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.AesCryptoServiceProvider.Padding">
+      <summary>Gets or sets the padding mode used in the symmetric algorithm.</summary>
+      <returns>The padding mode used in the symmetric algorithm. The default is <see cref="F:System.Security.Cryptography.PaddingMode.PKCS7" />.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The padding mode is not one of the <see cref="T:System.Security.Cryptography.PaddingMode" /> values.</exception>
+    </member>
     <member name="T:System.Security.Cryptography.CspKeyContainerInfo">
       <summary>Provides additional information about a cryptographic key pair. This class cannot be inherited.</summary>
     </member>
@@ -224,7 +251,10 @@ The key container was not found.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.DESCryptoServiceProvider" /> class.</summary>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The Data Encryption Standard (<see cref="T:System.Security.Cryptography.DES" />) cryptographic service provider is not available.</exception>
     </member>
-    <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.CreateDecryptor" />
+    <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.CreateDecryptor">
+      <summary>Creates a symmetric decryptor object with the current <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> property and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
+      <returns>A symmetric decryptor object.</returns>
+    </member>
     <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.CreateDecryptor(System.Byte[],System.Byte[])">
       <summary>Creates a symmetric Data Encryption Standard (<see cref="T:System.Security.Cryptography.DES" />) decryptor object with the specified key (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" />) and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
@@ -238,7 +268,10 @@ An invalid key size was used.
 -or-
 The algorithm key size was not available.</exception>
     </member>
-    <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.CreateEncryptor" />
+    <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.CreateEncryptor">
+      <summary>Creates a symmetric encryptor object with the current <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> property and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
+      <returns>A symmetric encryptor object.</returns>
+    </member>
     <member name="M:System.Security.Cryptography.DESCryptoServiceProvider.CreateEncryptor(System.Byte[],System.Byte[])">
       <summary>Creates a symmetric Data Encryption Standard (<see cref="T:System.Security.Cryptography.DES" />) encryptor object with the specified key (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" />) and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
@@ -763,7 +796,10 @@ The <paramref name="parameters" /> parameter has missing fields.</exception>
       <summary>Gets the size of the current key.</summary>
       <returns>The size of the key in bits.</returns>
     </member>
-    <member name="P:System.Security.Cryptography.RSACryptoServiceProvider.LegalKeySizes" />
+    <member name="P:System.Security.Cryptography.RSACryptoServiceProvider.LegalKeySizes">
+      <summary>Gets the key sizes that are supported by the asymmetric algorithm.</summary>
+      <returns>An array that contains the key sizes supported by the asymmetric algorithm.</returns>
+    </member>
     <member name="P:System.Security.Cryptography.RSACryptoServiceProvider.PersistKeyInCsp">
       <summary>Gets or sets a value indicating whether the key should be persisted in the cryptographic service provider (CSP).</summary>
       <returns>
@@ -918,8 +954,14 @@ The signature cannot be verified.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Cryptography.TripleDESCryptoServiceProvider" /> class.</summary>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The <see cref="T:System.Security.Cryptography.TripleDES" /> cryptographic service provider is not available.</exception>
     </member>
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.BlockSize" />
-    <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateDecryptor" />
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.BlockSize">
+      <summary>Gets or sets the block size, in bits, of the cryptographic operation.</summary>
+      <returns>The block size, in bits.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateDecryptor">
+      <summary>Creates a symmetric decryptor object with the current <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> property and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
+      <returns>A symmetric decryptor object.</returns>
+    </member>
     <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateDecryptor(System.Byte[],System.Byte[])">
       <summary>Creates a symmetric <see cref="T:System.Security.Cryptography.TripleDES" /> decryptor object with the specified key (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" />) and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
@@ -933,7 +975,10 @@ An invalid key size was used.
 -or-
 The algorithm key size was not available.</exception>
     </member>
-    <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateEncryptor" />
+    <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateEncryptor">
+      <summary>Creates a symmetric encryptor object with the current <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> property and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
+      <returns>A symmetric encryptor object.</returns>
+    </member>
     <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.CreateEncryptor(System.Byte[],System.Byte[])">
       <summary>Creates a symmetric <see cref="T:System.Security.Cryptography.TripleDES" /> encryptor object with the specified key (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" />) and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
       <param name="rgbKey">The secret key to use for the symmetric algorithm.</param>
@@ -948,19 +993,48 @@ An invalid key size was used.
 -or-
 The algorithm key size was not available.</exception>
     </member>
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.FeedbackSize" />
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.FeedbackSize">
+      <summary>Gets or sets the feedback size, in bits, of the cryptographic operation for the Cipher Feedback (CFB) and Output Feedback (OFB) cipher modes.</summary>
+      <returns>The feedback size in bits.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The feedback size is larger than the block size.</exception>
+    </member>
     <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.GenerateIV">
       <summary>Generates a random initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />) to use for the algorithm.</summary>
     </member>
     <member name="M:System.Security.Cryptography.TripleDESCryptoServiceProvider.GenerateKey">
       <summary>Generates a random <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> to be used for the algorithm.</summary>
     </member>
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.IV" />
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Key" />
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.KeySize" />
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.LegalBlockSizes" />
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.LegalKeySizes" />
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Mode" />
-    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Padding" />
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.IV">
+      <summary>Gets or sets the initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />) for the symmetric algorithm.</summary>
+      <returns>The initialization vector.</returns>
+      <exception cref="T:System.ArgumentNullException">An attempt was made to set the initialization vector to <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">An attempt was made to set the initialization vector to an invalid size.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Key">
+      <summary>Gets or sets the secret key for the <see cref="T:System.Security.Cryptography.TripleDES" /> algorithm.</summary>
+      <returns>The secret key for the <see cref="T:System.Security.Cryptography.TripleDES" /> algorithm.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.KeySize">
+      <summary>Gets or sets the size, in bits, of the secret key.</summary>
+      <returns>The size, in bits, of the key.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.LegalBlockSizes">
+      <summary>Gets the block sizes, in bits, that are supported by the symmetric algorithm.</summary>
+      <returns>An array that contains the block sizes supported by the algorithm.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.LegalKeySizes">
+      <summary>Gets the key sizes, in bits, that are supported by the symmetric algorithm.</summary>
+      <returns>An array that contains the key sizes supported by the algorithm.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Mode">
+      <summary>Gets or sets the mode for operation of the symmetric algorithm.</summary>
+      <returns>The mode for operation of the symmetric algorithm. The default is <see cref="F:System.Security.Cryptography.CipherMode.CBC" />.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The cipher mode is not one of the <see cref="T:System.Security.Cryptography.CipherMode" /> values.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.TripleDESCryptoServiceProvider.Padding">
+      <summary>Gets or sets the padding mode used in the symmetric algorithm.</summary>
+      <returns>The padding mode used in the symmetric algorithm. The default is <see cref="F:System.Security.Cryptography.PaddingMode.PKCS7" />.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">The padding mode is not one of the <see cref="T:System.Security.Cryptography.PaddingMode" /> values.</exception>
+    </member>
   </members>
 </doc>

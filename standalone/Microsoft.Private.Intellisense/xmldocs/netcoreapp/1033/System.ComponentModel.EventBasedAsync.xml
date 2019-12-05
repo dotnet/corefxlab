@@ -134,7 +134,7 @@
     <member name="M:System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32,System.Object)">
       <summary>Raises the <see cref="E:System.ComponentModel.BackgroundWorker.ProgressChanged" /> event.</summary>
       <param name="percentProgress">The percentage, from 0 to 100, of the background operation that is complete.</param>
-      <param name="userState">The state object passed to <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync(System.Object)" />.</param>
+      <param name="userState">A unique <see cref="T:System.Object" /> indicating the user state. Returned as the <see cref="P:System.ComponentModel.ProgressChangedEventArgs.UserState" /> property of the <see cref="T:System.ComponentModel.ProgressChangedEventArgs" />.</param>
       <exception cref="T:System.InvalidOperationException">The <see cref="P:System.ComponentModel.BackgroundWorker.WorkerReportsProgress" /> property is set to <see langword="false" />.</exception>
     </member>
     <member name="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync">

@@ -1079,42 +1079,42 @@
       <returns>The new vector with elements selected based on the mask.</returns>
     </member>
     <member name="M:System.Numerics.Vector.ConvertToDouble(System.Numerics.Vector{System.Int64})">
-      <summary>Converts a <see cref="System.Numerics.Vector{System.Int64}" /> to a <see cref="System.Numerics.Vector{System.Double}" />.</summary>
+      <summary>Converts a <c>Vector&lt;Int64&gt;</c> to a <c>Vector&lt;Double&gt;</c>.</summary>
       <param name="value">The source vector.</param>
       <returns>The converted vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.ConvertToDouble(System.Numerics.Vector{System.UInt64})">
-      <summary>Converts a <see cref="System.Numerics.Vector{System.UInt64}" /> to a <see cref="System.Numerics.Vector{System.Double}" />.</summary>
+      <summary>Converts a <c>Vector&lt;UInt64&gt;</c> to a <c>Vector&lt;Double&gt;</c>.</summary>
       <param name="value">The source vector.</param>
       <returns>The converted vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.ConvertToInt32(System.Numerics.Vector{System.Single})">
-      <summary>Converts a <see cref="System.Numerics.Vector{System.Single}" /> to a <see cref="System.Numerics.Vector{System.Int32}" />.</summary>
+      <summary>Converts a <c>Vector&lt;Single&gt;</c> to a <c>Vector&lt;Int32&gt;</c>.</summary>
       <param name="value">The source vector.</param>
       <returns>The converted vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.ConvertToInt64(System.Numerics.Vector{System.Double})">
-      <summary>Converts a <see cref="System.Numerics.Vector{System.Double}" /> to a <see cref="System.Numerics.Vector{System.Int64}" />.</summary>
+      <summary>Converts a <c>Vector&lt;Double&gt;</c> to a <c>Vector&lt;Int64&gt;</c>.</summary>
       <param name="value">The source vector.</param>
       <returns>The converted vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.ConvertToSingle(System.Numerics.Vector{System.Int32})">
-      <summary>Converts a <see cref="System.Numerics.Vector{System.Int32}" /> to a <see cref="System.Numerics.Vector{System.Single}" />.</summary>
+      <summary>Converts a <c>Vector&lt;Int32&gt;</c> to a <c>Vector&lt;Single&gt;</c>.</summary>
       <param name="value">The source vector.</param>
       <returns>The converted vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.ConvertToSingle(System.Numerics.Vector{System.UInt32})">
-      <summary>Converts a <see cref="System.Numerics.Vector{System.UInt32}" /> to a <see cref="System.Numerics.Vector{System.Single}" />.</summary>
+      <summary>Converts a <c>Vector&lt;UInt32&gt;</c> to a <c>Vector&lt;Single&gt;</c>.</summary>
       <param name="value">The source vector.</param>
       <returns>The converted vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.ConvertToUInt32(System.Numerics.Vector{System.Single})">
-      <summary>Converts a <see cref="System.Numerics.Vector{System.Single}" /> to a <see cref="System.Numerics.Vector{System.UInt32}" />.</summary>
+      <summary>Converts a <c>Vector&lt;Single&gt;</c> to a <c>Vector&lt;UInt32&gt;</c>.</summary>
       <param name="value">The source vector.</param>
       <returns>The converted vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.ConvertToUInt64(System.Numerics.Vector{System.Double})">
-      <summary>Converts a <see cref="System.Numerics.Vector{System.Double}" /> to a <see cref="System.Numerics.Vector{System.UInt64}" />.</summary>
+      <summary>Converts a <c>Vector&lt;Double&gt;</c> to a <c>Vector&lt;UInt64&gt;</c>.</summary>
       <param name="value">The source vector.</param>
       <returns>The converted vector.</returns>
     </member>
@@ -1408,46 +1408,46 @@
       <returns>The element-wise product vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Narrow(System.Numerics.Vector{System.Double},System.Numerics.Vector{System.Double})">
-      <summary>Narrows two <see cref="System.Numerics.Vector{System.Double}" /> instances into one <see cref="System.Numerics.Vector{System.Single}" />.</summary>
+      <summary>Narrows two <c>Vector&lt;Double&gt;</c> instances into one <c>Vector&lt;Single&gt;</c>.</summary>
       <param name="source1">The first source vector, whose elements become the lower-index elements of the return value.</param>
       <param name="source2">The second source vector, whose elements become the higher-index elements of the return value.</param>
-      <returns>A <see cref="System.Numerics.Vector{System.Single}" /> containing elements narrowed from the source vectors.</returns>
+      <returns>A <c>Vector&lt;Single&gt;</c> containing elements narrowed from the source vectors.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Narrow(System.Numerics.Vector{System.Int16},System.Numerics.Vector{System.Int16})">
-      <summary>Narrows two <see cref="System.Numerics.Vector{System.Int16}" /> instances into one <see cref="System.Numerics.Vector{System.SByte}" />.</summary>
+      <summary>Narrows two <c>Vector&lt;Int16&gt;</c> instances into one <c>Vector&lt;SByte&gt;</c>.</summary>
       <param name="source1">The first source vector, whose elements become the lower-index elements of the return value.</param>
       <param name="source2">The second source vector, whose elements become the higher-index elements of the return value.</param>
-      <returns>A <see cref="System.Numerics.Vector{System.SByte}" /> containing elements narrowed from the source vectors.</returns>
+      <returns>A <c>Vector&lt;SByte&gt;</c> containing elements narrowed from the source vectors.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Narrow(System.Numerics.Vector{System.Int32},System.Numerics.Vector{System.Int32})">
-      <summary>Narrows two <see cref="System.Numerics.Vector{System.Int32}" /> instances into one <see cref="System.Numerics.Vector{System.Int16}" />.</summary>
+      <summary>Narrows two <c>Vector&lt;Int32&gt;</c> instances into one <c>Vector&lt;Int16&gt;</c>.</summary>
       <param name="source1">The first source vector, whose elements become the lower-index elements of the return value.</param>
       <param name="source2">The second source vector, whose elements become the higher-index elements of the return value.</param>
-      <returns>A <see cref="System.Numerics.Vector{System.Int16}" /> containing elements narrowed from the source vectors.</returns>
+      <returns>A <c>Vector&lt;Int16&gt;</c> containing elements narrowed from the source vectors.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Narrow(System.Numerics.Vector{System.Int64},System.Numerics.Vector{System.Int64})">
-      <summary>Narrows two <see cref="System.Numerics.Vector{System.Int64}" /> instances into one <see cref="System.Numerics.Vector{System.Int32}" />.</summary>
+      <summary>Narrows two <c>Vector&lt;Int64&gt;</c> instances into one <c>Vector&lt;Int32&gt;</c>.</summary>
       <param name="source1">The first source vector, whose elements become the lower-index elements of the return value.</param>
       <param name="source2">The second source vector, whose elements become the higher-index elements of the return value.</param>
-      <returns>A <see cref="System.Numerics.Vector{System.Int32}" /> containing elements narrowed from the source vectors.</returns>
+      <returns>A <c>Vector&lt;Int32&gt;</c> containing elements narrowed from the source vectors.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Narrow(System.Numerics.Vector{System.UInt16},System.Numerics.Vector{System.UInt16})">
-      <summary>Narrows two <see cref="System.Numerics.Vector{System.UInt16}" /> instances into one <see cref="System.Numerics.Vector{System.Byte}" />.</summary>
+      <summary>Narrows two <c>Vector&lt;UInt16&gt;</c> instances into one <c>Vector&lt;Byte&gt;</c>.</summary>
       <param name="source1">The first source vector, whose elements become the lower-index elements of the return value.</param>
       <param name="source2">The second source vector, whose elements become the higher-index elements of the return value.</param>
-      <returns>A <see cref="System.Numerics.Vector{System.Byte}" /> containing elements narrowed from the source vectors.</returns>
+      <returns>A <c>Vector&lt;Byte&gt;</c> containing elements narrowed from the source vectors.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Narrow(System.Numerics.Vector{System.UInt32},System.Numerics.Vector{System.UInt32})">
-      <summary>Narrows two <see cref="System.Numerics.Vector{System.UInt32}" /> instances into one <see cref="System.Numerics.Vector{System.UInt16}" />.</summary>
+      <summary>Narrows two <c>Vector&lt;UInt32&gt;</c> instances into one <c>Vector&lt;UInt16&gt;</c>.</summary>
       <param name="source1">The first source vector, whose elements become the lower-index elements of the return value.</param>
       <param name="source2">The second source vector, whose elements become the higher-index elements of the return value.</param>
-      <returns>A <see cref="System.Numerics.Vector{System.UInt16}" /> containing elements narrowed from the source vectors.</returns>
+      <returns>A <c>Vector&lt;UInt16&gt;</c> containing elements narrowed from the source vectors.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Narrow(System.Numerics.Vector{System.UInt64},System.Numerics.Vector{System.UInt64})">
-      <summary>Narrows two <see cref="System.Numerics.Vector{System.UInt64}" /> instances into one <see cref="System.Numerics.Vector{System.UInt32}" />.</summary>
+      <summary>Narrows two <c>Vector&lt;UInt64&gt;</c> instances into one <c>Vector&lt;UInt32&gt;</c>.</summary>
       <param name="source1">The first source vector, whose elements become the lower-index elements of the return value.</param>
       <param name="source2">The second source vector, whose elements become the higher-index elements of the return value.</param>
-      <returns>A <see cref="System.Numerics.Vector{System.UInt32}" /> containing elements narrowed from the source vectors.</returns>
+      <returns>A <c>Vector&lt;UInt32&gt;</c> containing elements narrowed from the source vectors.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Negate``1(System.Numerics.Vector{``0})">
       <summary>Returns a new vector whose elements are the negation of the corresponding element in the specified vector.</summary>
@@ -1475,43 +1475,43 @@
       <returns>The difference vector.</returns>
     </member>
     <member name="M:System.Numerics.Vector.Widen(System.Numerics.Vector{System.Byte},System.Numerics.Vector{System.UInt16}@,System.Numerics.Vector{System.UInt16}@)">
-      <summary>Widens a <see cref="System.Numerics.Vector{System.Byte}" /> into two <see cref="System.Numerics.Vector{System.UInt16}" /> instances.</summary>
+      <summary>Widens a <c>Vector&lt;Byte&gt;</c> into two <c>Vector&lt;UInt16&gt;</c> instances.</summary>
       <param name="source">The source vector whose elements are widened into the outputs.</param>
       <param name="dest1">The first output vector, whose elements will contain the widened elements from lower indices in the source vector.</param>
       <param name="dest2">The second output vector, whose elements will contain the widened elements from higher indices in the source vector.</param>
     </member>
     <member name="M:System.Numerics.Vector.Widen(System.Numerics.Vector{System.Int16},System.Numerics.Vector{System.Int32}@,System.Numerics.Vector{System.Int32}@)">
-      <summary>Widens a <see cref="System.Numerics.Vector{System.Int16}" /> into two <see cref="System.Numerics.Vector{System.Int32}" /> instances.</summary>
+      <summary>Widens a <c>Vector&lt;Int16&gt;</c> into two <c>Vector&lt;Int32&gt;</c> instances.</summary>
       <param name="source">The source vector whose elements are widened into the outputs.</param>
       <param name="dest1">The first output vector, whose elements will contain the widened elements from lower indices in the source vector.</param>
       <param name="dest2">The second output vector, whose elements will contain the widened elements from higher indices in the source vector.</param>
     </member>
     <member name="M:System.Numerics.Vector.Widen(System.Numerics.Vector{System.Int32},System.Numerics.Vector{System.Int64}@,System.Numerics.Vector{System.Int64}@)">
-      <summary>Widens a <see cref="System.Numerics.Vector{System.Int32}" /> into two <see cref="System.Numerics.Vector{System.Int64}" /> instances.</summary>
+      <summary>Widens a <c>Vector&lt;Int32&gt;</c> into two <c>Vector&lt;Int64&gt;</c> instances.</summary>
       <param name="source">The source vector whose elements are widened into the outputs.</param>
       <param name="dest1">The first output vector, whose elements will contain the widened elements from lower indices in the source vector.</param>
       <param name="dest2">The second output vector, whose elements will contain the widened elements from higher indices in the source vector.</param>
     </member>
     <member name="M:System.Numerics.Vector.Widen(System.Numerics.Vector{System.SByte},System.Numerics.Vector{System.Int16}@,System.Numerics.Vector{System.Int16}@)">
-      <summary>Widens a <see cref="System.Numerics.Vector{System.SByte}" /> into two <see cref="System.Numerics.Vector{System.Int16}" /> instances.</summary>
+      <summary>Widens a <c>Vector&lt;SByte&gt;</c> into two <c>Vector&lt;Int16&gt;</c> instances.</summary>
       <param name="source">The source vector whose elements are widened into the outputs.</param>
       <param name="dest1">The first output vector, whose elements will contain the widened elements from lower indices in the source vector.</param>
       <param name="dest2">The second output vector, whose elements will contain the widened elements from higher indices in the source vector.</param>
     </member>
     <member name="M:System.Numerics.Vector.Widen(System.Numerics.Vector{System.Single},System.Numerics.Vector{System.Double}@,System.Numerics.Vector{System.Double}@)">
-      <summary>Widens a <see cref="System.Numerics.Vector{System.Single}" /> into two <see cref="System.Numerics.Vector{System.Double}" /> instances.</summary>
+      <summary>Widens a <c>Vector&lt;Single&gt;</c> into two <c>Vector&lt;Double&gt;</c> instances.</summary>
       <param name="source">The source vector whose elements are widened into the outputs.</param>
       <param name="dest1">The first output vector, whose elements will contain the widened elements from lower indices in the source vector.</param>
       <param name="dest2">The second output vector, whose elements will contain the widened elements from higher indices in the source vector.</param>
     </member>
     <member name="M:System.Numerics.Vector.Widen(System.Numerics.Vector{System.UInt16},System.Numerics.Vector{System.UInt32}@,System.Numerics.Vector{System.UInt32}@)">
-      <summary>Widens a <see cref="System.Numerics.Vector{System.UInt16}" /> into two <see cref="System.Numerics.Vector{System.UInt32}" /> instances.</summary>
+      <summary>Widens a <c>Vector&lt;UInt16&gt;</c> into two <c>Vector&lt;UInt32&gt;</c> instances.</summary>
       <param name="source">The source vector whose elements are widened into the outputs.</param>
       <param name="dest1">The first output vector, whose elements will contain the widened elements from lower indices in the source vector.</param>
       <param name="dest2">The second output vector, whose elements will contain the widened elements from higher indices in the source vector.</param>
     </member>
     <member name="M:System.Numerics.Vector.Widen(System.Numerics.Vector{System.UInt32},System.Numerics.Vector{System.UInt64}@,System.Numerics.Vector{System.UInt64}@)">
-      <summary>Widens a <see cref="System.Numerics.Vector{System.UInt32}" /> into two <see cref="System.Numerics.Vector{System.UInt64}" /> instances.</summary>
+      <summary>Widens a <c>Vector&lt;UInt32&gt;</c> into two <c>Vector&lt;UInt64&gt;</c> instances.</summary>
       <param name="source">The source vector whose elements are widened into the outputs.</param>
       <param name="dest1">The first output vector, whose elements will contain the widened elements from lower indices in the source vector.</param>
       <param name="dest2">The second output vector, whose elements will contain the widened elements from higher indices in the source vector.</param>

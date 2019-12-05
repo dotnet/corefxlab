@@ -162,7 +162,7 @@
 <paramref name="arrayIndex" /> plus <see cref="P:System.Text.RegularExpressions.GroupCollection.Count" /> is outside the bounds of <paramref name="array" />.</exception>
     </member>
     <member name="M:System.Text.RegularExpressions.GroupCollection.CopyTo(System.Text.RegularExpressions.Group[],System.Int32)">
-      <summary>Copies the elements of the group collection to a <see cref="System.Text.RegularExpressions.Group[]" /> array, starting at a particular array index.</summary>
+      <summary>Copies the elements of the group collection to a <see cref="T:System.Text.RegularExpressions.Group" /> array, starting at a particular array index.</summary>
       <param name="array">The one-dimensional array that is the destination of the elements copied from the group collection. The array must have zero-based indexing.</param>
       <param name="arrayIndex">The zero-based index in <paramref name="array" /> at which copying begins.</param>
       <exception cref="T:System.ArgumentNullException">
@@ -241,7 +241,7 @@
     <member name="M:System.Text.RegularExpressions.GroupCollection.System#Collections#Generic#IList{System#Text#RegularExpressions#Group}#IndexOf(System.Text.RegularExpressions.Group)">
       <summary>Determines the index of a specific group in the group collection.</summary>
       <param name="item">The group to locate in the group collection.</param>
-      <returns>The index of the &lt;paramref. name="item"&gt;&lt;/paramref.&gt; if found; otherwise, -1.</returns>
+      <returns>The index of the <paramref name="item" /> if found; otherwise, -1.</returns>
     </member>
     <member name="M:System.Text.RegularExpressions.GroupCollection.System#Collections#Generic#IList{System#Text#RegularExpressions#Group}#Insert(System.Int32,System.Text.RegularExpressions.Group)">
       <summary>Inserts a <see cref="T:System.Text.RegularExpressions.Group" /> into the collection. Calling this method always throws <see cref="T:System.NotSupportedException" />.</summary>
@@ -278,7 +278,7 @@
     <member name="M:System.Text.RegularExpressions.GroupCollection.System#Collections#IList#IndexOf(System.Object)">
       <summary>Determines the index of a specific group in the group collection.</summary>
       <param name="value">The group to locate in the group collection.</param>
-      <returns>The index of the &lt;paramref. name="item"&gt;&lt;/paramref.&gt; if found; otherwise, -1.</returns>
+      <returns>The index of the <paramref name="item" /> if found; otherwise, -1.</returns>
     </member>
     <member name="M:System.Text.RegularExpressions.GroupCollection.System#Collections#IList#Insert(System.Int32,System.Object)">
       <summary>Inserts a <see cref="T:System.Text.RegularExpressions.Group" /> into the collection. Calling this method always throws <see cref="T:System.NotSupportedException" />.</summary>
@@ -1193,7 +1193,7 @@ For more information on the <see cref="F:System.Text.RegularExpressions.RegexOpt
       <summary>Specifies case-insensitive matching. For more information, see the "Case-Insensitive Matching " section in the Regular Expression Options topic.</summary>
     </member>
     <member name="F:System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace">
-      <summary>Eliminates unescaped white space from the pattern and enables comments marked with #. However, this value does not affect or eliminate white space in character classes, numeric quantifiers, or tokens that mark the beginning of individual regular expression language elements. For more information, see the "Ignore White Space" section of the Regular Expression Options topic.</summary>
+      <summary>Eliminates unescaped white space from the pattern and enables comments marked with #. However, this value does not affect or eliminate white space in character classes, numeric quantifiers, or tokens that mark the beginning of individual regular expression language elements. For more information, see the "Ignore White Space" section of the Regular Expression Options article.</summary>
     </member>
     <member name="F:System.Text.RegularExpressions.RegexOptions.Multiline">
       <summary>Multiline mode. Changes the meaning of ^ and $ so they match at the beginning and end, respectively, of any line, and not just the beginning and end of the entire string. For more information, see the "Multiline Mode" section in the Regular Expression Options topic.</summary>

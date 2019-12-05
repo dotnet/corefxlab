@@ -3970,7 +3970,7 @@ Converts an object of a specified type to a COM VARIANT.</summary>
       <summary>Returns an instance of a type that represents a COM object by a pointer to its IUnknown interface.</summary>
       <param name="pUnk">A pointer to the <see langword="IUnknown" /> interface.</param>
       <returns>An object that represents the specified unmanaged COM object.</returns>
-      <exception cref="">
+      <exception cref="T:System.ArgumentNullException">
         <paramref name="pUnk" /> is <see cref="F:System.IntPtr.Zero" />.</exception>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.GetObjectForNativeVariant(System.IntPtr)">
@@ -4514,7 +4514,7 @@ Marshals data from a managed object of a specified type to an unmanaged block of
       <param name="errorCode">The HRESULT corresponding to the desired exception.</param>
     </member>
     <member name="M:System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(System.Int32,System.IntPtr)">
-      <summary>Throws an exception with a specific failure HRESULT, based on the specified IErrorInfo.aspx) interface.</summary>
+      <summary>Throws an exception with a specific failure HRESULT, based on the specified IErrorInfo interface.</summary>
       <param name="errorCode">The HRESULT corresponding to the desired exception.</param>
       <param name="errorInfo">A pointer to the IErrorInfo interface that provides more information about the error. You can specify <c>IntPtr(0)</c> to use the current IErrorInfo interface, or <c>IntPtr(-1)</c> to ignore the current IErrorInfo interface and construct the exception just from the error code.</param>
     </member>

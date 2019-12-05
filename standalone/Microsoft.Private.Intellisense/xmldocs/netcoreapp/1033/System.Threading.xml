@@ -980,7 +980,7 @@ current participant count is less than the specified participantCount</exception
         <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite time-out.</exception>
       <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
       <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
-      <exception cref="">
+      <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
     </member>
     <member name="M:System.Threading.ManualResetEventSlim.Wait(System.Threading.CancellationToken)">
@@ -990,7 +990,7 @@ current participant count is less than the specified participantCount</exception
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
-      <exception cref="">
+      <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was
 canceled.</exception>
     </member>
@@ -1020,7 +1020,7 @@ The number of milliseconds in <paramref name="timeout" /> is greater than <see c
 The number of milliseconds in <paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
       <exception cref="T:System.InvalidOperationException">The maximum number of waiters has been exceeded.</exception>
       <exception cref="T:System.ObjectDisposedException">The object has already been disposed or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
-      <exception cref="">
+      <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
     </member>
     <member name="P:System.Threading.ManualResetEventSlim.WaitHandle">
@@ -1719,7 +1719,9 @@ The current semaphore represents a named system semaphore, but it was not opened
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite timeout -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite timeout.
+-or-
+<paramref name="millisecondsTimeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.SemaphoreSlim" /> instance has been disposed, or the <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has been disposed.</exception>
     </member>
     <member name="M:System.Threading.SemaphoreSlim.Wait(System.Threading.CancellationToken)">
@@ -1737,8 +1739,10 @@ The <see cref="T:System.Threading.CancellationTokenSource" /> that created <para
       <returns>
         <see langword="true" /> if the current thread successfully entered the <see cref="T:System.Threading.SemaphoreSlim" />; otherwise, <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="timeout" /> is a negative number other than -1, which represents an infinite timeout -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
-      <exception cref="T:System.ObjectDisposedException">The semaphoreSlim instance has been disposed <paramref name="." /></exception>
+        <paramref name="timeout" /> is a negative number other than -1, which represents an infinite timeout.
+-or-
+<paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">The semaphoreSlim instance has been disposed.</exception>
     </member>
     <member name="M:System.Threading.SemaphoreSlim.Wait(System.TimeSpan,System.Threading.CancellationToken)">
       <summary>Blocks the current thread until it can enter the <see cref="T:System.Threading.SemaphoreSlim" />, using a <see cref="T:System.TimeSpan" /> that specifies the timeout, while observing a <see cref="T:System.Threading.CancellationToken" />.</summary>
@@ -1749,8 +1753,11 @@ The <see cref="T:System.Threading.CancellationTokenSource" /> that created <para
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="timeout" /> is a negative number other than -1, which represents an infinite timeout -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
-      <exception cref="T:System.ObjectDisposedException">The semaphoreSlim instance has been disposed <paramref name="." /><paramref name="-or-" />
+        <paramref name="timeout" /> is a negative number other than -1, which represents an infinite timeout.
+-or-.
+<paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">The semaphoreSlim instance has been disposed.
+-or-
 The <see cref="T:System.Threading.CancellationTokenSource" /> that created <paramref name="cancellationToken" /> has already been disposed.</exception>
     </member>
     <member name="M:System.Threading.SemaphoreSlim.WaitAsync">
@@ -1764,7 +1771,9 @@ The <see cref="T:System.Threading.CancellationTokenSource" /> that created <para
       <returns>A task that will complete with a result of <see langword="true" /> if the current thread successfully entered the <see cref="T:System.Threading.SemaphoreSlim" />, otherwise with a result of <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite timeout -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite timeout.
+-or-
+<paramref name="millisecondsTimeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
     </member>
     <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.Int32,System.Threading.CancellationToken)">
       <summary>Asynchronously waits to enter the <see cref="T:System.Threading.SemaphoreSlim" />, using a 32-bit signed integer to measure the time interval, while observing a <see cref="T:System.Threading.CancellationToken" />.</summary>
@@ -1772,7 +1781,9 @@ The <see cref="T:System.Threading.CancellationTokenSource" /> that created <para
       <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken" /> to observe.</param>
       <returns>A task that will complete with a result of <see langword="true" /> if the current thread successfully entered the <see cref="T:System.Threading.SemaphoreSlim" />, otherwise with a result of <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="millisecondsTimeout" /> is a number other than -1, which represents an infinite timeout -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+        <paramref name="millisecondsTimeout" /> is a number other than -1, which represents an infinite timeout.
+-or-
+<paramref name="millisecondsTimeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
@@ -1791,7 +1802,9 @@ The <see cref="T:System.Threading.CancellationTokenSource" /> that created <para
       <returns>A task that will complete with a result of <see langword="true" /> if the current thread successfully entered the <see cref="T:System.Threading.SemaphoreSlim" />, otherwise with a result of <see langword="false" />.</returns>
       <exception cref="T:System.ObjectDisposedException">The current instance has already been disposed.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite timeout -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+        <paramref name="timeout" /> is a negative number other than -1, which represents an infinite timeout.
+-or-
+<paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
     </member>
     <member name="M:System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan,System.Threading.CancellationToken)">
       <summary>Asynchronously waits to enter the <see cref="T:System.Threading.SemaphoreSlim" />, using a <see cref="T:System.TimeSpan" /> to measure the time interval, while observing a <see cref="T:System.Threading.CancellationToken" />.</summary>
@@ -1799,7 +1812,9 @@ The <see cref="T:System.Threading.CancellationTokenSource" /> that created <para
       <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken" /> token to observe.</param>
       <returns>A task that will complete with a result of <see langword="true" /> if the current thread successfully entered the <see cref="T:System.Threading.SemaphoreSlim" />, otherwise with a result of <see langword="false" />.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
-        <paramref name="millisecondsTimeout" /> is a negative number other than -1, which represents an infinite timeout -or- timeout is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+        <paramref name="timeout" /> is a negative number other than -1, which represents an infinite timeout.
+-or-
+<paramref name="timeout" /> is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
       <exception cref="T:System.OperationCanceledException">
         <paramref name="cancellationToken" /> was canceled.</exception>
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Threading.SemaphoreSlim" /> has been disposed.</exception>
