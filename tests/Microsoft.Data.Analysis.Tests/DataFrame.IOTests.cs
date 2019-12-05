@@ -73,7 +73,7 @@ CMT,1,1,181,0.6,CSH,4.5";
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
             DataFrame df = DataFrame.LoadCsv(GetStream(data), dataTypes: new Type[] { typeof(string), typeof(short), typeof(int), typeof(long), typeof(float), typeof(string), typeof(double) });
-            Assert.Equal(5, df.RowCount);
+            Assert.Equal(5, df.Rows.Count);
             Assert.Equal(7, df.Columns.Count);
 
             Assert.True(typeof(string) == df.Columns[0].DataType);
@@ -95,7 +95,7 @@ CMT,1,1,181,0.6,CSH,4.5";
                     Assert.Equal(0, column.NullCount);
                 }
             }
-            var nullRow = df[3];
+            var nullRow = df.Rows[3];
             Assert.Equal("", nullRow[0]);
             Assert.Null(nullRow[1]);
             Assert.Null(nullRow[2]);

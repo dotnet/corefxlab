@@ -1986,7 +1986,7 @@ namespace Microsoft.Data.Analysis.Tests
         {
             DataFrame df = MakeDataFrame<int, bool>(10);
             df.Append(new List<object> { "", true });
-            Assert.Equal(11, df.RowCount);
+            Assert.Equal(11, df.Rows.Count);
             Assert.Equal(2, df.Columns[0].NullCount);
             Assert.Equal(1, df.Columns[1].NullCount);
 
@@ -1994,13 +1994,13 @@ namespace Microsoft.Data.Analysis.Tests
             df.Columns.Add(column);
 
             df.Append(new List<object> { 1, true, "" });
-            Assert.Equal(12, df.RowCount);
+            Assert.Equal(12, df.Rows.Count);
             Assert.Equal(2, df.Columns[0].NullCount);
             Assert.Equal(1, df.Columns[1].NullCount);
             Assert.Equal(0, df.Columns[2].NullCount);
 
             df.Append(new List<object> { 1, true, null });
-            Assert.Equal(13, df.RowCount);
+            Assert.Equal(13, df.Rows.Count);
             Assert.Equal(1, df.Columns[2].NullCount);
         }
     }
