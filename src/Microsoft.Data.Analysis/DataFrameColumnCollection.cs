@@ -21,11 +21,6 @@ namespace Microsoft.Data.Analysis
 
         internal long RowCount { get; set; }
 
-        internal DataFrameColumnCollection(Action columnsChanged) : base()
-        {
-            ColumnsChanged = columnsChanged;
-        }
-
         internal DataFrameColumnCollection(IEnumerable<DataFrameColumn> columns, Action columnsChanged) : base()
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));

@@ -33,11 +33,6 @@ namespace Microsoft.Data.Analysis
     {
         private readonly DataFrameColumnCollection _columnCollection;
         private readonly DataFrameRowCollection _rowCollection;
-        public DataFrame()
-        {
-            _columnCollection = new DataFrameColumnCollection(OnColumnsChanged);
-            _rowCollection = new DataFrameRowCollection(this);
-        }
 
         public DataFrame(IEnumerable<DataFrameColumn> columns)
         {
