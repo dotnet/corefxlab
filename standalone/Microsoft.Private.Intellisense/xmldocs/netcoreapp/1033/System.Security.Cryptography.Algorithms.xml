@@ -506,9 +506,9 @@ One of the entries in the <paramref name="names" /> parameter is empty or <see l
       <returns>A cryptographic object used to perform the asymmetric algorithm.</returns>
     </member>
     <member name="M:System.Security.Cryptography.DSA.CreateSignature(System.Byte[])">
-      <summary>When overridden in a derived class, creates the <see cref="T:System.Security.Cryptography.DSA" /> signature for the specified data.</summary>
-      <param name="rgbHash">The data to be signed.</param>
-      <returns>The digital signature for the specified data.</returns>
+      <summary>When overridden in a derived class, creates the <see cref="T:System.Security.Cryptography.DSA" /> signature for the specified hash value.</summary>
+      <param name="rgbHash">The hash value to be signed.</param>
+      <returns>The digital signature for the specified hash value.</returns>
     </member>
     <member name="M:System.Security.Cryptography.DSA.ExportParameters(System.Boolean)">
       <summary>When overridden in a derived class, exports the <see cref="T:System.Security.Cryptography.DSAParameters" />.</summary>
@@ -573,6 +573,12 @@ The algorithm-specific key import failed.</exception>
     <member name="M:System.Security.Cryptography.DSA.ImportParameters(System.Security.Cryptography.DSAParameters)">
       <summary>When overridden in a derived class, imports the specified <see cref="T:System.Security.Cryptography.DSAParameters" />.</summary>
       <param name="parameters">The parameters for <see cref="T:System.Security.Cryptography.DSA" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="parameters" /> is missing required fields.
+-or-
+<paramref name="parameters" /> has fields with inconsistent lengths for a valid key.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">
+        <paramref name="parameters" /> does not represent a valid DSA key parameter set.</exception>
     </member>
     <member name="M:System.Security.Cryptography.DSA.ImportPkcs8PrivateKey(System.ReadOnlySpan{System.Byte},System.Int32@)">
       <summary>Imports the public/private keypair from a PKCS#8 PrivateKeyInfo structure after decryption, replacing the keys for this object.</summary>
@@ -1387,9 +1393,14 @@ The algorithm-specific key import failed.</exception>
     <member name="M:System.Security.Cryptography.ECDsa.Create(System.String)">
       <summary>Creates a new instance of the specified implementation of the Elliptic Curve Digital Signature Algorithm (ECDSA).</summary>
       <param name="algorithm">The name of an ECDSA implementation. The following strings all refer to the same implementation, which is the only implementation currently supported in the .NET Framework:
-- "ECDsa"
-- "ECDsaCng"
-- "System.Security.Cryptography.ECDsaCng"
+
+"ECDsa"
+
+"ECDsaCng"
+
+"System.Security.Cryptography.ECDsaCng"
+
+
 You can also provide the name of a custom ECDSA implementation.</param>
       <returns>A new instance of the specified implementation of this class. If the specified algorithm name does not map to an ECDSA implementation, this method returns <see langword="null" />.</returns>
       <exception cref="T:System.ArgumentNullException">The <paramref name="algorithm" /> parameter is <see langword="null" />.</exception>
@@ -2242,7 +2253,10 @@ The <paramref name="alghashname" /> parameter is not a valid hash algorithm name
       <summary>Gets or sets the block size, in bits, of the cryptographic operation.</summary>
       <returns>The block size, in bits, of the cryptographic operation. The default is 128 bits.</returns>
     </member>
-    <member name="M:System.Security.Cryptography.RijndaelManaged.CreateDecryptor" />
+    <member name="M:System.Security.Cryptography.RijndaelManaged.CreateDecryptor">
+      <summary>Creates a symmetric decryptor object with the current <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> property and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
+      <returns>A symmetric decryptor object.</returns>
+    </member>
     <member name="M:System.Security.Cryptography.RijndaelManaged.CreateDecryptor(System.Byte[],System.Byte[])">
       <summary>Creates a symmetric <see cref="T:System.Security.Cryptography.Rijndael" /> decryptor object with the specified <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
       <param name="rgbKey">The secret key to be used for the symmetric algorithm. The key size must be 128, 192, or 256 bits.</param>
@@ -2253,7 +2267,10 @@ The <paramref name="alghashname" /> parameter is not a valid hash algorithm name
 The <paramref name="rgbIV" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is not <see cref="F:System.Security.Cryptography.CipherMode.ECB" />, <see cref="F:System.Security.Cryptography.CipherMode.CBC" />, or <see cref="F:System.Security.Cryptography.CipherMode.CFB" />.</exception>
     </member>
-    <member name="M:System.Security.Cryptography.RijndaelManaged.CreateEncryptor" />
+    <member name="M:System.Security.Cryptography.RijndaelManaged.CreateEncryptor">
+      <summary>Creates a symmetric encryptor object with the current <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> property and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
+      <returns>A symmetric encryptor object.</returns>
+    </member>
     <member name="M:System.Security.Cryptography.RijndaelManaged.CreateEncryptor(System.Byte[],System.Byte[])">
       <summary>Creates a symmetric <see cref="T:System.Security.Cryptography.Rijndael" /> encryptor object with the specified <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key" /> and initialization vector (<see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV" />).</summary>
       <param name="rgbKey">The secret key to be used for the symmetric algorithm. The key size must be 128, 192, or 256 bits.</param>

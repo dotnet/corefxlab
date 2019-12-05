@@ -756,7 +756,7 @@ The current <paramref name="reader" /> token does not start or represent a value
     <member name="P:System.Text.Json.JsonReaderOptions.AllowTrailingCommas">
       <summary>Gets or sets a value that defines whether an extra comma at the end of a list of JSON values in an object or array is allowed (and ignored) within the JSON payload being read.</summary>
       <returns>
-        <see langword="true" /> if an exra comma is allowed; otherwise, <see langword="false" />.</returns>
+        <see langword="true" /> if an extra comma is allowed; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Text.Json.JsonReaderOptions.CommentHandling">
       <summary>Gets or sets a value that determines how the <see cref="T:System.Text.Json.Utf8JsonReader" /> handles comments when reading through the JSON data.</summary>

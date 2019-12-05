@@ -21,7 +21,7 @@
         <paramref name="count" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -39,7 +39,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="chars" />.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -55,7 +55,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentNullException">
         <paramref name="chars" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -74,7 +74,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="charCount" /> or <paramref name="byteCount" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="byteCount" /> is less than the resulting number of bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -98,7 +98,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -128,7 +128,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 <paramref name="byteIndex" /> is not a valid index in <paramref name="bytes" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -143,7 +143,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="count" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -161,7 +161,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -185,7 +185,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="byteCount" /> or <paramref name="charCount" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="charCount" /> is less than the resulting number of characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -209,7 +209,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 <paramref name="charIndex" /> is not a valid index in <paramref name="chars" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -257,7 +257,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="index" /> or <paramref name="count" /> is less than zero.
 -or-
 <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -308,7 +308,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled and <paramref name="chars" /> contains an invalid sequence of characters.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -327,7 +327,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -339,7 +339,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="s" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -359,7 +359,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.
 -or-
 <paramref name="byteCount" /> is less than the resulting number of bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -384,7 +384,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.
 -or-
 <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -409,7 +409,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.
 -or-
 <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -425,7 +425,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -444,7 +444,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -464,7 +464,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.
 -or-
 <paramref name="charCount" /> is less than the resulting number of characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -489,7 +489,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.
 -or-
 <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -513,7 +513,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="charCount" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -525,7 +525,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="byteCount" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -546,7 +546,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for fuller explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -594,7 +594,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -613,7 +613,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -625,7 +625,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="s" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -645,7 +645,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.
 -or-
 <paramref name="byteCount" /> is less than the resulting number of bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -670,7 +670,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.
 -or-
 <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -695,7 +695,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.
 -or-
 <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -711,7 +711,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -730,7 +730,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -750,7 +750,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.
 -or-
 <paramref name="charCount" /> is less than the resulting number of characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -775,7 +775,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.
 -or-
 <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -799,7 +799,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="charCount" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -811,7 +811,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="byteCount" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -868,7 +868,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="count" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an int.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -886,7 +886,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="chars" />.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an int.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -997,7 +997,7 @@ The resulting number of characters is greater than the maximum number that can b
 <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.
 -or-
 The resulting number of characters is greater than the maximum number that can be returned as an int.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1016,7 +1016,7 @@ The resulting number of characters is greater than the maximum number that can b
         <paramref name="byteCount" /> or <paramref name="charCount" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="charCount" /> is less than the resulting number of characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1040,7 +1040,7 @@ The resulting number of characters is greater than the maximum number that can b
 <paramref name="charIndex" /> is not a valid index in <paramref name="chars" />.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1064,7 +1064,7 @@ The resulting number of characters is greater than the maximum number that can b
         <paramref name="charCount" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an int.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -1076,7 +1076,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="byteCount" /> is less than zero.
 -or-
 The resulting number of characters is greater than the maximum number that can be returned as an int.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1151,7 +1151,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 The <see cref="P:System.Text.Encoding.EncoderFallback" /> property is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -1172,7 +1172,7 @@ The <see cref="P:System.Text.Encoding.EncoderFallback" /> property is set to <se
         <paramref name="chars" /> is <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentOutOfRangeException">The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -1192,7 +1192,7 @@ The <see cref="P:System.Text.Encoding.EncoderFallback" /> property is set to <se
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.
 -or-
 <paramref name="byteCount" /> is less than the resulting number of bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -1217,7 +1217,7 @@ The <see cref="P:System.Text.Encoding.EncoderFallback" /> property is set to <se
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="chars" /> contains an invalid sequence of characters.
 -or-
 <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -1248,7 +1248,7 @@ The <see cref="P:System.Text.Encoding.EncoderFallback" /> property is set to <se
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="s" /> contains an invalid sequence of characters.
 -or-
 <paramref name="bytes" /> does not have enough capacity from <paramref name="byteIndex" /> to the end of the array to accommodate the resulting bytes.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -1264,7 +1264,7 @@ The <see cref="P:System.Text.Encoding.EncoderFallback" /> property is set to <se
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1283,7 +1283,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1308,7 +1308,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.
 -or-
 <paramref name="charCount" /> is less than the resulting number of characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1333,7 +1333,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.
 -or-
 <paramref name="chars" /> does not have enough capacity from <paramref name="charIndex" /> to the end of the array to accommodate the resulting characters.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1363,7 +1363,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="charCount" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.EncoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.EncoderFallback" /> is set to <see cref="T:System.Text.EncoderExceptionFallback" />.</exception>
     </member>
@@ -1375,7 +1375,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
         <paramref name="byteCount" /> is less than zero.
 -or-
 The resulting number of bytes is greater than the maximum number that can be returned as an integer.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>
@@ -1396,7 +1396,7 @@ The resulting number of bytes is greater than the maximum number that can be ret
 -or-
 <paramref name="index" /> and <paramref name="count" /> do not denote a valid range in <paramref name="bytes" />.</exception>
       <exception cref="T:System.ArgumentException">Error detection is enabled, and <paramref name="bytes" /> contains an invalid sequence of bytes.</exception>
-      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (see Character Encoding in the .NET Framework for complete explanation)
+      <exception cref="T:System.Text.DecoderFallbackException">A fallback occurred (for more information, see Character Encoding in .NET)
 -and-
 <see cref="P:System.Text.Encoding.DecoderFallback" /> is set to <see cref="T:System.Text.DecoderExceptionFallback" />.</exception>
     </member>

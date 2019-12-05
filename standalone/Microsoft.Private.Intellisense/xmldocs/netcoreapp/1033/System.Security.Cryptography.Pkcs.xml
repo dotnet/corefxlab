@@ -223,9 +223,7 @@ If the method fails, it throws an exception.</returns>
       <param name="index">The zero-based index in <paramref name="array" /> where the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection" /> collection is copied.</param>
       <exception cref="T:System.ArgumentException">
         <paramref name="array" /> is not large enough to hold the specified elements.
-
 -or-
-
 <paramref name="array" /> does not contain the proper number of dimensions.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
@@ -238,9 +236,7 @@ If the method fails, it throws an exception.</returns>
       <param name="index">The zero-based index for the array of <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipient" /> objects in <paramref name="array" /> to which the <see cref="T:System.Security.Cryptography.Pkcs.CmsRecipientCollection" /> collection is copied.</param>
       <exception cref="T:System.ArgumentException">
         <paramref name="array" /> is not large enough to hold the specified elements.
-
 -or-
-
 <paramref name="array" /> does not contain the proper number of dimensions.</exception>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="array" /> is <see langword="null" />.</exception>
@@ -649,7 +645,7 @@ If the method fails, it throws an exception.</returns>
     <member name="M:System.Security.Cryptography.Pkcs.Pkcs12CertBag.GetCertificate">
       <summary>Gets the contents of the CertBag interpreted as an X.509 public key certificate.</summary>
       <returns>A certificate decoded from the contents of the CertBag.</returns>
-      <exception cref="">The content type is not the X.509 public key certificate content type.</exception>
+      <exception cref="T:System.InvalidOperationException">The content type is not the X.509 public key certificate content type.</exception>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The contents were not valid for the X.509 certificate content type.</exception>
     </member>
     <member name="M:System.Security.Cryptography.Pkcs.Pkcs12CertBag.GetCertificateType">
@@ -697,7 +693,7 @@ If the method fails, it throws an exception.</returns>
       <returns>One of the enumeration members that indicates the type of tamper protection provided for the <see cref="P:System.Security.Cryptography.Pkcs.Pkcs12Info.AuthenticatedSafe" /> contents.</returns>
     </member>
     <member name="M:System.Security.Cryptography.Pkcs.Pkcs12Info.VerifyMac(System.ReadOnlySpan{System.Char})">
-      <summary>Attempts to verify the integrity of the <see cref="P:System.Security.Cryptography.Pkcs.Pkcs12Info.AuthenticatedSafe" /> contents with a password represented by a <see cref="System.ReadOnlySpan{System.Char}" />.</summary>
+      <summary>Attempts to verify the integrity of the <see cref="P:System.Security.Cryptography.Pkcs.Pkcs12Info.AuthenticatedSafe" /> contents with a password represented by a <c>System.ReadOnlySpan{System.Char}</c>.</summary>
       <param name="password">The password to use to attempt to verify integrity.</param>
       <returns>
         <see langword="true" /> if the password successfully verifies the integrity of the <see cref="P:System.Security.Cryptography.Pkcs.Pkcs12Info.AuthenticatedSafe" /> contents; <see langword="false" /> if the password is not correct or the contents have been altered.</returns>

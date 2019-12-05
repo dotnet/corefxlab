@@ -1679,7 +1679,9 @@
       <param name="other" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.LabelHandle.GetHashCode" />
-    <member name="P:System.Reflection.Metadata.Ecma335.LabelHandle.Id" />
+    <member name="P:System.Reflection.Metadata.Ecma335.LabelHandle.Id">
+      <summary>1-based id identifying the label within the context of a <see cref="T:System.Reflection.Metadata.Ecma335.ControlFlowBuilder" />.</summary>
+    </member>
     <member name="P:System.Reflection.Metadata.Ecma335.LabelHandle.IsNil" />
     <member name="M:System.Reflection.Metadata.Ecma335.LabelHandle.op_Equality(System.Reflection.Metadata.Ecma335.LabelHandle,System.Reflection.Metadata.Ecma335.LabelHandle)">
       <param name="left" />
@@ -1689,29 +1691,41 @@
       <param name="left" />
       <param name="right" />
     </member>
-    <member name="T:System.Reflection.Metadata.Ecma335.LiteralEncoder" />
+    <member name="T:System.Reflection.Metadata.Ecma335.LiteralEncoder">
+      <summary>Provides methods for encoding literals.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.#ctor(System.Reflection.Metadata.BlobBuilder)">
-      <param name="builder" />
+      <param name="builder">Creates a new instance of the <see cref="T:System.Reflection.Metadata.Ecma335.LiteralEncoder" /> class with the specified blob builder.</param>
     </member>
     <member name="P:System.Reflection.Metadata.Ecma335.LiteralEncoder.Builder" />
-    <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.Scalar" />
+    <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.Scalar">
+      <summary>Returns the encoder used to encode the literal value.</summary>
+      <returns>The encoder of the literal value.</returns>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.TaggedScalar(System.Action{System.Reflection.Metadata.Ecma335.CustomAttributeElementTypeEncoder},System.Action{System.Reflection.Metadata.Ecma335.ScalarEncoder})">
-      <param name="type" />
-      <param name="scalar" />
+      <summary>Encodes the type and the value of a literal using the specified delegates.</summary>
+      <param name="type">A delegate used to encode the type of the literal. Called first by this method.</param>
+      <param name="scalar">A delegate used to encode the value of the literal. Called second by this method.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.TaggedScalar(System.Reflection.Metadata.Ecma335.CustomAttributeElementTypeEncoder@,System.Reflection.Metadata.Ecma335.ScalarEncoder@)">
-      <param name="type" />
-      <param name="scalar" />
+      <summary>Returns a pair of encoders that must be used to encode the type and value of a literal in the order they appear in the parameter list.</summary>
+      <param name="type">When this method returns, a custom attribute element type encoder used to encode the type of the literal.</param>
+      <param name="scalar">When this method returns, a scalar encoded used to encode the value of the literal.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.TaggedVector(System.Action{System.Reflection.Metadata.Ecma335.CustomAttributeArrayTypeEncoder},System.Action{System.Reflection.Metadata.Ecma335.VectorEncoder})">
-      <param name="arrayType" />
-      <param name="vector" />
+      <summary>Encodes the type and the items of a vector literal using the specified delegates.</summary>
+      <param name="arrayType">A delegate used to encode the type of the vector. Called first by this method.</param>
+      <param name="vector">A delegate used to encode the items of the vector. Called second by this method.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.TaggedVector(System.Reflection.Metadata.Ecma335.CustomAttributeArrayTypeEncoder@,System.Reflection.Metadata.Ecma335.VectorEncoder@)">
-      <param name="arrayType" />
-      <param name="vector" />
+      <summary>Returns a pair of encoders that must be used to encode the type and the items of a vector literal in the order they appear in the parameter list.</summary>
+      <param name="arrayType">When this method returns, a custom attribute array type encoder used to encode the type of the vector.</param>
+      <param name="vector">When this method returns, a vector encoder used to encode the items of the vector.</param>
     </member>
-    <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.Vector" />
+    <member name="M:System.Reflection.Metadata.Ecma335.LiteralEncoder.Vector">
+      <summary>Gets a vector encoder used to encode the items of a vector.</summary>
+      <returns>A vector encoder used to encode the items of a vector.</returns>
+    </member>
     <member name="T:System.Reflection.Metadata.Ecma335.LiteralsEncoder" />
     <member name="M:System.Reflection.Metadata.Ecma335.LiteralsEncoder.#ctor(System.Reflection.Metadata.BlobBuilder)">
       <param name="builder" />
@@ -1746,15 +1760,20 @@
       <param name="deltaReaders" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataAggregator.GetGenerationHandle(System.Reflection.Metadata.Handle,System.Int32@)">
-      <param name="handle" />
-      <param name="generation" />
+      <summary>Calculates the handle of the entity within the metadata generation it is defined in, given a handle of an entity in an aggregate metadata.</summary>
+      <param name="handle">Handle of an entity in an aggregate metadata.</param>
+      <param name="generation">The generation the entity is defined in.</param>
+      <returns>Handle of the entity within the metadata <paramref name="generation" />.</returns>
     </member>
-    <member name="T:System.Reflection.Metadata.Ecma335.MetadataBuilder" />
+    <member name="T:System.Reflection.Metadata.Ecma335.MetadataBuilder">
+      <summary>The MetadataBuilder class reads and writes metadata for an assembly in a highly performant manner. It is designed for use by compilers and other assembly generation tools.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
-      <param name="userStringHeapStartOffset" />
-      <param name="stringHeapStartOffset" />
-      <param name="blobHeapStartOffset" />
-      <param name="guidHeapStartOffset" />
+      <summary>Creates a builder for metadata tables and heaps.</summary>
+      <param name="userStringHeapStartOffset">The start offset of the User String heap. The cumulative size of User String heaps of all previous EnC generations should be 0 unless the metadata is EnC delta metadata.</param>
+      <param name="stringHeapStartOffset">The start offset of the String heap. The cumulative size of String heaps of all previous EnC generations should be 0 unless the metadata is EnC delta metadata.</param>
+      <param name="blobHeapStartOffset">The start offset of the Blob heap. The cumulative size of Blob heaps of all previous EnC generations should be 0 unless the metadata is EnC delta metadata.</param>
+      <param name="guidHeapStartOffset">The start offset of the Guid heap. The cumulative size of Guid heaps of all previous EnC generations should be 0 unless the metadata is EnC delta metadata.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddAssembly(System.Reflection.Metadata.StringHandle,System.Version,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.BlobHandle,System.Reflection.AssemblyFlags,System.Reflection.AssemblyHashAlgorithm)">
       <param name="name" />
@@ -1778,29 +1797,39 @@
       <param name="hashValue" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddConstant(System.Reflection.Metadata.EntityHandle,System.Object)">
-      <param name="parent" />
-      <param name="value" />
+      <summary>Adds a default value for a parameter, field or property.</summary>
+      <param name="parent">The parent entity handle, which can be one of the following: <see cref="T:System.Reflection.Metadata.ParameterHandle" />, <see cref="T:System.Reflection.Metadata.FieldDefinitionHandle" />, or <see cref="T:System.Reflection.Metadata.PropertyDefinitionHandle" />.</param>
+      <param name="value">The constant value.</param>
+      <returns>A handle to the added constant.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddCustomAttribute(System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="parent" />
-      <param name="constructor" />
-      <param name="value" />
+      <summary>Adds a custom attribute.</summary>
+      <param name="parent">An entity to attach the custom attribute to: a <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.FieldDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.ParameterHandle" />, <see cref="T:System.Reflection.Metadata.InterfaceImplementationHandle" />, <see cref="T:System.Reflection.Metadata.MemberReferenceHandle" />, <see cref="T:System.Reflection.Metadata.ModuleDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.DeclarativeSecurityAttributeHandle" />, <see cref="T:System.Reflection.Metadata.PropertyDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.EventDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.StandaloneSignatureHandle" />, <see cref="T:System.Reflection.Metadata.ModuleReferenceHandle" />, <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />, <see cref="T:System.Reflection.Metadata.AssemblyDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.AssemblyReferenceHandle" />, <see cref="T:System.Reflection.Metadata.AssemblyFileHandle" />, <see cref="T:System.Reflection.Metadata.ExportedTypeHandle" />, <see cref="T:System.Reflection.Metadata.ManifestResourceHandle" />, <see cref="T:System.Reflection.Metadata.GenericParameterHandle" />, <see cref="T:System.Reflection.Metadata.GenericParameterConstraintHandle" />, or a <see cref="T:System.Reflection.Metadata.MethodSpecificationHandle" />.</param>
+      <param name="constructor">A custom attribute constructor: a <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" /> or <see cref="T:System.Reflection.Metadata.MemberReferenceHandle" />.</param>
+      <param name="value">A custom attribute value blob.</param>
+      <returns>A handle to the added custom attribute.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddCustomDebugInformation(System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.GuidHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="parent" />
-      <param name="kind" />
-      <param name="value" />
+      <summary>Adds custom debug information.</summary>
+      <param name="parent">An entity to attach the debug information to: a <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.FieldDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.ParameterHandle" />, <see cref="T:System.Reflection.Metadata.InterfaceImplementationHandle" />, <see cref="T:System.Reflection.Metadata.MemberReferenceHandle" />, <see cref="T:System.Reflection.Metadata.ModuleDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.DeclarativeSecurityAttributeHandle" />, <see cref="T:System.Reflection.Metadata.PropertyDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.EventDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.StandaloneSignatureHandle" />, <see cref="T:System.Reflection.Metadata.ModuleReferenceHandle" />, <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />, <see cref="T:System.Reflection.Metadata.AssemblyDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.AssemblyReferenceHandle" />, <see cref="T:System.Reflection.Metadata.AssemblyFileHandle" />, <see cref="T:System.Reflection.Metadata.ExportedTypeHandle" />, <see cref="T:System.Reflection.Metadata.ManifestResourceHandle" />, <see cref="T:System.Reflection.Metadata.GenericParameterHandle" />, <see cref="T:System.Reflection.Metadata.GenericParameterConstraintHandle" />, <see cref="T:System.Reflection.Metadata.MethodSpecificationHandle" />, <see cref="T:System.Reflection.Metadata.DocumentHandle" />, <see cref="T:System.Reflection.Metadata.LocalScopeHandle" />, <see cref="T:System.Reflection.Metadata.LocalVariableHandle" />, <see cref="T:System.Reflection.Metadata.LocalConstantHandle" />, or a <see cref="T:System.Reflection.Metadata.ImportScopeHandle" />.</param>
+      <param name="kind">The information kind. Determines the structure of the <paramref name="value" /> blob.</param>
+      <param name="value">The custom debug information blob.</param>
+      <returns>A handle to the added custom debug information.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddDeclarativeSecurityAttribute(System.Reflection.Metadata.EntityHandle,System.Reflection.DeclarativeSecurityAction,System.Reflection.Metadata.BlobHandle)">
-      <param name="parent" />
-      <param name="action" />
-      <param name="permissionSet" />
+      <summary>Adds a declarative security attribute to a type, method, or assembly.</summary>
+      <param name="parent">The parent entity handle, which can be one of the following: a <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" />, or a <see cref="T:System.Reflection.Metadata.AssemblyDefinitionHandle" />.</param>
+      <param name="action">A declarative security action.</param>
+      <param name="permissionSet">The permission set blob.</param>
+      <returns>A handle to the added declarative security attribute.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddDocument(System.Reflection.Metadata.BlobHandle,System.Reflection.Metadata.GuidHandle,System.Reflection.Metadata.BlobHandle,System.Reflection.Metadata.GuidHandle)">
-      <param name="name" />
-      <param name="hashAlgorithm" />
-      <param name="hash" />
-      <param name="language" />
+      <summary>Adds document debug information.</summary>
+      <param name="name">The document name blob.</param>
+      <param name="hashAlgorithm">THe GUID of the hash algorithm used to calculate the value of <paramref name="hash" />.</param>
+      <param name="hash">The hash of the document content.</param>
+      <param name="language">The GUID of the language.</param>
+      <returns>A handle to the added document.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddEncLogEntry(System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.Ecma335.EditAndContinueOperation)">
       <param name="entity" />
@@ -1810,115 +1839,152 @@
       <param name="entity" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddEvent(System.Reflection.EventAttributes,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.EntityHandle)">
-      <param name="attributes" />
-      <param name="name" />
-      <param name="type" />
+      <summary>Adds an event definition.</summary>
+      <param name="attributes">The event attributes.</param>
+      <param name="name">The event name.</param>
+      <param name="type">The type of the event: a <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, or <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />.</param>
+      <returns>A handle to the added event definition.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddEventMap(System.Reflection.Metadata.TypeDefinitionHandle,System.Reflection.Metadata.EventDefinitionHandle)">
       <param name="declaringType" />
       <param name="eventList" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddExportedType(System.Reflection.TypeAttributes,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.EntityHandle,System.Int32)">
-      <param name="attributes" />
-      <param name="namespace" />
-      <param name="name" />
-      <param name="implementation" />
-      <param name="typeDefinitionId" />
+      <summary>Adds an exported type.</summary>
+      <param name="attributes">The type attributes.</param>
+      <param name="namespace">The type namespace.</param>
+      <param name="name">The type name.</param>
+      <param name="implementation">The implementation entity handle, which can be one of the following: an <see cref="T:System.Reflection.Metadata.AssemblyFileHandle" />, <see cref="T:System.Reflection.Metadata.ExportedTypeHandle" />, or <see cref="T:System.Reflection.Metadata.AssemblyReferenceHandle" />.</param>
+      <param name="typeDefinitionId">The type definition ID.</param>
+      <returns>A handle to the added exported type.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddFieldDefinition(System.Reflection.FieldAttributes,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="attributes" />
-      <param name="name" />
-      <param name="signature" />
+      <summary>Adds a field definition.</summary>
+      <param name="attributes">The field attributes.</param>
+      <param name="name">The field name.</param>
+      <param name="signature">The field signature. Use <see cref="M:System.Reflection.Metadata.Ecma335.BlobEncoder.FieldSignature" /> to construct the blob.</param>
+      <returns>A handle to the added field definition.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddFieldLayout(System.Reflection.Metadata.FieldDefinitionHandle,System.Int32)">
-      <param name="field" />
-      <param name="offset" />
+      <summary>Defines a field layout of a field definition.</summary>
+      <param name="field">The field definition handle.</param>
+      <param name="offset">The byte offset of the field within the declaring type instance.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddFieldRelativeVirtualAddress(System.Reflection.Metadata.FieldDefinitionHandle,System.Int32)">
-      <param name="field" />
-      <param name="offset" />
+      <summary>Adds a mapping from a field to its initial value stored in the PE image.</summary>
+      <param name="field">The field definition handle.</param>
+      <param name="offset">The offset within the block in the PE image that stores initial values of mapped fields (usually in the .text section).</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddGenericParameter(System.Reflection.Metadata.EntityHandle,System.Reflection.GenericParameterAttributes,System.Reflection.Metadata.StringHandle,System.Int32)">
-      <param name="parent" />
-      <param name="attributes" />
-      <param name="name" />
-      <param name="index" />
+      <summary>Adds a generic parameter definition.</summary>
+      <param name="parent">The parent entity handle, which can be either a <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" /> or <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" />.</param>
+      <param name="attributes">The generic parameter attributes.</param>
+      <param name="name">The parameter name.</param>
+      <param name="index">The zero-based parameter index.</param>
+      <returns>A handle to the added generic parameter.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddGenericParameterConstraint(System.Reflection.Metadata.GenericParameterHandle,System.Reflection.Metadata.EntityHandle)">
-      <param name="genericParameter" />
-      <param name="constraint" />
+      <summary>Adds a type constraint to a generic parameter.</summary>
+      <param name="genericParameter">The generic parameter to constrain.</param>
+      <param name="constraint">The type constraint, which can be one of the following: a <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" /> or a <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />.</param>
+      <returns>A handle to the added generic parameter constraint.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddImportScope(System.Reflection.Metadata.ImportScopeHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="parentScope" />
-      <param name="imports" />
+      <summary>Adds local scope debug information.</summary>
+      <param name="parentScope">The parent scope handle.</param>
+      <param name="imports">The import scope handle.</param>
+      <returns>A handle to the added import scope.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddInterfaceImplementation(System.Reflection.Metadata.TypeDefinitionHandle,System.Reflection.Metadata.EntityHandle)">
-      <param name="type" />
-      <param name="implementedInterface" />
+      <summary>Adds an interface implementation to a type.</summary>
+      <param name="type">The type implementing the interface.</param>
+      <param name="implementedInterface">The interface being implemented, which can be one of the following: <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, or <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />.</param>
+      <returns>A handle to the added interface implementation.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddLocalConstant(System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="name" />
-      <param name="signature" />
+      <summary>Adds local constant debug information.</summary>
+      <param name="name">The name of the variable.</param>
+      <param name="signature">The LocalConstantSig blob.</param>
+      <returns>A handle to the added local constant.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddLocalScope(System.Reflection.Metadata.MethodDefinitionHandle,System.Reflection.Metadata.ImportScopeHandle,System.Reflection.Metadata.LocalVariableHandle,System.Reflection.Metadata.LocalConstantHandle,System.Int32,System.Int32)">
-      <param name="method" />
-      <param name="importScope" />
-      <param name="variableList" />
-      <param name="constantList" />
-      <param name="startOffset" />
-      <param name="length" />
+      <summary>Adds local scope debug information.</summary>
+      <param name="method">The containing method.</param>
+      <param name="importScope">The handle of the associated import scope.</param>
+      <param name="variableList">If the scope declares variables, set this to the handle of the first one. Otherwise, set this to the handle of the first variable declared by the next scope definition. If no scope defines any variables, <see langword="System.Reflection.Metadata.Ecma335.MetadataTokens.LocalVariableHandle(1)" />.</param>
+      <param name="constantList">If the scope declares constants, set this the handle of the first one. Otherwise, set this to the handle of the first constant declared by the next scope definition. If no scope defines any constants, <see langword="System.Reflection.Metadata.Ecma335.MetadataTokens.LocalConstantHandle(1)" />.</param>
+      <param name="startOffset">The offset of the first instruction covered by the scope.</param>
+      <param name="length">The length (in bytes) of the scope.</param>
+      <returns>A handle to the added local scope.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddLocalVariable(System.Reflection.Metadata.LocalVariableAttributes,System.Int32,System.Reflection.Metadata.StringHandle)">
-      <param name="attributes" />
-      <param name="index" />
-      <param name="name" />
+      <summary>Adds local variable debug information.</summary>
+      <param name="attributes">The local variable attributes.</param>
+      <param name="index">The zero-base index of the local variable in the local signature.</param>
+      <param name="name">The name of the variable.</param>
+      <returns>A handle to the added local variable.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddManifestResource(System.Reflection.ManifestResourceAttributes,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.EntityHandle,System.UInt32)">
-      <param name="attributes" />
-      <param name="name" />
-      <param name="implementation" />
-      <param name="offset" />
+      <summary>Adds a manifest resource.</summary>
+      <param name="attributes">The manifest resource attributes.</param>
+      <param name="name">The name of the manifest resource.</param>
+      <param name="implementation">The implementation entity handle, which can be one of the following: <see cref="T:System.Reflection.Metadata.AssemblyFileHandle" />, <see cref="T:System.Reflection.Metadata.AssemblyReferenceHandle" />, or <see langword="null" />.</param>
+      <param name="offset">Specifies the byte offset within the referenced file at which this resource record begins.</param>
+      <returns>A handle to the added manifest resource.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddMarshallingDescriptor(System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="parent" />
-      <param name="descriptor" />
+      <summary>Adds marshalling information to a field or a parameter.</summary>
+      <param name="parent">The parent entity handle, which can be one of the following: <see cref="T:System.Reflection.Metadata.ParameterHandle" /> or <see cref="T:System.Reflection.Metadata.FieldDefinitionHandle" />.</param>
+      <param name="descriptor">The descriptor blob.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddMemberReference(System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="parent" />
-      <param name="name" />
-      <param name="signature" />
+      <summary>Adds a MemberRef table row.</summary>
+      <param name="parent">The containing entity, which can be one of the following: <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, <see cref="T:System.Reflection.Metadata.ModuleReferenceHandle" />, <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" />, or <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />.</param>
+      <param name="name">The member name.</param>
+      <param name="signature">The member signature.</param>
+      <returns>A handle to the added member reference.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddMethodDebugInformation(System.Reflection.Metadata.DocumentHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="document" />
-      <param name="sequencePoints" />
+      <summary>Adds method debug information.</summary>
+      <param name="document">The handle of a single document containing all sequence points of the method, or <see langword="null" /> if the method doesn't have sequence points or spans multiple documents.</param>
+      <param name="sequencePoints">The sequence Points blob, or <see langword="null" /> if the method doesn't have sequence points.</param>
+      <returns>A handle to the added method debug information.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddMethodDefinition(System.Reflection.MethodAttributes,System.Reflection.MethodImplAttributes,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.BlobHandle,System.Int32,System.Reflection.Metadata.ParameterHandle)">
-      <param name="attributes" />
-      <param name="implAttributes" />
-      <param name="name" />
-      <param name="signature" />
-      <param name="bodyOffset" />
-      <param name="parameterList" />
+      <summary>Adds a method definition.</summary>
+      <param name="attributes">The method attributes.</param>
+      <param name="implAttributes">The method implementation attributes.</param>
+      <param name="name">The method name.</param>
+      <param name="signature">The method signature.</param>
+      <param name="bodyOffset">Offset within the block in the PE image that stores method bodies (the IL stream), or -1 if the method doesn't have a body.</param>
+      <param name="parameterList">If the method declares parameters in the Params table, set this to the handle of the first one. Otherwise, set this to the handle of the first parameter declared by the next method definition. If no parameters are declared in the module, <see langword="System.Reflection.Metadata.Ecma335.MetadataTokens.ParameterHandle(1)" />.</param>
+      <returns>A handle to the added method definition.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddMethodImplementation(System.Reflection.Metadata.TypeDefinitionHandle,System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.EntityHandle)">
-      <param name="type" />
-      <param name="methodBody" />
-      <param name="methodDeclaration" />
+      <summary>Defines an implementation for a method declaration within a type.</summary>
+      <param name="type">The type definition.</param>
+      <param name="methodBody">The method body entity handle, which can be one of the following: <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" /> or <see cref="T:System.Reflection.Metadata.MemberReferenceHandle" />.</param>
+      <param name="methodDeclaration">The method declaration entity handle, which can be one of the following: <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" /> or <see cref="T:System.Reflection.Metadata.MemberReferenceHandle" />.</param>
+      <returns>A handle to the added method implementation.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddMethodImport(System.Reflection.Metadata.MethodDefinitionHandle,System.Reflection.MethodImportAttributes,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.ModuleReferenceHandle)">
-      <param name="method" />
-      <param name="attributes" />
-      <param name="name" />
-      <param name="module" />
+      <summary>Adds import information to a method definition.</summary>
+      <param name="method">The method definition handle.</param>
+      <param name="attributes">The method import attributes.</param>
+      <param name="name">The unmanaged method name.</param>
+      <param name="module">The module containing the unmanaged method.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddMethodSemantics(System.Reflection.Metadata.EntityHandle,System.Reflection.MethodSemanticsAttributes,System.Reflection.Metadata.MethodDefinitionHandle)">
-      <param name="association" />
-      <param name="semantics" />
-      <param name="methodDefinition" />
+      <summary>Associates a method (a getter, a setter, an adder, etc.) with a property or an event.</summary>
+      <param name="association">The association entity handle, which can be one of the following: <see cref="T:System.Reflection.Metadata.EventDefinitionHandle" /> or <see cref="T:System.Reflection.Metadata.PropertyDefinitionHandle" />.</param>
+      <param name="semantics">The method semantics attributes.</param>
+      <param name="methodDefinition">The method definition.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddMethodSpecification(System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="method" />
-      <param name="instantiation" />
+      <summary>Adds a method specification (an instantiation).</summary>
+      <param name="method">The generic method entity handle, which can be one of the following: <see cref="T:System.Reflection.Metadata.MethodDefinitionHandle" /> or <see cref="T:System.Reflection.Metadata.MemberReferenceHandle" />.</param>
+      <param name="instantiation">The instantiation blob encoding the generic arguments of the method.</param>
+      <returns>A handle to the added method specification.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddModule(System.Int32,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.GuidHandle,System.Reflection.Metadata.GuidHandle,System.Reflection.Metadata.GuidHandle)">
       <param name="generation" />
@@ -1931,18 +1997,23 @@
       <param name="moduleName" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddNestedType(System.Reflection.Metadata.TypeDefinitionHandle,System.Reflection.Metadata.TypeDefinitionHandle)">
-      <param name="type" />
-      <param name="enclosingType" />
+      <summary>Defines a nesting relationship to specified type definitions.</summary>
+      <param name="type">The nested type definition handle.</param>
+      <param name="enclosingType">The enclosing type definition handle.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddParameter(System.Reflection.ParameterAttributes,System.Reflection.Metadata.StringHandle,System.Int32)">
-      <param name="attributes" />
-      <param name="name" />
-      <param name="sequenceNumber" />
+      <summary>Adds a parameter definition.</summary>
+      <param name="attributes">The parameter attributes.</param>
+      <param name="name">Optional. The parameter name.</param>
+      <param name="sequenceNumber">The sequence number of the parameter. A value of 0 refers to the owner method's return type; its parameters are then numbered from 1 onward.</param>
+      <returns>A handle to the added parameter.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddProperty(System.Reflection.PropertyAttributes,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.BlobHandle)">
-      <param name="attributes" />
-      <param name="name" />
-      <param name="signature" />
+      <summary>Adds a property definition.</summary>
+      <param name="attributes">The property attributes.</param>
+      <param name="name">The property name.</param>
+      <param name="signature">The signature of the property.</param>
+      <returns>A handle to the added property definition.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddPropertyMap(System.Reflection.Metadata.TypeDefinitionHandle,System.Reflection.Metadata.PropertyDefinitionHandle)">
       <param name="declaringType" />
@@ -1952,148 +2023,228 @@
       <param name="signature" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddStateMachineMethod(System.Reflection.Metadata.MethodDefinitionHandle,System.Reflection.Metadata.MethodDefinitionHandle)">
-      <param name="moveNextMethod" />
-      <param name="kickoffMethod" />
+      <summary>Adds state machine method debug information.</summary>
+      <param name="moveNextMethod">The handle of the <see langword="MoveNext" /> method of the state machine (the compiler-generated method).</param>
+      <param name="kickoffMethod">The handle of the kickoff method (the user defined iterator/async method).</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddTypeDefinition(System.Reflection.TypeAttributes,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.FieldDefinitionHandle,System.Reflection.Metadata.MethodDefinitionHandle)">
-      <param name="attributes" />
-      <param name="namespace" />
-      <param name="name" />
-      <param name="baseType" />
-      <param name="fieldList" />
-      <param name="methodList" />
+      <summary>Adds a type definition.</summary>
+      <param name="attributes">The type attributes.</param>
+      <param name="namespace">The type namespace.</param>
+      <param name="name">The type name.</param>
+      <param name="baseType">The base type entity handle, which can be one of the following: <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, <see cref="T:System.Reflection.Metadata.TypeSpecificationHandle" />, or <see langword="null" />.</param>
+      <param name="fieldList">If the type declares fields, set this to the handle of the first one. Otherwise, set this to the handle of the first field declared by the next type definition. If no type defines any fields in the module, <see langword="System.Reflection.Metadata.Ecma335.MetadataTokens.FieldDefinitionHandle(1)" />.</param>
+      <param name="methodList">If the type declares methods, the handle of the first one. Otherwise, the handle of the first method declared by the next type definition. If no type defines any methods in the module, <see langword="System.Reflection.Metadata.Ecma335.MetadataTokens.MethodDefinitionHandle(1)" />.</param>
+      <returns>A handle to the added type definition.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddTypeLayout(System.Reflection.Metadata.TypeDefinitionHandle,System.UInt16,System.UInt32)">
-      <param name="type" />
-      <param name="packingSize" />
-      <param name="size" />
+      <summary>Defines a type layout of a type definition.</summary>
+      <param name="type">The type definition.</param>
+      <param name="packingSize">Specifies that fields should be placed within the type instance at byte addresses which are a multiple of <paramref name="packingSize" />, or at natural alignment for that field type, whichever is smaller. Its value should be one of the following: 0, 1, 2, 4, 8, 16, 32, 64, or 128. A value of zero indicates that the packing size used should match the default for the current platform.</param>
+      <param name="size">Indicates a minimum size of the type instance and is intended to allow for padding. The amount of memory allocated is the maximum of the size calculated from the layout and <paramref name="size" />. Note that if this directive applies to a value type, then the size will be less than 1 MB.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddTypeReference(System.Reflection.Metadata.EntityHandle,System.Reflection.Metadata.StringHandle,System.Reflection.Metadata.StringHandle)">
-      <param name="resolutionScope" />
-      <param name="namespace" />
-      <param name="name" />
+      <summary>Adds a type reference.</summary>
+      <param name="resolutionScope">The entity declaring the target type, which can be one of the following: <see cref="T:System.Reflection.Metadata.ModuleDefinitionHandle" />, <see cref="T:System.Reflection.Metadata.ModuleReferenceHandle" />, <see cref="T:System.Reflection.Metadata.AssemblyReferenceHandle" />, <see cref="T:System.Reflection.Metadata.TypeReferenceHandle" />, or <see langword="null" />.</param>
+      <param name="namespace">The type reference namespace.</param>
+      <param name="name">The type reference name.</param>
+      <returns>A handle to the added type reference.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.AddTypeSpecification(System.Reflection.Metadata.BlobHandle)">
       <param name="signature" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddBlob(System.Byte[])">
-      <param name="value" />
+      <summary>Adds the specified blob to the Blob heap, if it's not there already.</summary>
+      <param name="value">The array containing the blob.</param>
+      <returns>A handle to the added or existing blob.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddBlob(System.Collections.Immutable.ImmutableArray{System.Byte})">
-      <param name="value" />
+      <summary>Adds the specified blob from a byte array to the Blob heap, if it's not there already.</summary>
+      <param name="value">The array containing the blob.</param>
+      <returns>A handle to the added or existing blob.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddBlob(System.Reflection.Metadata.BlobBuilder)">
-      <param name="value" />
+      <summary>Adds the specified blob from an immutable byte array to the Blob heap, if it's not there already.</summary>
+      <param name="value">The blob builder instance containing the blob.</param>
+      <returns>A handle to the added or existing blob.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddBlobUTF16(System.String)">
-      <param name="value" />
+      <summary>Encodes a string using UTF16 encoding to a blob and adds it to the Blob heap, if it's not there already.</summary>
+      <param name="value">The string to add.</param>
+      <returns>A handle to the added or existing blob.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddBlobUTF8(System.String,System.Boolean)">
-      <param name="value" />
-      <param name="allowUnpairedSurrogates" />
+      <summary>Encodes a string using UTF8 encoding to a blob and adds it to the Blob heap, if it's not there already.</summary>
+      <param name="value">The value to add.</param>
+      <param name="allowUnpairedSurrogates">
+        <see langword="true" /> to encode the unpaired surrogates as specified; <see langword="false" /> to replace them with the U+FFFD character.</param>
+      <returns>A handle to the added or existing blob.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddConstantBlob(System.Object)">
-      <param name="value" />
+      <summary>Encodes a constant value to a blob and adds it to the Blob heap, if it's not there already. Uses UTF16 to encode string constants.</summary>
+      <param name="value">The constant value to add.</param>
+      <returns>A handle to the added or existing blob.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddDocumentName(System.String)">
-      <param name="value" />
+      <summary>Encodes a debug document name and adds it to the Blob heap, if it's not there already.</summary>
+      <param name="value">The document name to add.</param>
+      <returns>A handle to the added or existing document name blob.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddGuid(System.Guid)">
-      <param name="guid" />
+      <summary>Adds the specified Guid to the Guid heap, if it's not there already.</summary>
+      <param name="guid">The Guid to add.</param>
+      <returns>A handle to the added or existing Guid.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddString(System.String)">
-      <param name="value" />
+      <summary>Adds the specified string to the string heap, if it's not there already.</summary>
+      <param name="value">The string to add.</param>
+      <returns>A handle to the added or existing string.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetOrAddUserString(System.String)">
-      <param name="value" />
+      <summary>Adds the specified string to the user string heap, if it's not there already.</summary>
+      <param name="value">The string to add.</param>
+      <returns>A handle to the added or existing string. This value may be used in <see cref="M:System.Reflection.Metadata.Ecma335.InstructionEncoder.LoadString(System.Reflection.Metadata.UserStringHandle)" />.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetRowCount(System.Reflection.Metadata.Ecma335.TableIndex)">
-      <param name="table" />
+      <summary>Returns the current number of items in the specified table.</summary>
+      <param name="table">The table index.</param>
+      <returns>The number of items in the table.</returns>
     </member>
-    <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetRowCounts" />
-    <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.ReserveGuid" />
+    <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.GetRowCounts">
+      <summary>Returns the current number of items in each table.</summary>
+      <returns>An array of size <see cref="F:System.Reflection.Metadata.Ecma335.MetadataTokens.TableCount" />, with each item filled with the current row count of the corresponding table.</returns>
+    </member>
+    <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.ReserveGuid">
+      <summary>Reserves space on the Guid heap for a GUID.</summary>
+      <returns>A handle to the reserved Guid and a <see cref="T:System.Reflection.Metadata.Blob" /> representing the GUID blob as stored on the heap.</returns>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.ReserveUserString(System.Int32)">
-      <param name="length" />
+      <summary>Reserves space on the user string heap for a string of the specified length.</summary>
+      <param name="length">The number of characters to reserve.</param>
+      <returns>A handle to the reserved user string and a <see cref="T:System.Reflection.Metadata.Blob" /> representing the entire User String blob (including its length and terminal character). The handle may be used in <see cref="M:System.Reflection.Metadata.Ecma335.InstructionEncoder.LoadString(System.Reflection.Metadata.UserStringHandle)" />.
+Use <see cref="M:System.Reflection.Metadata.BlobWriter.WriteUserString(System.String)" /> to fill in the blob content.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.SetCapacity(System.Reflection.Metadata.Ecma335.HeapIndex,System.Int32)">
-      <param name="heap" />
-      <param name="byteCount" />
+      <summary>Sets the capacity of the specified heap.</summary>
+      <param name="heap">The heap index.</param>
+      <param name="byteCount">The number of bytes.</param>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataBuilder.SetCapacity(System.Reflection.Metadata.Ecma335.TableIndex,System.Int32)">
-      <param name="table" />
-      <param name="rowCount" />
+      <summary>Sets the capacity of the specified table.</summary>
+      <param name="table">The table index.</param>
+      <param name="rowCount">The number of rows in the table.</param>
     </member>
-    <member name="T:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions" />
+    <member name="T:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions">
+      <summary>Provides extension methods for working with certain raw elements of the ECMA-335 metadata tables and heaps.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetEditAndContinueLogEntries(System.Reflection.Metadata.MetadataReader)">
+      <summary>Enumerates entries of EnC log.</summary>
       <param name="reader" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetEditAndContinueMapEntries(System.Reflection.Metadata.MetadataReader)">
+      <summary>Enumerates entries of EnC map.</summary>
       <param name="reader" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetHeapMetadataOffset(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.Ecma335.HeapIndex)">
+      <summary>Returns the offset from the start of metadata to the specified heap.</summary>
       <param name="reader" />
       <param name="heapIndex" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetHeapSize(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.Ecma335.HeapIndex)">
+      <summary>Returns the size of the specified heap.</summary>
       <param name="reader" />
       <param name="heapIndex" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetNextHandle(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.BlobHandle)">
+      <summary>Returns the handle to the <see cref="T:System.Reflection.Metadata.Blob" /> that follows the given one in the <see cref="T:System.Reflection.Metadata.Blob" /> heap or a nil handle if it is the last one.</summary>
       <param name="reader" />
       <param name="handle" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetNextHandle(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.StringHandle)">
+      <summary>Returns the a handle to the string that follows the given one in the string heap, or a nil handle if it is the last one.</summary>
       <param name="reader" />
       <param name="handle" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetNextHandle(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.UserStringHandle)">
+      <summary>Returns the a handle to the UserString that follows the given one in the UserString heap or a nil handle if it is the last one.</summary>
       <param name="reader" />
       <param name="handle" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetTableMetadataOffset(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.Ecma335.TableIndex)">
+      <summary>Returns the offset from the start of metadata to the specified table.</summary>
       <param name="reader" />
       <param name="tableIndex" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetTableRowCount(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.Ecma335.TableIndex)">
+      <summary>Returns the number of rows in the specified table.</summary>
       <param name="reader" />
       <param name="tableIndex" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetTableRowSize(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.Ecma335.TableIndex)">
+      <summary>Returns the size of a row in the specified table.</summary>
       <param name="reader" />
       <param name="tableIndex" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetTypesWithEvents(System.Reflection.Metadata.MetadataReader)">
+      <summary>Enumerate types that define one or more events.</summary>
       <param name="reader" />
+      <returns>The resulting sequence corresponds exactly to entries in EventMap table, i.e. n-th returned <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" /> is stored in n-th row of EventMap.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.GetTypesWithProperties(System.Reflection.Metadata.MetadataReader)">
+      <summary>Enumerate types that define one or more properties.</summary>
       <param name="reader" />
+      <returns>The resulting sequence corresponds exactly to entries in the property map table, that is, the n-th returned <see cref="T:System.Reflection.Metadata.TypeDefinitionHandle" /> is stored in n-th row of the property map.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataReaderExtensions.ResolveSignatureTypeKind(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.EntityHandle,System.Byte)">
+      <summary>Given a type handle and a raw type kind found in a signature blob determines whether the target type is a value type or a reference type.</summary>
       <param name="reader" />
       <param name="typeHandle" />
       <param name="rawTypeKind" />
     </member>
-    <member name="T:System.Reflection.Metadata.Ecma335.MetadataRootBuilder" />
+    <member name="T:System.Reflection.Metadata.Ecma335.MetadataRootBuilder">
+      <summary>Builder of a Metadata Root to be embedded in a Portable Executable image.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataRootBuilder.#ctor(System.Reflection.Metadata.Ecma335.MetadataBuilder,System.String,System.Boolean)">
-      <param name="tablesAndHeaps" />
-      <param name="metadataVersion" />
-      <param name="suppressValidation" />
+      <summary>Creates a builder of a metadata root.</summary>
+      <param name="tablesAndHeaps">Builder populated with metadata entities stored in tables and values stored in heaps. The entities and values will be enumerated when serializing the metadata root.</param>
+      <param name="metadataVersion">The version string written to the metadata header. The default value is "v4.0.30319".</param>
+      <param name="suppressValidation">
+        <see langword="true" /> to suppress basic validation of metadata tables during serialization; otherwise, <paramref name="false" />.</param>
     </member>
-    <member name="P:System.Reflection.Metadata.Ecma335.MetadataRootBuilder.MetadataVersion" />
+    <member name="P:System.Reflection.Metadata.Ecma335.MetadataRootBuilder.MetadataVersion">
+      <summary>The metadata version.</summary>
+      <returns>A string that represents the metadata version.</returns>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataRootBuilder.Serialize(System.Reflection.Metadata.BlobBuilder,System.Int32,System.Int32)">
-      <param name="builder" />
-      <param name="methodBodyStreamRva" />
-      <param name="mappedFieldDataStreamRva" />
+      <summary>Serializes metadata root content into the given <see cref="T:System.Reflection.Metadata.BlobBuilder" />.</summary>
+      <param name="builder">Builder to write to.</param>
+      <param name="methodBodyStreamRva">The relative virtual address of the start of the method body stream. Used to calculate the final value of RVA fields of MethodDef table.</param>
+      <param name="mappedFieldDataStreamRva">The relative virtual address of the start of the field init data stream. Used to calculate the final value of RVA fields of FieldRVA table.</param>
     </member>
-    <member name="P:System.Reflection.Metadata.Ecma335.MetadataRootBuilder.Sizes" />
-    <member name="P:System.Reflection.Metadata.Ecma335.MetadataRootBuilder.SuppressValidation" />
-    <member name="T:System.Reflection.Metadata.Ecma335.MetadataSizes" />
-    <member name="P:System.Reflection.Metadata.Ecma335.MetadataSizes.ExternalRowCounts" />
+    <member name="P:System.Reflection.Metadata.Ecma335.MetadataRootBuilder.Sizes">
+      <summary>Returns sizes of various metadata structures.</summary>
+    </member>
+    <member name="P:System.Reflection.Metadata.Ecma335.MetadataRootBuilder.SuppressValidation">
+      <summary>Determines if basic validation of metadata tables should be suppressed. The validation verifies that entries in the tables were added in order required by the ECMA specification. It does not enforce all specification requirements on metadata tables.</summary>
+      <returns>
+        <see langword="true" /> to suppress basic validation of metadata tables; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="T:System.Reflection.Metadata.Ecma335.MetadataSizes">
+      <summary>Provides information on sizes of various metadata structures.</summary>
+    </member>
+    <member name="P:System.Reflection.Metadata.Ecma335.MetadataSizes.ExternalRowCounts">
+      <summary>External table row count.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataSizes.GetAlignedHeapSize(System.Reflection.Metadata.Ecma335.HeapIndex)">
+      <summary>Returns aligned size of the specified heap.</summary>
       <param name="index" />
     </member>
-    <member name="P:System.Reflection.Metadata.Ecma335.MetadataSizes.HeapSizes" />
-    <member name="P:System.Reflection.Metadata.Ecma335.MetadataSizes.RowCounts" />
+    <member name="P:System.Reflection.Metadata.Ecma335.MetadataSizes.HeapSizes">
+      <summary>Exact (unaligned) heap sizes.</summary>
+    </member>
+    <member name="P:System.Reflection.Metadata.Ecma335.MetadataSizes.RowCounts">
+      <summary>Table row counts.</summary>
+    </member>
     <member name="T:System.Reflection.Metadata.Ecma335.MetadataTokens" />
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.AssemblyFileHandle(System.Int32)">
       <param name="rowNumber" />
@@ -2123,9 +2274,11 @@
       <param name="offset" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.EntityHandle(System.Int32)">
+      <summary>Creates an entity handle from a token value.</summary>
       <param name="token" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.EntityHandle(System.Reflection.Metadata.Ecma335.TableIndex,System.Int32)">
+      <summary>Creates an <see cref="T:System.Reflection.Metadata.EntityHandle" /> from a token value.</summary>
       <param name="tableIndex" />
       <param name="rowNumber" />
     </member>
@@ -2145,56 +2298,85 @@
       <param name="rowNumber" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetHeapOffset(System.Reflection.Metadata.BlobHandle)">
+      <summary>Gets the offset of metadata heap data that corresponds to the specified <paramref name="handle" />.</summary>
       <param name="handle" />
+      <returns>Zero based offset, or -1 if <paramref name="handle" /> can only be interpreted in a context of a specific <see cref="T:System.Reflection.Metadata.MetadataReader" /> or <see cref="T:System.Reflection.Metadata.Ecma335.MetadataBuilder" />.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetHeapOffset(System.Reflection.Metadata.GuidHandle)">
+      <summary>Gets the offset of metadata heap data that corresponds to the specified <paramref name="handle" />.</summary>
       <param name="handle" />
+      <returns>1-based index into the #Guid heap. Unlike other heaps, which are essentially byte arrays, the #Guid heap is an array of 16-byte GUIDs.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetHeapOffset(System.Reflection.Metadata.Handle)">
+      <summary>Gets the offset of metadata heap data that corresponds to the specified <paramref name="handle" />.</summary>
       <param name="handle" />
+      <returns>An offset in the corresponding heap, or -1 if <paramref name="handle" /> can only be interpreted in a context of a specific <see cref="T:System.Reflection.Metadata.MetadataReader" /> or <see cref="T:System.Reflection.Metadata.Ecma335.MetadataBuilder" />.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetHeapOffset(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.Handle)">
+      <summary>Gets the offset of metadata heap data that corresponds to the specified <paramref name="handle" /> in the context of <paramref name="reader" />.</summary>
       <param name="reader" />
       <param name="handle" />
+      <returns>Zero based offset, or -1 if <paramref name="handle" /> isn't a metadata heap handle.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetHeapOffset(System.Reflection.Metadata.StringHandle)">
+      <summary>Gets the offset of metadata heap data that corresponds to the specified <paramref name="handle" />.</summary>
       <param name="handle" />
+      <returns>Zero-based offset, or -1 if <paramref name="handle" /> can only be interpreted in a context of a specific <see cref="T:System.Reflection.Metadata.MetadataReader" /> or <see cref="T:System.Reflection.Metadata.Ecma335.MetadataBuilder" />.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetHeapOffset(System.Reflection.Metadata.UserStringHandle)">
+      <summary>Gets the offset of metadata heap data that corresponds to the specified <paramref name="handle" />.</summary>
       <param name="handle" />
+      <returns>Zero-based offset.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetRowNumber(System.Reflection.Metadata.EntityHandle)">
+      <summary>Gets the row number of a metadata table entry that corresponds to the specified <paramref name="handle" />.</summary>
       <param name="handle" />
+      <returns>One based row number, or -1 if <paramref name="handle" /> can only be interpreted in a context of a specific <see cref="T:System.Reflection.Metadata.MetadataReader" />.
+See <see cref="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetRowNumber(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.EntityHandle)" />.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetRowNumber(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.EntityHandle)">
+      <summary>Gets the row number of a metadata table entry that corresponds to the specified <paramref name="handle" /> in the context of <paramref name="reader" />.</summary>
       <param name="reader" />
       <param name="handle" />
+      <returns>One based row number.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetToken(System.Reflection.Metadata.EntityHandle)">
+      <summary>Gets the metadata token of the specified <paramref name="handle" />.</summary>
       <param name="handle" />
+      <returns>Metadata token, or 0 if <paramref name="handle" /> can only be interpreted in a context of a specific <see cref="T:System.Reflection.Metadata.MetadataReader" />.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetToken(System.Reflection.Metadata.Handle)">
+      <summary>Gets the metadata token of the specified <paramref name="handle" />.</summary>
       <param name="handle" />
+      <returns>Metadata token, or 0 if <paramref name="handle" /> can only be interpreted in a context of a specific <see cref="T:System.Reflection.Metadata.MetadataReader" />.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetToken(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.EntityHandle)">
+      <summary>Gets the metadata token of the specified <paramref name="handle" /> in the context of <paramref name="reader" />.</summary>
       <param name="reader" />
       <param name="handle" />
+      <returns>Metadata token.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GetToken(System.Reflection.Metadata.MetadataReader,System.Reflection.Metadata.Handle)">
+      <summary>Gets the metadata token of the specified <paramref name="handle" /> in the context of <paramref name="reader" />.</summary>
       <param name="reader" />
       <param name="handle" />
+      <returns>Metadata token.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.GuidHandle(System.Int32)">
       <param name="offset" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.Handle(System.Int32)">
+      <summary>Creates a handle from a token value.</summary>
       <param name="token" />
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.Handle(System.Reflection.Metadata.Ecma335.TableIndex,System.Int32)">
+      <summary>Creates an <see cref="T:System.Reflection.Metadata.EntityHandle" /> from a token value.</summary>
       <param name="tableIndex" />
       <param name="rowNumber" />
     </member>
-    <member name="F:System.Reflection.Metadata.Ecma335.MetadataTokens.HeapCount" />
+    <member name="F:System.Reflection.Metadata.Ecma335.MetadataTokens.HeapCount">
+      <summary>Maximum number of tables that can be present in Ecma335 metadata.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.ImportScopeHandle(System.Int32)">
       <param name="rowNumber" />
     </member>
@@ -2243,14 +2425,22 @@
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.StringHandle(System.Int32)">
       <param name="offset" />
     </member>
-    <member name="F:System.Reflection.Metadata.Ecma335.MetadataTokens.TableCount" />
+    <member name="F:System.Reflection.Metadata.Ecma335.MetadataTokens.TableCount">
+      <summary>Maximum number of tables that can be present in Ecma335 metadata.</summary>
+    </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.TryGetHeapIndex(System.Reflection.Metadata.HandleKind,System.Reflection.Metadata.Ecma335.HeapIndex@)">
-      <param name="type" />
-      <param name="index" />
+      <summary>Gets the <see cref="T:System.Reflection.Metadata.Ecma335.HeapIndex" /> of the heap corresponding to the specified <see cref="T:System.Reflection.Metadata.HandleKind" />.</summary>
+      <param name="type">Handle type.</param>
+      <param name="index">Heap index.</param>
+      <returns>
+        <see langword="true" /> if the handle type corresponds to an Ecma335 heap; <see langword="false" /> otherwise.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.TryGetTableIndex(System.Reflection.Metadata.HandleKind,System.Reflection.Metadata.Ecma335.TableIndex@)">
-      <param name="type" />
-      <param name="index" />
+      <summary>Gets the <see cref="T:System.Reflection.Metadata.Ecma335.TableIndex" /> of the table corresponding to the specified <see cref="T:System.Reflection.Metadata.HandleKind" />.</summary>
+      <param name="type">Handle type.</param>
+      <param name="index">Table index.</param>
+      <returns>
+        <see langword="true" /> if the handle type corresponds to an Ecma335 or Portable PDB table; <see langword="false" /> otherwise.</returns>
     </member>
     <member name="M:System.Reflection.Metadata.Ecma335.MetadataTokens.TypeDefinitionHandle(System.Int32)">
       <param name="rowNumber" />
@@ -6724,20 +6914,50 @@ CLS-compliant setters are named with the <see langword="set_" /> prefix.</summar
     </member>
     <member name="P:System.Reflection.PortableExecutable.SectionLocation.PointerToRawData" />
     <member name="P:System.Reflection.PortableExecutable.SectionLocation.RelativeVirtualAddress" />
-    <member name="T:System.Reflection.PortableExecutable.Subsystem" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.EfiApplication" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.EfiBootServiceDriver" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.EfiRom" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.EfiRuntimeDriver" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.Native" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.NativeWindows" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.OS2Cui" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.PosixCui" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.Unknown" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.WindowsBootApplication" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.WindowsCEGui" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.WindowsCui" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.WindowsGui" />
-    <member name="F:System.Reflection.PortableExecutable.Subsystem.Xbox" />
+    <member name="T:System.Reflection.PortableExecutable.Subsystem">
+      <summary>Describes the subsystem requirement for the image.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.EfiApplication">
+      <summary>Extensible Firmware Interface (EFI) application.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.EfiBootServiceDriver">
+      <summary>EFI driver with boot services.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.EfiRom">
+      <summary>EFI ROM image.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.EfiRuntimeDriver">
+      <summary>EFI driver with run-time services.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.Native">
+      <summary>The image doesn't require a subsystem.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.NativeWindows">
+      <summary>The image is a native Win9x driver.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.OS2Cui">
+      <summary>The image runs in the OS/2 character subsystem.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.PosixCui">
+      <summary>The image runs in the Posix character subsystem.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.Unknown">
+      <summary>Unknown subsystem.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.WindowsBootApplication">
+      <summary>Boot application.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.WindowsCEGui">
+      <summary>The image runs in the Windows CE subsystem.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.WindowsCui">
+      <summary>The image runs in the Windows character subsystem.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.WindowsGui">
+      <summary>The image runs in the Windows GUI subsystem.</summary>
+    </member>
+    <member name="F:System.Reflection.PortableExecutable.Subsystem.Xbox">
+      <summary>Xbox system.</summary>
+    </member>
   </members>
 </doc>

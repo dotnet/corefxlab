@@ -14,9 +14,19 @@
       <param name="endOfMessage">
         <see langword="true" /> to indicate the messsage has been received completely; otherwise, <see langword="false" />.</param>
     </member>
-    <member name="P:System.Net.WebSockets.ValueWebSocketReceiveResult.Count" />
-    <member name="P:System.Net.WebSockets.ValueWebSocketReceiveResult.EndOfMessage" />
-    <member name="P:System.Net.WebSockets.ValueWebSocketReceiveResult.MessageType" />
+    <member name="P:System.Net.WebSockets.ValueWebSocketReceiveResult.Count">
+      <summary>Gets the number of bytes that the <see cref="T:System.Net.WebSockets.WebSocket" /> received.</summary>
+      <returns>The number of bytes that the <see cref="T:System.Net.WebSockets.WebSocket" /> received.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.ValueWebSocketReceiveResult.EndOfMessage">
+      <summary>Gets whether the message has been received completely.</summary>
+      <returns>
+        <see langword="true" /> if the message was received completely; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:System.Net.WebSockets.ValueWebSocketReceiveResult.MessageType">
+      <summary>Gets the type of the current message.</summary>
+      <returns>One of the enumeration values that specifies if the current message is a UTF-8, binary, or close message.</returns>
+    </member>
     <member name="T:System.Net.WebSockets.WebSocket">
       <summary>The WebSocket class allows applications to send and receive data after the WebSocket upgrade has completed.</summary>
     </member>
@@ -104,8 +114,10 @@
       <returns>The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.Task`1.Result" /> property on the task object returns a <see cref="T:System.Net.WebSockets.WebSocketReceiveResult" /> object that represents the received data.</returns>
     </member>
     <member name="M:System.Net.WebSockets.WebSocket.ReceiveAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
-      <param name="buffer" />
-      <param name="cancellationToken" />
+      <summary>Receives data from the <see cref="T:System.Net.WebSockets.WebSocket" /> connection asynchronously.</summary>
+      <param name="buffer">The application buffer that is the storage location for the received data.</param>
+      <param name="cancellationToken">The cancellation token to use to cancel the receive operation.</param>
+      <returns>The task object representing the asynchronous operation. The <see cref="P:System.Threading.Tasks.ValueTask`1.Result" /> property on the task object returns a <see cref="T:System.Net.WebSockets.ValueWebSocketReceiveResult" /> object that represents the received data.</returns>
     </member>
     <member name="M:System.Net.WebSockets.WebSocket.RegisterPrefixes">
       <summary>Allows callers to register prefixes for WebSocket requests (ws and wss).</summary>
@@ -119,10 +131,13 @@
       <returns>The task object representing the asynchronous operation.</returns>
     </member>
     <member name="M:System.Net.WebSockets.WebSocket.SendAsync(System.ReadOnlyMemory{System.Byte},System.Net.WebSockets.WebSocketMessageType,System.Boolean,System.Threading.CancellationToken)">
-      <param name="buffer" />
-      <param name="messageType" />
-      <param name="endOfMessage" />
-      <param name="cancellationToken" />
+      <summary>Sends data over the <see cref="T:System.Net.WebSockets.WebSocket" /> connection asynchronously.</summary>
+      <param name="buffer">The buffer to be sent over the connection.</param>
+      <param name="messageType">One of the enumeration values that indicates whether the application is sending a binary or text message.</param>
+      <param name="endOfMessage">
+        <see langword="true" /> to indicate the data in "buffer" is the last part of a message; otherwise, <see langword="false" />.</param>
+      <param name="cancellationToken">The cancellation token to use to cancel the send operation.</param>
+      <returns>The task object representing the asynchronous operation.</returns>
     </member>
     <member name="P:System.Net.WebSockets.WebSocket.State">
       <summary>Returns the current state of the WebSocket connection.</summary>

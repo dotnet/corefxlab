@@ -538,7 +538,7 @@ There is a type mismatch between the declared <see cref="P:System.Windows.Markup
     </member>
     <member name="P:System.Windows.Markup.TypeExtension.TypeName">
       <summary>Gets or sets the type name represented by this markup extension.</summary>
-      <returns>A string that identifies the type. This string uses the format prefix<c>:</c>className. (prefix is the mapping prefix for an XML namespace, and is only required to reference types that are not mapped to the default XML namespace for WPF (http://schemas.microsoft.com/winfx/2006/xaml/presentation).</returns>
+      <returns>A string that identifies the type. This string uses the format prefix<c>:</c>className. (prefix is the mapping prefix for an XML namespace and is only required to reference types that are not mapped to the default XML namespace for WPF (<c>http://schemas.microsoft.com/winfx/2006/xaml/presentation</c>).</returns>
       <exception cref="T:System.ArgumentNullException">Attempted to set to <see langword="null" />.</exception>
     </member>
     <member name="T:System.Windows.Markup.UidPropertyAttribute">

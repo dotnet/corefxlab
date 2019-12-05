@@ -278,8 +278,7 @@
       <summary>Returns the value of the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ShortName" /> property.</summary>
       <returns>The localized string for the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ShortName" /> property if the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ResourceType" /> property has been specified and if the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ShortName" /> property represents a resource key; otherwise, the non-localized value of the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ShortName" /> value property.</returns>
       <exception cref="T:System.InvalidOperationException">Both the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ResourceType" /> property and <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ShortName" /> properties were set,
-but a public static property with a name matching the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ShortName" /> value couldn't be found
-on the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ResourceType" />.</exception>
+but a public static property with a name matching the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ShortName" /> value couldn't be found on the <see cref="P:System.ComponentModel.DataAnnotations.DisplayAttribute.ResourceType" />.</exception>
     </member>
     <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.GroupName">
       <summary>Gets or sets a value that is used to group fields in the UI.</summary>

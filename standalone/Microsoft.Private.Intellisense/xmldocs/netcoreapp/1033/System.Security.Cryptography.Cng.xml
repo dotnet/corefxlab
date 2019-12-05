@@ -945,13 +945,16 @@
         <paramref name="key" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Security.Cryptography.DSACng.CreateSignature(System.Byte[])">
-      <summary>Creates the digital signature for the specified data.</summary>
-      <param name="rgbHash">The data to be signed.</param>
+      <summary>Creates the <see cref="T:System.Security.Cryptography.DSA" /> signature for the specified data.</summary>
+      <param name="rgbHash">The hash value to be signed.</param>
       <returns>The digital signature for the specified data.</returns>
       <exception cref="T:System.ArgumentNullException">
         <paramref name="rgbHash" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">This instance represents only a public key.
+-or-
+An error occurred during signature creation.</exception>
       <exception cref="T:System.PlatformNotSupportedException">
-        <paramref name="rgbHash" /> is shorter in length than the Q value of the DSA key .</exception>
+        <paramref name="rgbHash" /> is shorter in length than the Q value of the DSA key.</exception>
     </member>
     <member name="M:System.Security.Cryptography.DSACng.ExportParameters(System.Boolean)">
       <summary>Exports the DSA algorithm parameters.</summary>
@@ -982,16 +985,12 @@
       <returns>The string "DSA".</returns>
     </member>
     <member name="M:System.Security.Cryptography.DSACng.VerifySignature(System.Byte[],System.Byte[])">
-      <summary>Verifies if the specified digital signature matches the specified data.</summary>
-      <param name="rgbHash">The signed data.</param>
+      <summary>Verifies if the specified digital signature matches the specified hash.</summary>
+      <param name="rgbHash">The signed hash.</param>
       <param name="rgbSignature">The digital signature to be verified.</param>
       <returns>
-        <see langword="true" /> if <paramref name="rgbSignature" /> matches the signature computed using the specified data; otherwise, <see langword="false" />.</returns>
-      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> parameter is <see langword="null" />.
--or-
-The <paramref name="rgbSignature" /> parameter is <see langword="null" />.</exception>
-      <exception cref="T:System.PlatformNotSupportedException">
-        <paramref name="rgbHash" /> is shorter in length than the Q value of the DSA key.</exception>
+        <see langword="true" /> if <paramref name="rgbSignature" /> matches the signature computed using the specified hash; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="rgbHash" /> or <paramref name="rgbSignature" /> parameters are <see langword="null" />.</exception>
     </member>
     <member name="T:System.Security.Cryptography.ECDiffieHellmanCng">
       <summary>Provides a Cryptography Next Generation (CNG) implementation of the Elliptic Curve Diffie-Hellman (ECDH) algorithm. This class is used to perform cryptographic operations.</summary>

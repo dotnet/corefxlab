@@ -238,7 +238,9 @@ The algorithm-specific key import failed.</exception>
     <member name="F:System.Security.Cryptography.CipherMode.OFB">
       <summary>The Output Feedback (<see langword="OFB" />) mode processes small increments of plain text into cipher text instead of processing an entire block at a time. This mode is similar to <see langword="CFB" />; the only difference between the two modes is the way that the shift register is filled. If a bit in the cipher text is mangled, the corresponding bit of plain text will be mangled. However, if there are extra or missing bits from the cipher text, the plain text will be mangled from that point on.</summary>
     </member>
-    <member name="T:System.Security.Cryptography.CryptographicOperations" />
+    <member name="T:System.Security.Cryptography.CryptographicOperations">
+      <summary>Provides methods for use in working with cryptography to reduce the risk of side-channel information leakage.</summary>
+    </member>
     <member name="M:System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
       <summary>Determines the equality of two byte sequences in an amount of time that depends on the length of the sequences, but not their values.</summary>
       <param name="left">The first buffer to compare.</param>
@@ -247,7 +249,8 @@ The algorithm-specific key import failed.</exception>
         <see langword="true" /> if <paramref name="left" /> and <paramref name="right" /> have the same values for <see cref="P:System.ReadOnlySpan`1.Length" /> and the same contents; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})">
-      <param name="buffer" />
+      <summary>Fills the provided buffer with zeros.</summary>
+      <param name="buffer">The buffer to fill with zeros.</param>
     </member>
     <member name="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">
       <summary>The exception that is thrown when an unexpected operation occurs during a cryptographic operation.</summary>
@@ -1073,7 +1076,7 @@ The <paramref name="count" /> parameter is less than zero.</exception>
         <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
     </member>
     <member name="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize">
-      <summary>Gets or sets the feedback size, in bits, of the cryptographic operation.</summary>
+      <summary>Gets or sets the feedback size, in bits, of the cryptographic operation for the Cipher Feedback (CFB) and Output Feedback (OFB) cipher modes.</summary>
       <returns>The feedback size in bits.</returns>
       <exception cref="T:System.Security.Cryptography.CryptographicException">The feedback size is larger than the block size.</exception>
     </member>

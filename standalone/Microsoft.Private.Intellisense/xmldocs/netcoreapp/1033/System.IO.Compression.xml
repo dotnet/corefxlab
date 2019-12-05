@@ -621,7 +621,10 @@ The underlying stream does not support reading.</exception>
       <returns>The compressed size of the entry in the zip archive.</returns>
       <exception cref="T:System.InvalidOperationException">The value of the property is not available because the entry has been modified.</exception>
     </member>
-    <member name="P:System.IO.Compression.ZipArchiveEntry.Crc32" />
+    <member name="P:System.IO.Compression.ZipArchiveEntry.Crc32">
+      <summary>The 32-bit Cyclic Redundant Check.</summary>
+      <returns>An unsigned integer (4 bytes) representing the CRC-32 field.</returns>
+    </member>
     <member name="M:System.IO.Compression.ZipArchiveEntry.Delete">
       <summary>Deletes the entry from the zip archive.</summary>
       <exception cref="T:System.IO.IOException">The entry is already open for reading or writing.</exception>

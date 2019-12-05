@@ -1119,9 +1119,9 @@ The <see langword="version" /> attribute for the given <paramref name="securityE
       <summary>Represents the XML object model for encoding security objects.</summary>
       <param name="e">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentException">The parameter is not a valid permission element.
-
+-or-
 The parameter does not contain a valid type or class.
-
+-or-
 The parameter's version number is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">The parameter is a <see langword="null" /> reference (<see langword="Nothing" /> in Visual Basic).</exception>
     </member>
@@ -1175,7 +1175,7 @@ The parameter's version number is not supported.</exception>
       <summary>Creates and returns an identical copy of the current <see cref="T:System.Net.PeerToPeer.PnrpPermission" />.</summary>
       <returns>An object with an IPermission interface, whose instance contains a copy of the current instance of <see cref="T:System.Net.PeerToPeer.PnrpPermission" />.</returns>
       <exception cref="T:System.ArgumentException">The parameter is not a valid <see cref="T:System.Net.PeerToPeer.PnrpPermission" /> element.
-
+-or-
 The parameter's version number is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">The parameter is a <see langword="null" /> reference (<see langword="Nothing" /> in Visual Basic).</exception>
     </member>
@@ -1183,7 +1183,7 @@ The parameter's version number is not supported.</exception>
       <summary>Reconstructs a security object with a specified state from an XML encoding.</summary>
       <param name="e">The XML encoding to use to reconstruct the permission.</param>
       <exception cref="T:System.ArgumentException">The parameter is not a valid <see cref="T:System.Net.PeerToPeer.PnrpPermission" /> element.
-
+-or-
 The parameter's version number is not supported.</exception>
       <exception cref="T:System.ArgumentNullException">The parameter is a <see langword="null" /> reference (<see langword="Nothing" /> in Visual Basic).</exception>
     </member>

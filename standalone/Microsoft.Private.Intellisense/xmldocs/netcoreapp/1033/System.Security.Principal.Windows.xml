@@ -201,8 +201,8 @@ If <paramref name="forceSuccess" /> is <see langword="false" />, types that fail
     <member name="M:System.Security.Principal.NTAccount.IsValidTargetType(System.Type)">
       <summary>Returns a value that indicates whether the specified type is a valid translation type for the <see cref="T:System.Security.Principal.NTAccount" /> class.</summary>
       <param name="targetType">The type being queried for validity to serve as a conversion from <see cref="T:System.Security.Principal.NTAccount" />. The following target types are valid:
-- <see cref="T:System.Security.Principal.NTAccount" />
-- <see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
+
+<see cref="T:System.Security.Principal.NTAccount" /><see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
       <returns>
         <see langword="true" /> if <paramref name="targetType" /> is a valid translation type for the <see cref="T:System.Security.Principal.NTAccount" /> class; otherwise <see langword="false" />.</returns>
     </member>
@@ -257,19 +257,8 @@ A Win32 error code was returned.</exception>
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.SecurityIdentifier" /> class by using the specified well known security identifier (SID) type and domain SID.</summary>
       <param name="sidType">One of the enumeration values. This value must not be <see cref="F:System.Security.Principal.WellKnownSidType.LogonIdsSid" />.</param>
       <param name="domainSid">The domain SID. This value is required for the following <see cref="T:System.Security.Principal.WellKnownSidType" /> values. This parameter is ignored for any other <see cref="T:System.Security.Principal.WellKnownSidType" /> values.
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountAdministratorSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountGuestSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountKrbtgtSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainAdminsSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainUsersSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainGuestsSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountComputersSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountControllersSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountCertAdminsSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountSchemaAdminsSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountEnterpriseAdminsSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountPolicyAdminsSid" />
-- <see cref="F:System.Security.Principal.WellKnownSidType.AccountRasAndIasServersSid" /></param>
+
+<see cref="F:System.Security.Principal.WellKnownSidType.AccountAdministratorSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountGuestSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountKrbtgtSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainAdminsSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainUsersSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountDomainGuestsSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountComputersSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountControllersSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountCertAdminsSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountSchemaAdminsSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountEnterpriseAdminsSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountPolicyAdminsSid" /><see cref="F:System.Security.Principal.WellKnownSidType.AccountRasAndIasServersSid" /></param>
     </member>
     <member name="M:System.Security.Principal.SecurityIdentifier.#ctor(System.String)">
       <summary>Initializes a new instance of the <see cref="T:System.Security.Principal.SecurityIdentifier" /> class by using the specified security identifier (SID) in Security Descriptor Definition Language (SDDL) format.</summary>
@@ -338,8 +327,8 @@ A Win32 error code was returned.</exception>
     <member name="M:System.Security.Principal.SecurityIdentifier.IsValidTargetType(System.Type)">
       <summary>Returns a value that indicates whether the specified type is a valid translation type for the <see cref="T:System.Security.Principal.SecurityIdentifier" /> class.</summary>
       <param name="targetType">The type being queried for validity to serve as a conversion from <see cref="T:System.Security.Principal.SecurityIdentifier" />. The following target types are valid:
-- <see cref="T:System.Security.Principal.NTAccount" />
-- <see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
+
+<see cref="T:System.Security.Principal.NTAccount" /><see cref="T:System.Security.Principal.SecurityIdentifier" /></param>
       <returns>
         <see langword="true" /> if <paramref name="targetType" /> is a valid translation type for the <see cref="T:System.Security.Principal.SecurityIdentifier" /> class; otherwise, <see langword="false" />.</returns>
     </member>

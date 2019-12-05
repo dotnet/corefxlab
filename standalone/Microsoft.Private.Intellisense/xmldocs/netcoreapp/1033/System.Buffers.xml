@@ -5,7 +5,7 @@
   </assembly>
   <members>
     <member name="T:System.Buffers.ArrayPool`1">
-      <summary>Provides a resource pool that enables reusing instances of type <see cref="T[]" />.</summary>
+      <summary>Provides a resource pool that enables reusing instances of type T[].</summary>
       <typeparam name="T">The type of the objects that are in the resource pool.</typeparam>
     </member>
     <member name="M:System.Buffers.ArrayPool`1.#ctor">
@@ -24,7 +24,7 @@
     <member name="M:System.Buffers.ArrayPool`1.Rent(System.Int32)">
       <summary>Retrieves a buffer that is at least the requested length.</summary>
       <param name="minimumLength">The minimum length of the array.</param>
-      <returns>An array of type <see cref="T[]" /> that is at least <paramref name="minimumLength" /> in length.</returns>
+      <returns>An array of type T that is at least <paramref name="minimumLength" /> in length.</returns>
     </member>
     <member name="M:System.Buffers.ArrayPool`1.Return(`0[],System.Boolean)">
       <summary>Returns an array to the pool that was previously obtained using the <see cref="M:System.Buffers.ArrayPool`1.Rent(System.Int32)" /> method on the same <see cref="T:System.Buffers.ArrayPool`1" /> instance.</summary>

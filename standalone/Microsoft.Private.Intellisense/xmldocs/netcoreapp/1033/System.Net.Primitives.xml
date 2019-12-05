@@ -817,14 +817,18 @@ An error occurred while adding one of the cookies to the container.</exception>
     <member name="T:System.Net.HttpVersion">
       <summary>Defines the HTTP version numbers that are supported by the <see cref="T:System.Net.HttpWebRequest" /> and <see cref="T:System.Net.HttpWebResponse" /> classes.</summary>
     </member>
-    <member name="F:System.Net.HttpVersion.Unknown" />
+    <member name="F:System.Net.HttpVersion.Unknown">
+      <summary>Defines a <see cref="T:System.Version" /> instance for an unknown HTTP version.</summary>
+    </member>
     <member name="F:System.Net.HttpVersion.Version10">
       <summary>Defines a <see cref="T:System.Version" /> instance for HTTP 1.0.</summary>
     </member>
     <member name="F:System.Net.HttpVersion.Version11">
       <summary>Defines a <see cref="T:System.Version" /> instance for HTTP 1.1.</summary>
     </member>
-    <member name="F:System.Net.HttpVersion.Version20" />
+    <member name="F:System.Net.HttpVersion.Version20">
+      <summary>Defines a <see cref="T:System.Version" /> instance for HTTP 2.0.</summary>
+    </member>
     <member name="T:System.Net.ICredentials">
       <summary>Provides the base authentication interface for retrieving credentials for Web client authentication.</summary>
     </member>
@@ -875,11 +879,21 @@ An error occurred while adding one of the cookies to the container.</exception>
 <paramref name="newAddress" /> &gt; 0x00000000FFFFFFFF</exception>
     </member>
     <member name="M:System.Net.IPAddress.#ctor(System.ReadOnlySpan{System.Byte})">
-      <param name="address" />
+      <summary>Initializes a new instance of the <see cref="T:System.Net.IPAddress" /> class with the address specified as a byte span.</summary>
+      <param name="address">The byte representation of the IP address, in network byte order, with the most significant byte first in index position 0.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> contains a bad IP address.</exception>
     </member>
     <member name="M:System.Net.IPAddress.#ctor(System.ReadOnlySpan{System.Byte},System.Int64)">
-      <param name="address" />
-      <param name="scopeid" />
+      <summary>Initializes a new instance of the <see cref="T:System.Net.IPAddress" /> class with the address specified as a byte span and the specified scope identifier.</summary>
+      <param name="address">The byte span value of the IP address.</param>
+      <param name="scopeid">The long value of the scope identifier.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> contains a bad IP address.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="scopeid" /> &lt; 0
+-or-
+<paramref name="scopeid" /> &gt; 0x00000000FFFFFFFF</exception>
     </member>
     <member name="P:System.Net.IPAddress.Address">
       <summary>An Internet Protocol (IP) address.</summary>
@@ -997,7 +1011,11 @@ An IPv6 address.</returns>
       <summary>Provides an IP address that indicates that no network interface should be used. This field is read-only.</summary>
     </member>
     <member name="M:System.Net.IPAddress.Parse(System.ReadOnlySpan{System.Char})">
-      <param name="ipString" />
+      <summary>Converts an IP address represented as a character span to an <see cref="T:System.Net.IPAddress" /> instance.</summary>
+      <param name="ipString">A character span that contains an IP address in dotted-quad notation for IPv4 and in colon-hexadecimal notation for IPv6.</param>
+      <returns>The converted IP address.</returns>
+      <exception cref="T:System.FormatException">
+        <paramref name="ipString" /> is not a valid IP address.</exception>
     </member>
     <member name="M:System.Net.IPAddress.Parse(System.String)">
       <summary>Converts an IP address string to an <see cref="T:System.Net.IPAddress" /> instance.</summary>
@@ -1016,7 +1034,6 @@ An IPv6 address.</returns>
       <exception cref="T:System.ArgumentOutOfRangeException">
         <paramref name="scopeId" /> &lt; 0
 -or-
-
 <paramref name="scopeId" /> &gt; 0x00000000FFFFFFFF</exception>
     </member>
     <member name="M:System.Net.IPAddress.ToString">
@@ -1025,12 +1042,18 @@ An IPv6 address.</returns>
       <exception cref="T:System.Net.Sockets.SocketException">The address family is <see cref="F:System.Net.Sockets.AddressFamily.InterNetworkV6" /> and the address is bad.</exception>
     </member>
     <member name="M:System.Net.IPAddress.TryFormat(System.Span{System.Char},System.Int32@)">
-      <param name="destination" />
-      <param name="charsWritten" />
+      <summary>Tries to format the current IP address into the provided span.</summary>
+      <param name="destination">When this method returns, the IP address as a span of characters.</param>
+      <param name="charsWritten">When this method returns, the number of characters written into the span.</param>
+      <returns>
+        <see langword="true" /> if the formatting was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Net.IPAddress.TryParse(System.ReadOnlySpan{System.Char},System.Net.IPAddress@)">
-      <param name="ipString" />
-      <param name="address" />
+      <summary>Determines whether the specified byte span represents a valid IP address.</summary>
+      <param name="ipString">The byte span to validate.</param>
+      <param name="address">When this method returns, the <see cref="T:System.Net.IPAddress" /> version of the byte span.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="ipString" /> was able to be parsed as an IP address; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Net.IPAddress.TryParse(System.String,System.Net.IPAddress@)">
       <summary>Determines whether a string is a valid IP address.</summary>
@@ -1042,8 +1065,11 @@ An IPv6 address.</returns>
         <paramref name="ipString" /> is null.</exception>
     </member>
     <member name="M:System.Net.IPAddress.TryWriteBytes(System.Span{System.Byte},System.Int32@)">
-      <param name="destination" />
-      <param name="bytesWritten" />
+      <summary>Tries to write the current IP address into a span of bytes.</summary>
+      <param name="destination">When this method returns, the IP address as a span of bytes.</param>
+      <param name="bytesWritten">When this method returns, the number of bytes written into the span.</param>
+      <returns>
+        <see langword="true" /> if the IP address is sucessfully written to the given span; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="T:System.Net.IPEndPoint">
       <summary>Represents a network endpoint as an IP address and a port number.</summary>
@@ -1256,7 +1282,6 @@ An IPv6 address.</returns>
         <paramref name="offset" /> is less than zero.</exception>
       <exception cref="T:System.ArgumentException">
         <paramref name="array" /> is multidimensional.
-
 -or-
 The number of elements in this <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> is greater than the available space from <paramref name="offset" /> to the end of the destination <paramref name="array" />.</exception>
       <exception cref="T:System.InvalidCastException">The elements in this <see cref="T:System.Net.NetworkInformation.IPAddressCollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>

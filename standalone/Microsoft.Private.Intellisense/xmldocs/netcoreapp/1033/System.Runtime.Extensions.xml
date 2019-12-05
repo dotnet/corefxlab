@@ -2372,7 +2372,7 @@ The format of <paramref name="s" /> is invalid. <paramref name="s" /> contains a
         <paramref name="inArray" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Convert.ToBase64String(System.Byte[],System.Base64FormattingOptions)">
-      <summary>Converts an array of 8-bit unsigned integers to its equivalent string representation that is encoded with base-64 digits. A parameter specifies whether to insert line breaks in the return value.</summary>
+      <summary>Converts an array of 8-bit unsigned integers to its equivalent string representation that is encoded with base-64 digits. You can specify whether to insert line breaks in the return value.</summary>
       <param name="inArray">An array of 8-bit unsigned integers.</param>
       <param name="options">
         <see cref="F:System.Base64FormattingOptions.InsertLineBreaks" /> to insert a line break every 76 characters, or <see cref="F:System.Base64FormattingOptions.None" /> to not insert line breaks.</param>
@@ -2413,8 +2413,13 @@ The format of <paramref name="s" /> is invalid. <paramref name="s" /> contains a
         <paramref name="options" /> is not a valid <see cref="T:System.Base64FormattingOptions" /> value.</exception>
     </member>
     <member name="M:System.Convert.ToBase64String(System.ReadOnlySpan{System.Byte},System.Base64FormattingOptions)">
-      <param name="bytes" />
-      <param name="options" />
+      <summary>Converts the 8-bit unsigned integers inside the specified read-only span into their equivalent string representation that is encoded with base-64 digits. You can optionally specify whether to insert line breaks in the return value.</summary>
+      <param name="bytes">A read-only span of 8-bit unsigned integers.</param>
+      <param name="options">One of the enumeration values that specify whether to insert line breaks in the return value. The default value is <see cref="F:System.Base64FormattingOptions.None" />.</param>
+      <returns>The string representation in base 64 of the elements in <paramref name="inArray" />. If the length of <paramref name="bytes" /> is 0, an empty string is returned.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> is not a valid <see cref="T:System.Base64FormattingOptions" /> value.</exception>
+      <exception cref="T:System.OutOfMemoryException">The output length was larger than <see cref="F:System.Int32.MaxValue" />.</exception>
     </member>
     <member name="M:System.Convert.ToBoolean(System.Boolean)">
       <summary>Returns the specified Boolean value; no actual conversion is performed.</summary>
@@ -4606,20 +4611,33 @@ The conversion is not supported.</exception>
         <paramref name="value" /> is returned unchanged.</returns>
     </member>
     <member name="M:System.Convert.TryFromBase64Chars(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)">
-      <param name="chars" />
-      <param name="bytes" />
-      <param name="bytesWritten" />
+      <summary>Tries to convert the specified span containing a string representation that is encoded with base-64 digits into a span of 8-bit unsigned integers.</summary>
+      <param name="chars">A span containing the string representation that is encoded with base-64 digits.</param>
+      <param name="bytes">When this method returns <see langword="true" />, the converted 8-bit unsigned integers. When this method returns <see langword="false" />, either the span remains unmodified or contains an incomplete conversion of <paramref name="chars" />, up to the last valid character.</param>
+      <param name="bytesWritten">When this method returns, the number of bytes that were written in <paramref name="bytes" />.</param>
+      <returns>
+        <see langword="true" /> if the conversion was successful; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Convert.TryFromBase64String(System.String,System.Span{System.Byte},System.Int32@)">
-      <param name="s" />
-      <param name="bytes" />
-      <param name="bytesWritten" />
+      <summary>Tries to convert the specified string representation that is encoded with base-64 digits into a span of 8-bit unsigned integers.</summary>
+      <param name="s">The string representation that is encoded with base-64 digits.</param>
+      <param name="bytes">When this method returns <see langword="true" />, the converted 8-bit unsigned integers. When this method returns <see langword="false" />, either the span remains unmodified or contains an incomplete conversion of <paramref name="s" />, up to the last valid character.</param>
+      <param name="bytesWritten">When this method returns, the number of bytes that were written in <paramref name="bytes" />.</param>
+      <returns>
+        <see langword="true" /> if the conversion was successful; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="s" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.Convert.TryToBase64Chars(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Base64FormattingOptions)">
-      <param name="bytes" />
-      <param name="chars" />
-      <param name="charsWritten" />
-      <param name="options" />
+      <summary>Tries to convert the 8-bit unsigned integers inside the specified read-only span into their equivalent string representation that is encoded with base-64 digits. You can optionally specify whether to insert line breaks in the return value.</summary>
+      <param name="bytes">A read-only span of 8-bit unsigned integers.</param>
+      <param name="chars">When this method returns <see langword="true" />, a span containing the string representation in base 64 of the elements in <paramref name="bytes" />. If the length of <paramref name="bytes" /> is 0, or when this method returns <paramref name="false" />, nothing is written into this parameter.</param>
+      <param name="charsWritten">When this method returns, the total number of characters written into <paramref name="chars" />.</param>
+      <param name="options">One of the enumeration values that specify whether to insert line breaks in the return value. The default value is <see cref="F:System.Base64FormattingOptions.None" />.</param>
+      <returns>
+        <see langword="true" /> if the conversion is successful; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="options" /> is not a valid <see cref="T:System.Base64FormattingOptions" /> value.</exception>
     </member>
     <member name="T:System.Diagnostics.Stopwatch">
       <summary>Provides a set of methods and properties that you can use to accurately measure elapsed time.</summary>
@@ -5874,18 +5892,30 @@ The number of decoded characters to read is greater than <paramref name="count" 
         <paramref name="capacity" /> is negative.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
-      <param name="buffer" />
-      <param name="offset" />
-      <param name="count" />
-      <param name="callback" />
-      <param name="state" />
+      <summary>Begins an asynchronous read operation. (Consider using <see cref="M:System.IO.MemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)" /> instead.)</summary>
+      <param name="buffer">The buffer to read the data into.</param>
+      <param name="offset">The byte offset in <paramref name="buffer" /> at which to begin writing data read from the memory stream.</param>
+      <param name="count">The maximum number of bytes to read.</param>
+      <param name="callback">An optional asynchronous callback, to be called when the read is complete.</param>
+      <param name="state">A user-provided object that distinguishes this particular asynchronous read request from other requests.</param>
+      <returns>An <see cref="T:System.IAsyncResult" /> that represents the asynchronous read, which could still be pending.</returns>
+      <exception cref="T:System.IO.IOException">Attempted an asynchronous read past the end of the memory stream, or a disk error occurred.</exception>
+      <exception cref="T:System.ArgumentException">One or more of the arguments is invalid.</exception>
+      <exception cref="T:System.ObjectDisposedException">Methods were called after the memory stream was closed.</exception>
+      <exception cref="T:System.NotSupportedException">The current memory stream implementation does not support the read operation.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
-      <param name="buffer" />
-      <param name="offset" />
-      <param name="count" />
-      <param name="callback" />
-      <param name="state" />
+      <summary>Begins an asynchronous write operation. (Consider using <see cref="M:System.IO.MemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)" /> instead.)</summary>
+      <param name="buffer">The buffer to write data from.</param>
+      <param name="offset">The byte offset in <paramref name="buffer" /> from which to begin writing.</param>
+      <param name="count">The maximum number of bytes to write.</param>
+      <param name="callback">An optional asynchronous callback, to be called when the write is complete.</param>
+      <param name="state">A user-provided object that distinguishes this particular asynchronous write request from other requests.</param>
+      <returns>An <see langword="IAsyncResult" /> that represents the asynchronous write, which could still be pending.</returns>
+      <exception cref="T:System.IO.IOException">Attempted an asynchronous write past the end of the memory stream, or a disk error occurred.</exception>
+      <exception cref="T:System.ArgumentException">One or more of the arguments is invalid.</exception>
+      <exception cref="T:System.ObjectDisposedException">Methods were called after the memory stream was closed.</exception>
+      <exception cref="T:System.NotSupportedException">The current memory stream implementation does not support the write operation.</exception>
     </member>
     <member name="P:System.IO.MemoryStream.CanRead">
       <summary>Gets a value indicating whether the current stream supports reading.</summary>
@@ -5911,8 +5941,17 @@ The number of decoded characters to read is greater than <paramref name="count" 
         <see langword="set" /> is invoked on a stream whose capacity cannot be modified.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.CopyTo(System.IO.Stream,System.Int32)">
-      <param name="destination" />
-      <param name="bufferSize" />
+      <summary>Reads the bytes from the current memory stream and writes them to another stream, using a specified buffer size.</summary>
+      <param name="destination">The stream to which the contents of the current memory stream will be copied.</param>
+      <param name="bufferSize">The size of the buffer. This value must be greater than zero. The default size is 81920.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="destination" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="bufferSize" /> is not a positive number.</exception>
+      <exception cref="T:System.ObjectDisposedException">Either the underlying memory stream or the <paramref name="destination" /> stream is closed.</exception>
+      <exception cref="T:System.NotSupportedException">The underlying memory stream is unreadable.
+-or-
+The <paramref name="destination" /> stream is unwritable.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
       <summary>Asynchronously reads all the bytes from the current stream and writes them to another stream, using a specified buffer size and cancellation token.</summary>
@@ -5933,10 +5972,29 @@ The number of decoded characters to read is greater than <paramref name="count" 
         <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
     </member>
     <member name="M:System.IO.MemoryStream.EndRead(System.IAsyncResult)">
-      <param name="asyncResult" />
+      <summary>Waits for the pending asynchronous read to complete. (Consider using <see cref="M:System.IO.MemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)" /> instead.)</summary>
+      <param name="asyncResult">The reference to the pending asynchronous request to finish.</param>
+      <returns>The number of bytes read from the memory stream, between zero (0) and the number of bytes you requested. Returns zero (0) only at the end of the memory stream, otherwise, it should block until at least one byte is available.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asyncResult" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">A handle to the pending read operation is not available.
+-or-
+The pending operation does not support reading.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="asyncResult" /> did not originate from a <see cref="M:System.IO.MemoryStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /> method on the current memory stream.</exception>
+      <exception cref="T:System.IO.IOException">The stream is closed or an internal error has occurred.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.EndWrite(System.IAsyncResult)">
-      <param name="asyncResult" />
+      <summary>Ends an asynchronous write operation. (Consider using <see cref="M:System.IO.MemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)" /> instead.)</summary>
+      <param name="asyncResult">A reference to the outstanding asynchronous I/O request.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asyncResult" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ArgumentException">A handle to the pending write operation is not available.
+-or-
+The pending operation does not support writing.</exception>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="asyncResult" /> did not originate from a <see cref="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" /> method on the current stream.</exception>
+      <exception cref="T:System.IO.IOException">The stream is closed or an internal error has occurred.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.Flush">
       <summary>Overrides the <see cref="M:System.IO.Stream.Flush" /> method so that no action is performed.</summary>
@@ -5978,7 +6036,9 @@ The number of decoded characters to read is greater than <paramref name="count" 
       <exception cref="T:System.ObjectDisposedException">The current stream instance is closed.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.Read(System.Span{System.Byte})">
-      <param name="destination" />
+      <summary>Reads a sequence of bytes from the current memory stream and advances the position within the memory stream by the number of bytes read.</summary>
+      <param name="destination">A region of memory. When this method returns, the contents of this span are replaced by the bytes read from the current memory stream source.</param>
+      <returns>The total number of bytes read into the buffer. This can be less than the number of bytes allocated in the buffer if that many bytes are not currently available, or zero (0) if the end of the memory stream has been reached.</returns>
     </member>
     <member name="M:System.IO.MemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
       <summary>Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</summary>
@@ -5997,8 +6057,10 @@ The number of decoded characters to read is greater than <paramref name="count" 
       <exception cref="T:System.InvalidOperationException">The stream is currently in use by a previous read operation.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
-      <param name="destination" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously reads a sequence of bytes from the current memory stream, writes the sequence into <paramref name="destination" />, advances the position within the memory stream by the number of bytes read, and monitors cancellation requests.</summary>
+      <param name="destination">The region of memory to write the data into.</param>
+      <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <returns>A task that represents the asynchronous read operation. The value of its <see cref="P:System.Threading.Tasks.ValueTask`1.Result" /> property contains the total number of bytes read into the <paramref name="destination" />. The result value can be less than the number of bytes allocated in <paramref name="destination" /> if that many bytes are not currently available, or it can be 0 (zero) if the end of the memory stream has been reached.</returns>
     </member>
     <member name="M:System.IO.MemoryStream.ReadByte">
       <summary>Reads a byte from the current stream.</summary>
@@ -6055,7 +6117,8 @@ The current position is closer than <paramref name="count" /> bytes to the end o
       <exception cref="T:System.ObjectDisposedException">The current stream instance is closed.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.Write(System.ReadOnlySpan{System.Byte})">
-      <param name="source" />
+      <summary>Writes the sequence of bytes contained in <paramref name="source" /> into the current memory stream and advances the current position within this memory stream by the number of bytes written.</summary>
+      <param name="source">A region of memory. This method copies the contents of this region to the current memory stream.</param>
     </member>
     <member name="M:System.IO.MemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
       <summary>Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</summary>
@@ -6074,8 +6137,10 @@ The current position is closer than <paramref name="count" /> bytes to the end o
       <exception cref="T:System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
     </member>
     <member name="M:System.IO.MemoryStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
-      <param name="source" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously writes the sequence of bytes contained in <paramref name="source" /> into the current memory stream, advances the current position within this memory stream by the number of bytes written, and monitors cancellation requests.</summary>
+      <param name="source">The region of memory to write data from.</param>
+      <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <returns>A task that represents the asynchronous write operation.</returns>
     </member>
     <member name="M:System.IO.MemoryStream.WriteByte(System.Byte)">
       <summary>Writes a byte to the current stream at the current position.</summary>
@@ -6252,17 +6317,20 @@ The system could not retrieve the absolute path.</exception>
     </member>
     <member name="M:System.IO.Path.GetPathRoot(System.ReadOnlySpan{System.Char})">
       <summary>Gets the root directory information from the path contained in the specified character span.</summary>
-      <param name="path">The path from which to obtain root directory information.</param>
-      <returns>A character span containing the root directory of path.</returns>
+      <param name="path">A read-only span of characters containing the path from which to obtain root directory information.</param>
+      <returns>A read-only span of characters containing the root directory of <paramref name="path" />.</returns>
     </member>
     <member name="M:System.IO.Path.GetPathRoot(System.String)">
-      <summary>Gets the root directory information of the specified path.</summary>
-      <param name="path">The path from which to obtain root directory information.</param>
-      <returns>The root directory of <paramref name="path" />, or <see langword="null" /> if <paramref name="path" /> is <see langword="null" />, or an empty string if <paramref name="path" /> does not contain root directory information.</returns>
-      <exception cref="T:System.ArgumentException">
-        <paramref name="path" /> contains one or more of the invalid characters defined in <see cref="M:System.IO.Path.GetInvalidPathChars" />.
+      <summary>Gets the root directory information from the path contained in the specified string.</summary>
+      <param name="path">A string containing the path from which to obtain root directory information.</param>
+      <returns>The root directory of <paramref name="path" /> if it is rooted.
 -or-
-<see cref="F:System.String.Empty" /> was passed to <paramref name="path" />.</exception>
+<see cref="F:System.String.Empty" /> if <paramref name="path" /> does not contain root directory information.
+-or-
+<see langword="null" /> if <paramref name="path" /> is <see langword="null" /> or is effectively empty.</returns>
+      <exception cref="T:System.ArgumentException">.NET Framework only: <paramref name="path" /> contains one or more of the invalid characters defined in <see cref="M:System.IO.Path.GetInvalidPathChars" />.
+-or-
+.NET Framework only: <see cref="F:System.String.Empty" /> was passed to <paramref name="path" />.</exception>
     </member>
     <member name="M:System.IO.Path.GetRandomFileName">
       <summary>Returns a random folder name or file name.</summary>
@@ -6597,7 +6665,12 @@ This method was unable to create a temporary file.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurs, such as the stream is closed.</exception>
     </member>
     <member name="M:System.IO.StreamReader.Read(System.Span{System.Char})">
-      <param name="buffer" />
+      <summary>Reads the characters from the current stream into a span.</summary>
+      <param name="buffer">When this method returns, contains the specified span of characters replaced by the characters read from the current source.</param>
+      <returns>The number of characters that have been read, or 0 if at the end of the stream and no data was read. The number will be less than or equal to the <paramref name="buffer" /> length, depending on whether the data is available within the stream.</returns>
+      <exception cref="T:System.IO.IOException">The number of characters read from the stream is larger than the <paramref name="buffer" /> length.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> is <see langword="null" />.</exception>
     </member>
     <member name="M:System.IO.StreamReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
       <summary>Reads a specified maximum number of characters from the current stream asynchronously and writes the data to a buffer, beginning at the specified index.</summary>
@@ -6614,8 +6687,10 @@ This method was unable to create a temporary file.</exception>
       <exception cref="T:System.InvalidOperationException">The reader is currently in use by a previous read operation.</exception>
     </member>
     <member name="M:System.IO.StreamReader.ReadAsync(System.Memory{System.Char},System.Threading.CancellationToken)">
-      <param name="buffer" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously reads the characters from the current stream into a memory block.</summary>
+      <param name="buffer">When this method returns, contains the specified memory block of characters replaced by the characters read from the current source.</param>
+      <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <returns>A value task that represents the asynchronous read operation. The value of the type parameter of the value task contains the number of characters that have been read, or 0 if at the end of the stream and no data was read. The number will be less than or equal to the <paramref name="buffer" /> length, depending on whether the data is available within the stream.</returns>
     </member>
     <member name="M:System.IO.StreamReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
       <summary>Reads a specified maximum number of characters from the current stream and writes the data to a buffer, beginning at the specified index.</summary>
@@ -6632,7 +6707,13 @@ This method was unable to create a temporary file.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     </member>
     <member name="M:System.IO.StreamReader.ReadBlock(System.Span{System.Char})">
-      <param name="buffer" />
+      <summary>Reads the characters from the current stream and writes the data to a buffer.</summary>
+      <param name="buffer">When this method returns, contains the specified span of characters replaced by the characters read from the current source.</param>
+      <returns>The number of characters that have been read. The number will be less than or equal to the <paramref name="buffer" /> length, depending on whether all input characters have been read.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.IO.StreamReader" /> is closed.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     </member>
     <member name="M:System.IO.StreamReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
       <summary>Reads a specified maximum number of characters from the current stream asynchronously and writes the data to a buffer, beginning at the specified index.</summary>
@@ -6649,8 +6730,10 @@ This method was unable to create a temporary file.</exception>
       <exception cref="T:System.InvalidOperationException">The reader is currently in use by a previous read operation.</exception>
     </member>
     <member name="M:System.IO.StreamReader.ReadBlockAsync(System.Memory{System.Char},System.Threading.CancellationToken)">
-      <param name="buffer" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously reads the characters from the current stream and writes the data to a buffer.</summary>
+      <param name="buffer">When this method returns, contains the specified memory block of characters replaced by the characters read from the current source.</param>
+      <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <returns>A value task that represents the asynchronous read operation. The value of the type parameter of the value task contains the total number of characters read into the buffer. The result value can be less than the number of characters requested if the number of characters currently available is less than the requested number, or it can be 0 (zero) if the end of the stream has been reached.</returns>
     </member>
     <member name="M:System.IO.StreamReader.ReadLine">
       <summary>Reads a line of characters from the current stream and returns the data as a string.</summary>
@@ -7334,7 +7417,12 @@ This method was unable to create a temporary file.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
     </member>
     <member name="M:System.IO.TextReader.Read(System.Span{System.Char})">
-      <param name="buffer" />
+      <summary>Reads the characters from the current reader and writes the data to the specified buffer.</summary>
+      <param name="buffer">When this method returns, contains the specified span of characters replaced by the characters read from the current source.</param>
+      <returns>The number of characters that have been read. The number will be less than or equal to the <paramref name="buffer" /> length, depending on whether the data is available within the reader. This method returns 0 (zero) if it is called when no more characters are left to read.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.IO.IOException">The number of characters read from the stream is larger than the length of the <paramref name="buffer" />.</exception>
     </member>
     <member name="M:System.IO.TextReader.ReadAsync(System.Char[],System.Int32,System.Int32)">
       <summary>Reads a specified maximum number of characters from the current text reader asynchronously and writes the data to a buffer, beginning at the specified index.</summary>
@@ -7351,8 +7439,10 @@ This method was unable to create a temporary file.</exception>
       <exception cref="T:System.InvalidOperationException">The reader is currently in use by a previous read operation.</exception>
     </member>
     <member name="M:System.IO.TextReader.ReadAsync(System.Memory{System.Char},System.Threading.CancellationToken)">
-      <param name="buffer" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously reads the characters from the current stream into a memory block.</summary>
+      <param name="buffer">When this method returns, contains the specified memory block of characters replaced by the characters read from the current source.</param>
+      <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <returns>A value task that represents the asynchronous read operation. The value of the type parameter contains the number of characters that have been read, or 0 if at the end of the stream and no data was read. The number will be less than or equal to the <paramref name="buffer" /> length, depending on whether the data is available within the stream.</returns>
     </member>
     <member name="M:System.IO.TextReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
       <summary>Reads a specified maximum number of characters from the current text reader and writes the data to a buffer, beginning at the specified index.</summary>
@@ -7369,7 +7459,13 @@ This method was unable to create a temporary file.</exception>
       <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
     </member>
     <member name="M:System.IO.TextReader.ReadBlock(System.Span{System.Char})">
-      <param name="buffer" />
+      <summary>Reads the characters from the current stream and writes the data to a buffer.</summary>
+      <param name="buffer">When this method returns, contains the specified span of characters replaced by the characters read from the current source.</param>
+      <returns>The number of characters that have been read. The number will be less than or equal to the <paramref name="buffer" /> length, depending on whether all input characters have been read.</returns>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="buffer" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.IO.StreamReader" /> is closed.</exception>
+      <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
     </member>
     <member name="M:System.IO.TextReader.ReadBlockAsync(System.Char[],System.Int32,System.Int32)">
       <summary>Reads a specified maximum number of characters from the current text reader asynchronously and writes the data to a buffer, beginning at the specified index.</summary>
@@ -7386,8 +7482,10 @@ This method was unable to create a temporary file.</exception>
       <exception cref="T:System.InvalidOperationException">The reader is currently in use by a previous read operation.</exception>
     </member>
     <member name="M:System.IO.TextReader.ReadBlockAsync(System.Memory{System.Char},System.Threading.CancellationToken)">
-      <param name="buffer" />
-      <param name="cancellationToken" />
+      <summary>Asynchronously reads the characters from the current stream and writes the data to a buffer.</summary>
+      <param name="buffer">When this method returns, contains the specified memory block of characters replaced by the characters read from the current source.</param>
+      <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None" />.</param>
+      <returns>A value task that represents the asynchronous read operation. The value of the type parameter contains the total number of characters read into the buffer. The result value can be less than the number of characters requested if the number of characters currently available is less than the requested number, or it can be 0 (zero) if the end of the stream has been reached.</returns>
     </member>
     <member name="M:System.IO.TextReader.ReadLine">
       <summary>Reads a line of characters from the text reader and returns the data as a string.</summary>

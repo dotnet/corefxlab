@@ -57,7 +57,7 @@
       <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.WebSockets.ClientWebSocket" /> has been closed.</exception>
     </member>
     <member name="M:System.Net.WebSockets.ClientWebSocket.ReceiveAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
-      <summary>Receives data on <see cref="T:System.Net.WebSockets.ClientWebSocket" /> to a byte memory range as an asynchronous operation.</summary>
+      <summary>Receives data on <see cref="T:System.Net.WebSockets.ClientWebSocket" /> as an asynchronous operation.</summary>
       <param name="buffer">The region of memory to receive the response.</param>
       <param name="cancellationToken">A cancellation token used to propagate notification that this operation should be canceled.</param>
       <returns>The task object representing the asynchronous operation.</returns>
@@ -121,7 +121,10 @@
       <summary>Gets or sets the proxy for WebSocket requests.</summary>
       <returns>The proxy for WebSocket requests.</returns>
     </member>
-    <member name="P:System.Net.WebSockets.ClientWebSocketOptions.RemoteCertificateValidationCallback" />
+    <member name="P:System.Net.WebSockets.ClientWebSocketOptions.RemoteCertificateValidationCallback">
+      <summary>Gets or sets the callback to validate a server certificate.</summary>
+      <returns>A callback function to validate the server certificate.</returns>
+    </member>
     <member name="M:System.Net.WebSockets.ClientWebSocketOptions.SetBuffer(System.Int32,System.Int32)">
       <summary>Sets the client buffer parameters.</summary>
       <param name="receiveBufferSize">The size, in bytes, of the client receive buffer.</param>

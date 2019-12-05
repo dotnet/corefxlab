@@ -700,7 +700,11 @@ Multiple methods were specified.</exception>
       <summary>Gets the length of the data received from the FTP server.</summary>
       <returns>An <see cref="T:System.Int64" /> value that contains the number of bytes of data received from the FTP server.</returns>
     </member>
-    <member name="P:System.Net.FtpWebResponse.ContentType" />
+    <member name="P:System.Net.FtpWebResponse.ContentType">
+      <summary>Throws a <see cref="T:System.NotImplementedException" /> in all cases.</summary>
+      <returns>Throws a <see cref="T:System.NotImplementedException" /> in all cases.</returns>
+      <exception cref="T:System.NotImplementedException">In all cases.</exception>
+    </member>
     <member name="P:System.Net.FtpWebResponse.ExitMessage">
       <summary>Gets the message sent by the server when the FTP session is ending.</summary>
       <returns>A <see cref="T:System.String" /> that contains the exit message sent by the server; otherwise, <see cref="F:System.String.Empty" /> if no message is sent.</returns>

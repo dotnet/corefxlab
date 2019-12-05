@@ -32,9 +32,12 @@
       <param name="value">A 64-bit signed integer.</param>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,System.Boolean)">
-      <param name="value" />
-      <param name="isUnsigned" />
-      <param name="isBigEndian" />
+      <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using the values in a read-only span of bytes, and optionally indicating the signing encoding and the endianness byte order.</summary>
+      <param name="value">A read-only span of bytes representing the big integer.</param>
+      <param name="isUnsigned">
+        <see langword="true" /> to indicate <paramref name="value" /> uses unsigned encoding; otherwise, <see langword="false" /> (the default value).</param>
+      <param name="isBigEndian">
+        <see langword="true" /> to indicate <paramref name="value" /> is in big-endian byte order; otherwise, <see langword="false" />  (the default value).</param>
     </member>
     <member name="M:System.Numerics.BigInteger.#ctor(System.Single)">
       <summary>Initializes a new instance of the <see cref="T:System.Numerics.BigInteger" /> structure using a single-precision floating-point value.</summary>
@@ -148,21 +151,7 @@
       <summary>Compares this instance to an unsigned 64-bit integer and returns an integer that indicates whether the value of this instance is less than, equal to, or greater than the value of the unsigned 64-bit integer.</summary>
       <param name="other">The unsigned 64-bit integer to compare.</param>
       <returns>A signed integer that indicates the relative value of this instance and <paramref name="other" />, as shown in the following table.
-  Return value  
-  
-  Description  
-  
-  Less than zero  
-  
-  The current instance is less than <paramref name="other" />.  
-  
-  Zero  
-  
-  The current instance equals <paramref name="other" />.  
-  
-  Greater than zero  
-  
-  The current instance is greater than <paramref name="other" />.</returns>
+Return valueDescriptionLess than zeroThe current instance is less than <paramref name="other" />.ZeroThe current instance equals <paramref name="other" />.Greater than zeroThe current instance is greater than <paramref name="other" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Divide(System.Numerics.BigInteger,System.Numerics.BigInteger)">
       <summary>Divides one <see cref="T:System.Numerics.BigInteger" /> value by another and returns the result.</summary>
@@ -742,9 +731,19 @@ This API is not CLS-compliant. The compliant alternative is <see cref="T:System.
       <returns>The value of the <paramref name="value" /> operand.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.Parse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider)">
-      <param name="value" />
-      <param name="style" />
-      <param name="provider" />
+      <summary>Converts the representation of a number, contained in the specified read-only span of characters, in a specified style to its <see cref="T:System.Numerics.BigInteger" /> equivalent.</summary>
+      <param name="value">A read-only span of characters that contains the number to convert.</param>
+      <param name="style">A bitwise combination of the enumeration values that specify the permitted format of <paramref name="value" />.</param>
+      <param name="provider">An object that provides culture-specific formatting information about <paramref name="value" />.</param>
+      <returns>A value that is equivalent to the number specified in the <paramref name="value" /> parameter.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.
+-or-
+<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="value" /> is <see langword="null" />.</exception>
+      <exception cref="T:System.FormatException">
+        <paramref name="value" /> does not comply with the input pattern specified by <paramref name="style" />.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.Parse(System.String)">
       <summary>Converts the string representation of a number to its <see cref="T:System.Numerics.BigInteger" /> equivalent.</summary>
@@ -873,20 +872,33 @@ This API is not CLS-compliant. The compliant alternative is <see cref="T:System.
         <paramref name="format" /> is not a valid format string.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
-      <param name="destination" />
-      <param name="charsWritten" />
-      <param name="format" />
-      <param name="provider" />
+      <summary>Formats this big integer instance into a span of characters.</summary>
+      <param name="destination">The span of characters into which this instance will be written.</param>
+      <param name="charsWritten">When the method returns, contains the length of the span in number of characters.</param>
+      <param name="format">A read-only span of characters that specifies the format for the formatting operation.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="value" />.</param>
+      <returns>
+        <see langword="true" /> if the formatting operation succeeds; <see langword="false" /> otherwise.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.TryParse(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.IFormatProvider,System.Numerics.BigInteger@)">
-      <param name="value" />
-      <param name="style" />
-      <param name="provider" />
-      <param name="result" />
+      <summary>Tries to convert the string representation of a number to its <see cref="T:System.Numerics.BigInteger" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="value">The representation of a number as a read-only span of characters.</param>
+      <param name="style">A bitwise combination of enumeration values that indicates the style elements that can be present in <paramref name="value" />. A typical value to specify is <see cref="F:System.Globalization.NumberStyles.Integer" />.</param>
+      <param name="provider">An object that supplies culture-specific formatting information about <paramref name="value" />.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.Numerics.BigInteger" /> equivalent to the number that is contained in <paramref name="value" />, or <see cref="P:System.Numerics.BigInteger.Zero" /> if the conversion failed. The conversion fails if the <paramref name="value" /> parameter is an empty character span or is not in a format that is compliant with <paramref name="style" />. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="value" /> was converted successfully; otherwise, <see langword="false" />.</returns>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="style" /> is not a <see cref="T:System.Globalization.NumberStyles" /> value.
+-or-
+<paramref name="style" /> includes the <see cref="F:System.Globalization.NumberStyles.AllowHexSpecifier" /> or <see cref="F:System.Globalization.NumberStyles.HexNumber" /> flag along with another value.</exception>
     </member>
     <member name="M:System.Numerics.BigInteger.TryParse(System.ReadOnlySpan{System.Char},System.Numerics.BigInteger@)">
-      <param name="value" />
-      <param name="result" />
+      <summary>Tries to convert the representation of a number contained in the specified read-only character span, to its <see cref="T:System.Numerics.BigInteger" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>
+      <param name="value">The representation of a number as a read-only span of characters.</param>
+      <param name="result">When this method returns, contains the <see cref="T:System.Numerics.BigInteger" /> equivalent to the number that is contained in <paramref name="value" />, or zero (0) if the conversion fails. The conversion fails if the <paramref name="value" /> parameter is an empty character span or is not of the correct format. This parameter is passed uninitialized.</param>
+      <returns>
+        <see langword="true" /> if <paramref name="value" /> was converted successfully; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="M:System.Numerics.BigInteger.TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Numerics.BigInteger@)">
       <summary>Tries to convert the string representation of a number in a specified style and culture-specific format to its <see cref="T:System.Numerics.BigInteger" /> equivalent, and returns a value that indicates whether the conversion succeeded.</summary>

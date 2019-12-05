@@ -554,7 +554,9 @@ The pipe handle has not been set.</exception>
     <member name="F:System.IO.Pipes.PipeOptions.Asynchronous">
       <summary>Indicates that the pipe can be used for asynchronous reading and writing.</summary>
     </member>
-    <member name="F:System.IO.Pipes.PipeOptions.CurrentUserOnly" />
+    <member name="F:System.IO.Pipes.PipeOptions.CurrentUserOnly">
+      <summary>When used to create a <see cref="T:System.IO.Pipes.NamedPipeServerStream" /> instance, indicates that the pipe can only be connected to a client created by the same user. When used to create a <see cref="T:System.IO.Pipes.NamedPipeClientStream" /> instance, indicates that the pipe can only connect to a server created by the same user. On Windows, it verifies both the user account and elevation level.</summary>
+    </member>
     <member name="F:System.IO.Pipes.PipeOptions.None">
       <summary>Indicates that there are no additional parameters.</summary>
     </member>
@@ -770,7 +772,7 @@ The pipe's <see cref="P:System.IO.Pipes.PipeStream.ReadMode" /> property value i
 -or-
 The pipe is in a disconnected state.
 -or-
-The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
+The pipe handle has not been set. (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
     </member>
     <member name="M:System.IO.Pipes.PipeStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
       <summary>Asynchronously reads a sequence of bytes from the current stream to a byte array starting at a specified position for a specified number of bytes, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</summary>
@@ -785,7 +787,7 @@ The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeSt
 -or-
 The pipe is in a disconnected state.
 -or-
-The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
+The pipe handle has not been set. (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
     </member>
     <member name="M:System.IO.Pipes.PipeStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
       <summary>Asynchronously reads a sequence of bytes from the current stream, writes them to a byte memory range, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</summary>
@@ -798,7 +800,7 @@ The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeSt
 -or-
 The pipe is in a disconnected state.
 -or-
-The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
+The pipe handle has not been set. (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
     </member>
     <member name="M:System.IO.Pipes.PipeStream.ReadByte">
       <summary>Reads a byte from a pipe.</summary>
@@ -871,12 +873,12 @@ The pipe is waiting to connect in an anonymous client/server operation or with a
       <param name="buffer">A region of memory. This method copies the contents of this region to the current stream.</param>
       <exception cref="T:System.NotSupportedException">The stream does not support writing.</exception>
       <exception cref="T:System.ObjectDisposedException">Cannot access a closed pipe.</exception>
-      <exception cref="">The pipe is broken.</exception>
+      <exception cref="T:System.IO.IOException">The pipe is broken.</exception>
       <exception cref="T:System.InvalidOperationException">The pipe hasn't been connected yet.
 -or-
 The pipe is in a disconnected state.
 -or-
-The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
+The pipe handle has not been set. (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
     </member>
     <member name="M:System.IO.Pipes.PipeStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
       <summary>Asynchronously writes a specified number of bytes from a byte array starting at a specified position, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</summary>
@@ -894,12 +896,12 @@ The <paramref name="count" /> is negative.</exception>
         <paramref name="buffer" />.Length - <paramref name="offset" /> is less than <paramref name="count" />.</exception>
       <exception cref="T:System.NotSupportedException">Stream does not support writing.</exception>
       <exception cref="T:System.ObjectDisposedException">Cannot access a closed pipe.</exception>
-      <exception cref="">The pipe is broken.</exception>
+      <exception cref="T:System.IO.IOException">The pipe is broken.</exception>
       <exception cref="T:System.InvalidOperationException">The pipe hasn't been connected yet.
 -or-
 The pipe is in a disconnected state.
 -or-
-The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
+The pipe handle has not been set. (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
     </member>
     <member name="M:System.IO.Pipes.PipeStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
       <summary>Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</summary>
@@ -908,12 +910,12 @@ The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeSt
       <returns>A task that represents the asynchronous write operation.</returns>
       <exception cref="T:System.NotSupportedException">Stream does not support writing.</exception>
       <exception cref="T:System.ObjectDisposedException">Cannot access a closed pipe.</exception>
-      <exception cref="">The pipe is broken.</exception>
+      <exception cref="T:System.IO.IOException">The pipe is broken.</exception>
       <exception cref="T:System.InvalidOperationException">The pipe hasn't been connected yet.
 -or-
 The pipe is in a disconnected state.
 -or-
-The pipe handle has not been set.  (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
+The pipe handle has not been set. (Did your <see cref="T:System.IO.Pipes.PipeStream" /> implementation call <see cref="M:System.IO.Pipes.PipeStream.InitializeHandle(Microsoft.Win32.SafeHandles.SafePipeHandle,System.Boolean,System.Boolean)" />?</exception>
     </member>
     <member name="M:System.IO.Pipes.PipeStream.WriteByte(System.Byte)">
       <summary>Writes a byte to the current stream.</summary>

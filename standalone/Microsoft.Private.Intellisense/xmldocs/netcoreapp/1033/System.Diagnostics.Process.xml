@@ -453,8 +453,9 @@ The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> propert
 The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is <see langword="true" /> and the <see cref="P:System.Diagnostics.ProcessStartInfo.UserName" /> property is not <see langword="null" /> or empty or the <see cref="P:System.Diagnostics.ProcessStartInfo.Password" /> property is not <see langword="null" />.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="startInfo" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ObjectDisposedException">The process object has already been disposed.</exception>
-      <exception cref="T:System.IO.FileNotFoundException">The file specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property could not be found.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file.
+-or-
+The file specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property could not be found.
 -or-
 The sum of the length of the arguments and the length of the full path to the process exceeds 2080. The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
       <exception cref="T:System.PlatformNotSupportedException">Method not supported on operating systems without shell support such as Nano Server (.NET Core only).</exception>
@@ -463,7 +464,9 @@ The sum of the length of the arguments and the length of the full path to the pr
       <summary>Starts a process resource by specifying the name of a document or application file and associates the resource with a new <see cref="T:System.Diagnostics.Process" /> component.</summary>
       <param name="fileName">The name of a document or application file to run in the process.</param>
       <returns>A new <see cref="T:System.Diagnostics.Process" /> that is associated with the process resource, or <see langword="null" /> if no process resource is started. Note that a new process that's started alongside already running instances of the same process will be independent from the others. In addition, Start may return a non-null Process with its <see cref="P:System.Diagnostics.Process.HasExited" /> property already set to <see langword="true" />. In this case, the started process may have activated an existing instance of itself and then exited.</returns>
-      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file.
+-or-
+The file specified in the <paramref name="fileName" /> could not be found.</exception>
       <exception cref="T:System.ObjectDisposedException">The process object has already been disposed.</exception>
       <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
     </member>
@@ -474,6 +477,8 @@ The sum of the length of the arguments and the length of the full path to the pr
       <returns>A new <see cref="T:System.Diagnostics.Process" /> that is associated with the process resource, or <see langword="null" /> if no process resource is started. Note that a new process that's started alongside already running instances of the same process will be independent from the others. In addition, Start may return a non-null Process with its <see cref="P:System.Diagnostics.Process.HasExited" /> property already set to <see langword="true" />. In this case, the started process may have activated an existing instance of itself and then exited.</returns>
       <exception cref="T:System.InvalidOperationException">The <paramref name="fileName" /> or <paramref name="arguments" /> parameter is <see langword="null" />.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file.
+-or-
+The file specified in the <paramref name="fileName" /> could not be found.
 -or-
 The sum of the length of the arguments and the length of the full path to the process exceeds 2080. The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
       <exception cref="T:System.ObjectDisposedException">The process object has already been disposed.</exception>
@@ -487,7 +492,9 @@ The sum of the length of the arguments and the length of the full path to the pr
       <param name="domain">The domain to use when starting the process.</param>
       <returns>A new <see cref="T:System.Diagnostics.Process" /> that is associated with the process resource, or <see langword="null" /> if no process resource is started. Note that a new process that's started alongside already running instances of the same process will be independent from the others. In addition, Start may return a non-null Process with its <see cref="P:System.Diagnostics.Process.HasExited" /> property already set to <see langword="true" />. In this case, the started process may have activated an existing instance of itself and then exited.</returns>
       <exception cref="T:System.InvalidOperationException">No file name was specified.</exception>
-      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file.
+-or-
+The file specified in the <paramref name="fileName" /> could not be found.</exception>
       <exception cref="T:System.ObjectDisposedException">The process object has already been disposed.</exception>
       <exception cref="T:System.PlatformNotSupportedException">This member is not supported on Linux or macOS (.NET Core only).</exception>
     </member>
@@ -501,6 +508,8 @@ The sum of the length of the arguments and the length of the full path to the pr
       <returns>A new <see cref="T:System.Diagnostics.Process" /> that is associated with the process resource, or <see langword="null" /> if no process resource is started. Note that a new process that's started alongside already running instances of the same process will be independent from the others. In addition, Start may return a non-null Process with its <see cref="P:System.Diagnostics.Process.HasExited" /> property already set to <see langword="true" />. In this case, the started process may have activated an existing instance of itself and then exited.</returns>
       <exception cref="T:System.InvalidOperationException">No file name was specified.</exception>
       <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file.
+-or-
+The file specified in the <paramref name="fileName" /> could not be found.
 -or-
 The sum of the length of the arguments and the length of the full path to the associated file exceeds 2080. The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
       <exception cref="T:System.ObjectDisposedException">The process object has already been disposed.</exception>
@@ -778,7 +787,10 @@ No process is associated with this <see cref="T:System.Diagnostics.Process" /> o
       <summary>Gets or sets the preferred encoding for error output.</summary>
       <returns>An object that represents the preferred encoding for error output. The default is <see langword="null" />.</returns>
     </member>
-    <member name="P:System.Diagnostics.ProcessStartInfo.StandardInputEncoding" />
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardInputEncoding">
+      <summary>Gets or sets the preferred encoding for standard input.</summary>
+      <returns>An object that represents the preferred encoding for standard input. The default is <see langword="null" />.</returns>
+    </member>
     <member name="P:System.Diagnostics.ProcessStartInfo.StandardOutputEncoding">
       <summary>Gets or sets the preferred encoding for standard output.</summary>
       <returns>An object that represents the preferred encoding for standard output. The default is <see langword="null" />.</returns>

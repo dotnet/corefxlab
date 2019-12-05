@@ -4,18 +4,27 @@
     <name>System.IO.Compression.Brotli</name>
   </assembly>
   <members>
-    <member name="T:System.IO.Compression.BrotliDecoder" />
-    <member name="M:System.IO.Compression.BrotliDecoder.Decompress(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
-      <param name="source" />
-      <param name="destination" />
-      <param name="bytesConsumed" />
-      <param name="bytesWritten" />
+    <member name="T:System.IO.Compression.BrotliDecoder">
+      <summary>Provides non-allocating, performant Brotli decompression methods. The methods decompress in a single pass without using a <see cref="T:System.IO.Compression.BrotliStream" /> instance.</summary>
     </member>
-    <member name="M:System.IO.Compression.BrotliDecoder.Dispose" />
+    <member name="M:System.IO.Compression.BrotliDecoder.Decompress(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
+      <summary>Decompresses data that was compressed using the Brotli algorithm.</summary>
+      <param name="source">A buffer containing the compressed data.</param>
+      <param name="destination">When this method returns, a byte span containing the decompressed data.</param>
+      <param name="bytesConsumed">The total number of bytes that were read from <paramref name="source" />.</param>
+      <param name="bytesWritten">The total number of bytes that were written in the <paramref name="destination" />.</param>
+      <returns>One of the enumeration values that indicates the status of the decompression operation.</returns>
+    </member>
+    <member name="M:System.IO.Compression.BrotliDecoder.Dispose">
+      <summary>Releases all resources used by the current Brotli decoder instance.</summary>
+    </member>
     <member name="M:System.IO.Compression.BrotliDecoder.TryDecompress(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
-      <param name="source" />
-      <param name="destination" />
-      <param name="bytesWritten" />
+      <summary>Attempts to decompress data that was compressed with the Brotli algorithm.</summary>
+      <param name="source">A buffer containing the compressed data.</param>
+      <param name="destination">When this method returns, a byte span containing the decompressed data.</param>
+      <param name="bytesWritten">The total number of bytes that were written in the <paramref name="destination" />.</param>
+      <returns>
+        <see langword="true" /> on success; <see langword="false" /> otherwise.</returns>
     </member>
     <member name="T:System.IO.Compression.BrotliEncoder">
       <summary>Provides methods and static methods to encode and decode data in a streamless, non-allocating, and performant manner using the Brotli data format specification.</summary>

@@ -1202,9 +1202,9 @@ The <see cref="T:System.Printing.PrintQueue" /> object was not created with suff
         <see langword="true" /> if the printer is warming up; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Printing.PrintQueue.IsXpsDevice">
-      <summary>Gets a value that indicates whether the printer's driver is built on the Printing Overview so it uses XML Paper Specification (XPS) as its page description language.</summary>
+      <summary>Gets a value that indicates whether the printer's driver is built on the XPSDrv model so it uses XML Paper Specification (XPS) as its page description language.</summary>
       <returns>
-        <see langword="true" /> if the printer uses the Printing Overview; otherwise, <see langword="false" />.</returns>
+        <see langword="true" /> if the printer uses the XPS print path; otherwise, <see langword="false" />.</returns>
     </member>
     <member name="P:System.Printing.PrintQueue.KeepPrintedJobs">
       <summary>Gets a value that indicates whether the queue is saving the printer language file instead of deleting it following printing.</summary>
