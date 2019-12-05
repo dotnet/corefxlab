@@ -39,7 +39,13 @@ namespace Microsoft.Data.Analysis
             _rowCollection = new DataFrameRowCollection(this);
         }
 
-        public DataFrame(IList<DataFrameColumn> columns)
+        public DataFrame(IEnumerable<DataFrameColumn> columns)
+        {
+            _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
+            _rowCollection = new DataFrameRowCollection(this);
+        }
+
+        public DataFrame(params DataFrameColumn[] columns)
         {
             _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
             _rowCollection = new DataFrameRowCollection(this);
