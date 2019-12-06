@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.Data.Analysis
 {
@@ -54,9 +55,29 @@ namespace Microsoft.Data.Analysis
 <# } #>
         {
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
+<# if (method.IsBitwise == true) { #>
             return <#=method.MethodName#>Implementation(value, inPlace);
+<# } else { #>
+            switch (typeof(U))
+            {
+<# foreach (TypeConfiguration type in typeConfiguration) { #>
+                case Type <#=type.TypeName#>Type when <#=type.TypeName#>Type == typeof(<#=type.TypeName#>):
+                    return <#=method.MethodName#>Implementation(Unsafe.As<U, <#=type.TypeName#>>(ref value), inPlace);
+<# } #>
+                default:
+                    throw new NotImplementedException();
+            }
+<# } #>
 <# } else {#>
-            return <#=method.MethodName#>Implementation(value);
+            switch (typeof(U))
+            {
+<# foreach (TypeConfiguration type in typeConfiguration) { #>
+                case Type <#=type.TypeName#>Type when <#=type.TypeName#>Type == typeof(<#=type.TypeName#>):
+                    return <#=method.MethodName#>Implementation(Unsafe.As<U, <#=type.TypeName#>>(ref value));
+<# } #>
+                default:
+                    throw new NotImplementedException();
+            }
 <# } #>
         }
 <# } #>
