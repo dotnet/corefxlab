@@ -24,7 +24,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Add(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.AddValue(values[i], inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -35,7 +35,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise addition on each column
         /// </summary>
-        public DataFrame Add<T>(T value, bool inPlace = false)
+        public DataFrame AddValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
@@ -43,7 +43,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Add(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.AddValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -63,7 +63,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Subtract(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.SubtractValue(values[i], inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -74,7 +74,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise subtraction on each column
         /// </summary>
-        public DataFrame Subtract<T>(T value, bool inPlace = false)
+        public DataFrame SubtractValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
@@ -82,7 +82,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Subtract(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.SubtractValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -102,7 +102,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Multiply(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.MultiplyValue(values[i], inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -113,7 +113,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise multiplication on each column
         /// </summary>
-        public DataFrame Multiply<T>(T value, bool inPlace = false)
+        public DataFrame MultiplyValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
@@ -121,7 +121,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Multiply(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.MultiplyValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -141,7 +141,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Divide(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.DivideValue(values[i], inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -152,7 +152,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise division on each column
         /// </summary>
-        public DataFrame Divide<T>(T value, bool inPlace = false)
+        public DataFrame DivideValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
@@ -160,7 +160,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Divide(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.DivideValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -180,7 +180,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Modulo(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.ModuloValue(values[i], inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -191,7 +191,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise modulus operation on each column
         /// </summary>
-        public DataFrame Modulo<T>(T value, bool inPlace = false)
+        public DataFrame ModuloValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
@@ -199,7 +199,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Modulo(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ModuloValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -218,7 +218,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.And(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.AndValue(values[i], inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -229,14 +229,14 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise boolean And on each column
         /// </summary>
-        public DataFrame And(bool value, bool inPlace = false)
+        public DataFrame AndValue(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.And(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.AndValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -255,7 +255,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Or(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.OrValue(values[i], inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -266,14 +266,14 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise boolean Or on each column
         /// </summary>
-        public DataFrame Or(bool value, bool inPlace = false)
+        public DataFrame OrValue(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Or(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.OrValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -292,7 +292,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Xor(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.XorValue(values[i], inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -303,14 +303,14 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise boolean Xor on each column
         /// </summary>
-        public DataFrame Xor(bool value, bool inPlace = false)
+        public DataFrame XorValue(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
 
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.Xor(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.XorValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -366,7 +366,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseEquals(values[i]);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueEquals(values[i]);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -374,7 +374,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise equals on each column
         /// </summary>
-        public DataFrame ElementwiseEquals<T>(T value)
+        public DataFrame ElementwiseValueEquals<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -382,7 +382,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseEquals(value);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueEquals(value);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -399,7 +399,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseNotEquals(values[i]);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueNotEquals(values[i]);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -407,7 +407,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise not-equals on each column
         /// </summary>
-        public DataFrame ElementwiseNotEquals<T>(T value)
+        public DataFrame ElementwiseValueNotEquals<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -415,7 +415,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseNotEquals(value);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueNotEquals(value);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -432,7 +432,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThanOrEqual(values[i]);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueGreaterThanOrEqual(values[i]);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -440,7 +440,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise greater than or equal on each column
         /// </summary>
-        public DataFrame ElementwiseGreaterThanOrEqual<T>(T value)
+        public DataFrame ElementwiseValueGreaterThanOrEqual<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -448,7 +448,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThanOrEqual(value);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueGreaterThanOrEqual(value);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -465,7 +465,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseLessThanOrEqual(values[i]);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueLessThanOrEqual(values[i]);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -473,7 +473,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise less than or equal on each column
         /// </summary>
-        public DataFrame ElementwiseLessThanOrEqual<T>(T value)
+        public DataFrame ElementwiseValueLessThanOrEqual<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -481,7 +481,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseLessThanOrEqual(value);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueLessThanOrEqual(value);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -498,7 +498,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThan(values[i]);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueGreaterThan(values[i]);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -506,7 +506,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise greater than on each column
         /// </summary>
-        public DataFrame ElementwiseGreaterThan<T>(T value)
+        public DataFrame ElementwiseValueGreaterThan<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -514,7 +514,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseGreaterThan(value);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueGreaterThan(value);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -531,7 +531,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseLessThan(values[i]);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueLessThan(values[i]);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -539,7 +539,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs an element wise less than on each column
         /// </summary>
-        public DataFrame ElementwiseLessThan<T>(T value)
+        public DataFrame ElementwiseValueLessThan<T>(T value)
             where T : unmanaged
         {
             DataFrame retDataFrame = new DataFrame();
@@ -547,7 +547,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ElementwiseLessThan(value);
+                DataFrameColumn newColumn = baseColumn.ElementwiseValueLessThan(value);
                 retDataFrame.Columns.Insert(i, newColumn);
             }
             return retDataFrame;
@@ -556,14 +556,14 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs a reversed element wise addition on each column
         /// </summary>
-        public DataFrame ReverseAdd<T>(T value, bool inPlace = false)
+        public DataFrame ReverseAddValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ReverseAdd(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ReverseAddValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -574,14 +574,14 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs a reversed element wise subtraction on each column
         /// </summary>
-        public DataFrame ReverseSubtract<T>(T value, bool inPlace = false)
+        public DataFrame ReverseSubtractValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ReverseSubtract(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ReverseSubtractValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -592,14 +592,14 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs a reversed element wise multiplication on each column
         /// </summary>
-        public DataFrame ReverseMultiply<T>(T value, bool inPlace = false)
+        public DataFrame ReverseMultiplyValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ReverseMultiply(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ReverseMultiplyValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -610,14 +610,14 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs a reversed element wise division on each column
         /// </summary>
-        public DataFrame ReverseDivide<T>(T value, bool inPlace = false)
+        public DataFrame ReverseDivideValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ReverseDivide(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ReverseDivideValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -628,14 +628,14 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs a reversed element wise modulus operation on each column
         /// </summary>
-        public DataFrame ReverseModulo<T>(T value, bool inPlace = false)
+        public DataFrame ReverseModuloValue<T>(T value, bool inPlace = false)
             where T : unmanaged
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ReverseModulo(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ReverseModuloValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -646,13 +646,13 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs a reversed element wise boolean And on each column
         /// </summary>
-        public DataFrame ReverseAnd(bool value, bool inPlace = false)
+        public DataFrame ReverseAndValue(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ReverseAnd(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ReverseAndValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -663,13 +663,13 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs a reversed element wise boolean Or on each column
         /// </summary>
-        public DataFrame ReverseOr(bool value, bool inPlace = false)
+        public DataFrame ReverseOrValue(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ReverseOr(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ReverseOrValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else
@@ -680,13 +680,13 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Performs a reversed element wise boolean Xor on each column
         /// </summary>
-        public DataFrame ReverseXor(bool value, bool inPlace = false)
+        public DataFrame ReverseXorValue(bool value, bool inPlace = false)
         {
             DataFrame retDataFrame = inPlace ? this : new DataFrame();
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn baseColumn = _columnCollection[i];
-                DataFrameColumn newColumn = baseColumn.ReverseXor(value, inPlace);
+                DataFrameColumn newColumn = baseColumn.ReverseXorValue(value, inPlace);
                 if (inPlace)
                     retDataFrame.Columns[i] = newColumn;
                 else

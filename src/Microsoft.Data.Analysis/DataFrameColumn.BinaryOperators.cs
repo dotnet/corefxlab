@@ -19,132 +19,132 @@ namespace Microsoft.Data.Analysis
 
         public static DataFrameColumn operator +(DataFrameColumn column, bool value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(bool value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, byte value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(byte value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, char value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(char value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, decimal value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(decimal value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, double value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(double value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, float value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(float value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, int value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(int value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, long value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(long value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, sbyte value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(sbyte value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, short value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(short value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, uint value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(uint value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, ulong value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(ulong value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
         public static DataFrameColumn operator +(DataFrameColumn column, ushort value)
         {
-            return column.Add(value);
+            return column.AddValue(value);
         }
 
         public static DataFrameColumn operator +(ushort value, DataFrameColumn column)
         {
-            return column.ReverseAdd(value);
+            return column.ReverseAddValue(value);
         }
 
 
@@ -155,132 +155,132 @@ namespace Microsoft.Data.Analysis
 
         public static DataFrameColumn operator -(DataFrameColumn column, bool value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(bool value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, byte value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(byte value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, char value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(char value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, decimal value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(decimal value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, double value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(double value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, float value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(float value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, int value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(int value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, long value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(long value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, sbyte value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(sbyte value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, short value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(short value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, uint value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(uint value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, ulong value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(ulong value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
         public static DataFrameColumn operator -(DataFrameColumn column, ushort value)
         {
-            return column.Subtract(value);
+            return column.SubtractValue(value);
         }
 
         public static DataFrameColumn operator -(ushort value, DataFrameColumn column)
         {
-            return column.ReverseSubtract(value);
+            return column.ReverseSubtractValue(value);
         }
 
 
@@ -291,132 +291,132 @@ namespace Microsoft.Data.Analysis
 
         public static DataFrameColumn operator *(DataFrameColumn column, bool value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(bool value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, byte value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(byte value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, char value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(char value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, decimal value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(decimal value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, double value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(double value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, float value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(float value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, int value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(int value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, long value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(long value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, sbyte value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(sbyte value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, short value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(short value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, uint value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(uint value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, ulong value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(ulong value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(DataFrameColumn column, ushort value)
         {
-            return column.Multiply(value);
+            return column.MultiplyValue(value);
         }
 
         public static DataFrameColumn operator *(ushort value, DataFrameColumn column)
         {
-            return column.ReverseMultiply(value);
+            return column.ReverseMultiplyValue(value);
         }
 
 
@@ -427,132 +427,132 @@ namespace Microsoft.Data.Analysis
 
         public static DataFrameColumn operator /(DataFrameColumn column, bool value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(bool value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, byte value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(byte value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, char value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(char value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, decimal value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(decimal value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, double value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(double value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, float value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(float value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, int value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(int value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, long value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(long value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, sbyte value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(sbyte value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, short value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(short value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, uint value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(uint value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, ulong value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(ulong value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
         public static DataFrameColumn operator /(DataFrameColumn column, ushort value)
         {
-            return column.Divide(value);
+            return column.DivideValue(value);
         }
 
         public static DataFrameColumn operator /(ushort value, DataFrameColumn column)
         {
-            return column.ReverseDivide(value);
+            return column.ReverseDivideValue(value);
         }
 
 
@@ -563,132 +563,132 @@ namespace Microsoft.Data.Analysis
 
         public static DataFrameColumn operator %(DataFrameColumn column, bool value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(bool value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, byte value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(byte value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, char value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(char value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, decimal value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(decimal value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, double value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(double value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, float value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(float value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, int value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(int value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, long value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(long value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, sbyte value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(sbyte value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, short value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(short value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, uint value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(uint value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, ulong value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(ulong value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
         public static DataFrameColumn operator %(DataFrameColumn column, ushort value)
         {
-            return column.Modulo(value);
+            return column.ModuloValue(value);
         }
 
         public static DataFrameColumn operator %(ushort value, DataFrameColumn column)
         {
-            return column.ReverseModulo(value);
+            return column.ReverseModuloValue(value);
         }
 
 
@@ -699,12 +699,12 @@ namespace Microsoft.Data.Analysis
 
         public static DataFrameColumn operator &(DataFrameColumn column, bool value)
         {
-            return column.And(value);
+            return column.AndValue(value);
         }
 
         public static DataFrameColumn operator &(bool value, DataFrameColumn column)
         {
-            return column.ReverseAnd(value);
+            return column.ReverseAndValue(value);
         }
 
         public static DataFrameColumn operator |(DataFrameColumn left, DataFrameColumn right)
@@ -714,12 +714,12 @@ namespace Microsoft.Data.Analysis
 
         public static DataFrameColumn operator |(DataFrameColumn column, bool value)
         {
-            return column.Or(value);
+            return column.OrValue(value);
         }
 
         public static DataFrameColumn operator |(bool value, DataFrameColumn column)
         {
-            return column.ReverseOr(value);
+            return column.ReverseOrValue(value);
         }
 
         public static DataFrameColumn operator ^(DataFrameColumn left, DataFrameColumn right)
@@ -729,12 +729,12 @@ namespace Microsoft.Data.Analysis
 
         public static DataFrameColumn operator ^(DataFrameColumn column, bool value)
         {
-            return column.Xor(value);
+            return column.XorValue(value);
         }
 
         public static DataFrameColumn operator ^(bool value, DataFrameColumn column)
         {
-            return column.ReverseXor(value);
+            return column.ReverseXorValue(value);
         }
 
         public static DataFrameColumn operator <<(DataFrameColumn column, int value)

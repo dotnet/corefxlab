@@ -16,9 +16,9 @@ namespace Microsoft.Data.Analysis
             return this;
         }
 
-        public PrimitiveColumnContainer<T> Add(T scalar)
+        public PrimitiveColumnContainer<T> AddValue(T scalar)
         {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Add(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.AddValue(this, scalar);
             return this;
         }
 
@@ -28,9 +28,9 @@ namespace Microsoft.Data.Analysis
             return this;
         }
 
-        public PrimitiveColumnContainer<T> Subtract(T scalar)
+        public PrimitiveColumnContainer<T> SubtractValue(T scalar)
         {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Subtract(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.SubtractValue(this, scalar);
             return this;
         }
 
@@ -40,9 +40,9 @@ namespace Microsoft.Data.Analysis
             return this;
         }
 
-        public PrimitiveColumnContainer<T> Multiply(T scalar)
+        public PrimitiveColumnContainer<T> MultiplyValue(T scalar)
         {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Multiply(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.MultiplyValue(this, scalar);
             return this;
         }
 
@@ -52,9 +52,9 @@ namespace Microsoft.Data.Analysis
             return this;
         }
 
-        public PrimitiveColumnContainer<T> Divide(T scalar)
+        public PrimitiveColumnContainer<T> DivideValue(T scalar)
         {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Divide(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.DivideValue(this, scalar);
             return this;
         }
 
@@ -64,9 +64,9 @@ namespace Microsoft.Data.Analysis
             return this;
         }
 
-        public PrimitiveColumnContainer<T> Modulo(T scalar)
+        public PrimitiveColumnContainer<T> ModuloValue(T scalar)
         {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Modulo(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.ModuloValue(this, scalar);
             return this;
         }
 
@@ -76,9 +76,9 @@ namespace Microsoft.Data.Analysis
             return this;
         }
 
-        public PrimitiveColumnContainer<T> And(T scalar)
+        public PrimitiveColumnContainer<T> AndValue(T scalar)
         {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.And(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.AndValue(this, scalar);
             return this;
         }
 
@@ -88,9 +88,9 @@ namespace Microsoft.Data.Analysis
             return this;
         }
 
-        public PrimitiveColumnContainer<T> Or(T scalar)
+        public PrimitiveColumnContainer<T> OrValue(T scalar)
         {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Or(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.OrValue(this, scalar);
             return this;
         }
 
@@ -100,9 +100,9 @@ namespace Microsoft.Data.Analysis
             return this;
         }
 
-        public PrimitiveColumnContainer<T> Xor(T scalar)
+        public PrimitiveColumnContainer<T> XorValue(T scalar)
         {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Xor(this, scalar);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.XorValue(this, scalar);
             return this;
         }
 
@@ -124,9 +124,9 @@ namespace Microsoft.Data.Analysis
             return this;
        }
 
-       public PrimitiveColumnContainer<T> ElementwiseEquals(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseValueEquals(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseEquals(this, scalar, ret);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseValueEquals(this, scalar, ret);
             return this;
        }
 
@@ -136,9 +136,9 @@ namespace Microsoft.Data.Analysis
             return this;
        }
 
-       public PrimitiveColumnContainer<T> ElementwiseNotEquals(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseValueNotEquals(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseNotEquals(this, scalar, ret);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseValueNotEquals(this, scalar, ret);
             return this;
        }
 
@@ -148,9 +148,9 @@ namespace Microsoft.Data.Analysis
             return this;
        }
 
-       public PrimitiveColumnContainer<T> ElementwiseGreaterThanOrEqual(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseValueGreaterThanOrEqual(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseGreaterThanOrEqual(this, scalar, ret);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseValueGreaterThanOrEqual(this, scalar, ret);
             return this;
        }
 
@@ -160,9 +160,9 @@ namespace Microsoft.Data.Analysis
             return this;
        }
 
-       public PrimitiveColumnContainer<T> ElementwiseLessThanOrEqual(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseValueLessThanOrEqual(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseLessThanOrEqual(this, scalar, ret);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseValueLessThanOrEqual(this, scalar, ret);
             return this;
        }
 
@@ -172,9 +172,9 @@ namespace Microsoft.Data.Analysis
             return this;
        }
 
-       public PrimitiveColumnContainer<T> ElementwiseGreaterThan(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseValueGreaterThan(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseGreaterThan(this, scalar, ret);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseValueGreaterThan(this, scalar, ret);
             return this;
        }
 
@@ -184,50 +184,50 @@ namespace Microsoft.Data.Analysis
             return this;
        }
 
-       public PrimitiveColumnContainer<T> ElementwiseLessThan(T scalar, PrimitiveColumnContainer<bool> ret)
+       public PrimitiveColumnContainer<T> ElementwiseValueLessThan(T scalar, PrimitiveColumnContainer<bool> ret)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseLessThan(this, scalar, ret);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.ElementwiseValueLessThan(this, scalar, ret);
             return this;
        }
 
-       public PrimitiveColumnContainer<T> ReverseAdd(T scalar)
+       public PrimitiveColumnContainer<T> ReverseAddValue(T scalar)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Add(scalar, this);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.AddValue(scalar, this);
             return this;
        }
-       public PrimitiveColumnContainer<T> ReverseSubtract(T scalar)
+       public PrimitiveColumnContainer<T> ReverseSubtractValue(T scalar)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Subtract(scalar, this);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.SubtractValue(scalar, this);
             return this;
        }
-       public PrimitiveColumnContainer<T> ReverseMultiply(T scalar)
+       public PrimitiveColumnContainer<T> ReverseMultiplyValue(T scalar)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Multiply(scalar, this);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.MultiplyValue(scalar, this);
             return this;
        }
-       public PrimitiveColumnContainer<T> ReverseDivide(T scalar)
+       public PrimitiveColumnContainer<T> ReverseDivideValue(T scalar)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Divide(scalar, this);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.DivideValue(scalar, this);
             return this;
        }
-       public PrimitiveColumnContainer<T> ReverseModulo(T scalar)
+       public PrimitiveColumnContainer<T> ReverseModuloValue(T scalar)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Modulo(scalar, this);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.ModuloValue(scalar, this);
             return this;
        }
-       public PrimitiveColumnContainer<T> ReverseAnd(T scalar)
+       public PrimitiveColumnContainer<T> ReverseAndValue(T scalar)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.And(scalar, this);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.AndValue(scalar, this);
             return this;
        }
-       public PrimitiveColumnContainer<T> ReverseOr(T scalar)
+       public PrimitiveColumnContainer<T> ReverseOrValue(T scalar)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Or(scalar, this);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.OrValue(scalar, this);
             return this;
        }
-       public PrimitiveColumnContainer<T> ReverseXor(T scalar)
+       public PrimitiveColumnContainer<T> ReverseXorValue(T scalar)
        {
-            PrimitiveDataFrameColumnArithmetic<T>.Instance.Xor(scalar, this);
+            PrimitiveDataFrameColumnArithmetic<T>.Instance.XorValue(scalar, this);
             return this;
        }
     }

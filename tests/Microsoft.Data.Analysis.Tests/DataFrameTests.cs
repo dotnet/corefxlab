@@ -265,55 +265,55 @@ namespace Microsoft.Data.Analysis.Tests
             IReadOnlyList<int> listOfInts = new List<int>() { 5, 5 };
 
             // The following binary ops return a copy
-            var ret = df.Add(5);
+            var ret = df.AddValue(5);
             Assert.Equal(0, df[0, 0]);
             Assert.Equal(5, ret[0, 0]);
             ret = df.Add(listOfInts);
             Assert.Equal(0, df[0, 0]);
             Assert.Equal(5, ret[0, 0]);
-            ret = df.Subtract(5);
+            ret = df.SubtractValue(5);
             Assert.Equal(0, df[0, 0]);
             Assert.Equal(-5, ret[0, 0]);
             ret = df.Subtract(listOfInts);
             Assert.Equal(0, df[0, 0]);
             Assert.Equal(-5, ret[0, 0]);
-            ret = df.Multiply(5);
+            ret = df.MultiplyValue(5);
             Assert.Equal(1, df[1, 0]);
             Assert.Equal(5, ret[1, 0]);
             ret = df.Multiply(listOfInts);
             Assert.Equal(1, df[1, 0]);
             Assert.Equal(5, ret[1, 0]);
-            ret = df.Divide(5);
+            ret = df.DivideValue(5);
             Assert.Equal(5, df[5, 0]);
             Assert.Equal(1, ret[5, 0]);
             ret = df.Divide(listOfInts);
             Assert.Equal(5, df[5, 0]);
             Assert.Equal(1, ret[5, 0]);
-            ret = df.Modulo(5);
+            ret = df.ModuloValue(5);
             Assert.Equal(5, df[5, 0]);
             Assert.Equal(0, ret[5, 0]);
             ret = df.Modulo(listOfInts);
             Assert.Equal(5, df[5, 0]);
             Assert.Equal(0, ret[5, 0]);
 
-            Assert.Equal(true, df.ElementwiseGreaterThanOrEqual(5)[7, 0]);
+            Assert.Equal(true, df.ElementwiseValueGreaterThanOrEqual(5)[7, 0]);
             Assert.Equal(true, df.ElementwiseGreaterThanOrEqual(listOfInts)[7, 0]);
-            Assert.Equal(true, df.ElementwiseLessThanOrEqual(5)[4, 0]);
+            Assert.Equal(true, df.ElementwiseValueLessThanOrEqual(5)[4, 0]);
             Assert.Equal(true, df.ElementwiseLessThanOrEqual(listOfInts)[4, 0]);
-            Assert.Equal(false, df.ElementwiseGreaterThan(5)[5, 0]);
+            Assert.Equal(false, df.ElementwiseValueGreaterThan(5)[5, 0]);
             Assert.Equal(false, df.ElementwiseGreaterThan(listOfInts)[5, 0]);
-            Assert.Equal(false, df.ElementwiseLessThan(5)[5, 0]);
+            Assert.Equal(false, df.ElementwiseValueLessThan(5)[5, 0]);
             Assert.Equal(false, df.ElementwiseLessThan(listOfInts)[5, 0]);
             // The following binary ops are in place
-            Assert.Equal(5, df.Add(5, inPlace: true)[0, 0]);
+            Assert.Equal(5, df.AddValue(5, inPlace: true)[0, 0]);
             Assert.Equal(10, df.Add(listOfInts, inPlace: true)[0, 0]);
-            Assert.Equal(5, df.Subtract(5, inPlace: true)[0, 0]);
+            Assert.Equal(5, df.SubtractValue(5, inPlace: true)[0, 0]);
             Assert.Equal(0, df.Subtract(listOfInts, inPlace: true)[0, 0]);
-            Assert.Equal(5, df.Multiply(5, inPlace: true)[1, 0]);
+            Assert.Equal(5, df.MultiplyValue(5, inPlace: true)[1, 0]);
             Assert.Equal(25, df.Multiply(listOfInts, inPlace: true)[1, 0]);
-            Assert.Equal(5, df.Divide(5, inPlace: true)[1, 0]);
+            Assert.Equal(5, df.DivideValue(5, inPlace: true)[1, 0]);
             Assert.Equal(1, df.Divide(listOfInts, inPlace: true)[1, 0]);
-            Assert.Equal(1, df.Modulo(5, inPlace: true)[1, 0]);
+            Assert.Equal(1, df.ModuloValue(5, inPlace: true)[1, 0]);
             Assert.Equal(1, df.Modulo(listOfInts, inPlace: true)[1, 0]);
             Assert.Equal(2, df.LeftShift(1)[1, 0]);
             Assert.Equal(1, df.RightShift(1)[2, 0]);
@@ -335,7 +335,7 @@ namespace Microsoft.Data.Analysis.Tests
                 Assert.Equal(true, verify[0]);
 
                 newColumn = df1[df1.Columns[i].Name] - df2[df2.Columns[i].Name];
-                verify = newColumn.ElementwiseEquals(0);
+                verify = newColumn.ElementwiseValueEquals(0);
                 Assert.Equal(true, verify[0]);
 
                 newColumn = df1[df1.Columns[i].Name] * df2[df2.Columns[i].Name];
@@ -345,11 +345,11 @@ namespace Microsoft.Data.Analysis.Tests
                 var df1Column = df1.Columns[i] + 1;
                 var df2Column = df2.Columns[i] + 1;
                 newColumn = df1Column / df2Column;
-                verify = newColumn.ElementwiseEquals(1);
+                verify = newColumn.ElementwiseValueEquals(1);
                 Assert.Equal(true, verify[0]);
 
                 newColumn = df1Column % df2Column;
-                verify = newColumn.ElementwiseEquals(0);
+                verify = newColumn.ElementwiseValueEquals(0);
                 Assert.Equal(true, verify[0]);
 
                 verify = df1[df1.Columns[i].Name].ElementwiseEquals(df2[df2.Columns[i].Name]);
@@ -378,22 +378,22 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrame df = DataFrameTests.MakeDataFrameWithTwoColumns(10);
 
             // Add a double to an int column
-            DataFrame dfd = df.Add(5.0f);
+            DataFrame dfd = df.AddValue(5.0f);
             var dtype = dfd.Columns[0].DataType;
             Assert.True(dtype == typeof(double));
 
             // Add a decimal to an int column
-            DataFrame dfm = df.Add(5.0m);
+            DataFrame dfm = df.AddValue(5.0m);
             dtype = dfm.Columns[0].DataType;
             Assert.True(dtype == typeof(decimal));
 
             // int + bool should throw
-            Assert.Throws<NotSupportedException>(() => df.Add(true));
+            Assert.Throws<NotSupportedException>(() => df.AddValue(true));
 
             var dataFrameColumn1 = new PrimitiveDataFrameColumn<double>("Double1", Enumerable.Range(0, 10).Select(x => (double)x));
             df.Columns[0] = dataFrameColumn1;
             // Double + comparison ops should throw
-            Assert.Throws<NotSupportedException>(() => df.And(true));
+            Assert.Throws<NotSupportedException>(() => df.AndValue(true));
         }
 
         [Fact]
@@ -406,23 +406,23 @@ namespace Microsoft.Data.Analysis.Tests
             df.Columns.Insert(1, dataFrameColumn2);
 
             // bool + int should throw
-            Assert.Throws<NotSupportedException>(() => df.Add(5));
+            Assert.Throws<NotSupportedException>(() => df.AddValue(5));
             // Left shift should throw
             Assert.Throws<NotSupportedException>(() => df.LeftShift(5));
 
             IReadOnlyList<bool> listOfBools = new List<bool>() { true, false };
             // boolean and And should work
-            var newdf = df.And(true);
+            var newdf = df.AndValue(true);
             Assert.Equal(true, newdf[4, 0]);
             var newdf1 = df.And(listOfBools);
             Assert.Equal(false, newdf1[4, 1]);
 
-            newdf = df.Or(true);
+            newdf = df.OrValue(true);
             Assert.Equal(true, newdf[4, 0]);
             newdf1 = df.Or(listOfBools);
             Assert.Equal(true, newdf1[4, 1]);
 
-            newdf = df.Xor(true);
+            newdf = df.XorValue(true);
             Assert.Equal(false, newdf[4, 0]);
             newdf1 = df.Xor(listOfBools);
             Assert.Equal(true, newdf1[4, 1]);
@@ -442,7 +442,7 @@ namespace Microsoft.Data.Analysis.Tests
             ArrowStringDataFrameColumn stringColumn = new ArrowStringDataFrameColumn("String", strArray.ValueBuffer.Memory, strArray.ValueOffsetsBuffer.Memory, strArray.NullBitmapBuffer.Memory, strArray.Length, strArray.NullCount);
             df.Columns.Insert(0, stringColumn);
 
-            DataFrameColumn newCol = stringColumn.ElementwiseEquals(4);
+            DataFrameColumn newCol = stringColumn.ElementwiseValueEquals(4);
             Assert.Equal(true, newCol[4]);
             Assert.Equal(false, newCol[0]);
             Assert.Equal(false, newCol[5]);
@@ -464,15 +464,15 @@ namespace Microsoft.Data.Analysis.Tests
             newCol = stringColumn.ElementwiseEquals(stringColumnCopyAsBaseColumn);
             Assert.True(newCol.All());
 
-            newCol = stringColumn.ElementwiseNotEquals(5);
+            newCol = stringColumn.ElementwiseValueNotEquals(5);
             Assert.Equal(true, newCol[0]);
             Assert.Equal(false, newCol[5]);
 
-            newCol = stringColumn.ElementwiseNotEquals("5");
+            newCol = stringColumn.ElementwiseValueNotEquals("5");
             Assert.Equal(true, newCol[0]);
             Assert.Equal(false, newCol[5]);
 
-            newCol = stringColumn.ElementwiseNotEquals("foo");
+            newCol = stringColumn.ElementwiseValueNotEquals("foo");
             Assert.True(newCol.All());
             newCol = stringColumn.ElementwiseNotEquals(null);
             Assert.True(newCol.All());
@@ -491,7 +491,7 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrameColumn stringColumn = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             df.Columns.Insert(0, stringColumn);
 
-            DataFrameColumn newCol = stringColumn.ElementwiseEquals(5);
+            DataFrameColumn newCol = stringColumn.ElementwiseValueEquals(5);
             Assert.Equal(true, newCol[5]);
             Assert.Equal(false, newCol[0]);
 
@@ -504,7 +504,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(true, newCol[5]);
             Assert.Equal(true, newCol[0]);
 
-            newCol = stringColumn.ElementwiseNotEquals(5);
+            newCol = stringColumn.ElementwiseValueNotEquals(5);
             Assert.Equal(false, newCol[5]);
             Assert.Equal(true, newCol[0]);
 
@@ -662,11 +662,11 @@ namespace Microsoft.Data.Analysis.Tests
         public void TestBinaryOperationsOnColumns()
         {
             PrimitiveDataFrameColumn<int> column = new PrimitiveDataFrameColumn<int>("Int", Enumerable.Range(0, 10));
-            Assert.ThrowsAny<ArgumentException>(() => column.Add(5.5, inPlace: true));
-            Assert.ThrowsAny<ArgumentException>(() => column.ReverseAdd(5.5, inPlace: true));
+            Assert.ThrowsAny<ArgumentException>(() => column.AddValue(5.5, inPlace: true));
+            Assert.ThrowsAny<ArgumentException>(() => column.ReverseAddValue(5.5, inPlace: true));
             string str = "A String";
-            Assert.ThrowsAny<NotImplementedException>(() => column.Add(str, inPlace: true));
-            Assert.ThrowsAny<ArgumentException>(() => column.ReverseAdd(str, inPlace: true));
+            Assert.ThrowsAny<NotImplementedException>(() => column.AddValue(str, inPlace: true));
+            Assert.ThrowsAny<NotImplementedException>(() => column.ReverseAddValue(str, inPlace: true));
         }
 
         [Fact]
@@ -1517,7 +1517,7 @@ namespace Microsoft.Data.Analysis.Tests
         public void TestDataFrameFilter()
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(10);
-            DataFrame boolColumnFiltered = df[df["Bool"].ElementwiseEquals(true)];
+            DataFrame boolColumnFiltered = df[df["Bool"].ElementwiseValueEquals(true)];
             List<int> verify = new List<int> { 0, 2, 4, 6, 8 };
             Assert.Equal(5, boolColumnFiltered.Rows.Count);
             for (int i = 0; i < boolColumnFiltered.Columns.Count; i++)
@@ -1861,7 +1861,7 @@ namespace Microsoft.Data.Analysis.Tests
         public void TestColumnCreationFromExisitingColumn()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
-            PrimitiveDataFrameColumn<bool> bigInts = new PrimitiveDataFrameColumn<bool>("BigInts", df["Int"].ElementwiseGreaterThan(5));
+            PrimitiveDataFrameColumn<bool> bigInts = new PrimitiveDataFrameColumn<bool>("BigInts", df["Int"].ElementwiseValueGreaterThan(5));
             for (int i = 0; i < 10; i++)
             {
                 if (i <= 5)
