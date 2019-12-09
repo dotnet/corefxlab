@@ -50,37 +50,59 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Add<U>(U value, bool inPlace = false)
         {
-            switch (typeof(U))
+            if (typeof(U) == typeof(bool))
             {
-                case Type boolType when boolType == typeof(bool):
-                    return AddImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-                case Type byteType when byteType == typeof(byte):
-                    return AddImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-                case Type charType when charType == typeof(char):
-                    return AddImplementation(Unsafe.As<U, char>(ref value), inPlace);
-                case Type decimalType when decimalType == typeof(decimal):
-                    return AddImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-                case Type doubleType when doubleType == typeof(double):
-                    return AddImplementation(Unsafe.As<U, double>(ref value), inPlace);
-                case Type floatType when floatType == typeof(float):
-                    return AddImplementation(Unsafe.As<U, float>(ref value), inPlace);
-                case Type intType when intType == typeof(int):
-                    return AddImplementation(Unsafe.As<U, int>(ref value), inPlace);
-                case Type longType when longType == typeof(long):
-                    return AddImplementation(Unsafe.As<U, long>(ref value), inPlace);
-                case Type sbyteType when sbyteType == typeof(sbyte):
-                    return AddImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-                case Type shortType when shortType == typeof(short):
-                    return AddImplementation(Unsafe.As<U, short>(ref value), inPlace);
-                case Type uintType when uintType == typeof(uint):
-                    return AddImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-                case Type ulongType when ulongType == typeof(ulong):
-                    return AddImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-                case Type ushortType when ushortType == typeof(ushort):
-                    return AddImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-                default:
-                    throw new NotImplementedException();
+                return AddImplementation(Unsafe.As<U, bool>(ref value), inPlace);
             }
+            if (typeof(U) == typeof(byte))
+            {
+                return AddImplementation(Unsafe.As<U, byte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(char))
+            {
+                return AddImplementation(Unsafe.As<U, char>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(decimal))
+            {
+                return AddImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(double))
+            {
+                return AddImplementation(Unsafe.As<U, double>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(float))
+            {
+                return AddImplementation(Unsafe.As<U, float>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(int))
+            {
+                return AddImplementation(Unsafe.As<U, int>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(long))
+            {
+                return AddImplementation(Unsafe.As<U, long>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(sbyte))
+            {
+                return AddImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(short))
+            {
+                return AddImplementation(Unsafe.As<U, short>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(uint))
+            {
+                return AddImplementation(Unsafe.As<U, uint>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ulong))
+            {
+                return AddImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ushort))
+            {
+                return AddImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
+            }
+            throw new NotImplementedException();
         }
         public override DataFrameColumn Subtract(DataFrameColumn column, bool inPlace = false)
         {
@@ -118,37 +140,59 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Subtract<U>(U value, bool inPlace = false)
         {
-            switch (typeof(U))
+            if (typeof(U) == typeof(bool))
             {
-                case Type boolType when boolType == typeof(bool):
-                    return SubtractImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-                case Type byteType when byteType == typeof(byte):
-                    return SubtractImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-                case Type charType when charType == typeof(char):
-                    return SubtractImplementation(Unsafe.As<U, char>(ref value), inPlace);
-                case Type decimalType when decimalType == typeof(decimal):
-                    return SubtractImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-                case Type doubleType when doubleType == typeof(double):
-                    return SubtractImplementation(Unsafe.As<U, double>(ref value), inPlace);
-                case Type floatType when floatType == typeof(float):
-                    return SubtractImplementation(Unsafe.As<U, float>(ref value), inPlace);
-                case Type intType when intType == typeof(int):
-                    return SubtractImplementation(Unsafe.As<U, int>(ref value), inPlace);
-                case Type longType when longType == typeof(long):
-                    return SubtractImplementation(Unsafe.As<U, long>(ref value), inPlace);
-                case Type sbyteType when sbyteType == typeof(sbyte):
-                    return SubtractImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-                case Type shortType when shortType == typeof(short):
-                    return SubtractImplementation(Unsafe.As<U, short>(ref value), inPlace);
-                case Type uintType when uintType == typeof(uint):
-                    return SubtractImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-                case Type ulongType when ulongType == typeof(ulong):
-                    return SubtractImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-                case Type ushortType when ushortType == typeof(ushort):
-                    return SubtractImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-                default:
-                    throw new NotImplementedException();
+                return SubtractImplementation(Unsafe.As<U, bool>(ref value), inPlace);
             }
+            if (typeof(U) == typeof(byte))
+            {
+                return SubtractImplementation(Unsafe.As<U, byte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(char))
+            {
+                return SubtractImplementation(Unsafe.As<U, char>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(decimal))
+            {
+                return SubtractImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(double))
+            {
+                return SubtractImplementation(Unsafe.As<U, double>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(float))
+            {
+                return SubtractImplementation(Unsafe.As<U, float>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(int))
+            {
+                return SubtractImplementation(Unsafe.As<U, int>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(long))
+            {
+                return SubtractImplementation(Unsafe.As<U, long>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(sbyte))
+            {
+                return SubtractImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(short))
+            {
+                return SubtractImplementation(Unsafe.As<U, short>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(uint))
+            {
+                return SubtractImplementation(Unsafe.As<U, uint>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ulong))
+            {
+                return SubtractImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ushort))
+            {
+                return SubtractImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
+            }
+            throw new NotImplementedException();
         }
         public override DataFrameColumn Multiply(DataFrameColumn column, bool inPlace = false)
         {
@@ -186,37 +230,59 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Multiply<U>(U value, bool inPlace = false)
         {
-            switch (typeof(U))
+            if (typeof(U) == typeof(bool))
             {
-                case Type boolType when boolType == typeof(bool):
-                    return MultiplyImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-                case Type byteType when byteType == typeof(byte):
-                    return MultiplyImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-                case Type charType when charType == typeof(char):
-                    return MultiplyImplementation(Unsafe.As<U, char>(ref value), inPlace);
-                case Type decimalType when decimalType == typeof(decimal):
-                    return MultiplyImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-                case Type doubleType when doubleType == typeof(double):
-                    return MultiplyImplementation(Unsafe.As<U, double>(ref value), inPlace);
-                case Type floatType when floatType == typeof(float):
-                    return MultiplyImplementation(Unsafe.As<U, float>(ref value), inPlace);
-                case Type intType when intType == typeof(int):
-                    return MultiplyImplementation(Unsafe.As<U, int>(ref value), inPlace);
-                case Type longType when longType == typeof(long):
-                    return MultiplyImplementation(Unsafe.As<U, long>(ref value), inPlace);
-                case Type sbyteType when sbyteType == typeof(sbyte):
-                    return MultiplyImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-                case Type shortType when shortType == typeof(short):
-                    return MultiplyImplementation(Unsafe.As<U, short>(ref value), inPlace);
-                case Type uintType when uintType == typeof(uint):
-                    return MultiplyImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-                case Type ulongType when ulongType == typeof(ulong):
-                    return MultiplyImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-                case Type ushortType when ushortType == typeof(ushort):
-                    return MultiplyImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-                default:
-                    throw new NotImplementedException();
+                return MultiplyImplementation(Unsafe.As<U, bool>(ref value), inPlace);
             }
+            if (typeof(U) == typeof(byte))
+            {
+                return MultiplyImplementation(Unsafe.As<U, byte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(char))
+            {
+                return MultiplyImplementation(Unsafe.As<U, char>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(decimal))
+            {
+                return MultiplyImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(double))
+            {
+                return MultiplyImplementation(Unsafe.As<U, double>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(float))
+            {
+                return MultiplyImplementation(Unsafe.As<U, float>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(int))
+            {
+                return MultiplyImplementation(Unsafe.As<U, int>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(long))
+            {
+                return MultiplyImplementation(Unsafe.As<U, long>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(sbyte))
+            {
+                return MultiplyImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(short))
+            {
+                return MultiplyImplementation(Unsafe.As<U, short>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(uint))
+            {
+                return MultiplyImplementation(Unsafe.As<U, uint>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ulong))
+            {
+                return MultiplyImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ushort))
+            {
+                return MultiplyImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
+            }
+            throw new NotImplementedException();
         }
         public override DataFrameColumn Divide(DataFrameColumn column, bool inPlace = false)
         {
@@ -254,37 +320,59 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Divide<U>(U value, bool inPlace = false)
         {
-            switch (typeof(U))
+            if (typeof(U) == typeof(bool))
             {
-                case Type boolType when boolType == typeof(bool):
-                    return DivideImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-                case Type byteType when byteType == typeof(byte):
-                    return DivideImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-                case Type charType when charType == typeof(char):
-                    return DivideImplementation(Unsafe.As<U, char>(ref value), inPlace);
-                case Type decimalType when decimalType == typeof(decimal):
-                    return DivideImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-                case Type doubleType when doubleType == typeof(double):
-                    return DivideImplementation(Unsafe.As<U, double>(ref value), inPlace);
-                case Type floatType when floatType == typeof(float):
-                    return DivideImplementation(Unsafe.As<U, float>(ref value), inPlace);
-                case Type intType when intType == typeof(int):
-                    return DivideImplementation(Unsafe.As<U, int>(ref value), inPlace);
-                case Type longType when longType == typeof(long):
-                    return DivideImplementation(Unsafe.As<U, long>(ref value), inPlace);
-                case Type sbyteType when sbyteType == typeof(sbyte):
-                    return DivideImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-                case Type shortType when shortType == typeof(short):
-                    return DivideImplementation(Unsafe.As<U, short>(ref value), inPlace);
-                case Type uintType when uintType == typeof(uint):
-                    return DivideImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-                case Type ulongType when ulongType == typeof(ulong):
-                    return DivideImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-                case Type ushortType when ushortType == typeof(ushort):
-                    return DivideImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-                default:
-                    throw new NotImplementedException();
+                return DivideImplementation(Unsafe.As<U, bool>(ref value), inPlace);
             }
+            if (typeof(U) == typeof(byte))
+            {
+                return DivideImplementation(Unsafe.As<U, byte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(char))
+            {
+                return DivideImplementation(Unsafe.As<U, char>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(decimal))
+            {
+                return DivideImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(double))
+            {
+                return DivideImplementation(Unsafe.As<U, double>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(float))
+            {
+                return DivideImplementation(Unsafe.As<U, float>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(int))
+            {
+                return DivideImplementation(Unsafe.As<U, int>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(long))
+            {
+                return DivideImplementation(Unsafe.As<U, long>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(sbyte))
+            {
+                return DivideImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(short))
+            {
+                return DivideImplementation(Unsafe.As<U, short>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(uint))
+            {
+                return DivideImplementation(Unsafe.As<U, uint>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ulong))
+            {
+                return DivideImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ushort))
+            {
+                return DivideImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
+            }
+            throw new NotImplementedException();
         }
         public override DataFrameColumn Modulo(DataFrameColumn column, bool inPlace = false)
         {
@@ -322,37 +410,59 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Modulo<U>(U value, bool inPlace = false)
         {
-            switch (typeof(U))
+            if (typeof(U) == typeof(bool))
             {
-                case Type boolType when boolType == typeof(bool):
-                    return ModuloImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-                case Type byteType when byteType == typeof(byte):
-                    return ModuloImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-                case Type charType when charType == typeof(char):
-                    return ModuloImplementation(Unsafe.As<U, char>(ref value), inPlace);
-                case Type decimalType when decimalType == typeof(decimal):
-                    return ModuloImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-                case Type doubleType when doubleType == typeof(double):
-                    return ModuloImplementation(Unsafe.As<U, double>(ref value), inPlace);
-                case Type floatType when floatType == typeof(float):
-                    return ModuloImplementation(Unsafe.As<U, float>(ref value), inPlace);
-                case Type intType when intType == typeof(int):
-                    return ModuloImplementation(Unsafe.As<U, int>(ref value), inPlace);
-                case Type longType when longType == typeof(long):
-                    return ModuloImplementation(Unsafe.As<U, long>(ref value), inPlace);
-                case Type sbyteType when sbyteType == typeof(sbyte):
-                    return ModuloImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-                case Type shortType when shortType == typeof(short):
-                    return ModuloImplementation(Unsafe.As<U, short>(ref value), inPlace);
-                case Type uintType when uintType == typeof(uint):
-                    return ModuloImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-                case Type ulongType when ulongType == typeof(ulong):
-                    return ModuloImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-                case Type ushortType when ushortType == typeof(ushort):
-                    return ModuloImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-                default:
-                    throw new NotImplementedException();
+                return ModuloImplementation(Unsafe.As<U, bool>(ref value), inPlace);
             }
+            if (typeof(U) == typeof(byte))
+            {
+                return ModuloImplementation(Unsafe.As<U, byte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(char))
+            {
+                return ModuloImplementation(Unsafe.As<U, char>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(decimal))
+            {
+                return ModuloImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(double))
+            {
+                return ModuloImplementation(Unsafe.As<U, double>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(float))
+            {
+                return ModuloImplementation(Unsafe.As<U, float>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(int))
+            {
+                return ModuloImplementation(Unsafe.As<U, int>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(long))
+            {
+                return ModuloImplementation(Unsafe.As<U, long>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(sbyte))
+            {
+                return ModuloImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(short))
+            {
+                return ModuloImplementation(Unsafe.As<U, short>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(uint))
+            {
+                return ModuloImplementation(Unsafe.As<U, uint>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ulong))
+            {
+                return ModuloImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
+            }
+            if (typeof(U) == typeof(ushort))
+            {
+                return ModuloImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
+            }
+            throw new NotImplementedException();
         }
         public override DataFrameColumn And(DataFrameColumn column, bool inPlace = false)
         {

@@ -460,6 +460,10 @@ namespace Microsoft.Data.Analysis.Tests
             newCol = stringColumn.ElementwiseEquals(stringColumnCopy);
             Assert.True(newCol.All());
 
+            DataFrameColumn stringColumnCopyAsBaseColumn = stringColumnCopy;
+            newCol = stringColumn.ElementwiseEquals(stringColumnCopyAsBaseColumn);
+            Assert.True(newCol.All());
+
             newCol = stringColumn.ElementwiseNotEquals(5);
             Assert.Equal(true, newCol[0]);
             Assert.Equal(false, newCol[5]);
@@ -474,6 +478,9 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(newCol.All());
 
             newCol = stringColumn.ElementwiseNotEquals(stringColumnCopy);
+            Assert.False(newCol.All());
+
+            newCol = stringColumn.ElementwiseNotEquals(stringColumnCopyAsBaseColumn);
             Assert.False(newCol.All());
         }
 
@@ -657,6 +664,9 @@ namespace Microsoft.Data.Analysis.Tests
             PrimitiveDataFrameColumn<int> column = new PrimitiveDataFrameColumn<int>("Int", Enumerable.Range(0, 10));
             Assert.ThrowsAny<ArgumentException>(() => column.Add(5.5, inPlace: true));
             Assert.ThrowsAny<ArgumentException>(() => column.ReverseAdd(5.5, inPlace: true));
+            string str = "A String";
+            Assert.ThrowsAny<NotImplementedException>(() => column.Add(str, inPlace: true));
+            Assert.ThrowsAny<ArgumentException>(() => column.ReverseAdd(str, inPlace: true));
         }
 
         [Fact]
