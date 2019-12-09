@@ -666,7 +666,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.ThrowsAny<ArgumentException>(() => column.ReverseAddValue(5.5, inPlace: true));
             string str = "A String";
             Assert.ThrowsAny<NotImplementedException>(() => column.AddValue(str, inPlace: true));
-            Assert.ThrowsAny<NotImplementedException>(() => column.ReverseAddValue(str, inPlace: true));
+            Assert.ThrowsAny<ArgumentException>(() => column.ReverseAddValue(str, inPlace: true));
         }
 
         [Fact]
