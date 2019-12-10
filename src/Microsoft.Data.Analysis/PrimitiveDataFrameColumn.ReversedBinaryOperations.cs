@@ -85,7 +85,7 @@ namespace Microsoft.Data.Analysis
                         }
                     }
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
         public override DataFrameColumn ReverseSubtractValue<U>(U value, bool inPlace = false)
@@ -158,7 +158,7 @@ namespace Microsoft.Data.Analysis
                         }
                     }
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
         public override DataFrameColumn ReverseMultiplyValue<U>(U value, bool inPlace = false)
@@ -231,7 +231,7 @@ namespace Microsoft.Data.Analysis
                         }
                     }
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
         public override DataFrameColumn ReverseDivideValue<U>(U value, bool inPlace = false)
@@ -304,7 +304,7 @@ namespace Microsoft.Data.Analysis
                         }
                     }
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
         public override DataFrameColumn ReverseModuloValue<U>(U value, bool inPlace = false)
@@ -377,7 +377,7 @@ namespace Microsoft.Data.Analysis
                         }
                     }
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
         public override PrimitiveDataFrameColumn<bool> ReverseAndValue(bool value, bool inPlace = false)

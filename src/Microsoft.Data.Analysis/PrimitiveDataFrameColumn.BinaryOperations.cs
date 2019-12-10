@@ -102,7 +102,7 @@ namespace Microsoft.Data.Analysis
             {
                 return AddValueImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override DataFrameColumn Subtract(DataFrameColumn column, bool inPlace = false)
         {
@@ -192,7 +192,7 @@ namespace Microsoft.Data.Analysis
             {
                 return SubtractValueImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override DataFrameColumn Multiply(DataFrameColumn column, bool inPlace = false)
         {
@@ -282,7 +282,7 @@ namespace Microsoft.Data.Analysis
             {
                 return MultiplyValueImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override DataFrameColumn Divide(DataFrameColumn column, bool inPlace = false)
         {
@@ -372,7 +372,7 @@ namespace Microsoft.Data.Analysis
             {
                 return DivideValueImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override DataFrameColumn Modulo(DataFrameColumn column, bool inPlace = false)
         {
@@ -462,7 +462,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ModuloValueImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override DataFrameColumn And(DataFrameColumn column, bool inPlace = false)
         {
