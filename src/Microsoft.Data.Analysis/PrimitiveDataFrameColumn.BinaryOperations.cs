@@ -704,7 +704,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseEqualsImplementation(Unsafe.As<U, ushort>(ref value));
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
@@ -799,7 +799,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseNotEqualsImplementation(Unsafe.As<U, ushort>(ref value));
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqual(DataFrameColumn column)
         {
@@ -894,7 +894,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, ushort>(ref value));
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqual(DataFrameColumn column)
         {
@@ -989,7 +989,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, ushort>(ref value));
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThan(DataFrameColumn column)
         {
@@ -1084,7 +1084,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseGreaterThanImplementation(Unsafe.As<U, ushort>(ref value));
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThan(DataFrameColumn column)
         {
@@ -1179,7 +1179,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseLessThanImplementation(Unsafe.As<U, ushort>(ref value));
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         internal DataFrameColumn AddImplementation<U>(PrimitiveDataFrameColumn<U> column, bool inPlace)

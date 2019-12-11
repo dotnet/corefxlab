@@ -83,7 +83,7 @@ namespace Microsoft.Data.Analysis
                 return <#=method.MethodName#>Implementation(Unsafe.As<U, <#=type.TypeName#>>(ref value));
             }
 <# } #>
-            throw new NotImplementedException();
+            throw new NotSupportedException();
 <# } #>
         }
 <# } #>
