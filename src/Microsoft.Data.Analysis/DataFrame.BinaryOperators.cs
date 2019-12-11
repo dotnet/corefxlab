@@ -14,682 +14,682 @@ namespace Microsoft.Data.Analysis
     {
         public static DataFrame operator +(DataFrame df, bool value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(bool value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, byte value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(byte value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, char value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(char value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, decimal value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(decimal value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, double value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(double value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, float value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(float value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, int value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(int value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, long value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(long value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, sbyte value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(sbyte value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, short value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(short value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, uint value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(uint value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, ulong value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(ulong value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator +(DataFrame df, ushort value)
         {
-            return df.AddValue(value);
+            return df.Add(value);
         }
         
         public static DataFrame operator +(ushort value, DataFrame df)
         {
-            return df.ReverseAddValue(value);
+            return df.ReverseAdd(value);
         }
 
         public static DataFrame operator -(DataFrame df, bool value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(bool value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, byte value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(byte value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, char value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(char value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, decimal value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(decimal value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, double value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(double value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, float value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(float value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, int value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(int value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, long value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(long value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, sbyte value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(sbyte value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, short value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(short value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, uint value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(uint value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, ulong value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(ulong value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator -(DataFrame df, ushort value)
         {
-            return df.SubtractValue(value);
+            return df.Subtract(value);
         }
         
         public static DataFrame operator -(ushort value, DataFrame df)
         {
-            return df.ReverseSubtractValue(value);
+            return df.ReverseSubtract(value);
         }
 
         public static DataFrame operator *(DataFrame df, bool value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(bool value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, byte value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(byte value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, char value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(char value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, decimal value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(decimal value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, double value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(double value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, float value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(float value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, int value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(int value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, long value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(long value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, sbyte value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(sbyte value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, short value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(short value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, uint value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(uint value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, ulong value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(ulong value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator *(DataFrame df, ushort value)
         {
-            return df.MultiplyValue(value);
+            return df.Multiply(value);
         }
         
         public static DataFrame operator *(ushort value, DataFrame df)
         {
-            return df.ReverseMultiplyValue(value);
+            return df.ReverseMultiply(value);
         }
 
         public static DataFrame operator /(DataFrame df, bool value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(bool value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, byte value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(byte value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, char value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(char value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, decimal value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(decimal value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, double value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(double value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, float value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(float value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, int value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(int value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, long value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(long value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, sbyte value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(sbyte value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, short value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(short value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, uint value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(uint value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, ulong value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(ulong value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator /(DataFrame df, ushort value)
         {
-            return df.DivideValue(value);
+            return df.Divide(value);
         }
         
         public static DataFrame operator /(ushort value, DataFrame df)
         {
-            return df.ReverseDivideValue(value);
+            return df.ReverseDivide(value);
         }
 
         public static DataFrame operator %(DataFrame df, bool value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(bool value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, byte value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(byte value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, char value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(char value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, decimal value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(decimal value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, double value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(double value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, float value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(float value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, int value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(int value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, long value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(long value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, sbyte value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(sbyte value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, short value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(short value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, uint value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(uint value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, ulong value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(ulong value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator %(DataFrame df, ushort value)
         {
-            return df.ModuloValue(value);
+            return df.Modulo(value);
         }
         
         public static DataFrame operator %(ushort value, DataFrame df)
         {
-            return df.ReverseModuloValue(value);
+            return df.ReverseModulo(value);
         }
 
         public static DataFrame operator &(DataFrame df, bool value)
         {
-            return df.AndValue(value);
+            return df.And(value);
         }
 
         public static DataFrame operator &(bool value, DataFrame df)
         {
-            return df.ReverseAndValue(value, inPlace: false);
+            return df.ReverseAnd(value, inPlace: false);
         }
 
         public static DataFrame operator |(DataFrame df, bool value)
         {
-            return df.OrValue(value);
+            return df.Or(value);
         }
 
         public static DataFrame operator |(bool value, DataFrame df)
         {
-            return df.ReverseOrValue(value, inPlace: false);
+            return df.ReverseOr(value, inPlace: false);
         }
 
         public static DataFrame operator ^(DataFrame df, bool value)
         {
-            return df.XorValue(value);
+            return df.Xor(value);
         }
 
         public static DataFrame operator ^(bool value, DataFrame df)
         {
-            return df.ReverseXorValue(value, inPlace: false);
+            return df.ReverseXor(value, inPlace: false);
         }
 
         public static DataFrame operator <<(DataFrame df, int value)

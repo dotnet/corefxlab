@@ -58,6 +58,11 @@ namespace Microsoft.Data.Analysis
 <# if (method.IsBitwise == true) { #>
             return <#=method.MethodName#>Implementation(value, inPlace);
 <# } else { #>
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return <#=method.MethodName#>(column, inPlace);
+            }
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
             if (typeof(U) == typeof(<#=type.TypeName#>))
             {
@@ -67,15 +72,18 @@ namespace Microsoft.Data.Analysis
             throw new NotSupportedException();
 <# } #>
 <# } else {#>
-            switch (typeof(U))
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
             {
-<# foreach (TypeConfiguration type in typeConfiguration) { #>
-                case Type <#=type.TypeName#>Type when <#=type.TypeName#>Type == typeof(<#=type.TypeName#>):
-                    return <#=method.MethodName#>Implementation(Unsafe.As<U, <#=type.TypeName#>>(ref value));
-<# } #>
-                default:
-                    throw new NotImplementedException();
+                return <#=method.MethodName#>(column);
             }
+<# foreach (TypeConfiguration type in typeConfiguration) { #>
+            if (typeof(U) == typeof(<#=type.TypeName#>))
+            {
+                return <#=method.MethodName#>Implementation(Unsafe.As<U, <#=type.TypeName#>>(ref value));
+            }
+<# } #>
+            throw new NotImplementedException();
 <# } #>
         }
 <# } #>

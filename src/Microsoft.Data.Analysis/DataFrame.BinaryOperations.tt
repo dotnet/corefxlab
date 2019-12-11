@@ -84,11 +84,11 @@ namespace Microsoft.Data.Analysis
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.BinaryInt) {#>
                 DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(value, inPlace);
 <# } else if (method.MethodType == MethodType.Binary) { #>
-                DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>Value(values[i], inPlace);
+                DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(values[i], inPlace);
 <# } else if (method.MethodType == MethodType.ComparisonScalar) { #>
                 DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(value);
 <# } else { #>
-                DataFrameColumn newColumn = baseColumn.<#=method.MethodName.Replace("Elementwise", "ElementwiseValue")#>(values[i]);
+                DataFrameColumn newColumn = baseColumn.<#=method.MethodName#>(values[i]);
 <# } #>
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.Binary || method.MethodType == MethodType.BinaryInt) {#>
                 if (inPlace)

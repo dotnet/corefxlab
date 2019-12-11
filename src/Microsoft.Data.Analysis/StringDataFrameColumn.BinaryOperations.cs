@@ -66,7 +66,7 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        public override DataFrameColumn AddValue<T>(T value, bool inPlace = false)
+        public override DataFrameColumn Add<T>(T value, bool inPlace = false)
         {
             return Add(value.ToString(), inPlace);
         }
@@ -101,8 +101,13 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        public override PrimitiveDataFrameColumn<bool> ElementwiseValueEquals<T>(T value)
+        public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return ElementwiseEquals(column);
+            }
             return ElementwiseEquals(value.ToString());
         }
 
@@ -135,8 +140,13 @@ namespace Microsoft.Data.Analysis
             return ElementwiseNotEqualsImplementation(this, column);
         }
 
-        public override PrimitiveDataFrameColumn<bool> ElementwiseValueNotEquals<T>(T value)
+        public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return ElementwiseNotEquals(column);
+            }
             return ElementwiseNotEquals(value.ToString());
         }
     }

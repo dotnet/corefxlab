@@ -32,7 +32,7 @@ namespace Benchmarks.Microsoft.Data.Analysis
         [Benchmark]
         public DataFrameColumn AddValue()
         {
-            return _column.AddValue(10);
+            return _column.Add(10);
         }
 
         // The other APIs follow the exact same code as Add, except with the appropriate op. Doesn't make sense to benchmark them too
