@@ -55,59 +55,7 @@ namespace Microsoft.Data.Analysis
             {
                 return Add(column, inPlace);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return AddImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return AddImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return AddImplementation(Unsafe.As<U, char>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return AddImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return AddImplementation(Unsafe.As<U, double>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return AddImplementation(Unsafe.As<U, float>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return AddImplementation(Unsafe.As<U, int>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return AddImplementation(Unsafe.As<U, long>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return AddImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return AddImplementation(Unsafe.As<U, short>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return AddImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return AddImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return AddImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-            }
-            throw new NotSupportedException();
+            return AddImplementation(value, inPlace);
         }
         public override DataFrameColumn Subtract(DataFrameColumn column, bool inPlace = false)
         {
@@ -150,59 +98,7 @@ namespace Microsoft.Data.Analysis
             {
                 return Subtract(column, inPlace);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return SubtractImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return SubtractImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return SubtractImplementation(Unsafe.As<U, char>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return SubtractImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return SubtractImplementation(Unsafe.As<U, double>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return SubtractImplementation(Unsafe.As<U, float>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return SubtractImplementation(Unsafe.As<U, int>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return SubtractImplementation(Unsafe.As<U, long>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return SubtractImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return SubtractImplementation(Unsafe.As<U, short>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return SubtractImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return SubtractImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return SubtractImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-            }
-            throw new NotSupportedException();
+            return SubtractImplementation(value, inPlace);
         }
         public override DataFrameColumn Multiply(DataFrameColumn column, bool inPlace = false)
         {
@@ -245,59 +141,7 @@ namespace Microsoft.Data.Analysis
             {
                 return Multiply(column, inPlace);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return MultiplyImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return MultiplyImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return MultiplyImplementation(Unsafe.As<U, char>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return MultiplyImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return MultiplyImplementation(Unsafe.As<U, double>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return MultiplyImplementation(Unsafe.As<U, float>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return MultiplyImplementation(Unsafe.As<U, int>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return MultiplyImplementation(Unsafe.As<U, long>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return MultiplyImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return MultiplyImplementation(Unsafe.As<U, short>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return MultiplyImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return MultiplyImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return MultiplyImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-            }
-            throw new NotSupportedException();
+            return MultiplyImplementation(value, inPlace);
         }
         public override DataFrameColumn Divide(DataFrameColumn column, bool inPlace = false)
         {
@@ -340,59 +184,7 @@ namespace Microsoft.Data.Analysis
             {
                 return Divide(column, inPlace);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return DivideImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return DivideImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return DivideImplementation(Unsafe.As<U, char>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return DivideImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return DivideImplementation(Unsafe.As<U, double>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return DivideImplementation(Unsafe.As<U, float>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return DivideImplementation(Unsafe.As<U, int>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return DivideImplementation(Unsafe.As<U, long>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return DivideImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return DivideImplementation(Unsafe.As<U, short>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return DivideImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return DivideImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return DivideImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-            }
-            throw new NotSupportedException();
+            return DivideImplementation(value, inPlace);
         }
         public override DataFrameColumn Modulo(DataFrameColumn column, bool inPlace = false)
         {
@@ -435,59 +227,7 @@ namespace Microsoft.Data.Analysis
             {
                 return Modulo(column, inPlace);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return ModuloImplementation(Unsafe.As<U, bool>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return ModuloImplementation(Unsafe.As<U, byte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return ModuloImplementation(Unsafe.As<U, char>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return ModuloImplementation(Unsafe.As<U, decimal>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return ModuloImplementation(Unsafe.As<U, double>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return ModuloImplementation(Unsafe.As<U, float>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return ModuloImplementation(Unsafe.As<U, int>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return ModuloImplementation(Unsafe.As<U, long>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return ModuloImplementation(Unsafe.As<U, sbyte>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return ModuloImplementation(Unsafe.As<U, short>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return ModuloImplementation(Unsafe.As<U, uint>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return ModuloImplementation(Unsafe.As<U, ulong>(ref value), inPlace);
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return ModuloImplementation(Unsafe.As<U, ushort>(ref value), inPlace);
-            }
-            throw new NotSupportedException();
+            return ModuloImplementation(value, inPlace);
         }
         public override DataFrameColumn And(DataFrameColumn column, bool inPlace = false)
         {
@@ -652,59 +392,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseEquals(column);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, bool>(ref value));
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, byte>(ref value));
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, char>(ref value));
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, decimal>(ref value));
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, double>(ref value));
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, float>(ref value));
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, int>(ref value));
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, long>(ref value));
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, sbyte>(ref value));
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, short>(ref value));
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, uint>(ref value));
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, ulong>(ref value));
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return ElementwiseEqualsImplementation(Unsafe.As<U, ushort>(ref value));
-            }
-            throw new NotSupportedException();
+            return ElementwiseEqualsImplementation(value);
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
@@ -747,59 +435,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseNotEquals(column);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, bool>(ref value));
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, byte>(ref value));
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, char>(ref value));
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, decimal>(ref value));
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, double>(ref value));
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, float>(ref value));
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, int>(ref value));
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, long>(ref value));
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, sbyte>(ref value));
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, short>(ref value));
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, uint>(ref value));
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, ulong>(ref value));
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return ElementwiseNotEqualsImplementation(Unsafe.As<U, ushort>(ref value));
-            }
-            throw new NotSupportedException();
+            return ElementwiseNotEqualsImplementation(value);
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqual(DataFrameColumn column)
         {
@@ -842,59 +478,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseGreaterThanOrEqual(column);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, bool>(ref value));
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, byte>(ref value));
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, char>(ref value));
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, decimal>(ref value));
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, double>(ref value));
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, float>(ref value));
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, int>(ref value));
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, long>(ref value));
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, sbyte>(ref value));
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, short>(ref value));
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, uint>(ref value));
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, ulong>(ref value));
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return ElementwiseGreaterThanOrEqualImplementation(Unsafe.As<U, ushort>(ref value));
-            }
-            throw new NotSupportedException();
+            return ElementwiseGreaterThanOrEqualImplementation(value);
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqual(DataFrameColumn column)
         {
@@ -937,59 +521,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseLessThanOrEqual(column);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, bool>(ref value));
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, byte>(ref value));
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, char>(ref value));
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, decimal>(ref value));
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, double>(ref value));
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, float>(ref value));
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, int>(ref value));
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, long>(ref value));
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, sbyte>(ref value));
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, short>(ref value));
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, uint>(ref value));
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, ulong>(ref value));
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return ElementwiseLessThanOrEqualImplementation(Unsafe.As<U, ushort>(ref value));
-            }
-            throw new NotSupportedException();
+            return ElementwiseLessThanOrEqualImplementation(value);
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThan(DataFrameColumn column)
         {
@@ -1032,59 +564,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseGreaterThan(column);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, bool>(ref value));
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, byte>(ref value));
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, char>(ref value));
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, decimal>(ref value));
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, double>(ref value));
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, float>(ref value));
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, int>(ref value));
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, long>(ref value));
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, sbyte>(ref value));
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, short>(ref value));
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, uint>(ref value));
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, ulong>(ref value));
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return ElementwiseGreaterThanImplementation(Unsafe.As<U, ushort>(ref value));
-            }
-            throw new NotSupportedException();
+            return ElementwiseGreaterThanImplementation(value);
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThan(DataFrameColumn column)
         {
@@ -1127,59 +607,7 @@ namespace Microsoft.Data.Analysis
             {
                 return ElementwiseLessThan(column);
             }
-            if (typeof(U) == typeof(bool))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, bool>(ref value));
-            }
-            if (typeof(U) == typeof(byte))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, byte>(ref value));
-            }
-            if (typeof(U) == typeof(char))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, char>(ref value));
-            }
-            if (typeof(U) == typeof(decimal))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, decimal>(ref value));
-            }
-            if (typeof(U) == typeof(double))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, double>(ref value));
-            }
-            if (typeof(U) == typeof(float))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, float>(ref value));
-            }
-            if (typeof(U) == typeof(int))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, int>(ref value));
-            }
-            if (typeof(U) == typeof(long))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, long>(ref value));
-            }
-            if (typeof(U) == typeof(sbyte))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, sbyte>(ref value));
-            }
-            if (typeof(U) == typeof(short))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, short>(ref value));
-            }
-            if (typeof(U) == typeof(uint))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, uint>(ref value));
-            }
-            if (typeof(U) == typeof(ulong))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, ulong>(ref value));
-            }
-            if (typeof(U) == typeof(ushort))
-            {
-                return ElementwiseLessThanImplementation(Unsafe.As<U, ushort>(ref value));
-            }
-            throw new NotSupportedException();
+            return ElementwiseLessThanImplementation(value);
         }
 
         internal DataFrameColumn AddImplementation<U>(PrimitiveDataFrameColumn<U> column, bool inPlace)
@@ -1263,7 +691,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn AddImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1277,9 +704,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Add(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Add(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1310,9 +737,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Add(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Add(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1419,7 +846,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn SubtractImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1433,9 +859,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Subtract(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Subtract(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1466,9 +892,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Subtract(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Subtract(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1575,7 +1001,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn MultiplyImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1589,9 +1014,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Multiply(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Multiply(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1622,9 +1047,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Multiply(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Multiply(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1731,7 +1156,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn DivideImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1745,9 +1169,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Divide(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Divide(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1778,9 +1202,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Divide(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Divide(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1887,7 +1311,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn ModuloImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1901,9 +1324,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Modulo(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Modulo(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1934,9 +1357,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Modulo(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Modulo(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1997,7 +1420,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> AndImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2006,9 +1428,9 @@ namespace Microsoft.Data.Analysis
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveDataFrameColumn<U> typedColumn = this as PrimitiveDataFrameColumn<U>;
-                    PrimitiveDataFrameColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.And(value);
+                    PrimitiveDataFrameColumn<bool> typedColumn = this as PrimitiveDataFrameColumn<bool>;
+                    PrimitiveDataFrameColumn<bool> retColumn = inPlace ? typedColumn : typedColumn.Clone();
+                    retColumn._columnContainer.And(Unsafe.As<U, bool>(ref value));
                     return retColumn as PrimitiveDataFrameColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
@@ -2061,7 +1483,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> OrImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2070,9 +1491,9 @@ namespace Microsoft.Data.Analysis
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveDataFrameColumn<U> typedColumn = this as PrimitiveDataFrameColumn<U>;
-                    PrimitiveDataFrameColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.Or(value);
+                    PrimitiveDataFrameColumn<bool> typedColumn = this as PrimitiveDataFrameColumn<bool>;
+                    PrimitiveDataFrameColumn<bool> retColumn = inPlace ? typedColumn : typedColumn.Clone();
+                    retColumn._columnContainer.Or(Unsafe.As<U, bool>(ref value));
                     return retColumn as PrimitiveDataFrameColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
@@ -2125,7 +1546,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> XorImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2134,9 +1554,9 @@ namespace Microsoft.Data.Analysis
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveDataFrameColumn<U> typedColumn = this as PrimitiveDataFrameColumn<U>;
-                    PrimitiveDataFrameColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.Xor(value);
+                    PrimitiveDataFrameColumn<bool> typedColumn = this as PrimitiveDataFrameColumn<bool>;
+                    PrimitiveDataFrameColumn<bool> retColumn = inPlace ? typedColumn : typedColumn.Clone();
+                    retColumn._columnContainer.Xor(Unsafe.As<U, bool>(ref value));
                     return retColumn as PrimitiveDataFrameColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
@@ -2358,7 +1778,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseEqualsImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2368,7 +1787,7 @@ namespace Microsoft.Data.Analysis
                         throw new NotSupportedException();
                     }
                     PrimitiveDataFrameColumn<bool> retColumn = CloneAsBoolColumn();
-                    (this as PrimitiveDataFrameColumn<U>)._columnContainer.ElementwiseEquals(value, retColumn._columnContainer);
+                    (this as PrimitiveDataFrameColumn<bool>)._columnContainer.ElementwiseEquals(Unsafe.As<U, bool>(ref value), retColumn._columnContainer);
                     return retColumn;
                 case Type decimalType when decimalType == typeof(decimal):
                     if (typeof(U) == typeof(bool))
@@ -2378,9 +1797,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2408,9 +1827,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2516,7 +1935,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseNotEqualsImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2526,7 +1944,7 @@ namespace Microsoft.Data.Analysis
                         throw new NotSupportedException();
                     }
                     PrimitiveDataFrameColumn<bool> retColumn = CloneAsBoolColumn();
-                    (this as PrimitiveDataFrameColumn<U>)._columnContainer.ElementwiseNotEquals(value, retColumn._columnContainer);
+                    (this as PrimitiveDataFrameColumn<bool>)._columnContainer.ElementwiseNotEquals(Unsafe.As<U, bool>(ref value), retColumn._columnContainer);
                     return retColumn;
                 case Type decimalType when decimalType == typeof(decimal):
                     if (typeof(U) == typeof(bool))
@@ -2536,9 +1954,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseNotEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2566,9 +1984,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseNotEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2668,7 +2086,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqualImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2682,9 +2099,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2712,9 +2129,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2814,7 +2231,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqualImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2828,9 +2244,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2858,9 +2274,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2960,7 +2376,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2974,9 +2389,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseGreaterThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -3004,9 +2419,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseGreaterThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -3106,7 +2521,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseLessThanImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -3120,9 +2534,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseLessThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -3150,9 +2564,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseLessThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 

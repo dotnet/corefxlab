@@ -497,8 +497,7 @@ namespace Microsoft.Data.Analysis
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
         {
-            DataFrameColumn column = value as DataFrameColumn;
-            if (column != null)
+            if (value is DataFrameColumn column)
             {
                 return ElementwiseEquals(column);
             }
@@ -537,8 +536,7 @@ namespace Microsoft.Data.Analysis
 
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
         {
-            DataFrameColumn column = value as DataFrameColumn;
-            if (column != null)
+            if (value is DataFrameColumn column)
             {
                 return ElementwiseNotEquals(column);
             }

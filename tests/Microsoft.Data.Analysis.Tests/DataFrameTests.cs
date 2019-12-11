@@ -504,11 +504,16 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(true, newCol[5]);
             Assert.Equal(true, newCol[0]);
 
+            StringDataFrameColumn typedStringColumn = stringColumn as StringDataFrameColumn;
+            StringDataFrameColumn typedStringColumnCopy = stringColumnCopy as StringDataFrameColumn;
+            newCol = typedStringColumn.ElementwiseEquals(typedStringColumnCopy);
+            Assert.True(newCol.All());
+
             newCol = stringColumn.ElementwiseNotEquals(5);
             Assert.Equal(false, newCol[5]);
             Assert.Equal(true, newCol[0]);
 
-            newCol = (stringColumn as StringDataFrameColumn).ElementwiseNotEquals("5");
+            newCol = typedStringColumn.ElementwiseNotEquals("5");
             Assert.Equal(false, newCol[5]);
             Assert.Equal(true, newCol[0]);
 
@@ -516,7 +521,9 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(false, newCol[5]);
             Assert.Equal(false, newCol[0]);
 
-            StringDataFrameColumn typedStringColumn = stringColumn as StringDataFrameColumn;
+            newCol = typedStringColumn.ElementwiseNotEquals(typedStringColumnCopy);
+            Assert.False(newCol.All());
+
             newCol = typedStringColumn.Add("suffix");
             for (int i = 0; i < newCol.Length; i++)
             {
@@ -665,7 +672,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.ThrowsAny<ArgumentException>(() => column.Add(5.5, inPlace: true));
             Assert.ThrowsAny<ArgumentException>(() => column.ReverseAdd(5.5, inPlace: true));
             string str = "A String";
-            Assert.ThrowsAny<NotSupportedException>(() => column.Add(str, inPlace: true));
+            Assert.ThrowsAny<ArgumentException>(() => column.Add(str, inPlace: true));
             Assert.ThrowsAny<ArgumentException>(() => column.ReverseAdd(str, inPlace: true));
         }
 
