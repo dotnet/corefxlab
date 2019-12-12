@@ -32,34 +32,33 @@ namespace Microsoft.Data.Analysis
     public partial class DataFrame
     {
         private readonly DataFrameColumnCollection _columnCollection;
-        /// <summary>
-        /// Constructs an empty <see cref="DataFrame"/>
-        /// </summary>
-        public DataFrame()
-        {
-            _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
-            _rowCollection = new DataFrameRowCollection(this);
-        }
+        private readonly DataFrameRowCollection _rowCollection;
 
         /// <summary>
         /// Constructs a <see cref="DataFrame"/> with <paramref name="columns"/>.
         /// </summary>
         /// <param name="columns">The columns of this <see cref="DataFrame"/>.</param>
-        public DataFrame(IList<DataFrameColumn> columns)
+        public DataFrame(IEnumerable<DataFrameColumn> columns)
+        {
+            _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
+            _rowCollection = new DataFrameRowCollection(this);
+        }
+
+        public DataFrame(params DataFrameColumn[] columns)
         {
             _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
             _rowCollection = new DataFrameRowCollection(this);
         }
 
         /// <summary>
-        /// Returns the number of rows in this <see cref="DataFrame"/>
-        /// </summary>
-        public long RowCount => _columnCollection.RowCount;
-
-        /// <summary>
         /// Returns the columns contained in the <see cref="DataFrame"/> as a <see cref="DataFrameColumnCollection"/>
         /// </summary>
         public DataFrameColumnCollection Columns => _columnCollection;
+
+        /// <summary>
+        /// Returns a <see cref="DataFrameRowCollection"/> that contains a view of the rows in this <see cref="DataFrame"/>
+        /// </summary>
+        public DataFrameRowCollection Rows => _rowCollection;
 
         internal IReadOnlyList<string> GetColumnNames() => _columnCollection.GetColumnNames();
 
@@ -74,20 +73,6 @@ namespace Microsoft.Data.Analysis
         {
             get => _columnCollection[columnIndex][rowIndex];
             set => _columnCollection[columnIndex][rowIndex] = value;
-        }
-
-        /// <summary>
-        /// Returns a row in this <see cref="DataFrame"/>.
-        /// </summary>
-        /// <param name="rowIndex"></param>
-        /// <returns></returns>
-        public IList<object> this[long rowIndex]
-        {
-            get
-            {
-                return _columnCollection.GetRow(rowIndex);
-            }
-            //TODO?: set?
         }
 
         /// <summary>
