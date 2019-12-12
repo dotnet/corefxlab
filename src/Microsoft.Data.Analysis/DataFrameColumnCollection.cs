@@ -21,18 +21,13 @@ namespace Microsoft.Data.Analysis
 
         internal long RowCount { get; set; }
 
-        internal DataFrameColumnCollection(Action columnsChanged) : base()
-        {
-            ColumnsChanged = columnsChanged;
-        }
-
-        internal DataFrameColumnCollection(IList<DataFrameColumn> columns, Action columnsChanged) : base()
+        internal DataFrameColumnCollection(IEnumerable<DataFrameColumn> columns, Action columnsChanged) : base()
         {
             columns = columns ?? throw new ArgumentNullException(nameof(columns));
             ColumnsChanged = columnsChanged;
-            for (int i = 0; i < columns.Count; i++)
+            foreach (DataFrameColumn column in columns)
             {
-                Add(columns[i]);
+                Add(column);
             }
         }
 
@@ -42,16 +37,6 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < Count; i++)
             {
                 ret.Add(this[i].Name);
-            }
-            return ret;
-        }
-
-        internal IList<object> GetRow(long rowIndex)
-        {
-            var ret = new List<object>();
-            for (int i = 0; i < Count; i++)
-            {
-                ret.Add(this[i][rowIndex]);
             }
             return ret;
         }

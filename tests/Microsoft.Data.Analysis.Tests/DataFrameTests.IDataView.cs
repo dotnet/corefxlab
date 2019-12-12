@@ -66,8 +66,8 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal((ushort)1, preview.ColumnView[10].Values[1]);
 
             Assert.Equal("String", preview.ColumnView[11].Column.Name);
-            Assert.Equal("0".AsMemory(), preview.ColumnView[11].Values[0]);
-            Assert.Equal("1".AsMemory(), preview.ColumnView[11].Values[1]);
+            Assert.Equal("0".ToString(), preview.ColumnView[11].Values[0].ToString());
+            Assert.Equal("1".ToString(), preview.ColumnView[11].Values[1].ToString());
 
             Assert.Equal("Char", preview.ColumnView[12].Column.Name);
             Assert.Equal((ushort)65, preview.ColumnView[12].Values[0]);
@@ -96,7 +96,7 @@ namespace Microsoft.Data.Analysis.Tests
             schema = dataView.Schema;
             Assert.Equal(13, schema.Count);
 
-            DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, (int)df.RowCount).Select(x => x % 2 == 1));
+            DataFrameColumn boolColumn = new PrimitiveDataFrameColumn<bool>("Bool", Enumerable.Range(0, (int)df.Rows.Count).Select(x => x % 2 == 1));
             df.Columns.Insert(0, boolColumn);
             schema = dataView.Schema;
             Assert.Equal(14, schema.Count);

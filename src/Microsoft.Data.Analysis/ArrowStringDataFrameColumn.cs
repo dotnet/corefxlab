@@ -587,6 +587,10 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
         {
+            if (value is DataFrameColumn column)
+            {
+                return ElementwiseEquals(column);
+            }
             return ElementwiseEquals(value.ToString());
         }
 
@@ -628,6 +632,10 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
         {
+            if (value is DataFrameColumn column)
+            {
+                return ElementwiseNotEquals(column);
+            }
             return ElementwiseNotEquals(value.ToString());
         }
 

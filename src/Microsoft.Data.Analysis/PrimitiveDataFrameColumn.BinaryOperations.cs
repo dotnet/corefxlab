@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.Data.Analysis
 {
@@ -55,6 +56,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override DataFrameColumn Add<U>(U value, bool inPlace = false)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return Add(column, inPlace);
+            }
             return AddImplementation(value, inPlace);
         }
         /// <summary>
@@ -99,6 +105,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override DataFrameColumn Subtract<U>(U value, bool inPlace = false)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return Subtract(column, inPlace);
+            }
             return SubtractImplementation(value, inPlace);
         }
         /// <summary>
@@ -143,6 +154,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override DataFrameColumn Multiply<U>(U value, bool inPlace = false)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return Multiply(column, inPlace);
+            }
             return MultiplyImplementation(value, inPlace);
         }
         /// <summary>
@@ -187,6 +203,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override DataFrameColumn Divide<U>(U value, bool inPlace = false)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return Divide(column, inPlace);
+            }
             return DivideImplementation(value, inPlace);
         }
         /// <summary>
@@ -231,6 +252,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override DataFrameColumn Modulo<U>(U value, bool inPlace = false)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return Modulo(column, inPlace);
+            }
             return ModuloImplementation(value, inPlace);
         }
         /// <summary>
@@ -421,6 +447,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<U>(U value)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return ElementwiseEquals(column);
+            }
             return ElementwiseEqualsImplementation(value);
         }
         /// <summary>
@@ -465,6 +496,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<U>(U value)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return ElementwiseNotEquals(column);
+            }
             return ElementwiseNotEqualsImplementation(value);
         }
         /// <summary>
@@ -509,6 +545,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqual<U>(U value)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return ElementwiseGreaterThanOrEqual(column);
+            }
             return ElementwiseGreaterThanOrEqualImplementation(value);
         }
         /// <summary>
@@ -553,6 +594,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqual<U>(U value)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return ElementwiseLessThanOrEqual(column);
+            }
             return ElementwiseLessThanOrEqualImplementation(value);
         }
         /// <summary>
@@ -597,6 +643,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThan<U>(U value)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return ElementwiseGreaterThan(column);
+            }
             return ElementwiseGreaterThanImplementation(value);
         }
         /// <summary>
@@ -641,6 +692,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThan<U>(U value)
         {
+            DataFrameColumn column = value as DataFrameColumn;
+            if (column != null)
+            {
+                return ElementwiseLessThan(column);
+            }
             return ElementwiseLessThanImplementation(value);
         }
 
@@ -725,7 +781,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn AddImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -739,9 +794,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Add(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Add(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -772,9 +827,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Add(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Add(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -881,7 +936,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn SubtractImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -895,9 +949,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Subtract(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Subtract(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -928,9 +982,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Subtract(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Subtract(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1037,7 +1091,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn MultiplyImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1051,9 +1104,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Multiply(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Multiply(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1084,9 +1137,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Multiply(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Multiply(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1193,7 +1246,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn DivideImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1207,9 +1259,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Divide(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Divide(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1240,9 +1292,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Divide(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Divide(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1349,7 +1401,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal DataFrameColumn ModuloImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1363,9 +1414,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Modulo(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Modulo(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1396,9 +1447,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
-                        PrimitiveDataFrameColumn<U> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
-                        newColumn._columnContainer.Modulo(value);
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
+                        PrimitiveDataFrameColumn<T> newColumn = inPlace ? primitiveColumn : primitiveColumn.Clone();
+                        newColumn._columnContainer.Modulo(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
                     else 
@@ -1459,7 +1510,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> AndImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1468,9 +1518,9 @@ namespace Microsoft.Data.Analysis
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveDataFrameColumn<U> typedColumn = this as PrimitiveDataFrameColumn<U>;
-                    PrimitiveDataFrameColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.And(value);
+                    PrimitiveDataFrameColumn<bool> typedColumn = this as PrimitiveDataFrameColumn<bool>;
+                    PrimitiveDataFrameColumn<bool> retColumn = inPlace ? typedColumn : typedColumn.Clone();
+                    retColumn._columnContainer.And(Unsafe.As<U, bool>(ref value));
                     return retColumn as PrimitiveDataFrameColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
@@ -1523,7 +1573,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> OrImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1532,9 +1581,9 @@ namespace Microsoft.Data.Analysis
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveDataFrameColumn<U> typedColumn = this as PrimitiveDataFrameColumn<U>;
-                    PrimitiveDataFrameColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.Or(value);
+                    PrimitiveDataFrameColumn<bool> typedColumn = this as PrimitiveDataFrameColumn<bool>;
+                    PrimitiveDataFrameColumn<bool> retColumn = inPlace ? typedColumn : typedColumn.Clone();
+                    retColumn._columnContainer.Or(Unsafe.As<U, bool>(ref value));
                     return retColumn as PrimitiveDataFrameColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
@@ -1587,7 +1636,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> XorImplementation<U>(U value, bool inPlace)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1596,9 +1644,9 @@ namespace Microsoft.Data.Analysis
                     {
                         throw new NotSupportedException();
                     }
-                    PrimitiveDataFrameColumn<U> typedColumn = this as PrimitiveDataFrameColumn<U>;
-                    PrimitiveDataFrameColumn<U> retColumn = inPlace ? typedColumn : typedColumn.Clone();
-                    retColumn._columnContainer.Xor(value);
+                    PrimitiveDataFrameColumn<bool> typedColumn = this as PrimitiveDataFrameColumn<bool>;
+                    PrimitiveDataFrameColumn<bool> retColumn = inPlace ? typedColumn : typedColumn.Clone();
+                    retColumn._columnContainer.Xor(Unsafe.As<U, bool>(ref value));
                     return retColumn as PrimitiveDataFrameColumn<bool>;
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
@@ -1820,7 +1868,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseEqualsImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1830,7 +1877,7 @@ namespace Microsoft.Data.Analysis
                         throw new NotSupportedException();
                     }
                     PrimitiveDataFrameColumn<bool> retColumn = CloneAsBoolColumn();
-                    (this as PrimitiveDataFrameColumn<U>)._columnContainer.ElementwiseEquals(value, retColumn._columnContainer);
+                    (this as PrimitiveDataFrameColumn<bool>)._columnContainer.ElementwiseEquals(Unsafe.As<U, bool>(ref value), retColumn._columnContainer);
                     return retColumn;
                 case Type decimalType when decimalType == typeof(decimal):
                     if (typeof(U) == typeof(bool))
@@ -1840,9 +1887,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -1870,9 +1917,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -1978,7 +2025,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseNotEqualsImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -1988,7 +2034,7 @@ namespace Microsoft.Data.Analysis
                         throw new NotSupportedException();
                     }
                     PrimitiveDataFrameColumn<bool> retColumn = CloneAsBoolColumn();
-                    (this as PrimitiveDataFrameColumn<U>)._columnContainer.ElementwiseNotEquals(value, retColumn._columnContainer);
+                    (this as PrimitiveDataFrameColumn<bool>)._columnContainer.ElementwiseNotEquals(Unsafe.As<U, bool>(ref value), retColumn._columnContainer);
                     return retColumn;
                 case Type decimalType when decimalType == typeof(decimal):
                     if (typeof(U) == typeof(bool))
@@ -1998,9 +2044,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseNotEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2028,9 +2074,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseNotEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2130,7 +2176,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqualImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2144,9 +2189,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2174,9 +2219,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2276,7 +2321,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqualImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2290,9 +2334,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2320,9 +2364,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2422,7 +2466,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2436,9 +2479,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseGreaterThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2466,9 +2509,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseGreaterThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2568,7 +2611,6 @@ namespace Microsoft.Data.Analysis
             }
         }
         internal PrimitiveDataFrameColumn<bool> ElementwiseLessThanImplementation<U>(U value)
-            where U : unmanaged
         {
             switch (typeof(T))
             {
@@ -2582,9 +2624,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseLessThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 
@@ -2612,9 +2654,9 @@ namespace Microsoft.Data.Analysis
                     if (typeof(U) == typeof(T))
                     {
                         // No conversions
-                        PrimitiveDataFrameColumn<U> primitiveColumn = this as PrimitiveDataFrameColumn<U>;
+                        PrimitiveDataFrameColumn<T> primitiveColumn = this;
                         PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
-                        primitiveColumn._columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
+                        primitiveColumn._columnContainer.ElementwiseLessThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
                     else 

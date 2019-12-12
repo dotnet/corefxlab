@@ -37,7 +37,8 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public DataFrame()
         {
-            _columnCollection = new DataFrameColumnCollection(OnColumnsChanged);
+            _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
+            _rowCollection = new DataFrameRowCollection(this);
         }
 
         /// <summary>
@@ -47,6 +48,7 @@ namespace Microsoft.Data.Analysis
         public DataFrame(IList<DataFrameColumn> columns)
         {
             _columnCollection = new DataFrameColumnCollection(columns, OnColumnsChanged);
+            _rowCollection = new DataFrameRowCollection(this);
         }
 
         /// <summary>
@@ -206,9 +208,9 @@ namespace Microsoft.Data.Analysis
         public DataFrame Tail(int numberOfRows)
         {
             PrimitiveDataFrameColumn<long> filter = new PrimitiveDataFrameColumn<long>("Filter", numberOfRows);
-            for (long i = RowCount - numberOfRows; i < RowCount; i++)
+            for (long i = Rows.Count - numberOfRows; i < Rows.Count; i++)
             {
-                filter[i - (RowCount - numberOfRows)] = i;
+                filter[i - (Rows.Count - numberOfRows)] = i;
             }
             return Clone(filter);
         }
@@ -234,36 +236,53 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
+        /// Generates a concise summary of each column in the DataFrame
+        /// </summary>
+        public DataFrame Info()
+        {
+            DataFrame ret = new DataFrame();
+
+            bool firstColumn = true;
+            foreach (DataFrameColumn column in Columns)
+            {
+                if (firstColumn)
+                {
+                    firstColumn = false;
+                    StringDataFrameColumn strColumn = new StringDataFrameColumn("Info", 2);
+                    strColumn[0] = Strings.DataType;
+                    strColumn[1] = Strings.DescriptionMethodLength;
+                    ret.Columns.Add(strColumn);
+                }
+                ret.Columns.Add(column.Info());
+            }
+            return ret;
+        }
+
+        /// <summary>
         /// Generates descriptive statistics that summarize each numeric column
         /// </summary>
         public DataFrame Description()
         {
             DataFrame ret = new DataFrame();
-            if (Columns.Count == 0)
-                return ret;
-            int i = 0;
-            while (!Columns[i].HasDescription())
+
+            bool firstDescriptionColumn = true;
+            foreach (DataFrameColumn column in Columns)
             {
-                i++;
-            }
-            ret = Columns[i].Description();
-            i++;
-            for (; i < Columns.Count; i++)
-            {
-                DataFrameColumn column = Columns[i];
                 if (!column.HasDescription())
                 {
                     continue;
                 }
-                DataFrame columnDescription = column.Description();
-                ret = ret.Merge<string>(columnDescription, "Description", "Description", "_left", "_right", JoinAlgorithm.Inner);
-                int leftMergeColumn = ret._columnCollection.IndexOf("Description" + "_left");
-                int rightMergeColumn = ret._columnCollection.IndexOf("Description" + "_right");
-                if (leftMergeColumn != -1 && rightMergeColumn != -1)
+                if (firstDescriptionColumn)
                 {
-                    ret.Columns.Remove("Description" + "_right");
-                    ret._columnCollection.SetColumnName(ret["Description_left"], "Description");
+                    firstDescriptionColumn = false;
+                    StringDataFrameColumn stringColumn = new StringDataFrameColumn("Description", 0);
+                    stringColumn.Append(Strings.DescriptionMethodLength);
+                    stringColumn.Append("Max");
+                    stringColumn.Append("Min");
+                    stringColumn.Append("Mean");
+                    ret.Columns.Add(stringColumn);
                 }
+                ret.Columns.Add(column.Description());
             }
             return ret;
         }
@@ -347,7 +366,7 @@ namespace Microsoft.Data.Analysis
         {
             Random rand = new Random();
             PrimitiveDataFrameColumn<long> indices = new PrimitiveDataFrameColumn<long>("Indices", numberOfRows);
-            int randMaxValue = (int)Math.Min(Int32.MaxValue, RowCount);
+            int randMaxValue = (int)Math.Min(Int32.MaxValue, Rows.Count);
             for (long i = 0; i < numberOfRows; i++)
             {
                 indices[i] = rand.Next(randMaxValue);
@@ -393,7 +412,7 @@ namespace Microsoft.Data.Analysis
             PrimitiveDataFrameColumn<bool> filter = new PrimitiveDataFrameColumn<bool>("Filter");
             if (options == DropNullOptions.Any)
             {
-                filter.AppendMany(true, RowCount);
+                filter.AppendMany(true, Rows.Count);
 
                 for (int i = 0; i < Columns.Count; i++)
                 {
@@ -406,7 +425,7 @@ namespace Microsoft.Data.Analysis
             }
             else
             {
-                filter.AppendMany(false, RowCount);
+                filter.AppendMany(false, Rows.Count);
                 for (int i = 0; i < Columns.Count; i++)
                 {
                     DataFrameColumn column = Columns[i];
@@ -481,6 +500,11 @@ namespace Microsoft.Data.Analysis
                 {
                     DataFrameColumn column = columnEnumerator.Current;
                     object value = rowEnumerator.Current;
+                    // StringDataFrameColumn can accept empty strings. The other columns interpret empty values as nulls
+                    if (value is string stringValue && string.IsNullOrEmpty(stringValue) && column.DataType != typeof(string))
+                    {
+                        value = null;
+                    }
                     if (value != null)
                     {
                         value = Convert.ChangeType(value, column.DataType);
@@ -571,7 +595,7 @@ namespace Microsoft.Data.Analysis
 
             foreach (DataFrameColumn column in Columns)
             {
-                if (column.Length == RowCount)
+                if (column.Length == Rows.Count)
                 {
                     ResizeByOneAndAppend(column, null);
                 }
@@ -605,11 +629,10 @@ namespace Microsoft.Data.Analysis
                 sb.Append(string.Format(Columns[i].Name.PadRight(longestColumnName)));
             }
             sb.AppendLine();
-            long numberOfRows = Math.Min(RowCount, 25);
+            long numberOfRows = Math.Min(Rows.Count, 25);
             for (int i = 0; i < numberOfRows; i++)
             {
-                IList<object> row = this[i];
-                foreach (object obj in row)
+                foreach (object obj in Rows[i])
                 {
                     sb.Append((obj ?? "null").ToString().PadRight(longestColumnName));
                 }
