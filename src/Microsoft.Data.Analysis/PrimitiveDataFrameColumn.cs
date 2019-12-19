@@ -487,6 +487,13 @@ namespace Microsoft.Data.Analysis
 
         public void ApplyElementwise(Func<T?, long, T?> func) => _columnContainer.ApplyElementwise(func);
 
+        public PrimitiveDataFrameColumn<TResult> Apply<TResult>(Func<T?, TResult?> func) where TResult : unmanaged
+        {
+            var resultColumn = new PrimitiveDataFrameColumn<TResult>("Result", Length);
+            _columnContainer.Apply(func, resultColumn._columnContainer);
+            return resultColumn;
+        }
+
         /// <summary>
         /// Clips values beyond the specified thresholds
         /// </summary>
