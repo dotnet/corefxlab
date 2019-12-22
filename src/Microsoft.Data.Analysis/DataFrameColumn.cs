@@ -24,8 +24,6 @@ namespace Microsoft.Data.Analysis
             DataType = type;
         }
 
-        #region Static Factory Methods
-
         /// <summary>
         /// A static factory method to create a <see cref="PrimitiveDataFrameColumn{T}"/>. 
         /// It allows you to take advantage of type inference based on the type of the values supplied.
@@ -64,8 +62,6 @@ namespace Microsoft.Data.Analysis
         {
             return new StringDataFrameColumn(name, values);
         }
-
-        #endregion
 
         private long _length;
         public long Length
