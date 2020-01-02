@@ -2034,7 +2034,6 @@ namespace Microsoft.Data.Analysis.Tests
         {
             int[] values = { 1, 2, 3, 4, 5 };
             var col = new PrimitiveDataFrameColumn<int>("Ints", values);
-            var df = new DataFrame(col);
             PrimitiveDataFrameColumn<double> newCol = col.Apply(i => i + 0.5d);
 
             Assert.Equal(values.Length, newCol.Length);
