@@ -274,9 +274,6 @@ launchSettings.json
 artifacts/
 /.packages
 eng/common/cross/
-eng/common/internal/
 eng/common/native/
 eng/common/performance/
-eng/common/post-build/
-eng/common/sdl/
-eng/common/templates/
+
