@@ -104,5 +104,156 @@ CMT,1,1,181,0.6,CSH,4.5";
             Assert.Equal("", nullRow[5]);
             Assert.Null(nullRow[6]);
         }
+
+        [Fact]
+        public void TestReadCsvWithPipeSeparator()
+        {
+            string data = @"vendor_id|rate_code|passenger_count|trip_time_in_secs|trip_distance|payment_type|fare_amount
+CMT|1|1|1271|3.8|CRD|17.5
+CMT|1|1|474|1.5|CRD|8
+CMT|1|1|637|1.4|CRD|8.5
+CMT|1|1|181|0.6|CSH|4.5";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+            DataFrame df = DataFrame.LoadCsv(GetStream(data), separator: '|');
+
+            Assert.Equal(4, df.Rows.Count);
+            Assert.Equal(7, df.Columns.Count);
+            Assert.Equal("CMT", df["vendor_id"][3]);
+
+            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), separator: '|', numberOfRowsToRead: 3);
+            Assert.Equal(3, reducedRows.Rows.Count);
+            Assert.Equal(7, reducedRows.Columns.Count);
+            Assert.Equal("CMT", reducedRows["vendor_id"][2]);
+        }
+
+        [Fact]
+        public void TestReadCsvWithSemicolonSeparator()
+        {
+            string data = @"vendor_id;rate_code;passenger_count;trip_time_in_secs;trip_distance;payment_type;fare_amount
+CMT;1;1;1271;3.8;CRD;17.5
+CMT;1;1;474;1.5;CRD;8
+CMT;1;1;637;1.4;CRD;8.5
+CMT;1;1;181;0.6;CSH;4.5";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+            DataFrame df = DataFrame.LoadCsv(GetStream(data), separator: ';');
+
+            Assert.Equal(4, df.Rows.Count);
+            Assert.Equal(7, df.Columns.Count);
+            Assert.Equal("CMT", df["vendor_id"][3]);
+
+            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), separator: ';', numberOfRowsToRead: 3);
+            Assert.Equal(3, reducedRows.Rows.Count);
+            Assert.Equal(7, reducedRows.Columns.Count);
+            Assert.Equal("CMT", reducedRows["vendor_id"][2]);
+        }
+
+        [Fact]
+        public void TestReadCsvWithExtraColumnInHeader()
+        {
+            string data = @"vendor_id,rate_code,passenger_count,trip_time_in_secs,trip_distance,payment_type,fare_amount,extra
+CMT,1,1,1271,3.8,CRD,17.5
+CMT,1,1,474,1.5,CRD,8
+CMT,1,1,637,1.4,CRD,8.5
+CMT,1,1,181,0.6,CSH,4.5";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+            DataFrame df = DataFrame.LoadCsv(GetStream(data));
+
+            Assert.Equal(4, df.Rows.Count);
+            Assert.Equal(7, df.Columns.Count);
+            Assert.Equal("CMT", df["vendor_id"][3]);
+
+            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), numberOfRowsToRead: 3);
+            Assert.Equal(3, reducedRows.Rows.Count);
+            Assert.Equal(7, reducedRows.Columns.Count);
+            Assert.Equal("CMT", reducedRows["vendor_id"][2]);
+        }
+
+        [Fact]
+        public void TestReadCsvWithExtraColumnInRow()
+        {
+            string data = @"vendor_id,rate_code,passenger_count,trip_time_in_secs,trip_distance,payment_type,fare_amount
+CMT,1,1,1271,3.8,CRD,17.5,0
+CMT,1,1,474,1.5,CRD,8,0
+CMT,1,1,637,1.4,CRD,8.5,0
+CMT,1,1,181,0.6,CSH,4.5,0";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+
+            try
+            {
+                DataFrame df = DataFrame.LoadCsv(GetStream(data));
+            }
+            catch (Exception e)
+            {
+                Assert.Equal(typeof(IndexOutOfRangeException), e.GetType());
+                Assert.Equal("Index was outside the bounds of the array.", e.Message);
+            }
+        }
+
+        [Fact]
+        public void TestReadCsvWithLessColumnsInRow()
+        {
+            string data = @"vendor_id,rate_code,passenger_count,trip_time_in_secs,trip_distance,payment_type,fare_amount
+CMT,1,1,1271,3.8,CRD
+CMT,1,1,474,1.5,CRD
+CMT,1,1,637,1.4,CRD
+CMT,1,1,181,0.6,CSH";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+
+            DataFrame df = DataFrame.LoadCsv(GetStream(data));
+            Assert.Equal(4, df.Rows.Count);
+            Assert.Equal(6, df.Columns.Count);
+            Assert.Equal("CMT", df["vendor_id"][3]);
+
+            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), numberOfRowsToRead: 3);
+            Assert.Equal(3, reducedRows.Rows.Count);
+            Assert.Equal(6, reducedRows.Columns.Count);
+            Assert.Equal("CMT", reducedRows["vendor_id"][2]);
+
+        }
+
+        [Fact]
+        public void TestReadCsvWithCommaInString()
+        {
+            string data = @"vendor_id,rate_code,passenger_count,trip_time_in_secs,trip_distance,payment_type,fare_amount
+'C,MT',1,1,1271,3.8,CRD,17.5
+CMT,1,1,474,1.5,CRD,8
+CMT,1,1,637,1.4,CRD,8.5
+CMT,1,1,181,0.6,CSH,4.5";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+
+            try
+            {
+                DataFrame df = DataFrame.LoadCsv(GetStream(data));
+            }
+            catch (Exception e)
+            {
+                Assert.Equal(typeof(FormatException), e.GetType());
+                Assert.Equal("Line 2 has less columns than expected", e.Message);
+            }
+        }
     }
 }
