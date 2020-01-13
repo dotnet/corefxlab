@@ -194,15 +194,7 @@ CMT,1,1,181,0.6,CSH,4.5,0";
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
 
-            try
-            {
-                DataFrame df = DataFrame.LoadCsv(GetStream(data));
-            }
-            catch (Exception e)
-            {
-                Assert.Equal(typeof(IndexOutOfRangeException), e.GetType());
-                Assert.Equal("Index was outside the bounds of the array.", e.Message);
-            }
+            Assert.Throws<IndexOutOfRangeException>(() => DataFrame.LoadCsv(GetStream(data)));
         }
 
         [Fact]
@@ -245,15 +237,7 @@ CMT,1,1,181,0.6,CSH,4.5";
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
 
-            try
-            {
-                DataFrame df = DataFrame.LoadCsv(GetStream(data));
-            }
-            catch (Exception e)
-            {
-                Assert.Equal(typeof(FormatException), e.GetType());
-                Assert.Equal("Line 2 has less columns than expected", e.Message);
-            }
+            Assert.Throws<FormatException>(() => DataFrame.LoadCsv(GetStream(data)));
         }
     }
 }
