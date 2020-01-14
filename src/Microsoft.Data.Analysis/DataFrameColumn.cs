@@ -51,7 +51,7 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// A static factory method to create a <see cref="StringDataFrameColumn{T}"/>. 
+        /// A static factory method to create a <see cref="StringDataFrameColumn"/>. 
         /// It allows you to take advantage of type inference based on the type of the values supplied.
         /// </summary>
         /// <typeparam name="T">The type of the column to create.</typeparam>
