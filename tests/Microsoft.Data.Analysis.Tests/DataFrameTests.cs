@@ -849,27 +849,27 @@ namespace Microsoft.Data.Analysis.Tests
             df["Int"][5] = 2000;
 
             // Sort by "Int" in ascending order
-            var sortedDf = df.Sort("Int");
+            var sortedDf = df.OrderBy("Int");
             Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(-1, sortedDf["Int"][0]);
             Assert.Equal(100, sortedDf["Int"][17]);
             Assert.Equal(2000, sortedDf["Int"][18]);
 
             // Sort by "Int" in descending order
-            sortedDf = df.Sort("Int", false);
+            sortedDf = df.OrderBy("Int", false);
             Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(-1, sortedDf["Int"][18]);
             Assert.Equal(100, sortedDf["Int"][1]);
             Assert.Equal(2000, sortedDf["Int"][0]);
 
             // Sort by "String" in ascending order
-            sortedDf = df.Sort("String");
+            sortedDf = df.OrderBy("String");
             Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(1, sortedDf["Int"][1]);
             Assert.Equal(8, sortedDf["Int"][17]);
             Assert.Equal(9, sortedDf["Int"][18]);
 
-            sortedDf = df.Sort("String", false);
+            sortedDf = df.OrderBy("String", false);
             Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(8, sortedDf["Int"][1]);
             Assert.Equal(9, sortedDf["Int"][0]);
@@ -886,7 +886,7 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrame dfTrain = SplitTrainTest(df, 0.8f, out dfTest);
 
             // Sort by "Int" in ascending order
-            var sortedDf = dfTrain.Sort("Int");
+            var sortedDf = dfTrain.OrderBy("Int");
             Assert.Null(sortedDf["Int"][sortedDf.Rows.Count - 1]);
             Assert.Equal(1, sortedDf["Int"][0]);
             Assert.Equal(100000, sortedDf["Int"][sortedDf.Rows.Count - 3]);

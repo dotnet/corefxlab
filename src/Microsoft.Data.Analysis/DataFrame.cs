@@ -254,19 +254,14 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        public DataFrame Sort(string columnName, bool ascending = true)
+        public DataFrame OrderBy(string columnName)
         {
-            DataFrameColumn column = this[columnName];
-            DataFrameColumn sortIndices = column.GetAscendingSortIndices();
-            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
-            for (int i = 0; i < Columns.Count; i++)
-            {
-                DataFrameColumn oldColumn = Columns[i];
-                DataFrameColumn newColumn = oldColumn.Clone(sortIndices, !ascending, oldColumn.NullCount);
-                Debug.Assert(newColumn.NullCount == oldColumn.NullCount);
-                newColumns.Add(newColumn);
-            }
-            return new DataFrame(newColumns);
+            return Sort(columnName, true);
+        }
+
+        public DataFrame OrderByDescending(string columnName)
+        {
+            return Sort(columnName, isAscending: false);
         }
 
         /// <summary>
@@ -552,6 +547,21 @@ namespace Microsoft.Data.Analysis
         private void OnColumnsChanged()
         {
             _schema = null;
+        }
+
+        private DataFrame Sort(string columnName, bool isAscending)
+        {
+            DataFrameColumn column = this[columnName];
+            DataFrameColumn sortIndices = column.GetAscendingSortIndices();
+            List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
+            for (int i = 0; i < Columns.Count; i++)
+            {
+                DataFrameColumn oldColumn = Columns[i];
+                DataFrameColumn newColumn = oldColumn.Clone(sortIndices, !isAscending, oldColumn.NullCount);
+                Debug.Assert(newColumn.NullCount == oldColumn.NullCount);
+                newColumns.Add(newColumn);
+            }
+            return new DataFrame(newColumns);
         }
 
         public override string ToString()
