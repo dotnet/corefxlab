@@ -254,11 +254,19 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
+        /// <summary>
+        /// Orders the data frame by a specified column.
+        /// </summary>
+        /// <param name="columnName">The column name to order by</param>
         public DataFrame OrderBy(string columnName)
         {
-            return Sort(columnName, true);
+            return Sort(columnName, isAscending: true);
         }
 
+        /// <summary>
+        /// Orders the data frame by a specified column in descending order.
+        /// </summary>
+        /// <param name="columnName">The column name to order by</param>
         public DataFrame OrderByDescending(string columnName)
         {
             return Sort(columnName, isAscending: false);
