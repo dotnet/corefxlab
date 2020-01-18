@@ -54,10 +54,9 @@ namespace Microsoft.Data.Analysis
         /// A static factory method to create a <see cref="StringDataFrameColumn"/>. 
         /// It allows you to take advantage of type inference based on the type of the values supplied.
         /// </summary>
-        /// <typeparam name="T">The type of the column to create.</typeparam>
         /// <param name="name">The name of the column.</param>
         /// <param name="values">The initial values to populate in the column.</param>
-        /// <returns>A <see cref="StringDataFrameColumn{T}"/> populated with the provided data.</returns>
+        /// <returns>A <see cref="StringDataFrameColumn"/> populated with the provided data.</returns>
         public static StringDataFrameColumn Create(string name, IEnumerable<string> values)
         {
             return new StringDataFrameColumn(name, values);
