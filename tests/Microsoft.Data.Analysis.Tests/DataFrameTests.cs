@@ -841,7 +841,7 @@ namespace Microsoft.Data.Analysis.Tests
         }
 
         [Fact]
-        public void TestSort()
+        public void TestOrderBy()
         {
             DataFrame df = MakeDataFrameWithAllMutableColumnTypes(20);
             df["Int"][0] = 100;
@@ -856,7 +856,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(2000, sortedDf["Int"][18]);
 
             // Sort by "Int" in descending order
-            sortedDf = df.OrderBy("Int", false);
+            sortedDf = df.OrderByDescending("Int");
             Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(-1, sortedDf["Int"][18]);
             Assert.Equal(100, sortedDf["Int"][1]);
@@ -869,7 +869,8 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(8, sortedDf["Int"][17]);
             Assert.Equal(9, sortedDf["Int"][18]);
 
-            sortedDf = df.OrderBy("String", false);
+            // Sort by "String" in descending order
+            sortedDf = df.OrderByDescending("String");
             Assert.Null(sortedDf["Int"][19]);
             Assert.Equal(8, sortedDf["Int"][1]);
             Assert.Equal(9, sortedDf["Int"][0]);
