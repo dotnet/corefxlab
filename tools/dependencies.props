@@ -16,7 +16,5 @@
     <SnVersion>1.0.0</SnVersion>
     <VSWhereVersion>2.5.2</VSWhereVersion>
     <MicroBuildCoreVersion>0.2.0</MicroBuildCoreVersion>
-    <!-- <MicrosoftDotNetSignToolVersion>1.0.0-beta.19058.5</MicrosoftDotNetSignToolVersion> -->
-    <!-- <MicrosoftSymbolUploaderBuildTaskVersion>1.0.0-beta-64414-01</MicrosoftSymbolUploaderBuildTaskVersion> -->
   </PropertyGroup>
 </Project>
