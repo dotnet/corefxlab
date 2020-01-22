@@ -255,7 +255,7 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Orders the data frame by a specified column.
+        /// Sorts the rows of the DataFrame in ascending order according to the values in <param name="columnName">
         /// </summary>
         /// <param name="columnName">The column name to order by</param>
         public DataFrame OrderBy(string columnName)
@@ -264,7 +264,7 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Orders the data frame by a specified column in descending order.
+        /// Sorts the rows of the DataFrame in descending order according to the values in <param name="columnName">
         /// </summary>
         /// <param name="columnName">The column name to order by</param>
         public DataFrame OrderByDescending(string columnName)
