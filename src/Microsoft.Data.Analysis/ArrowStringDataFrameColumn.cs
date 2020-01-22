@@ -326,7 +326,9 @@ namespace Microsoft.Data.Analysis
             return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, indexInBuffer);
         }
 
-        public override DataFrameColumn Sort(bool ascending = true) => throw new NotSupportedException();
+        public override DataFrameColumn OrderBy() => throw new NotSupportedException();
+
+        public override DataFrameColumn OrderByDescending() => throw new NotSupportedException();
 
         public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {

@@ -169,10 +169,10 @@ namespace Microsoft.Data.Analysis
 
         public override DataFrameColumn Filter<U>(U lower, U upper) => throw new NotSupportedException();
 
-        public new StringDataFrameColumn Sort(bool ascending = true)
+        public new StringDataFrameColumn OrderBy()
         {
             PrimitiveDataFrameColumn<long> columnSortIndices = GetAscendingSortIndices();
-            return Clone(columnSortIndices, !ascending, NullCount);
+            return Clone(columnSortIndices, false, NullCount);
         }
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()

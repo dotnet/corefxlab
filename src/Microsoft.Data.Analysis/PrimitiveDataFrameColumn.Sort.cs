@@ -13,10 +13,10 @@ namespace Microsoft.Data.Analysis
     public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn
         where T : unmanaged
     {
-        public new PrimitiveDataFrameColumn<T> Sort(bool ascending = true)
+        public new PrimitiveDataFrameColumn<T> OrderBy()
         {
             PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
-            return Clone(sortIndices, !ascending, NullCount);
+            return Clone(sortIndices, false, NullCount);
         }
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()

@@ -92,13 +92,21 @@ namespace Microsoft.Data.Analysis
         protected virtual DataFrameColumn CloneImplementation(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend) => throw new NotImplementedException();
 
         /// <summary>
-        /// Returns a copy of this column sorted by its values
+        /// Returns a copy of this column ordered by its values
         /// </summary>
-        /// <param name="ascending"></param>
-        public virtual DataFrameColumn Sort(bool ascending = true)
+        public virtual DataFrameColumn OrderBy()
         {
             PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
-            return Clone(sortIndices, !ascending, NullCount);
+            return Clone(sortIndices, false, NullCount);
+        }
+
+        /// <summary>
+        /// Returns a copy of this column ordered by its values in descending order
+        /// </summary>
+        public virtual DataFrameColumn OrderByDescending()
+        {
+            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
+            return Clone(sortIndices, true, NullCount);
         }
 
         public virtual Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>() => throw new NotImplementedException();
