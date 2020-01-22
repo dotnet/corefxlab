@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <Import Project="..\Dependencies.Build.props" />
+</Project>

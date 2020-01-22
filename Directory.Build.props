@@ -23,7 +23,7 @@
     <RepositoryUrl>https://github.com/dotnet/corefxlab</RepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <IsPackable>false</IsPackable>
-    <IsPackable Condition="$(MSBuildProjectName.StartsWith('System')) Or $(MSBuildProjectName.StartsWith('Microsoft'))">true</IsPackable>
+    <IsPackable Condition="($(MSBuildProjectName.StartsWith('System')) Or $(MSBuildProjectName.StartsWith('Microsoft'))) And '$(IsTestProject)' != 'true'">true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
