@@ -2,5 +2,5 @@
   <PropertyGroup>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
-  <Import Project="..\Dependencies.Build.props" />
+  <Import Project="..\Directory.Build.props" />
 </Project>
