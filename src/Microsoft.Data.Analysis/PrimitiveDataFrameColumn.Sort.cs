@@ -16,7 +16,13 @@ namespace Microsoft.Data.Analysis
         public new PrimitiveDataFrameColumn<T> OrderBy()
         {
             PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
-            return Clone(sortIndices, false, NullCount);
+            return Clone(sortIndices, invertMapIndices: false, NullCount);
+        }
+
+        public new PrimitiveDataFrameColumn<T> OrderByDescending()
+        {
+            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
+            return Clone(sortIndices, invertMapIndices: true, NullCount);
         }
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()
