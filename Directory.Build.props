@@ -5,7 +5,6 @@
     <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
     <VersionSuffix Condition="$(VersionSuffix) == ''">$([System.DateTime]::Now.ToString(preview2-yyMMdd-1))</VersionSuffix>
     <Copyright>&#169; Microsoft Corporation. All rights reserved.</Copyright>
-    <VersionPrefix>0.1.2</VersionPrefix>
     <Authors>Microsoft</Authors>
     <PackageReleaseNotes>Pre-release package, for testing only</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/dotnet/corefxlab</PackageProjectUrl>
