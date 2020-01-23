@@ -85,19 +85,19 @@ For an overview of all the .NET related projects, have a look at the
 [.NET home repository](https://github.com/Microsoft/dotnet).
 
 ## How to Use
-You can get the .NET Core Lab packages from **dotnet-corefxlab** MyGet feed: 
+You can get the .NET Core Lab packages from the **dotnet-experimental** feed: 
 
 ```
-https://dotnet.myget.org/F/dotnet-corefxlab/
+https://dev.azure.com/dnceng/public/_packaging?_a=feed&feed=dotnet-experimental
 
 or
 
-https://dotnet.myget.org/F/dotnet-corefxlab/api/v3/index.json (preview support)
+https://dotnetfeed.blob.core.windows.net/dotnet-experimental/index.json
 ```
 
 Symbols:
 ```
-https://dotnet.myget.org/F/dotnet-corefxlab/symbols/
+https://dev.azure.com/dnceng/public/_packaging?_a=feed&feed=dotnet-experimental-symbols
 ```
 
 You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
@@ -123,14 +123,14 @@ There are many .NET related projects on GitHub.
 To build the projects in this repo, here is what you need to do:
 
 1. The easiest way to build the repo is to invoke `build.cmd` (on Windows) or `build.sh` (on Linux) via the command line after you clone it. When you run `build.cmd` or `build.sh`, the following happens:
-   - The latest .NET cli and runtime are downloaded and installed (under the `dotnetcli` folder)
    - The NuGet packages for the `corefxlab.sln` solution are restored
-      - To skip this step, add `-Restore false` as an argument (`build.cmd` only)
    - The `corefxlab.sln` solution (which contains all the active source and test projects) is built
-   - All the unit tests witin the test projects (that live inside the `tests` folder) are executed.
-      - To skip this step, add `-SkipTests true` as an argument (`build.cmd` only)
-2. After you have have run `build` at least once, you can open the `corefxlab.sln` solution file in [Visual Studio 2017](https://www.visualstudio.com/downloads/) (Community, Professional, or Enterprise), on Windows. Make sure you have the .NET Core workload installed (see [corefx windows build instructions](https://github.com/dotnet/corefx/blob/master/Documentation/building/windows-instructions.md) for more details). Also, make sure to add the `dotnetcli` folder path to your system path environment variable. If you are using VS Code, see https://aka.ms/vscclrdogfood.
+   - For all the supported command line options, run `build -h` at the root. 
+2. After you have have run `build` at least once, you can open the `corefxlab.sln` solution file in [Visual Studio 2017](https://www.visualstudio.com/downloads/) (Community, Professional, or Enterprise), on Windows. Make sure you have the .NET Core workload installed (see [runtime windows build instructions](https://github.com/dotnet/runtime/blob/master/docs/workflow/requirements/windows-requirements.md) for more details). Also, make sure to add the `dotnetcli` folder path to your system path environment variable. If you are using VS Code, see https://aka.ms/vscclrdogfood.
    - If you cannot change the system path, then download or install the [new version of the .NET CLI](https://github.com/dotnet/cli#installers-and-binaries) for your operating system at the default global location `C:\Program Files\dotnet`, which is referenced by VS.
+3. The unit tests for each project can be run on the command line or in Visual Studio. 
+   - In Visual Studio, once corefxlab.sln has been built, open the `Test Explorer` window to locate and run the unit tests.
+   - On the command line, running `dotnet test` on the root discovers and run all the unit tests in `corefxlab.sln`. To test individual projects, first navigate to the test project with the unit tests you want to run. For ex: `cd \path\to\corefxlab\tests\Microsoft.Data.Analysis.Tests`. `dotnet test` will discover and run all the unit tests in `Microsoft.Data.Analysis.Tests.csproj`. For more command line options such as filtering tests, `dotnet test -h` lists the supported options.
 
 ## Troubleshooting
 
