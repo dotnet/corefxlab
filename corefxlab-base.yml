@@ -14,8 +14,8 @@ jobs:
       enablePublishUsingPipelines: true
       enableTelemetry: true
       graphFileGeneration:
-        enabled: true
-        includeToolset: true
+        enabled: false
+        includeToolset: false
       helixRepo: dotnet/corefxlab
       jobs:
       - job: ${{ parameters.name }}
