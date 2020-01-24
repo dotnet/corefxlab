@@ -424,6 +424,20 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary> 
+        /// Appends rows inplace to the DataFrame 
+        /// </summary> 
+        /// <remarks>If an input column's value doesn't match a DataFrameColumn's data type, a conversion will be attempted</remarks> 
+        /// <remarks>If <paramref name="row"/> is null, a null value is appended to each <see cref="DataFrameColumn"/></remarks>
+        /// <param name="rows">The rows to be appended to this DataFrame </param> 
+        public void Append(IEnumerable<DataFrameRow> rows)
+        {
+            foreach (DataFrameRow row in rows)
+            {
+                Append(row);
+            }
+        }
+
+        /// <summary> 
         /// Appends a row inplace to the DataFrame 
         /// </summary> 
         /// <remarks>If a column's value doesn't match its column's data type, a conversion will be attempted</remarks> 
