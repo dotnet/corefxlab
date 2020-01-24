@@ -424,28 +424,33 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary> 
-        /// Appends rows inplace to the DataFrame 
+        /// Appends rows to the DataFrame 
         /// </summary> 
         /// <remarks>If an input column's value doesn't match a DataFrameColumn's data type, a conversion will be attempted</remarks> 
         /// <remarks>If <paramref name="row"/> is null, a null value is appended to each <see cref="DataFrameColumn"/></remarks>
         /// <param name="rows">The rows to be appended to this DataFrame </param> 
-        public void Append(IEnumerable<DataFrameRow> rows)
+        /// <param name="inPlace">If set, appends <paramref name="rows"/> in place. Otherwise, a new DataFrame is returned with the <paramref name="rows"/> appended</param>
+        public DataFrame Append(IEnumerable<DataFrameRow> rows, bool inPlace = false)
         {
+            DataFrame ret = inPlace ? this : Clone();
             foreach (DataFrameRow row in rows)
             {
-                Append(row);
+                ret.Append(row, inPlace: true);
             }
+            return ret;
         }
 
         /// <summary> 
-        /// Appends a row inplace to the DataFrame 
+        /// Appends a row to the DataFrame 
         /// </summary> 
         /// <remarks>If a column's value doesn't match its column's data type, a conversion will be attempted</remarks> 
         /// <remarks>If <paramref name="row"/> is null, a null value is appended to each column</remarks>
         /// <param name="row"></param> 
-        public void Append(IEnumerable<object> row = null)
+        /// <param name="inPlace">If set, appends a <paramref name="row"/> in place. Otherwise, a new DataFrame is returned with an appended <paramref name="row"/> </param>
+        public DataFrame Append(IEnumerable<object> row = null, bool inPlace = false)
         {
-            IEnumerator<DataFrameColumn> columnEnumerator = Columns.GetEnumerator();
+            DataFrame ret = inPlace ? this : Clone();
+            IEnumerator<DataFrameColumn> columnEnumerator = ret.Columns.GetEnumerator();
             bool columnMoveNext = columnEnumerator.MoveNext();
             if (row != null)
             {
@@ -478,16 +483,17 @@ namespace Microsoft.Data.Analysis
                 {
                     throw new ArgumentException(string.Format(Strings.ExceedsNumberOfColumns, Columns.Count), nameof(row));
                 }
-                columnEnumerator.Reset();
+                // Reset the enumerators
+                columnEnumerator = ret.Columns.GetEnumerator();
                 columnMoveNext = columnEnumerator.MoveNext();
-                rowEnumerator.Reset();
+                rowEnumerator = row.GetEnumerator();
                 rowMoveNext = rowEnumerator.MoveNext();
                 int cacheIndex = 0;
                 while (columnMoveNext && rowMoveNext)
                 {
                     DataFrameColumn column = columnEnumerator.Current;
                     object value = cachedObjectConversions[cacheIndex];
-                    ResizeByOneAndAppend(column, value);
+                    ret.ResizeByOneAndAppend(column, value);
                     columnMoveNext = columnEnumerator.MoveNext();
                     rowMoveNext = rowEnumerator.MoveNext();
                     cacheIndex++;
@@ -497,10 +503,11 @@ namespace Microsoft.Data.Analysis
             {
                 // Fill the remaining columns with null
                 DataFrameColumn column = columnEnumerator.Current;
-                ResizeByOneAndAppend(column, null);
+                ret.ResizeByOneAndAppend(column, null);
                 columnMoveNext = columnEnumerator.MoveNext();
             }
-            Columns.RowCount++;
+            ret.Columns.RowCount++;
+            return ret;
         }
 
         /// <summary> 
