@@ -427,15 +427,16 @@ namespace Microsoft.Data.Analysis
         /// Appends rows to the DataFrame 
         /// </summary> 
         /// <remarks>If an input column's value doesn't match a DataFrameColumn's data type, a conversion will be attempted</remarks> 
-        /// <remarks>If <paramref name="row"/> is null, a null value is appended to each <see cref="DataFrameColumn"/></remarks>
+        /// <remarks>If a <seealso cref="DataFrameRow"/> in <paramref name="rows"/> is null, a null value is appended to each column</remarks>
         /// <param name="rows">The rows to be appended to this DataFrame </param> 
         /// <param name="inPlace">If set, appends <paramref name="rows"/> in place. Otherwise, a new DataFrame is returned with the <paramref name="rows"/> appended</param>
         public DataFrame Append(IEnumerable<DataFrameRow> rows, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();
+            int cc = 0;
             foreach (DataFrameRow row in rows)
             {
-                ret.Append(row, inPlace: true);
+                ret.AppendImplementation(row, inPlace: true, performTypeCheck: cc == 0 ? true : false);
             }
             return ret;
         }
@@ -447,41 +448,49 @@ namespace Microsoft.Data.Analysis
         /// <remarks>If <paramref name="row"/> is null, a null value is appended to each column</remarks>
         /// <param name="row"></param> 
         /// <param name="inPlace">If set, appends a <paramref name="row"/> in place. Otherwise, a new DataFrame is returned with an appended <paramref name="row"/> </param>
-        public DataFrame Append(IEnumerable<object> row = null, bool inPlace = false)
+        public DataFrame Append(IEnumerable<object> row = null, bool inPlace = false) => AppendImplementation(row, inPlace);
+
+        private DataFrame AppendImplementation(IEnumerable<object> row = null, bool inPlace = false, bool performTypeCheck = true)
         {
             DataFrame ret = inPlace ? this : Clone();
             IEnumerator<DataFrameColumn> columnEnumerator = ret.Columns.GetEnumerator();
             bool columnMoveNext = columnEnumerator.MoveNext();
+            IEnumerator<object> rowEnumerator;
+            bool rowMoveNext;
+            List<object> cachedObjectConversions = null;
             if (row != null)
             {
-                // Go through row first to make sure there are no data type incompatibilities
-                IEnumerator<object> rowEnumerator = row.GetEnumerator();
-                bool rowMoveNext = rowEnumerator.MoveNext();
-                List<object> cachedObjectConversions = new List<object>();
-                while (columnMoveNext && rowMoveNext)
+                if (performTypeCheck)
                 {
-                    DataFrameColumn column = columnEnumerator.Current;
-                    object value = rowEnumerator.Current;
-                    // StringDataFrameColumn can accept empty strings. The other columns interpret empty values as nulls
-                    if (value is string stringValue && string.IsNullOrEmpty(stringValue) && column.DataType != typeof(string))
-                    {
-                        value = null;
-                    }
-                    if (value != null)
-                    {
-                        value = Convert.ChangeType(value, column.DataType);
-                        if (value is null)
-                        {
-                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
-                        }
-                    }
-                    cachedObjectConversions.Add(value);
-                    columnMoveNext = columnEnumerator.MoveNext();
+                    // Go through row first to make sure there are no data type incompatibilities
+                    rowEnumerator = row.GetEnumerator();
                     rowMoveNext = rowEnumerator.MoveNext();
-                }
-                if (rowMoveNext)
-                {
-                    throw new ArgumentException(string.Format(Strings.ExceedsNumberOfColumns, Columns.Count), nameof(row));
+                    cachedObjectConversions = new List<object>();
+                    while (columnMoveNext && rowMoveNext)
+                    {
+                        DataFrameColumn column = columnEnumerator.Current;
+                        object value = rowEnumerator.Current;
+                        // StringDataFrameColumn can accept empty strings. The other columns interpret empty values as nulls
+                        if (value is string stringValue && string.IsNullOrEmpty(stringValue) && column.DataType != typeof(string))
+                        {
+                            value = null;
+                        }
+                        if (value != null)
+                        {
+                            value = Convert.ChangeType(value, column.DataType);
+                            if (value is null)
+                            {
+                                throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
+                            }
+                        }
+                        cachedObjectConversions.Add(value);
+                        columnMoveNext = columnEnumerator.MoveNext();
+                        rowMoveNext = rowEnumerator.MoveNext();
+                    }
+                    if (rowMoveNext)
+                    {
+                        throw new ArgumentException(string.Format(Strings.ExceedsNumberOfColumns, Columns.Count), nameof(row));
+                    }
                 }
                 // Reset the enumerators
                 columnEnumerator = ret.Columns.GetEnumerator();
@@ -492,7 +501,7 @@ namespace Microsoft.Data.Analysis
                 while (columnMoveNext && rowMoveNext)
                 {
                     DataFrameColumn column = columnEnumerator.Current;
-                    object value = cachedObjectConversions[cacheIndex];
+                    object value = cachedObjectConversions != null ? cachedObjectConversions[cacheIndex] : rowEnumerator.Current;
                     ret.ResizeByOneAndAppend(column, value);
                     columnMoveNext = columnEnumerator.MoveNext();
                     rowMoveNext = rowEnumerator.MoveNext();
@@ -511,12 +520,14 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary> 
-        /// Appends a row inplace by enumerating column names and values from <paramref name="row"/> 
+        /// Appends a row by enumerating column names and values from <paramref name="row"/> 
         /// </summary> 
         /// <remarks>If a column's value doesn't match its column's data type, a conversion will be attempted</remarks> 
-        /// <param name="row"></param> 
-        public void Append(IEnumerable<KeyValuePair<string, object>> row)
+        /// <param name="row">An enumeration of column name and value to be appended</param> 
+        /// <param name="inPlace">If set, appends <paramref name="row"/> in place. Otherwise, a new DataFrame is returned with an appended <paramref name="row"/> </param>
+        public DataFrame Append(IEnumerable<KeyValuePair<string, object>> row, bool inPlace = false)
         {
+            DataFrame ret = inPlace ? this : Clone();
             if (row == null)
             {
                 throw new ArgumentNullException(nameof(row));
@@ -526,13 +537,13 @@ namespace Microsoft.Data.Analysis
             foreach (KeyValuePair<string, object> columnAndValue in row)
             {
                 string columnName = columnAndValue.Key;
-                int index = Columns.IndexOf(columnName);
+                int index = ret.Columns.IndexOf(columnName);
                 if (index == -1)
                 {
                     throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
                 }
 
-                DataFrameColumn column = Columns[index];
+                DataFrameColumn column = ret.Columns[index];
                 object value = columnAndValue.Value;
                 if (value != null)
                 {
@@ -549,11 +560,11 @@ namespace Microsoft.Data.Analysis
             foreach (KeyValuePair<string, object> columnAndValue in row)
             {
                 string columnName = columnAndValue.Key;
-                int index = Columns.IndexOf(columnName);
+                int index = ret.Columns.IndexOf(columnName);
 
-                DataFrameColumn column = Columns[index];
+                DataFrameColumn column = ret.Columns[index];
                 object value = cachedObjectConversions[cacheIndex];
-                ResizeByOneAndAppend(column, value);
+                ret.ResizeByOneAndAppend(column, value);
                 cacheIndex++;
             }
 
@@ -561,10 +572,11 @@ namespace Microsoft.Data.Analysis
             {
                 if (column.Length == Rows.Count)
                 {
-                    ResizeByOneAndAppend(column, null);
+                    ret.ResizeByOneAndAppend(column, null);
                 }
             }
-            Columns.RowCount++;
+            ret.Columns.RowCount++;
+            return ret;
         }
 
         /// <summary>
