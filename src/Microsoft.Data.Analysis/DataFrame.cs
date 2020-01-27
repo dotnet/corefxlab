@@ -559,7 +559,7 @@ namespace Microsoft.Data.Analysis
                 cacheIndex++;
             }
 
-            foreach (DataFrameColumn column in Columns)
+            foreach (DataFrameColumn column in ret.Columns)
             {
                 if (column.Length == Rows.Count)
                 {
