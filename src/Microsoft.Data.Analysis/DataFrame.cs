@@ -433,10 +433,9 @@ namespace Microsoft.Data.Analysis
         public DataFrame Append(IEnumerable<DataFrameRow> rows, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();
-            int cc = 0;
             foreach (DataFrameRow row in rows)
             {
-                ret.AppendImplementation(row, inPlace: true, performTypeCheck: cc == 0 ? true : false);
+                ret.Append(row, inPlace: true);
             }
             return ret;
         }
@@ -448,9 +447,7 @@ namespace Microsoft.Data.Analysis
         /// <remarks>If <paramref name="row"/> is null, a null value is appended to each column</remarks>
         /// <param name="row"></param> 
         /// <param name="inPlace">If set, appends a <paramref name="row"/> in place. Otherwise, a new DataFrame is returned with an appended <paramref name="row"/> </param>
-        public DataFrame Append(IEnumerable<object> row = null, bool inPlace = false) => AppendImplementation(row, inPlace);
-
-        private DataFrame AppendImplementation(IEnumerable<object> row = null, bool inPlace = false, bool performTypeCheck = true)
+        public DataFrame Append(IEnumerable<object> row = null, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();
             IEnumerator<DataFrameColumn> columnEnumerator = ret.Columns.GetEnumerator();
@@ -460,8 +457,6 @@ namespace Microsoft.Data.Analysis
             List<object> cachedObjectConversions = null;
             if (row != null)
             {
-                if (performTypeCheck)
-                {
                     // Go through row first to make sure there are no data type incompatibilities
                     rowEnumerator = row.GetEnumerator();
                     rowMoveNext = rowEnumerator.MoveNext();
@@ -491,7 +486,6 @@ namespace Microsoft.Data.Analysis
                     {
                         throw new ArgumentException(string.Format(Strings.ExceedsNumberOfColumns, Columns.Count), nameof(row));
                     }
-                }
                 // Reset the enumerators
                 columnEnumerator = ret.Columns.GetEnumerator();
                 columnMoveNext = columnEnumerator.MoveNext();
