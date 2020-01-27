@@ -452,15 +452,12 @@ namespace Microsoft.Data.Analysis
             DataFrame ret = inPlace ? this : Clone();
             IEnumerator<DataFrameColumn> columnEnumerator = ret.Columns.GetEnumerator();
             bool columnMoveNext = columnEnumerator.MoveNext();
-            IEnumerator<object> rowEnumerator;
-            bool rowMoveNext;
-            List<object> cachedObjectConversions = null;
             if (row != null)
             {
                     // Go through row first to make sure there are no data type incompatibilities
-                    rowEnumerator = row.GetEnumerator();
-                    rowMoveNext = rowEnumerator.MoveNext();
-                    cachedObjectConversions = new List<object>();
+                    IEnumerator<object> rowEnumerator = row.GetEnumerator();
+                    bool rowMoveNext = rowEnumerator.MoveNext();
+                    List<object> cachedObjectConversions = new List<object>();
                     while (columnMoveNext && rowMoveNext)
                     {
                         DataFrameColumn column = columnEnumerator.Current;
@@ -495,7 +492,7 @@ namespace Microsoft.Data.Analysis
                 while (columnMoveNext && rowMoveNext)
                 {
                     DataFrameColumn column = columnEnumerator.Current;
-                    object value = cachedObjectConversions != null ? cachedObjectConversions[cacheIndex] : rowEnumerator.Current;
+                    object value = cachedObjectConversions[cacheIndex];
                     ret.ResizeByOneAndAppend(column, value);
                     columnMoveNext = columnEnumerator.MoveNext();
                     rowMoveNext = rowEnumerator.MoveNext();
