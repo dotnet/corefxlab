@@ -2084,7 +2084,13 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(18, df["Column2"].Length);
             Assert.Equal(5, df.Columns[0].NullCount);
             Assert.Equal(6, df.Columns[1].NullCount);
+
             ret = df.Append(inPlace: false);
+            Assert.Equal(18, df.Rows.Count);
+            Assert.Equal(18, df["Column1"].Length);
+            Assert.Equal(18, df["Column2"].Length);
+            Assert.Equal(5, df.Columns[0].NullCount);
+            Assert.Equal(6, df.Columns[1].NullCount);
             Assert.Equal(19, ret.Rows.Count);
             Assert.Equal(19, ret["Column1"].Length);
             Assert.Equal(19, ret["Column2"].Length);
