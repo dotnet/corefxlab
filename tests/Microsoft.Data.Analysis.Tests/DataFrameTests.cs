@@ -2136,5 +2136,17 @@ namespace Microsoft.Data.Analysis.Tests
                 Assert.Equal(newCol[i], values[i] + 0.5d);
             }
         }
+
+        [Fact]
+        public void TestRolling()
+        {
+            int[] values = { 1, 2, 3, 4, 5 };
+            PrimitiveDataFrameColumn<int> ints = new PrimitiveDataFrameColumn<int>("Ints", values);
+            PrimitiveDataFrameColumn<int> sum = ints.Rolling(2).Sum();
+            DataFrameColumn weakInts = ints;
+            weakInts.Rolling(2).Sum();
+            DataFrame df = MakeDataFrame<int, float>(5);
+            df.Rolling(2).Sum();
+        }
     }
 }

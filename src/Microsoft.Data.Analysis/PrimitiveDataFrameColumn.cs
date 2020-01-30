@@ -328,6 +328,11 @@ namespace Microsoft.Data.Analysis
             return $"{Name}: {_columnContainer.ToString()}";
         }
 
+        public new PrimitiveDataFrameColumnRollingWindow<T> Rolling(int windowSize)
+        {
+            
+        }
+
         public new PrimitiveDataFrameColumn<T> Clone(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
         {
             PrimitiveDataFrameColumn<T> clone;

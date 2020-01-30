@@ -30,7 +30,7 @@ namespace Microsoft.Data.Analysis
             }
             else if (typeof(T) == typeof(decimal))
             {
-                throw new NotImplementedException();
+                return (IDoubleConverter<T>)new DecimalDoubleConverter();
             }
             else if (typeof(T) == typeof(double))
             {
@@ -69,6 +69,14 @@ namespace Microsoft.Data.Analysis
                 return (IDoubleConverter<T>)new UShortDoubleConverter();
             }
             throw new NotSupportedException();
+        }
+    }
+
+    internal class DecimalDoubleConverter : IDoubleConverter<decimal>
+    {
+        public double GetDouble(decimal value)
+        {
+            return (double)value;
         }
     }
 
