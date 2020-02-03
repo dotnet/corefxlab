@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace Microsoft.Data.Analysis
 {
@@ -9,7 +8,6 @@ namespace Microsoft.Data.Analysis
         where T : unmanaged
     {
         private int _windowSize;
-        private double? _currentSum;
         private double? _currentMin;
         private double? _currentMax;
         private PrimitiveDataFrameColumn<T> _currentColumn;
@@ -22,25 +20,15 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Finds the sum of the values in this window
+        /// Apply <paramref name="func"/> over a rolling window of values. 
         /// </summary>
-        /// <returns>Returns a DataFrame containing the sum in each window</returns>
-        public new PrimitiveDataFrameColumn<T> Sum()
+        /// <typeparam name="U">The returned result for each rolling window</typeparam>
+        /// <param name="func">The delegate to apply for each window. The first parameter is a linked list of values in the current window. The second parameter is the current index in the column. The current window ends at the current index and include values preceeding it</param>
+        /// <returns>The result computed for each rolling window</returns>
+        public PrimitiveDataFrameColumn<U> Apply<U>(Func<LinkedList<T?>, long, U?> func)
+            where U : unmanaged
         {
-            PrimitiveDataFrameColumn<T> ret = _currentColumn.Clone();
-            _currentIndex = 0;
-            _currentColumn.Sum()
-
-
-        }
-
-        /// <summary>
-        /// Finds the mean of the values in this window
-        /// </summary>
-        /// <returns>Returns a DataFrame containing the mean in each window</returns>
-        public override PrimitiveDataFrameColumn<double> Mean()
-        {
-
+            return _currentColumn.Apply(func, _windowSize);
         }
 
         /// <summary>
@@ -212,6 +200,26 @@ namespace Microsoft.Data.Analysis
                 _currentIndex++;
                 return count;
             });
+        }
+    }
+
+    public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn
+        where T : unmanaged
+    {
+        internal PrimitiveDataFrameColumn<T> RollingSum(int windowSize)
+        {
+            PrimitiveDataFrameColumn<T> ret = Clone();
+            PrimitiveColumnRollingComputation<T>.Instance.RollingSum(ret._columnContainer, windowSize);
+            return ret;
+        }
+
+        internal PrimitiveDataFrameColumn<U> Apply<U>(Func<LinkedList<T?>, long, U?> func, int windowSize)
+            where U : unmanaged
+        {
+            PrimitiveDataFrameColumn<U> ret = new PrimitiveDataFrameColumn<U>(Name, Length);
+            _columnContainer.Apply(func, ret._columnContainer, windowSize);
+
+            return ret;
         }
     }
 }

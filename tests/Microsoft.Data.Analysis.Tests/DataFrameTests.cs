@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using Apache.Arrow;
 using Microsoft.ML;
+using Microsoft.ML.Data;
 using Xunit;
 
 namespace Microsoft.Data.Analysis.Tests
@@ -201,6 +202,25 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(1000, (int)column[2]);
 
             Assert.Throws<ArgumentException>(() => dataFrame["Int5"]);
+        }
+
+        [Fact]
+        public void GetColumnTests()
+        {
+            DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10);
+            PrimitiveDataFrameColumn<int> ints = dataFrame.Columns.GetColumn<PrimitiveDataFrameColumn<int>>("Int");
+            Assert.NotNull(ints);
+            PrimitiveDataFrameColumn<float> floats = dataFrame.Columns.GetColumn<PrimitiveDataFrameColumn<float>>("Int");
+            Assert.Null(floats);
+            StringDataFrameColumn strings = dataFrame.Columns.GetColumn<StringDataFrameColumn>("String");
+            Assert.NotNull(strings);
+            ArrowStringDataFrameColumn arrowStrings = dataFrame.Columns.GetColumn<ArrowStringDataFrameColumn>("String");
+            Assert.Null(arrowStrings);
+
+            arrowStrings = dataFrame.Columns.GetColumn<ArrowStringDataFrameColumn>("ArrowString");
+            Assert.NotNull(arrowStrings);
+            strings = dataFrame.Columns.GetColumn<StringDataFrameColumn>("ArrowString");
+            Assert.Null(strings);
         }
 
         [Fact]

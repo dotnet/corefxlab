@@ -141,5 +141,21 @@ namespace Microsoft.Data.Analysis
             _columnNames.Clear();
             _columnNameToIndexDictionary.Clear();
         }
+
+        /// <summary>
+        /// Searches for a <see cref="DataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as <typeparamref name="T"/>. If <typeparamref name="T"/> does not match <see cref="DataFrameColumn.DataType"/>, returns null.
+        /// </summary>
+        /// <typeparam name="T">The type to cast the column to</typeparam>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="DataFrameColumn"/> as <typeparamref name="T"/>. Null if types don't match</returns>
+        public T GetColumn<T>(string name)
+            where T : class
+        {
+            int columnIndex = IndexOf(name);
+            if (columnIndex == -1)
+                throw new ArgumentException(Strings.InvalidColumnName, nameof(name));
+            DataFrameColumn column = this[columnIndex];
+            return column as T;
+        }
     }
 }

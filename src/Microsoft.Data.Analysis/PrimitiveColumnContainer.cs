@@ -251,6 +251,57 @@ namespace Microsoft.Data.Analysis
             }
         }
 
+        /// <summary>
+        /// Applies the given <paramref name="func"/> over a window of size <paramref name="windowSize"/> of the column's values
+        /// </summary>
+        /// <typeparam name="TResult">The return value for each window</typeparam>
+        /// <param name="func">The delegate to apply over each window. It takes an input of the values in the current window and the current index being processed in the column. </param>
+        /// <param name="resultContainer">The result container</param>
+        /// <param name="windowSize">Size of the window</param>
+        public void Apply<TResult>(Func<LinkedList<T?>, long, TResult?> func, PrimitiveColumnContainer<TResult> resultContainer, int windowSize)
+            where TResult : unmanaged
+        {
+            LinkedList<T?> list = new LinkedList<T?>();
+            for (int b = 0; b < Buffers.Count; b++)
+            {
+                ReadOnlyDataFrameBuffer<T> buffer = Buffers[b];
+                long prevLength = checked(Buffers[0].Length * b);
+                DataFrameBuffer<T> mutableBuffer = DataFrameBuffer<T>.GetMutableBuffer(buffer);
+                Buffers[b] = mutableBuffer;
+                Span<T> span = mutableBuffer.Span;
+                DataFrameBuffer<byte> mutableNullBitMapBuffer = DataFrameBuffer<byte>.GetMutableBuffer(NullBitMapBuffers[b]);
+                NullBitMapBuffers[b] = mutableNullBitMapBuffer;
+                Span<byte> nullBitMapSpan = mutableNullBitMapBuffer.Span;
+
+                ReadOnlyDataFrameBuffer<TResult> resultBuffer = resultContainer.Buffers[b];
+                long resultPrevLength = checked(resultContainer.Buffers[0].Length * b);
+                DataFrameBuffer<TResult> resultMutableBuffer = DataFrameBuffer<TResult>.GetMutableBuffer(resultBuffer);
+                resultContainer.Buffers[b] = resultMutableBuffer;
+                Span<TResult> resultSpan = resultMutableBuffer.Span;
+                DataFrameBuffer<byte> resultMutableNullBitMapBuffer = DataFrameBuffer<byte>.GetMutableBuffer(resultContainer.NullBitMapBuffers[b]);
+                resultContainer.NullBitMapBuffers[b] = resultMutableNullBitMapBuffer;
+                Span<byte> resultNullBitMapSpan = resultMutableNullBitMapBuffer.Span;
+
+                for (int i = 0; i < span.Length; i++)
+                {
+                    long curIndex = i + prevLength;
+                    bool isValid = IsValid(nullBitMapSpan, i);
+                    if (list.Count == windowSize)
+                    {
+                        list.RemoveFirst();
+                        list.AddLast(isValid ? span[i] : default(T?));
+                    }
+                    else
+                    {
+                        list.AddLast(isValid ? span[i] : default(T?));
+                    }
+                    TResult? value = func(list, curIndex);
+                    resultSpan[i] = value.GetValueOrDefault();
+                    SetValidityBit(resultNullBitMapSpan, i, value != null);
+                }
+            }
+        }
+
         public void Apply<TResult>(Func<T?, TResult?> func, PrimitiveColumnContainer<TResult> resultContainer)
             where TResult : unmanaged
         {

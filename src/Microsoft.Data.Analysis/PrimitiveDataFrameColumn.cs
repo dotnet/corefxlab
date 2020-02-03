@@ -330,7 +330,7 @@ namespace Microsoft.Data.Analysis
 
         public new PrimitiveDataFrameColumnRollingWindow<T> Rolling(int windowSize)
         {
-            
+            return new PrimitiveDataFrameColumnRollingWindow<T>(windowSize, this);
         }
 
         public new PrimitiveDataFrameColumn<T> Clone(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
