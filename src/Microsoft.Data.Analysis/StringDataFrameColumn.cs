@@ -32,6 +32,7 @@ namespace Microsoft.Data.Analysis
                     buffer.Add(default);
                 }
             }
+            _nullCount = length;
         }
 
         public StringDataFrameColumn(string name, IEnumerable<string> values) : base(name, 0, typeof(string))
@@ -169,10 +170,38 @@ namespace Microsoft.Data.Analysis
 
         public override DataFrameColumn Filter<U>(U lower, U upper) => throw new NotSupportedException();
 
+        public new StringDataFrameColumnRollingWindow Rolling(int windowSize)
+        {
+            return new StringDataFrameColumnRollingWindow(windowSize, this);
+        }
+
         public new StringDataFrameColumn Sort(bool ascending = true)
         {
             PrimitiveDataFrameColumn<long> columnSortIndices = GetAscendingSortIndices();
             return Clone(columnSortIndices, !ascending, NullCount);
+        }
+
+        internal StringDataFrameColumn ApplyRollingFunc(Func<LinkedList<string>, long, string> func, int windowSize)
+        {
+            StringDataFrameColumn ret = new StringDataFrameColumn("Apply", Length);
+            LinkedList<string> values = new LinkedList<string>();
+            for (long i = 0; i < Length; i++)
+            {
+                string value = this[i];
+                if (values.Count == windowSize)
+                {
+                    values.RemoveFirst();
+                    values.AddLast(value);
+                }
+                else
+                {
+                    values.AddLast(value);
+                }
+                string retValue = func(values, i);
+                ret[i] = retValue;
+            }
+
+            return ret;
         }
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Microsoft.Data.Analysis
 {
+    /// <summary>
+    /// A window object that can be used for expanding and rolling computations
+    /// </summary>
     public abstract class DataFrameColumnWindow
     {
         /// <summary>

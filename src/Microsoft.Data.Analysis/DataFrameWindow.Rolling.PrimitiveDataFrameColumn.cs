@@ -4,12 +4,14 @@ using System.Diagnostics;
 
 namespace Microsoft.Data.Analysis
 {
+    /// <summary>
+    /// A window for <see cref="PrimitiveDataFrameColumn{T}"/> to support rolling window operations
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PrimitiveDataFrameColumnRollingWindow<T> : DataFrameColumnWindow
         where T : unmanaged
     {
         private int _windowSize;
-        private double? _currentMin;
-        private double? _currentMax;
         private PrimitiveDataFrameColumn<T> _currentColumn;
         private long _currentIndex;
 
@@ -28,7 +30,7 @@ namespace Microsoft.Data.Analysis
         public PrimitiveDataFrameColumn<U> Apply<U>(Func<LinkedList<T?>, long, U?> func)
             where U : unmanaged
         {
-            return _currentColumn.Apply(func, _windowSize);
+            return _currentColumn.ApplyRollingFunc(func, _windowSize);
         }
 
         /// <summary>
@@ -38,14 +40,13 @@ namespace Microsoft.Data.Analysis
         public new PrimitiveDataFrameColumn<T> Min()
         {
             _currentIndex = 0;
-            _currentMax = null;
 
             LinkedList<KeyValuePair<double, long>> sortedList = new LinkedList<KeyValuePair<double, long>>();
             LinkedList<T?> windowValues = new LinkedList<T?>();
             IDoubleConverter<T> doubleConverter = DoubleConverter<T>.Instance;
             return _currentColumn.Apply<T>((T? value) =>
             {
-                double doubleValue = doubleConverter.GetDouble(value.Value);
+                double doubleValue = value.HasValue ? doubleConverter.GetDouble(value.Value) : double.MaxValue;
                 // This algorithm builds a sorted list. Time complexity is O(N) here since each value is added/removed to sortedList only once.
                 // If the values at the end of the sortedList are greater than value, delete them since they can never be the min in this window
                 // If value is null, treat it as double.MaxValue
@@ -103,11 +104,6 @@ namespace Microsoft.Data.Analysis
 
         }
 
-        class DescendingComparer<U> : IComparer<U>
-        {
-            public int Compare(U x, U y) => Comparer<U>.Default.Compare(y, x);
-        }
-
         /// <summary>
         /// Finds the max of the values in this window
         /// </summary>
@@ -121,7 +117,7 @@ namespace Microsoft.Data.Analysis
             IDoubleConverter<T> doubleConverter = DoubleConverter<T>.Instance;
             return _currentColumn.Apply<T>((T? value) =>
             {
-                double doubleValue = doubleConverter.GetDouble(value.Value);
+                double doubleValue = value.HasValue ? doubleConverter.GetDouble(value.Value) : double.MinValue;
                 // This algorithm builds a sorted list. Time complexity is O(N) here since each value is added/removed to sortedList only once.
                 // If the values at the end of the sortedList are lesser than value, delete them since they can never be the max in this window
                 // If value is null, treat it as double.MinValue
@@ -192,7 +188,7 @@ namespace Microsoft.Data.Analysis
                 {
                     count--;
                 }
-                if (_currentIndex < _windowSize)
+                if (_currentIndex < _windowSize - 1)
                 {
                     _currentIndex++;
                     return null;
@@ -206,19 +202,11 @@ namespace Microsoft.Data.Analysis
     public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn
         where T : unmanaged
     {
-        internal PrimitiveDataFrameColumn<T> RollingSum(int windowSize)
-        {
-            PrimitiveDataFrameColumn<T> ret = Clone();
-            PrimitiveColumnRollingComputation<T>.Instance.RollingSum(ret._columnContainer, windowSize);
-            return ret;
-        }
-
-        internal PrimitiveDataFrameColumn<U> Apply<U>(Func<LinkedList<T?>, long, U?> func, int windowSize)
+        internal PrimitiveDataFrameColumn<U> ApplyRollingFunc<U>(Func<LinkedList<T?>, long, U?> func, int windowSize)
             where U : unmanaged
         {
             PrimitiveDataFrameColumn<U> ret = new PrimitiveDataFrameColumn<U>(Name, Length);
             _columnContainer.Apply(func, ret._columnContainer, windowSize);
-
             return ret;
         }
     }

@@ -243,12 +243,6 @@ namespace Microsoft.Data.Analysis
             throw new NotImplementedException();
         }
 
-        public PrimitiveDataFrameColumn<T> AsPrimitiveDataFrameColumn<T>()
-            where T : unmanaged
-        {
-            throw new NotImplementedException();
-        }
-
         internal virtual PrimitiveDataFrameColumn<long> GetAscendingSortIndices() => throw new NotImplementedException();
 
         internal delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
