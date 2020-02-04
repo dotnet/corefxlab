@@ -95,7 +95,7 @@ or
 https://dotnetfeed.blob.core.windows.net/dotnet-experimental/index.json
 ```
 
-Symbols:
+Symbols: 
 ```
 https://dev.azure.com/dnceng/public/_packaging?_a=feed&feed=dotnet-experimental-symbols
 ```
