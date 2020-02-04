@@ -12,7 +12,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Counts the number of non-null values inside the window
         /// </summary>
-        /// <returns>A DataFrame containing the count</returns>
+        /// <returns>A DataFrame containing the count in each window</returns>
         public abstract PrimitiveDataFrameColumn<int> Count();
 
         /// <summary>

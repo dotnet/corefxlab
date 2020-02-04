@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using Apache.Arrow;
 using Microsoft.ML;
-using Microsoft.ML.Data;
 using Xunit;
 
 namespace Microsoft.Data.Analysis.Tests
