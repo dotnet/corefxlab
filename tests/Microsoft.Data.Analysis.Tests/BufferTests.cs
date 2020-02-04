@@ -44,7 +44,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(0, strCol.NullCount);
 
             StringDataFrameColumn strCol1 = new StringDataFrameColumn("String1", 5);
-            Assert.Equal(0, strCol1.NullCount);
+            Assert.Equal(5, strCol1.NullCount);
 
             StringDataFrameColumn strCol2 = new StringDataFrameColumn("String", Enumerable.Range(0, 10).Select(x => x.ToString()));
             Assert.Equal(0, strCol2.NullCount);

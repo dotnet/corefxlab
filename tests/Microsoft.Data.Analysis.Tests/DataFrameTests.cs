@@ -209,17 +209,15 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10);
             PrimitiveDataFrameColumn<int> ints = dataFrame.Columns.GetColumn<PrimitiveDataFrameColumn<int>>("Int");
             Assert.NotNull(ints);
-            PrimitiveDataFrameColumn<float> floats = dataFrame.Columns.GetColumn<PrimitiveDataFrameColumn<float>>("Int");
-            Assert.Null(floats);
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetColumn<PrimitiveDataFrameColumn<float>>("Int"));
+
             StringDataFrameColumn strings = dataFrame.Columns.GetColumn<StringDataFrameColumn>("String");
             Assert.NotNull(strings);
-            ArrowStringDataFrameColumn arrowStrings = dataFrame.Columns.GetColumn<ArrowStringDataFrameColumn>("String");
-            Assert.Null(arrowStrings);
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetColumn<ArrowStringDataFrameColumn>("String"));
 
-            arrowStrings = dataFrame.Columns.GetColumn<ArrowStringDataFrameColumn>("ArrowString");
+            ArrowStringDataFrameColumn arrowStrings = dataFrame.Columns.GetColumn<ArrowStringDataFrameColumn>("ArrowString");
             Assert.NotNull(arrowStrings);
-            strings = dataFrame.Columns.GetColumn<StringDataFrameColumn>("ArrowString");
-            Assert.Null(strings);
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetColumn<StringDataFrameColumn>("ArrowString"));
         }
 
         [Fact]

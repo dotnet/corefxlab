@@ -313,6 +313,7 @@ namespace Microsoft.Data.Analysis
         {
             mapIndices = mapIndices ?? throw new ArgumentNullException(nameof(mapIndices));
             StringDataFrameColumn ret = new StringDataFrameColumn(Name, mapIndices.Length);
+            ret._nullCount = 0;
 
             List<string> setBuffer = ret._stringBuffers[0];
             long setBufferMinRange = 0;

@@ -155,7 +155,12 @@ namespace Microsoft.Data.Analysis
             if (columnIndex == -1)
                 throw new ArgumentException(Strings.InvalidColumnName, nameof(name));
             DataFrameColumn column = this[columnIndex];
-            return column as T;
+            T ret = column as T;
+            if (ret == null)
+            {
+                throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(T)), nameof(T));
+            }
+            return ret;
         }
     }
 }
