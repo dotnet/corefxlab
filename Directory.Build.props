@@ -2,6 +2,7 @@
   <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
   <Import Project="tools\dependencies.props" />
   <PropertyGroup>
+    <UsingToolXliff>false</UsingToolXliff>
     <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
     <VersionSuffix Condition="$(VersionSuffix) == ''">$([System.DateTime]::Now.ToString(preview2-yyMMdd-1))</VersionSuffix>
     <Copyright>&#169; Microsoft Corporation. All rights reserved.</Copyright>

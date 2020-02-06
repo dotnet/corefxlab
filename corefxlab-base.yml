@@ -66,12 +66,12 @@ jobs:
 
         strategy:
           matrix:
-            ${{ if eq(parameters.isOfficialBuild, 'false') }}:
-              x64_Debug:
-                _BuildConfig: Debug
-
             x64_Release:
               _BuildConfig: Release
+
+              ${{ if eq(parameters.isOfficialBuild, 'false') }}:
+              x64_Debug:
+                _BuildConfig: Debug
 
         steps:
           - script: $(_buildScript) $(_buildArguments)
