@@ -1,6 +1,5 @@
 <Project>
   <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
-  <Import Project="tools\dependencies.props" />
   <PropertyGroup>
     <UsingToolXliff>false</UsingToolXliff>
     <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
