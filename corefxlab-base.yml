@@ -69,7 +69,7 @@ jobs:
             x64_Release:
               _BuildConfig: Release
 
-              ${{ if eq(parameters.isOfficialBuild, 'false') }}:
+            ${{ if eq(parameters.isOfficialBuild, 'false') }}:
               x64_Debug:
                 _BuildConfig: Debug
 
