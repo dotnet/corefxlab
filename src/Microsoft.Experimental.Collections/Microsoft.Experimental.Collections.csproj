@@ -3,7 +3,7 @@
     <Description>This package provides collections that are being considered for future versions of .NET Core.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageTags>collections system microsoft multivaluedictionary dictionaryslim</PackageTags>
-    <VersionPrefix>1.0.6</VersionPrefix>
+    <VersionPrefix>1.0.7</VersionPrefix>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

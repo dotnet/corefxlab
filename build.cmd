@@ -1,3 +1,3 @@
 @echo off
-setlocal
-powershell -NoProfile %~dp0scripts\build.ps1 %*
+powershell -ExecutionPolicy ByPass -NoProfile -command "& """%~dp0eng\common\Build.ps1""" -restore -build %*"
+exit /b %ErrorLevel%

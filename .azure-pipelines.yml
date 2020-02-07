@@ -1,7 +1,3 @@
-# This will assign the build version on this format.
-# The package version we produce depend on this number.
-name: $(Date:eyyMMdd)$(Rev:-r)
-
 trigger:
   batch: true
   branches:
@@ -11,35 +7,52 @@ trigger:
 pr:
 - master
 
-jobs:
-- template: /pipelines/corefxlab-base.yml
-  parameters:
-    name: Windows_NT
-    displayName: Innerloop Windows_NT
-    targetOS: Windows_NT
+variables:
+  - name: _DotNetArtifactsCategory
+    value: EXPERIMENTAL
+  - name: _TeamName
+    value: DotNetCore
 
-    ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-      isOfficialBuild: true
-      pool:
-        name: NetCoreInternal-Pool
-        queue: buildpool.windows.10.amd64.vs2017
-    ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-      pool:
-        name: Hosted VS2017
-
-- ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-  - template: /pipelines/corefxlab-base.yml
+stages:
+- stage: build
+  displayName: build
+  jobs:
+  - template: corefxlab-base.yml
     parameters:
-      name: MacOS
-      displayName: Innerloop OSX
-      targetOS: OSX
-      pool:
-        name: Hosted macOS
+      name: Windows_NT
+      displayName: Innerloop Windows_NT
+      targetOS: Windows_NT
 
-  - template: /pipelines/corefxlab-base.yml
+      ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
+        isOfficialBuild: true
+        pool:
+          name: NetCoreInternal-Pool
+          queue: buildpool.windows.10.amd64.vs2017
+      ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
+        pool:
+          name: Hosted VS2017
+
+  - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
+    - template: corefxlab-base.yml
+      parameters:
+        name: MacOS
+        displayName: Innerloop OSX
+        targetOS: OSX
+        pool:
+          name: Hosted macOS
+
+    - template: corefxlab-base.yml
+      parameters:
+        name: Ubuntu1604
+        displayName: Innerloop Ubuntu16.04
+        targetOS: Ubuntu
+        pool:
+          name: Hosted Ubuntu 1604
+
+  # Publish and validation steps. Only run in official builds
+- ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
+  - template: \eng\common\templates\post-build\post-build.yml
     parameters:
-      name: Ubuntu1604
-      displayName: Innerloop Ubuntu16.04
-      targetOS: Ubuntu
-      pool:
-        name: Hosted Ubuntu 1604
+      validateDependsOn:
+        - build
+      enableSymbolValidation: false # https://github.com/dotnet/arcade/issues/2871

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <VersionPrefix>0.1.2</VersionPrefix>
+    <PreReleaseVersionLabel>alpha</PreReleaseVersionLabel>
+    <CoreFxStableVersion>4.3.0</CoreFxStableVersion>
+    <RoslynVersion>2.8.0-beta4</RoslynVersion>
+    <SystemMemoryVersion>4.5.1</SystemMemoryVersion>
+    <SystemCompilerServicesUnsafeVersion>4.5.2</SystemCompilerServicesUnsafeVersion>
+    <SystemNumericsVectorsVersion>4.5.0</SystemNumericsVectorsVersion>
+    <SystemBuffersVersion>4.5.0</SystemBuffersVersion>
+    <SystemIOPipelinesVersion>4.5.2</SystemIOPipelinesVersion>
+    <SystemTextJsonVersion>4.6.0</SystemTextJsonVersion>
+    <SystemThreadingTasksExtensionsVersion>4.5.1</SystemThreadingTasksExtensionsVersion>
+    <LibuvVersion>1.9.1</LibuvVersion>
+    <TestSdkVersion>15.0.0</TestSdkVersion>
+    <XunitVersion>2.2.0</XunitVersion>
+    <BenchmarkDotNetVersion>0.11.3</BenchmarkDotNetVersion>
+    <SnVersion>1.0.0</SnVersion>
+    <VSWhereVersion>2.5.2</VSWhereVersion>
+    <MicroBuildCoreVersion>0.2.0</MicroBuildCoreVersion>
+  </PropertyGroup>
+</Project>

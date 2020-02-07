@@ -1,0 +1,78 @@
+parameters:
+  name: ''
+  displayName: ''
+  targetOS: ''
+  pool: {}
+  isOfficialBuild: false
+
+jobs:
+  - template: eng/common/templates/jobs/jobs.yml
+    parameters:
+      enableMicrobuild: true
+      enablePublishBuildArtifacts: true
+      enablePublishBuildAssets: true
+      enablePublishUsingPipelines: true
+      enableTelemetry: true
+      graphFileGeneration:
+        enabled: false
+        includeToolset: false
+      helixRepo: dotnet/corefxlab
+      jobs:
+      - job: ${{ parameters.name }}
+        timeoutInMinutes: 90
+        displayName: ${{ parameters.displayName }}
+        variables:
+          - ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
+            - name: _buildScript
+              value: build.cmd
+          - ${{ if ne(parameters.targetOS, 'Windows_NT') }}:
+            - name: _buildScript
+              value: ./build.sh
+          
+          # Only enable publishing in non-public, non PR scenarios.
+          - ${{ if and(eq(parameters.isOfficialBuild, 'true'), eq(parameters.targetOS, 'Windows_NT')) }}:
+            # DotNet-Blob-Feed provides: dotnetfeed-storage-access-key-1
+            # Publish-Build-Assets provides: MaestroAccessToken, BotAccount-dotnet-maestro-bot-PAT
+            # DotNet-HelixApi-Access provides: HelixApiAccessToken
+            - group: DotNet-Blob-Feed
+            - group: Publish-Build-Assets
+            - group: DotNet-HelixApi-Access
+            - _PublishBlobFeedUrl: https://dotnetfeed.blob.core.windows.net/dotnet-experimental/index.json
+            - _InternalBuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName)
+                /p:DotNetPublishToBlobFeed=$(_DotNetPublishToBlobFeed)
+                /p:DotNetPublishBlobFeedKey=$(dotnetfeed-storage-access-key-1)
+                /p:DotNetPublishBlobFeedUrl=$(_PublishBlobFeedUrl)
+                /p:DotNetPublishUsingPipelines=true
+                /p:DotNetArtifactsCategory=$(_DotNetArtifactsCategory)
+                /p:OfficialBuildId=$(BUILD.BUILDNUMBER)          
+            - name: _buildArguments
+              value: -Configuration $(_BuildConfig) -ci -sign /p:BuildPackages=true -pack -publish $(_InternalBuildArgs)
+            - name: _SignType
+              value: real
+            - group: DotNet-MyGet-Publish
+            - group: DotNet-Symbol-Server-Pats
+            - name: _SymwebSymbolServerPath
+              value: https://microsoft.artifacts.visualstudio.com/DefaultCollection
+            - name: _MsdlSymbolServerPath
+              value: https://microsoftpublicsymbols.artifacts.visualstudio.com/DefaultCollection
+            - name: _DotNetPublishToBlobFeed
+              value: true
+
+          - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
+            - name: _buildArguments
+              value: -Configuration $(_BuildConfig)
+
+        pool: ${{ parameters.pool }}
+
+        strategy:
+          matrix:
+            x64_Release:
+              _BuildConfig: Release
+
+            ${{ if eq(parameters.isOfficialBuild, 'false') }}:
+              x64_Debug:
+                _BuildConfig: Debug
+
+        steps:
+          - script: $(_buildScript) $(_buildArguments)
+            displayName: Build and Test

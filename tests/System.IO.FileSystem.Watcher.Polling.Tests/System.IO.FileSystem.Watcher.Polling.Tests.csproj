@@ -15,11 +15,6 @@
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
-    <PackageReference Include="xunit" Version="$(XunitVersion)" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
-  </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.IO.FileSystem.Watcher.Polling\System.IO.FileSystem.Watcher.Polling.csproj" />

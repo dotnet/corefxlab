@@ -269,3 +269,11 @@ binaries/
 
 # Do not include launch settings
 launchSettings.json
+
+.dotnet/
+artifacts/
+/.packages
+eng/common/cross/
+eng/common/native/
+eng/common/performance/
+
