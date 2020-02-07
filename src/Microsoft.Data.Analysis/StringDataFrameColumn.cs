@@ -191,12 +191,8 @@ namespace Microsoft.Data.Analysis
                 if (values.Count == windowSize)
                 {
                     values.RemoveFirst();
-                    values.AddLast(value);
                 }
-                else
-                {
-                    values.AddLast(value);
-                }
+                values.AddLast(value);
                 string retValue = func(values, i);
                 ret[i] = retValue;
             }

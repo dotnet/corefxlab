@@ -50,34 +50,14 @@ namespace Microsoft.Data.Analysis
                 // This algorithm builds a sorted list. Time complexity is O(N) here since each value is added/removed to sortedList only once.
                 // If the values at the end of the sortedList are greater than value, delete them since they can never be the min in this window
                 // If value is null, treat it as double.MaxValue
-                if (value.HasValue)
+                while (sortedList.Count != 0 && sortedList.Last.Value.Key >= doubleValue)
                 {
-                    //while (sortedList.Count != 0 && comparer.Compare(doubleConverter.GetDouble(sortedList.Last.Value.Key), value.Value) > 0)
-                    while (sortedList.Count != 0 && sortedList.Last.Value.Key >= doubleValue)
-                    {
-                        sortedList.RemoveLast();
-                        windowValues.RemoveLast();
-                    }
-                }
-                else
-                {
-                    while (sortedList.Count != 0 && sortedList.Last.Value.Key >= double.MaxValue)
-                    {
-                        sortedList.RemoveLast();
-                        windowValues.RemoveLast();
-                    }
+                    sortedList.RemoveLast();
+                    windowValues.RemoveLast();
                 }
 
-                if (value.HasValue)
-                {
-                    sortedList.AddLast(new KeyValuePair<double, long>(doubleValue, _currentIndex));
-                    windowValues.AddLast(value);
-                }
-                else
-                {
-                    sortedList.AddLast(new KeyValuePair<double, long>(double.MaxValue, _currentIndex));
-                    windowValues.AddLast(value);
-                }
+                sortedList.AddLast(new KeyValuePair<double, long>(doubleValue, _currentIndex));
+                windowValues.AddLast(value);
 
                 while (sortedList.First.Value.Value <= _currentIndex - _windowSize)
                 {
@@ -112,42 +92,23 @@ namespace Microsoft.Data.Analysis
         {
             _currentIndex = 0;
 
-            LinkedList<KeyValuePair<double, long>> sortedList = new LinkedList<KeyValuePair<double, long>>();
-            LinkedList<T?> windowValues = new LinkedList<T?>();
             IDoubleConverter<T> doubleConverter = DoubleConverter<T>.Instance;
             return _currentColumn.Apply<T>((T? value) =>
             {
+                LinkedList<T?> windowValues = new LinkedList<T?>();
+                LinkedList<KeyValuePair<double, long>> sortedList = new LinkedList<KeyValuePair<double, long>>();
                 double doubleValue = value.HasValue ? doubleConverter.GetDouble(value.Value) : double.MinValue;
                 // This algorithm builds a sorted list. Time complexity is O(N) here since each value is added/removed to sortedList only once.
                 // If the values at the end of the sortedList are lesser than value, delete them since they can never be the max in this window
                 // If value is null, treat it as double.MinValue
-                if (value.HasValue)
+                while (sortedList.Count != 0 && sortedList.Last.Value.Key <= doubleValue)
                 {
-                    while (sortedList.Count != 0 && sortedList.Last.Value.Key <= doubleValue)
-                    {
-                        sortedList.RemoveLast();
-                        windowValues.RemoveLast();
-                    }
-                }
-                else
-                {
-                    while (sortedList.Count != 0 && sortedList.Last.Value.Key <= double.MinValue)
-                    {
-                        sortedList.RemoveLast();
-                        windowValues.RemoveLast();
-                    }
+                    sortedList.RemoveLast();
+                    windowValues.RemoveLast();
                 }
 
-                if (value.HasValue)
-                {
-                    sortedList.AddLast(new KeyValuePair<double, long>(doubleValue, _currentIndex));
-                    windowValues.AddLast(value);
-                }
-                else
-                {
-                    sortedList.AddLast(new KeyValuePair<double, long>(double.MinValue, _currentIndex));
-                    windowValues.AddLast(value);
-                }
+                sortedList.AddLast(new KeyValuePair<double, long>(doubleValue, _currentIndex));
+                windowValues.AddLast(value);
 
                 while (sortedList.First.Value.Value <= _currentIndex - _windowSize)
                 {
