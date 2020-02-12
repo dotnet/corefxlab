@@ -333,6 +333,11 @@ namespace Microsoft.Data.Analysis
             return new PrimitiveDataFrameColumnRollingWindow<T>(windowSize, this);
         }
 
+        protected override DataFrameColumnWindow RollingImplementation(int windowSize)
+        {
+            return new PrimitiveDataFrameColumnRollingWindow<T>(windowSize, this);
+        }
+
         public new PrimitiveDataFrameColumn<T> Clone(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
         {
             PrimitiveDataFrameColumn<T> clone;

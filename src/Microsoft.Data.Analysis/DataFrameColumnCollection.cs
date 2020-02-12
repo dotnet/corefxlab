@@ -147,7 +147,7 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         /// <typeparam name="T">The type to cast the column to</typeparam>
         /// <param name="name">The name of the column</param>
-        /// <returns><see cref="PrimitiveDataFrameColumn{T}"/>. An exception if types don't match</returns>
+        /// <returns><see cref="PrimitiveDataFrameColumn{T}"/>. Throws an exception if types don't match</returns>
         public PrimitiveDataFrameColumn<T> GetPrimitiveColumn<T>(string name)
             where T : unmanaged
         {
@@ -169,7 +169,7 @@ namespace Microsoft.Data.Analysis
         /// Searches for a <see cref="StringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as <see cref="StringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type string, an exception is thrown.
         /// </summary>
         /// <param name="name">The name of the column</param>
-        /// <returns><see cref="StringDataFrameColumn"/>. An exception if types don't match</returns>
+        /// <returns><see cref="StringDataFrameColumn"/>. Throws an exception if types don't match</returns>
         public StringDataFrameColumn GetStringColumn(string name)
         {
             int columnIndex = IndexOf(name);
@@ -190,7 +190,7 @@ namespace Microsoft.Data.Analysis
         /// Searches for an <see cref="ArrowStringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="ArrowStringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type string, an exception is thrown.
         /// </summary>
         /// <param name="name">The name of the column</param>
-        /// <returns><see cref="ArrowStringDataFrameColumn"/>. An exception if types don't match</returns>
+        /// <returns><see cref="ArrowStringDataFrameColumn"/>. Throws an exception if types don't match</returns>
         public ArrowStringDataFrameColumn GetArrowStringColumn(string name)
         {
             int columnIndex = IndexOf(name);

@@ -29,7 +29,7 @@ namespace Microsoft.Data.Analysis.Tests
             return dataFrame;
         }
 
-        public static DataFrameColumn CreateArrowStringColumn(int length, bool withNulls = true)
+        public static ArrowStringDataFrameColumn CreateArrowStringColumn(int length, bool withNulls = true)
         {
             byte[] dataMemory = new byte[length * 3];
             byte[] nullMemory = new byte[BitUtility.ByteCount(length)];
@@ -2219,6 +2219,15 @@ namespace Microsoft.Data.Analysis.Tests
 
             Assert.Throws<NotSupportedException>(() => strings.Rolling(2).Max());
             Assert.Throws<NotSupportedException>(() => strings.Rolling(2).Min());
+
+            ArrowStringDataFrameColumn arrowStrings = CreateArrowStringColumn(5);
+            counts = arrowStrings.Rolling(2).Count();
+            int?[] verifyArrowStringCounts = { null, 2, 1, 1, 2 };
+            var verifyArrowStringCountsColumn = new PrimitiveDataFrameColumn<int>("Verify", verifyStringCounts);
+            Assert.True(verifyStringCountsColumn.ElementwiseEquals(counts).All());
+            Assert.Throws<NotSupportedException>(() => arrowStrings.Rolling(2).Max());
+            Assert.Throws<NotSupportedException>(() => arrowStrings.Rolling(2).Min());
+
         }
     }
 }

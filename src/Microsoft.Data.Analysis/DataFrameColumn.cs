@@ -241,9 +241,17 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Returns a <see cref="DataFrameColumnWindow"/> that allows rolling window calculations
         /// </summary>
-        /// <param name="windowsSize">The size of the window</param>
+        /// <param name="windowSize">The size of the window</param>
         /// <returns>A <see cref="DataFrameColumnWindow"/> to perform rolling window calculations</returns>
-        public virtual DataFrameColumnWindow Rolling(int windowsSize)
+        public virtual DataFrameColumnWindow Rolling(int windowSize) => RollingImplementation(windowSize);
+
+        /// <summary>
+        /// Returns a <see cref="DataFrameColumnWindow"/> that allows rolling window calculations
+        /// </summary>
+        /// <param name="windowSize">The size of the window</param>
+        /// <returns>A <see cref="DataFrameColumnWindow"/> to perform rolling window calculations</returns>
+        /// <remarks>This method offers an opportunity for derived classes to implement behavior</remarks>
+        protected virtual DataFrameColumnWindow RollingImplementation(int windowSize)
         {
             throw new NotImplementedException();
         }

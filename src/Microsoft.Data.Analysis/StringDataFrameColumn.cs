@@ -175,6 +175,8 @@ namespace Microsoft.Data.Analysis
             return new StringDataFrameColumnRollingWindow(windowSize, this);
         }
 
+        protected override DataFrameColumnWindow RollingImplementation(int windowSize) => new StringDataFrameColumnRollingWindow(windowSize, this);
+
         public new StringDataFrameColumn Sort(bool ascending = true)
         {
             PrimitiveDataFrameColumn<long> columnSortIndices = GetAscendingSortIndices();

@@ -23,15 +23,15 @@ namespace Microsoft.Data.Analysis
             _currentColumn = currentColumn;
         }
 
-        public override PrimitiveDataFrameColumn<int> Count()
+        internal static PrimitiveDataFrameColumn<int> CountImplementation(long currentIndex, DataFrameColumn stringOrArrowStringDataFrameColumn, int windowSize)
         {
-            _currentIndex = 0;
+            currentIndex = 0;
             int count = 0;
-            PrimitiveDataFrameColumn<int> ret = new PrimitiveDataFrameColumn<int>("Count", _currentColumn.Length);
-            for (long i = 0; i < _currentColumn.Length; i++)
+            PrimitiveDataFrameColumn<int> ret = new PrimitiveDataFrameColumn<int>("Count", stringOrArrowStringDataFrameColumn.Length);
+            for (long i = 0; i < stringOrArrowStringDataFrameColumn.Length; i++)
             {
-                string value = _currentColumn[i];
-                if (value != null && count < _windowSize)
+                string value = (string)stringOrArrowStringDataFrameColumn[i];
+                if (value != null && count < windowSize)
                 {
                     count++;
                 }
@@ -39,17 +39,19 @@ namespace Microsoft.Data.Analysis
                 {
                     count--;
                 }
-                if (_currentIndex < _windowSize - 1)
+                if (currentIndex < windowSize - 1)
                 {
-                    ret[_currentIndex] = null;
-                    _currentIndex++;
+                    ret[currentIndex] = null;
+                    currentIndex++;
                     continue;
                 }
-                ret[_currentIndex] = count;
-                _currentIndex++;
+                ret[currentIndex] = count;
+                currentIndex++;
             }
             return ret;
         }
+
+        public override PrimitiveDataFrameColumn<int> Count() => CountImplementation(_currentIndex, _currentColumn, _windowSize);
 
         public override DataFrameColumn Max()
         {

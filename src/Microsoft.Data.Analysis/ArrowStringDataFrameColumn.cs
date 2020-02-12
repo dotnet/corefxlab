@@ -285,6 +285,15 @@ namespace Microsoft.Data.Analysis
                 yield return this[i];
             }
         }
+        public new ArrowStringDataFrameColumnRollingWindow Rolling(int windowSize)
+        {
+            return new ArrowStringDataFrameColumnRollingWindow(windowSize, this);
+        }
+
+        protected override DataFrameColumnWindow RollingImplementation(int windowSize)
+        {
+            return new ArrowStringDataFrameColumnRollingWindow(windowSize, this);
+        }
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
