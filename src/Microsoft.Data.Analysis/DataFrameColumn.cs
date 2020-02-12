@@ -238,6 +238,11 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public virtual DataFrameColumn Description() => throw new NotImplementedException();
 
+        /// <summary>
+        /// Returns a <see cref="DataFrameColumnWindow"/> that allows rolling window calculations
+        /// </summary>
+        /// <param name="windowsSize">The size of the window</param>
+        /// <returns>A <see cref="DataFrameColumnWindow"/> to perform rolling window calculations</returns>
         public virtual DataFrameColumnWindow Rolling(int windowsSize)
         {
             throw new NotImplementedException();

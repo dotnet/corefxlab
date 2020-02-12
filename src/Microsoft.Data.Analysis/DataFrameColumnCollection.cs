@@ -143,24 +143,68 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Searches for a <see cref="DataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as <typeparamref name="T"/>. If <typeparamref name="T"/> does not match <see cref="DataFrameColumn.DataType"/>, returns null.
+        /// Searches for a <see cref="PrimitiveDataFrameColumn{T}"/> with the specified <paramref name="name"/> and attempts to return it as <see cref="PrimitiveDataFrameColumn{T}"/>. If <typeparamref name="T"/> does not match <see cref="DataFrameColumn.DataType"/>, an exception is thrown.
         /// </summary>
         /// <typeparam name="T">The type to cast the column to</typeparam>
         /// <param name="name">The name of the column</param>
-        /// <returns><see cref="DataFrameColumn"/> as <typeparamref name="T"/>. Null if types don't match</returns>
-        public T GetColumn<T>(string name)
-            where T : class
+        /// <returns><see cref="PrimitiveDataFrameColumn{T}"/>. An exception if types don't match</returns>
+        public PrimitiveDataFrameColumn<T> GetPrimitiveColumn<T>(string name)
+            where T : unmanaged
         {
             int columnIndex = IndexOf(name);
             if (columnIndex == -1)
+            {
                 throw new ArgumentException(Strings.InvalidColumnName, nameof(name));
+            }
             DataFrameColumn column = this[columnIndex];
-            if (column is T ret)
+            if (column is PrimitiveDataFrameColumn<T> ret)
             {
                 return ret;
             }
 
             throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(T)), nameof(T));
+        }
+
+        /// <summary>
+        /// Searches for a <see cref="StringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as <see cref="StringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type string, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="StringDataFrameColumn"/>. An exception if types don't match</returns>
+        public StringDataFrameColumn GetStringColumn(string name)
+        {
+            int columnIndex = IndexOf(name);
+            if (columnIndex == -1)
+            {
+                throw new ArgumentException(Strings.InvalidColumnName, nameof(name));
+            }
+            DataFrameColumn column = this[columnIndex];
+            if (column is StringDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(string)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="ArrowStringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="ArrowStringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type string, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="ArrowStringDataFrameColumn"/>. An exception if types don't match</returns>
+        public ArrowStringDataFrameColumn GetArrowStringColumn(string name)
+        {
+            int columnIndex = IndexOf(name);
+            if (columnIndex == -1)
+            {
+                throw new ArgumentException(Strings.InvalidColumnName, nameof(name));
+            }
+            DataFrameColumn column = this[columnIndex];
+            if (column is ArrowStringDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(string)));
         }
     }
 }
