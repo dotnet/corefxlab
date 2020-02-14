@@ -17,7 +17,6 @@ namespace Microsoft.Data.Analysis
     {
         private int _windowSize;
         private PrimitiveDataFrameColumn<T> _currentColumn;
-        private long _currentIndex;
 
         internal PrimitiveDataFrameColumnRollingWindow(int windowSize, PrimitiveDataFrameColumn<T> currentColumn)
         {
@@ -43,7 +42,7 @@ namespace Microsoft.Data.Analysis
         /// <returns>Returns a DataFrame containing the min in each window</returns>
         public new PrimitiveDataFrameColumn<T> Min()
         {
-            _currentIndex = 0;
+            long currentIndex = 0;
 
             LinkedList<KeyValuePair<double, long>> sortedList = new LinkedList<KeyValuePair<double, long>>();
             LinkedList<T?> windowValues = new LinkedList<T?>();
@@ -60,10 +59,10 @@ namespace Microsoft.Data.Analysis
                     windowValues.RemoveLast();
                 }
 
-                sortedList.AddLast(new KeyValuePair<double, long>(doubleValue, _currentIndex));
+                sortedList.AddLast(new KeyValuePair<double, long>(doubleValue, currentIndex));
                 windowValues.AddLast(value);
 
-                while (sortedList.First.Value.Value <= _currentIndex - _windowSize)
+                while (sortedList.First.Value.Value <= currentIndex - _windowSize)
                 {
                     sortedList.RemoveFirst();
                     windowValues.RemoveFirst();
@@ -77,8 +76,8 @@ namespace Microsoft.Data.Analysis
                     windowValues.RemoveFirst();
                 }
 
-                _currentIndex++;
-                if (_currentIndex < _windowSize)
+                currentIndex++;
+                if (currentIndex < _windowSize)
                 {
                     return null;
                 }
@@ -94,13 +93,13 @@ namespace Microsoft.Data.Analysis
         /// <returns>Returns a DataFrame containing the max in each window</returns>
         public new PrimitiveDataFrameColumn<T> Max()
         {
-            _currentIndex = 0;
+            long currentIndex = 0;
 
             IDoubleConverter<T> doubleConverter = DoubleConverter<T>.Instance;
+            LinkedList<KeyValuePair<double, long>> sortedList = new LinkedList<KeyValuePair<double, long>>();
+            LinkedList<T?> windowValues = new LinkedList<T?>();
             return _currentColumn.Apply<T>((T? value) =>
             {
-                LinkedList<T?> windowValues = new LinkedList<T?>();
-                LinkedList<KeyValuePair<double, long>> sortedList = new LinkedList<KeyValuePair<double, long>>();
                 double doubleValue = value.HasValue ? doubleConverter.GetDouble(value.Value) : double.MinValue;
                 // This algorithm builds a sorted list. Time complexity is O(N) here since each value is added/removed to sortedList only once.
                 // If the values at the end of the sortedList are lesser than value, delete them since they can never be the max in this window
@@ -111,10 +110,10 @@ namespace Microsoft.Data.Analysis
                     windowValues.RemoveLast();
                 }
 
-                sortedList.AddLast(new KeyValuePair<double, long>(doubleValue, _currentIndex));
+                sortedList.AddLast(new KeyValuePair<double, long>(doubleValue, currentIndex));
                 windowValues.AddLast(value);
 
-                while (sortedList.First.Value.Value <= _currentIndex - _windowSize)
+                while (sortedList.First.Value.Value <= currentIndex - _windowSize)
                 {
                     sortedList.RemoveFirst();
                     windowValues.RemoveFirst();
@@ -128,8 +127,8 @@ namespace Microsoft.Data.Analysis
                     windowValues.RemoveFirst();
                 }
 
-                _currentIndex++;
-                if (_currentIndex < _windowSize)
+                currentIndex++;
+                if (currentIndex < _windowSize)
                 {
                     return null;
                 }
@@ -141,24 +140,30 @@ namespace Microsoft.Data.Analysis
 
         public override PrimitiveDataFrameColumn<int> Count()
         {
-            _currentIndex = 0;
+            long currentIndex = 0;
             int count = 0;
+            LinkedList<T?> windowValues = new LinkedList<T?>();
             return _currentColumn.Apply<int>((T? value) =>
             {
-                if (value.HasValue && count < _windowSize)
+                windowValues.AddLast(value);
+                if (currentIndex >= _windowSize)
+                {
+                    if (windowValues.First.Value.HasValue && count > 0)
+                    {
+                        count--;
+                    }
+                    windowValues.RemoveFirst();
+                }
+                if (value.HasValue)
                 {
                     count++;
                 }
-                if (!value.HasValue && count > 0)
+                if (currentIndex < _windowSize - 1)
                 {
-                    count--;
-                }
-                if (_currentIndex < _windowSize - 1)
-                {
-                    _currentIndex++;
+                    currentIndex++;
                     return null;
                 }
-                _currentIndex++;
+                currentIndex++;
                 return count;
             });
         }

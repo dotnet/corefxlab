@@ -15,7 +15,6 @@ namespace Microsoft.Data.Analysis
     {
         private int _windowSize;
         private StringDataFrameColumn _currentColumn;
-        private long _currentIndex;
 
         internal StringDataFrameColumnRollingWindow(int windowSize, StringDataFrameColumn currentColumn)
         {
@@ -23,35 +22,38 @@ namespace Microsoft.Data.Analysis
             _currentColumn = currentColumn;
         }
 
-        internal static PrimitiveDataFrameColumn<int> CountImplementation(long currentIndex, DataFrameColumn stringOrArrowStringDataFrameColumn, int windowSize)
+        internal static PrimitiveDataFrameColumn<int> CountImplementation(DataFrameColumn stringOrArrowStringDataFrameColumn, int windowSize)
         {
-            currentIndex = 0;
             int count = 0;
             PrimitiveDataFrameColumn<int> ret = new PrimitiveDataFrameColumn<int>("Count", stringOrArrowStringDataFrameColumn.Length);
+            LinkedList<string> windowValues = new LinkedList<string>();
             for (long i = 0; i < stringOrArrowStringDataFrameColumn.Length; i++)
             {
                 string value = (string)stringOrArrowStringDataFrameColumn[i];
-                if (value != null && count < windowSize)
+                windowValues.AddLast(value);
+                if (i >= windowSize)
+                {
+                    if (windowValues.First.Value != null && count > 0)
+                    {
+                        count--;
+                    }
+                    windowValues.RemoveFirst();
+                }
+                if (value != null)
                 {
                     count++;
                 }
-                if (value == null && count > 0)
+                if (i < windowSize - 1)
                 {
-                    count--;
-                }
-                if (currentIndex < windowSize - 1)
-                {
-                    ret[currentIndex] = null;
-                    currentIndex++;
+                    ret[i] = null;
                     continue;
                 }
-                ret[currentIndex] = count;
-                currentIndex++;
+                ret[i] = count;
             }
             return ret;
         }
 
-        public override PrimitiveDataFrameColumn<int> Count() => CountImplementation(_currentIndex, _currentColumn, _windowSize);
+        public override PrimitiveDataFrameColumn<int> Count() => CountImplementation(_currentColumn, _windowSize);
 
         public override DataFrameColumn Max()
         {

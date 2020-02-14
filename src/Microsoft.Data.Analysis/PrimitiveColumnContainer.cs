@@ -274,7 +274,6 @@ namespace Microsoft.Data.Analysis
                 Span<byte> nullBitMapSpan = mutableNullBitMapBuffer.Span;
 
                 ReadOnlyDataFrameBuffer<TResult> resultBuffer = resultContainer.Buffers[b];
-                long resultPrevLength = checked(resultContainer.Buffers[0].Length * b);
                 DataFrameBuffer<TResult> resultMutableBuffer = DataFrameBuffer<TResult>.GetMutableBuffer(resultBuffer);
                 resultContainer.Buffers[b] = resultMutableBuffer;
                 Span<TResult> resultSpan = resultMutableBuffer.Span;
@@ -293,7 +292,7 @@ namespace Microsoft.Data.Analysis
                     list.AddLast(isValid ? span[i] : default(T?));
                     TResult? value = func(list, curIndex);
                     resultSpan[i] = value.GetValueOrDefault();
-                    SetValidityBit(resultNullBitMapSpan, i, value != null);
+                    resultContainer.SetValidityBit(resultNullBitMapSpan, i, value != null);
                 }
             }
         }
@@ -313,7 +312,6 @@ namespace Microsoft.Data.Analysis
                 Span<byte> nullBitMapSpan = mutableNullBitMapBuffer.Span;
 
                 ReadOnlyDataFrameBuffer<TResult> resultBuffer = resultContainer.Buffers[b];
-                long resultPrevLength = checked(resultContainer.Buffers[0].Length * b);
                 DataFrameBuffer<TResult> resultMutableBuffer = DataFrameBuffer<TResult>.GetMutableBuffer(resultBuffer);
                 resultContainer.Buffers[b] = resultMutableBuffer;
                 Span<TResult> resultSpan = resultMutableBuffer.Span;
@@ -327,7 +325,7 @@ namespace Microsoft.Data.Analysis
                     bool isValid = IsValid(nullBitMapSpan, i);
                     TResult? value = func(isValid ? span[i] : default(T?));
                     resultSpan[i] = value.GetValueOrDefault();
-                    SetValidityBit(resultNullBitMapSpan, i, value != null);
+                    resultContainer.SetValidityBit(resultNullBitMapSpan, i, value != null);
                 }
             }
         }

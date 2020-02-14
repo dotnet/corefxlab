@@ -337,6 +337,25 @@ namespace Microsoft.Data.Analysis
 
         public override DataFrameColumn Sort(bool ascending = true) => throw new NotSupportedException();
 
+        internal ArrowStringDataFrameColumn ApplyRollingFunc(Func<LinkedList<string>, long, string> func, int windowSize)
+        {
+            ArrowStringDataFrameColumn ret = new ArrowStringDataFrameColumn("Apply");
+            LinkedList<string> values = new LinkedList<string>();
+            for (long i = 0; i < Length; i++)
+            {
+                string value = this[i];
+                if (values.Count == windowSize)
+                {
+                    values.RemoveFirst();
+                }
+                values.AddLast(value);
+                string retValue = func(values, i);
+                ret.Append(Encoding.UTF8.GetBytes(retValue));
+            }
+
+            return ret;
+        }
+
         public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
             ArrowStringDataFrameColumn clone;

@@ -213,11 +213,11 @@ namespace Microsoft.Data.Analysis.Tests
 
             StringDataFrameColumn strings = dataFrame.Columns.GetStringColumn("String");
             Assert.NotNull(strings);
-            Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetStringColumn("String"));
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetStringColumn("ArrowString"));
 
             ArrowStringDataFrameColumn arrowStrings = dataFrame.Columns.GetArrowStringColumn("ArrowString");
             Assert.NotNull(arrowStrings);
-            Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetArrowStringColumn("ArrowString"));
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetArrowStringColumn("String"));
         }
 
         [Fact]
@@ -2141,9 +2141,15 @@ namespace Microsoft.Data.Analysis.Tests
         [Fact]
         public void TestApply()
         {
-            int[] values = { 1, 2, 3, 4, 5 };
+            int?[] values = { 1, 2, 3, 4, 5, null };
             var col = new PrimitiveDataFrameColumn<int>("Ints", values);
+            Assert.Equal(1, col.NullCount);
+            Assert.Null(col[col.Length - 1]);
             PrimitiveDataFrameColumn<double> newCol = col.Apply(i => i + 0.5d);
+            Assert.Equal(1, col.NullCount);
+            Assert.Null(col[col.Length - 1]);
+            Assert.Equal(1, newCol.NullCount);
+            Assert.Null(newCol[newCol.Length - 1]);
 
             Assert.Equal(values.Length, newCol.Length);
 
@@ -2154,8 +2160,27 @@ namespace Microsoft.Data.Analysis.Tests
             }
         }
 
+        private void RollingColumnWindowVerifyElementwiseEquals<T>(PrimitiveDataFrameColumn<T> verify, PrimitiveDataFrameColumn<T> values)
+            where T : unmanaged
+        {
+            bool elementwiseEquals = verify.ElementwiseEquals(values).All();
+            string errorMessage = string.Empty;
+            if (!elementwiseEquals)
+            {
+                for (long i = 0; i < verify.Length; i++)
+                {
+                    if (Comparer<T?>.Default.Compare(values[i].Value, verify[i].Value) != 0)
+                    {
+                        errorMessage = $@"Values differ at index {i}. Expected value: {verify[i]}. Obtained value: {values[i]}";
+                        break;
+                    }
+                }
+            }
+            Assert.True(elementwiseEquals, errorMessage);
+        }
+
         [Fact]
-        public void TestRollingColumnWindow()
+        public void TestRollingColumnWindowBasics()
         {
             int?[] values = { 1, 2, 3, 4, 5, 4, null, null, -1 };
             PrimitiveDataFrameColumn<int> ints = new PrimitiveDataFrameColumn<int>("Ints", values);
@@ -2170,30 +2195,30 @@ namespace Microsoft.Data.Analysis.Tests
 
             int?[] verifySum = { null, 3, 5, 7, 9, 9, 4, null, -1 };
             PrimitiveDataFrameColumn<int> verifySumColumn = new PrimitiveDataFrameColumn<int>("Verify", verifySum);
-            Assert.True(verifySumColumn.ElementwiseEquals(sum).All());
+            RollingColumnWindowVerifyElementwiseEquals(verifySumColumn, sum);
 
             PrimitiveDataFrameColumn<int> counts = ints.Rolling(2).Count();
             int?[] verifyCount = { null, 2, 2, 2, 2, 2, 1, 0, 1 };
             PrimitiveDataFrameColumn<int> verifyCountColumn = new PrimitiveDataFrameColumn<int>("Verify", verifyCount);
-            Assert.True(verifyCountColumn.ElementwiseEquals(counts).All());
+            RollingColumnWindowVerifyElementwiseEquals(verifyCountColumn, counts);
 
             // Verify Max
             PrimitiveDataFrameColumn<int> max = ints.Rolling(2).Max();
             int?[] verifyMax = { null, 2, 3, 4, 5, 5, 4, null, -1 };
             PrimitiveDataFrameColumn<int> verifyMaxColumn = new PrimitiveDataFrameColumn<int>("Verify", verifyMax);
-            Assert.True(verifyMaxColumn.ElementwiseEquals(max).All());
+            RollingColumnWindowVerifyElementwiseEquals(verifyMaxColumn, max);
 
             // Verify Min
             PrimitiveDataFrameColumn<int> min = ints.Rolling(2).Min();
             int?[] verifyMin = { null, 1, 2, 3, 4, 4, 4, null, -1 };
             PrimitiveDataFrameColumn<int> verifyMinColumn = new PrimitiveDataFrameColumn<int>("Verify", verifyMin);
-            Assert.True(verifyMinColumn.ElementwiseEquals(min).All());
+            RollingColumnWindowVerifyElementwiseEquals(verifyMinColumn, min);
 
             StringDataFrameColumn strings = new StringDataFrameColumn("String", Enumerable.Range(0, 5).Select((x) => x.ToString()));
             counts = strings.Rolling(2).Count();
             int?[] verifyStringCounts = { null, 2, 2, 2, 2 };
             var verifyStringCountsColumn = new PrimitiveDataFrameColumn<int>("Verify", verifyStringCounts);
-            Assert.True(verifyStringCountsColumn.ElementwiseEquals(counts).All());
+            RollingColumnWindowVerifyElementwiseEquals(verifyStringCountsColumn, counts);
 
             StringDataFrameColumn rolling = strings.Rolling(2).Apply((LinkedList<string> values, long currentIndex) =>
             {
@@ -2223,10 +2248,43 @@ namespace Microsoft.Data.Analysis.Tests
             ArrowStringDataFrameColumn arrowStrings = CreateArrowStringColumn(5);
             counts = arrowStrings.Rolling(2).Count();
             int?[] verifyArrowStringCounts = { null, 2, 1, 1, 2 };
-            var verifyArrowStringCountsColumn = new PrimitiveDataFrameColumn<int>("Verify", verifyStringCounts);
-            Assert.True(verifyStringCountsColumn.ElementwiseEquals(counts).All());
+            var verifyArrowStringCountsColumn = new PrimitiveDataFrameColumn<int>("Verify", verifyArrowStringCounts);
+            RollingColumnWindowVerifyElementwiseEquals(verifyArrowStringCountsColumn, counts);
             Assert.Throws<NotSupportedException>(() => arrowStrings.Rolling(2).Max());
             Assert.Throws<NotSupportedException>(() => arrowStrings.Rolling(2).Min());
+
+        }
+
+        [Fact]
+        public void TestRollingColumnWindowCountEdgeCases()
+        {
+            int?[] values = { null, null, 1, 2, null, 3, null, null, 5 };
+            PrimitiveDataFrameColumn<int> ints = new PrimitiveDataFrameColumn<int>("Ints", values);
+            PrimitiveDataFrameColumn<int> counts = ints.Rolling(2).Count();
+            int?[] verifyCount = { null, 0, 1, 2, 1, 1, 1, 0, 1 };
+            PrimitiveDataFrameColumn<int> verifyCountColumn = new PrimitiveDataFrameColumn<int>("Verify", verifyCount);
+            RollingColumnWindowVerifyElementwiseEquals(verifyCountColumn, counts);
+
+            string[] stringValues = { null, null, "1", "2", null, "3", null, null, "5" };
+            StringDataFrameColumn strings = new StringDataFrameColumn("Strings", stringValues);
+            counts = strings.Rolling(2).Count();
+            RollingColumnWindowVerifyElementwiseEquals(verifyCountColumn, counts);
+        }
+
+        [Fact]
+        public void TestRollingColumnWindowDoubleColumnType()
+        {
+            decimal?[] values = { null, null, 1, 2, null, 3, null, null, 5 };
+            PrimitiveDataFrameColumn<decimal> decimals = new PrimitiveDataFrameColumn<decimal>("Doubles", values);
+            PrimitiveDataFrameColumn<decimal> max = decimals.Rolling(2).Max();
+            decimal?[] verifyMax = { null, null, 1, 2, 2, 3, 3, null, 5 };
+            PrimitiveDataFrameColumn<decimal> verifyMaxColumn = new PrimitiveDataFrameColumn<decimal>("Verify", verifyMax);
+            RollingColumnWindowVerifyElementwiseEquals(verifyMaxColumn, max);
+
+            PrimitiveDataFrameColumn<decimal> min = decimals.Rolling(2).Min();
+            decimal?[] verifyMin = { null, null, 1, 1, 2, 3, 3, null, 5 };
+            PrimitiveDataFrameColumn<decimal> verifyMinColumn = new PrimitiveDataFrameColumn<decimal>("Verify", verifyMin);
+            RollingColumnWindowVerifyElementwiseEquals(verifyMinColumn, min);
 
         }
     }
