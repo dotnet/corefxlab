@@ -172,7 +172,7 @@ namespace Microsoft.Data.Analysis
         public new StringDataFrameColumn OrderBy()
         {
             PrimitiveDataFrameColumn<long> columnSortIndices = GetAscendingSortIndices();
-            return Clone(columnSortIndices, invertMapIndices: false, NullCount);
+            return Clone(columnSortIndices, false, NullCount);
         }
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()
