@@ -906,7 +906,7 @@ namespace Microsoft.Data.Analysis.Tests
             }
             Assert.Equal(5, strColumn.NullCount);
             // Should handle all nulls
-            StringDataFrameColumn sortedStrColumn = strColumn.OrderBy() as StringDataFrameColumn;
+            StringDataFrameColumn sortedStrColumn = strColumn.Sort() as StringDataFrameColumn;
             Assert.Equal(5, sortedStrColumn.NullCount);
             Assert.Null(sortedStrColumn[0]);
 
@@ -917,12 +917,12 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(5, strColumn.NullCount);
 
             // Ascending sort
-            sortedStrColumn = strColumn.OrderBy() as StringDataFrameColumn;
+            sortedStrColumn = strColumn.Sort() as StringDataFrameColumn;
             Assert.Equal("0", sortedStrColumn[0]);
             Assert.Null(sortedStrColumn[9]);
 
             // Descending sort
-            sortedStrColumn = strColumn.OrderByDescending() as StringDataFrameColumn;
+            sortedStrColumn = strColumn.Sort(false) as StringDataFrameColumn;
             Assert.Equal("4", sortedStrColumn[0]);
             Assert.Null(sortedStrColumn[9]);
         }
@@ -941,7 +941,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(numberOfNulls, intColumn.NullCount);
 
             // Should handle all nulls
-            PrimitiveDataFrameColumn<int> sortedIntColumn = intColumn.OrderBy() as PrimitiveDataFrameColumn<int>;
+            PrimitiveDataFrameColumn<int> sortedIntColumn = intColumn.Sort() as PrimitiveDataFrameColumn<int>;
             Assert.Equal(numberOfNulls, sortedIntColumn.NullCount);
             Assert.Null(sortedIntColumn[0]);
 
@@ -952,12 +952,12 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(numberOfNulls, intColumn.NullCount);
 
             // Ascending sort
-            sortedIntColumn = intColumn.OrderBy() as PrimitiveDataFrameColumn<int>;
+            sortedIntColumn = intColumn.Sort() as PrimitiveDataFrameColumn<int>;
             Assert.Equal(0, sortedIntColumn[0]);
             Assert.Null(sortedIntColumn[9]);
 
             // Descending sort
-            sortedIntColumn = intColumn.OrderByDescending() as PrimitiveDataFrameColumn<int>;
+            sortedIntColumn = intColumn.Sort(false) as PrimitiveDataFrameColumn<int>;
             Assert.Equal(4, sortedIntColumn[0]);
             Assert.Null(sortedIntColumn[9]);
         }

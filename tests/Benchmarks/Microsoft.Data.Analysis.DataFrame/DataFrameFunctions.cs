@@ -55,13 +55,7 @@ namespace Benchmarks.Microsoft.Data.Analysis
         [Benchmark]
         public DataFrameColumn ColumnSort()
         {
-            return _column.OrderBy();
-        }
-
-        [Benchmark]
-        public DataFrameColumn ColumnSortByDescending()
-        {
-            return _column.OrderByDescending();
+            return _column.Sort(false);
         }
 
         [Benchmark]
