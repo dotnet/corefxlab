@@ -59,9 +59,15 @@ namespace Benchmarks.Microsoft.Data.Analysis
         }
 
         [Benchmark]
-        public DataFrame Sort()
+        public DataFrame OrderBy()
         {
-            return _dataFrame.Sort("Int0", false);
+            return _dataFrame.OrderBy("Int0");
+        }
+
+        [Benchmark]
+        public DataFrame OrderByDescending()
+        {
+            return _dataFrame.OrderByDescending("Int0");
         }
 
         [Benchmark]
