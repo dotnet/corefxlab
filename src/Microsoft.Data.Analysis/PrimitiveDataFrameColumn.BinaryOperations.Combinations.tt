@@ -1,0 +1,46 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".ttinclude" #>
+<#@ include file="ColumnArithmeticTemplate.ttinclude" #>
+\<#+
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+// Generated from PrimitiveDataFrameColumn.BinaryOperations.Combinations.tt. Do not modify directly
+
+public class BinaryOperationCombinations
+{
+
+    public static List<List<string>> binaryOperationCombinations = new List<List<string>>
+    {
+<#foreach (TypeConfiguration type in typeConfiguration) {#>
+<#if(!type.SupportsNumeric || type.TypeName == "char") {#>
+<#continue;#>
+<#}#>
+<#foreach (TypeConfiguration type2 in typeConfiguration) {#>
+<#if (!type2.SupportsNumeric || type2.TypeName == "char") {#>
+<# continue;#>
+<#}#>
+<#
+/*
+        string third = "double";
+        if (type.TypeName == type2.TypeName)
+        {
+            third = type.TypeName;
+        }
+        if (type.TypeName == "decimal" || type2.TypeName == "decimal")
+        {
+            third = "decimal";
+        }
+        */
+#>
+        new List<string> {"<#=type.TypeName#>", "<#=type2.TypeName#>", "<#=GetBinaryOperationReturnType(type, type2)#>"},
+<#}#>
+<#}#>
+    };
+}
+\#>
