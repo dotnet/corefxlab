@@ -65,7 +65,8 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
     if (columnType == otherColumnType)
     {
 #>
-            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>Column(column, inPlace);
+            var result = (PrimitiveDataFrameColumn<<#=columnType#>>)<#=columnType#>Column.<#=methodName#>Column(column, inPlace);
+            return new <#=fullReturnType#>(result);
 <#
     }
     else
@@ -76,14 +77,16 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
         {
 #>
             <#=fullReturnType#> <#=returnType#>Column = <#=columnType#>Column.CloneAs<#=capitalizedReturnType#>Column();
-            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>Column(column, inPlace: true);
+            var result = (PrimitiveDataFrameColumn<<#=returnType#>>)<#=returnType#>Column.<#=methodName#>Column(column, inPlace: true);
+            return new <#=fullReturnType#>(result);
 <#
         }
         else
         {
 #>
             <#=fullReturnType#> other<#=returnType#>Column = column.CloneAs<#=capitalizedReturnType#>Column();
-            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>Column(other<#=returnType#>Column, inPlace);
+            var result = (PrimitiveDataFrameColumn<<#=returnType#>>)<#=returnType#>Column.<#=methodName#>Column(other<#=returnType#>Column, inPlace);
+            return new <#=fullReturnType#>(result);
 <#
         }
 #>
@@ -129,7 +132,8 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
     if (columnType == valueType)
     {
 #>
-            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>Value(value, inPlace);
+            var result = (PrimitiveDataFrameColumn<<#=columnType#>>)<#=columnType#>Column.<#=methodName#>Value(value, inPlace);
+            return new <#=fullReturnType#>(result);
 <#
     }
     else
@@ -140,14 +144,16 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
         {
 #>
             <#=fullReturnType#> <#=returnType#>Column = <#=columnType#>Column.CloneAs<#=capitalizedReturnType#>Column();
-            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>Value(value, inPlace: true);
+            var result = (PrimitiveDataFrameColumn<<#=returnType#>>)<#=returnType#>Column.<#=methodName#>Value(value, inPlace: true);
+            return new <#=fullReturnType#>(result);
 <#
         }
         else
         {
 #>
             <#=returnType#> convertedValue = (<#=returnType#>)value;
-            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>Value(convertedValue, inPlace);
+            var result = (PrimitiveDataFrameColumn<<#=returnType#>>)<#=returnType#>Column.<#=methodName#>Value(convertedValue, inPlace);
+            return new <#=fullReturnType#>(result);
 <#
         }
 #>
@@ -165,7 +171,8 @@ void GenerateAllBinaryBitwiseOperationsForMethod(string methodName)
 #>
         public static BoolDataFrameColumn <#=methodName#>(this BoolDataFrameColumn boolColumn, BoolDataFrameColumn column, bool inPlace = false)
         {
-            return (BoolDataFrameColumn)boolColumn.<#=methodName#>Column(column, inPlace);
+            var result = (PrimitiveDataFrameColumn<bool>)boolColumn.<#=methodName#>Column(column, inPlace);
+            return new BoolDataFrameColumn(result);
         }
 <#
 }
@@ -176,7 +183,8 @@ void GenerateAllBinaryScalarBitwiseOperationsForMethod(string methodName)
 #>
         public static BoolDataFrameColumn <#=methodName#>(this BoolDataFrameColumn boolColumn, bool value, bool inPlace = false)
         {
-            return (BoolDataFrameColumn)boolColumn.<#=methodName#>Value(value, inPlace);
+            var result = (PrimitiveDataFrameColumn<bool>)boolColumn.<#=methodName#>Value(value, inPlace);
+            return new BoolDataFrameColumn(result);
         }
 <#
 }
@@ -223,7 +231,8 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
 #>
         public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column)
         {
-            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>Column(column);
+            PrimitiveDataFrameColumn<bool> result = <#=columnType#>Column.<#=methodName#>Column(column);
+            return new <#=fullReturnType#>(result);
         }
 <# 
  }
@@ -244,7 +253,8 @@ void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
 #>
         public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=otherColumnType#> value)
         {
-            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>Value(value);
+            PrimitiveDataFrameColumn<bool> result = <#=columnType#>Column.<#=methodName#>Value(value);
+            return new <#=fullReturnType#>(result);
         }
 <# 
  }
@@ -282,7 +292,8 @@ void GenerateAllBinaryShiftCombinationsForMethod(string methodName)
 #>
         public static <#=fullReturnType#> <#=methodName#>(this <#=fullReturnType#> column, int value, bool inPlace = false)
         {
-            return (<#=fullReturnType#>)column.<#=methodName#>Value(value, inPlace);
+            var result = (PrimitiveDataFrameColumn<<#=returnType#>>)column.<#=methodName#>Value(value, inPlace);
+            return new <#=fullReturnType#>(result);
         }
 <#
     }
