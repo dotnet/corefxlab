@@ -53,6 +53,41 @@
         {"decimal", 7}
     };
 
+    public string GetCapitalizedPrimitiveTypes(string type)
+    {
+        string typeFirstCharUpper;
+        if (type.First() == 'u' || type == "sbyte")
+        {
+            typeFirstCharUpper = type[0].ToString().ToUpper() + type[1].ToString().ToUpper() + type.Substring(2);
+        }
+        else
+        {
+            typeFirstCharUpper = type[0].ToString().ToUpper() + type.Substring(1);
+        }
+        return typeFirstCharUpper;
+    }
+
+    public bool IsMixedSignedAndUnsignedTypePair(string t1, string t2)
+    {
+        if (t1 == "byte" && t2 == "sbyte")
+        {
+            return true;
+        }
+        if (t2 == "byte" && t1 == "sbyte")
+        {
+            return true;
+        }
+        if (("u" + t1) == t2)
+        {
+            return true;
+        }
+        if (("u" + t2) == t1)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public TypeConfiguration[] typeConfiguration = new []
     {
         new TypeConfiguration("bool", oneLiteral:"true", zeroLiteral:"false", supportsNumeric: false, unsupportedMethods: new[] {"LeftShift", "RightShift"}),

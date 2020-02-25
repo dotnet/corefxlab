@@ -1,0 +1,98 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="ColumnArithmeticTemplate.ttinclude"#>
+<#@ include file="PrimitiveDataFrameColumn.BinaryOperations.Combinations.ttinclude" #>
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+// Generated from DataFrameColumn.BinaryOperations.ExplodedColumns.tt. Do not modify directly
+
+using System;
+using System.Collections.Generic;
+
+namespace Microsoft.Data.Analysis
+{
+    public static class BinaryOperations
+    {
+<# 
+bool supportedInPlace(string type1, string type2)
+{
+    primitiveTypeToPrimitivityLevelMap.TryGetValue(type1, out int columnTypeLevel);
+    primitiveTypeToPrimitivityLevelMap.TryGetValue(type2, out int otherColumnTypeLevel);
+    if (columnTypeLevel < otherColumnTypeLevel)
+    {
+        return false;
+    }
+    return true;
+}
+void GenerateExplodedBinaryOperationsForMethod(string methodName)
+{
+
+}
+foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+{ 
+    string returnType = types[2];
+    string columnType = types[0];
+    string otherColumnType = types[1];
+
+    string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+    string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+    string fullOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType) + "DataFrameColumn";
+
+    string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+#>
+<#
+    if (supportedInPlace(columnType, otherColumnType))
+    {
+#>
+        public static <#=fullReturnType#> Add(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column, bool inPlace = false)
+<#
+    }
+    else
+    {
+#>
+        public static <#=fullReturnType#> Add(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column)
+<#
+    }
+#>
+        {
+<#
+    if (columnType == otherColumnType)
+    {
+#>
+            return (<#=fullReturnType#>)<#=columnType#>Column.Add(column, inPlace);
+<#
+    }
+    else
+    {
+        primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
+        primitiveTypeToPrimitivityLevelMap.TryGetValue(otherColumnType, out int otherColumnTypeLevel);
+        if (otherColumnTypeLevel > columnTypeLevel)
+        {
+#>
+            <#=fullReturnType#> <#=returnType#>Column = <#=columnType#>Column.CloneAs<#=capitalizedReturnType#>Column();
+            return (<#=fullReturnType#>)<#=returnType#>Column.Add(column);
+<#
+        }
+        else
+        {
+#>
+            <#=fullReturnType#> other<#=returnType#>Column = column.CloneAs<#=capitalizedReturnType#>Column();
+            return (<#=fullReturnType#>)<#=returnType#>Column.Add(other<#=returnType#>Column, inPlace);
+<#
+        }
+#>
+<#
+    }
+#>
+        }
+<# 
+} 
+#>
+    }
+}
