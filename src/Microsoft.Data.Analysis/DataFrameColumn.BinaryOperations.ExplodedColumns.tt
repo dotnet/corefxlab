@@ -30,11 +30,11 @@ bool supportedInPlace(string type1, string type2)
     }
     return true;
 }
-void GenerateExplodedBinaryOperationsForMethod(string methodName)
+#>
+<# 
+void GenerateAllBinaryCombinationsForMethod(string methodName)
 {
-
-}
-foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+ foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
 { 
     string returnType = types[2];
     string columnType = types[0];
@@ -50,13 +50,13 @@ foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombin
     if (supportedInPlace(columnType, otherColumnType))
     {
 #>
-        public static <#=fullReturnType#> Add(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column, bool inPlace = false)
+        public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column, bool inPlace = false)
 <#
     }
     else
     {
 #>
-        public static <#=fullReturnType#> Add(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column)
+        public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column)
 <#
     }
 #>
@@ -65,7 +65,7 @@ foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombin
     if (columnType == otherColumnType)
     {
 #>
-            return (<#=fullReturnType#>)<#=columnType#>Column.Add(column, inPlace);
+            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>(column, inPlace);
 <#
     }
     else
@@ -76,14 +76,14 @@ foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombin
         {
 #>
             <#=fullReturnType#> <#=returnType#>Column = <#=columnType#>Column.CloneAs<#=capitalizedReturnType#>Column();
-            return (<#=fullReturnType#>)<#=returnType#>Column.Add(column);
+            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>(column);
 <#
         }
         else
         {
 #>
             <#=fullReturnType#> other<#=returnType#>Column = column.CloneAs<#=capitalizedReturnType#>Column();
-            return (<#=fullReturnType#>)<#=returnType#>Column.Add(other<#=returnType#>Column, inPlace);
+            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>(other<#=returnType#>Column, inPlace);
 <#
         }
 #>
@@ -93,6 +93,180 @@ foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombin
         }
 <# 
 } 
+}
+#>
+<# 
+void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
+{
+ foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+{ 
+    string returnType = types[2];
+    string columnType = types[0];
+    string valueType = types[1];
+
+    string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+    string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+
+    string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+#>
+<#
+    if (supportedInPlace(columnType, valueType))
+    {
+#>
+        public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=valueType#> value, bool inPlace = false)
+<#
+    }
+    else
+    {
+#>
+        public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=valueType#> value)
+<#
+    }
+#>
+        {
+<#
+    if (columnType == valueType)
+    {
+#>
+            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>(value, inPlace);
+<#
+    }
+    else
+    {
+        primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
+        primitiveTypeToPrimitivityLevelMap.TryGetValue(valueType, out int valueTypeLevel);
+        if (valueTypeLevel > columnTypeLevel)
+        {
+#>
+            <#=fullReturnType#> <#=returnType#>Column = <#=columnType#>Column.CloneAs<#=capitalizedReturnType#>Column();
+            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>(value);
+<#
+        }
+        else
+        {
+#>
+            <#=returnType#> convertedValue = (<#=returnType#>)value;
+            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>(convertedValue, inPlace);
+<#
+        }
+#>
+<#
+    }
+#>
+        }
+<# 
+} 
+}
+#>
+<#
+foreach (MethodConfiguration method in methodConfiguration)
+{
+    if (method.MethodType == MethodType.Binary)
+    {
+        GenerateAllBinaryCombinationsForMethod(method.MethodName);
+    }
+    else if (method.MethodType == MethodType.BinaryScalar)
+    {
+        GenerateAllBinaryScalarCombinationsForMethod(method.MethodName);
+        GenerateAllBinaryScalarCombinationsForMethod("Reverse" + method.MethodName);
+    }
+}
+#>
+    }
+
+<# 
+void GenerateAllComparisonCombinationsForMethod(string methodName)
+{
+ foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ {
+    string returnType = types[2];
+    string columnType = types[0];
+    string otherColumnType = types[1];
+
+    string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+    string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+    string fullOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType) + "DataFrameColumn";
+
+    string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+
+#>
+    public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column)
+    {
+        return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>(column);
+    }
+<# 
+ }
+ }
+#>
+
+<# 
+void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
+{
+ foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ {
+    string returnType = types[2];
+    string columnType = types[0];
+    string otherColumnType = types[1];
+
+    string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+    string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+#>
+        public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=otherColumnType#> value)
+        {
+            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>(value);
+        }
+<# 
+ }
+}
+#>
+    public static class ComparisonOperations
+    {
+<#
+foreach (MethodConfiguration method in methodConfiguration)
+{
+    if (method.MethodType == MethodType.Comparison)
+    {
+        GenerateAllComparisonCombinationsForMethod(method.MethodName);
+    }
+    else if (method.MethodType == MethodType.ComparisonScalar)
+    {
+        GenerateAllComparisonScalarCombinationsForMethod(method.MethodName);
+    }
+}
+#>
+    }
+
+<#
+void GenerateAllBinaryShiftCombinationsForMethod(string methodName)
+{
+    foreach (var type in typeConfiguration)
+    {
+        if (!type.SupportsNumeric || !type.SupportsBitwise)
+        {
+            continue;
+        }
+        
+        string returnType = type.TypeName;
+        string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+#>
+        public static <#=fullReturnType#> <#=methodName#>(this <#=fullReturnType#> column, int value, bool inPlace = false)
+        {
+            return (<#=fullReturnType#>)column.<#=methodName#>(value, inPlace);
+        }
+<#
+    }
+}
+#>
+    public static class BinaryShiftOperations
+    {
+<#
+foreach (MethodConfiguration method in methodConfiguration)
+{
+    if (method.MethodType == MethodType.BinaryInt)
+    {
+        GenerateAllBinaryShiftCombinationsForMethod(method.MethodName);
+    }
+}
 #>
     }
 }
