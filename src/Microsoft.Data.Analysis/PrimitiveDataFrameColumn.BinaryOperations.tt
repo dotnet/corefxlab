@@ -23,15 +23,18 @@ namespace Microsoft.Data.Analysis
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) {#>
 <# if (method.MethodType == MethodType.Binary) {#>
-        internal DataFrameColumn <#=method.MethodName#>Column(DataFrameColumn column, bool inPlace = false)
+        public override DataFrameColumn <#=method.MethodName#>(DataFrameColumn column, bool inPlace = false)
 <# } else { #>
-        internal PrimitiveDataFrameColumn<bool> <#=method.MethodName#>Column(DataFrameColumn column)
+        public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(DataFrameColumn column)
 <# } #>
         {
             switch (column)
             {
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
-                case PrimitiveDataFrameColumn<<#=type.TypeName#>> <#=type.TypeName#>Column:
+<#
+                string capitalizedType = GetCapitalizedPrimitiveTypes(type.TypeName);
+#>
+                case <#=capitalizedType#>DataFrameColumn <#=type.TypeName#>Column:
 <# if (method.MethodType == MethodType.Binary) {#>
                     return <#=method.MethodName#>Implementation(column as PrimitiveDataFrameColumn<<#=type.TypeName#>>, inPlace);
 <# } else { #>
@@ -46,12 +49,12 @@ namespace Microsoft.Data.Analysis
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
 <# if (method.IsBitwise == true) { #>
-        internal PrimitiveDataFrameColumn<bool> <#=method.MethodName#>Value(bool value, bool inPlace = false)
+        public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(bool value, bool inPlace = false)
 <# } else { #>
-        internal DataFrameColumn <#=method.MethodName#>Value<U>(U value, bool inPlace = false)
+        public override DataFrameColumn <#=method.MethodName#><U>(U value, bool inPlace = false)
 <# } #>
 <# } else {#>
-        internal PrimitiveDataFrameColumn<bool> <#=method.MethodName#>Value<U>(U value)
+        public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#><U>(U value)
 <# } #>
         {
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
@@ -61,7 +64,7 @@ namespace Microsoft.Data.Analysis
             DataFrameColumn column = value as DataFrameColumn;
             if (column != null)
             {
-                return <#=method.MethodName#>Column(column, inPlace);
+                return <#=method.MethodName#>(column, inPlace);
             }
             return <#=method.MethodName#>Implementation(value, inPlace);
 <# } #>
@@ -69,14 +72,14 @@ namespace Microsoft.Data.Analysis
             DataFrameColumn column = value as DataFrameColumn;
             if (column != null)
             {
-                return <#=method.MethodName#>Column(column);
+                return <#=method.MethodName#>(column);
             }
             return <#=method.MethodName#>Implementation(value);
 <# } #>
         }
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
-        internal DataFrameColumn <#=method.MethodName#>Value(int value, bool inPlace = false)
+        public override DataFrameColumn <#=method.MethodName#>(int value, bool inPlace = false)
         {
             return <#=method.MethodName#>Implementation(value, inPlace);
         }
@@ -225,7 +228,7 @@ namespace Microsoft.Data.Analysis
                         return newColumn;
 <# } #>
                     }
-                    throw new NotSupportedException();
+                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
 <# } else { #>
 <# } #>
 <# } #>
@@ -273,7 +276,7 @@ namespace Microsoft.Data.Analysis
                         return newColumn;
 <# } #>
                     }
-                    throw new NotSupportedException();
+                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
                 default:
                     throw new NotSupportedException();
             }

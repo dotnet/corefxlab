@@ -15,7 +15,7 @@ namespace Microsoft.Data.Analysis
         where T : unmanaged
     {
 
-        public DataFrameColumn ReverseAddValue<U>(U value, bool inPlace = false)
+        public override DataFrameColumn ReverseAdd<U>(U value, bool inPlace = false)
         {
             switch (this)
             {
@@ -61,7 +61,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        public DataFrameColumn ReverseSubtractValue<U>(U value, bool inPlace = false)
+        public override DataFrameColumn ReverseSubtract<U>(U value, bool inPlace = false)
         {
             switch (this)
             {
@@ -107,7 +107,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        public DataFrameColumn ReverseMultiplyValue<U>(U value, bool inPlace = false)
+        public override DataFrameColumn ReverseMultiply<U>(U value, bool inPlace = false)
         {
             switch (this)
             {
@@ -153,7 +153,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        public DataFrameColumn ReverseDivideValue<U>(U value, bool inPlace = false)
+        public override DataFrameColumn ReverseDivide<U>(U value, bool inPlace = false)
         {
             switch (this)
             {
@@ -199,7 +199,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        public DataFrameColumn ReverseModuloValue<U>(U value, bool inPlace = false)
+        public override DataFrameColumn ReverseModulo<U>(U value, bool inPlace = false)
         {
             switch (this)
             {
@@ -245,7 +245,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        public PrimitiveDataFrameColumn<bool> ReverseAndValue(bool value, bool inPlace = false)
+        public override PrimitiveDataFrameColumn<bool> ReverseAnd(bool value, bool inPlace = false)
         {
             switch (this)
             {
@@ -258,7 +258,7 @@ namespace Microsoft.Data.Analysis
                     
             }
         }
-        public PrimitiveDataFrameColumn<bool> ReverseOrValue(bool value, bool inPlace = false)
+        public override PrimitiveDataFrameColumn<bool> ReverseOr(bool value, bool inPlace = false)
         {
             switch (this)
             {
@@ -271,7 +271,7 @@ namespace Microsoft.Data.Analysis
                     
             }
         }
-        public PrimitiveDataFrameColumn<bool> ReverseXorValue(bool value, bool inPlace = false)
+        public override PrimitiveDataFrameColumn<bool> ReverseXor(bool value, bool inPlace = false)
         {
             switch (this)
             {
