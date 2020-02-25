@@ -17,5 +17,7 @@ namespace Microsoft.Data.Analysis
         public IntDataFrameColumn(string name, long length = 0) : base(name, length) { }
 
         public IntDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
+
+        internal IntDataFrameColumn(PrimitiveDataFrameColumn<int> intColumn) : base(intColumn.Name, intColumn._columnContainer) { }
     }
 }

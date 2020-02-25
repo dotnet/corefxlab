@@ -18,5 +18,6 @@ namespace Microsoft.Data.Analysis
 
         public FloatDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
+        internal FloatDataFrameColumn(PrimitiveDataFrameColumn<float> floatColumn) : base(floatColumn.Name, floatColumn._columnContainer) { }
     }
 }

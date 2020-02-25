@@ -18,5 +18,6 @@ namespace Microsoft.Data.Analysis
 
         public DecimalDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
+        internal DecimalDataFrameColumn(PrimitiveDataFrameColumn<decimal> decimalColumn) : base(decimalColumn.Name, decimalColumn._columnContainer) { }
     }
 }

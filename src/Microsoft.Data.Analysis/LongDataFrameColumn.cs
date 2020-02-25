@@ -18,5 +18,6 @@ namespace Microsoft.Data.Analysis
 
         public LongDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
+        internal LongDataFrameColumn(PrimitiveDataFrameColumn<long> longColumn) : base(longColumn.Name, longColumn._columnContainer) { }
     }
 }

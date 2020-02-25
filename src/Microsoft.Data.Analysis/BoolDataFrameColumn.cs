@@ -18,6 +18,7 @@ namespace Microsoft.Data.Analysis
 
         public BoolDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
+        internal BoolDataFrameColumn(PrimitiveDataFrameColumn<bool> boolColumn) : base(boolColumn.Name, boolColumn._columnContainer) { }
 
     }
 }
