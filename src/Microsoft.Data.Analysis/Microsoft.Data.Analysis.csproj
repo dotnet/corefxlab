@@ -138,6 +138,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataFrameColumn.BinaryOperations.tt</DependentUpon>
     </Compile>
+    <Compile Update="DataFrameColumn.BinaryOperations.ExplodedColumns.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataFrameColumn.BinaryOperations.ExplodedColumns.tt</DependentUpon>
+    </Compile>
     <Compile Update="DataFrameColumn.BinaryOperators.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
