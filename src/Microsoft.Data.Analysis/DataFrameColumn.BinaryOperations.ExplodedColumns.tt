@@ -65,7 +65,7 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
     if (columnType == otherColumnType)
     {
 #>
-            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>(column, inPlace);
+            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>Column(column, inPlace);
 <#
     }
     else
@@ -76,14 +76,14 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
         {
 #>
             <#=fullReturnType#> <#=returnType#>Column = <#=columnType#>Column.CloneAs<#=capitalizedReturnType#>Column();
-            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>(column, inPlace: true);
+            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>Column(column, inPlace: true);
 <#
         }
         else
         {
 #>
             <#=fullReturnType#> other<#=returnType#>Column = column.CloneAs<#=capitalizedReturnType#>Column();
-            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>(other<#=returnType#>Column, inPlace);
+            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>Column(other<#=returnType#>Column, inPlace);
 <#
         }
 #>
@@ -129,7 +129,7 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
     if (columnType == valueType)
     {
 #>
-            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>(value, inPlace);
+            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>Value(value, inPlace);
 <#
     }
     else
@@ -140,14 +140,14 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
         {
 #>
             <#=fullReturnType#> <#=returnType#>Column = <#=columnType#>Column.CloneAs<#=capitalizedReturnType#>Column();
-            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>(value, inPlace: true);
+            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>Value(value, inPlace: true);
 <#
         }
         else
         {
 #>
             <#=returnType#> convertedValue = (<#=returnType#>)value;
-            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>(convertedValue, inPlace);
+            return (<#=fullReturnType#>)<#=returnType#>Column.<#=methodName#>Value(convertedValue, inPlace);
 <#
         }
 #>
@@ -165,7 +165,7 @@ void GenerateAllBinaryBitwiseOperationsForMethod(string methodName)
 #>
         public static BoolDataFrameColumn <#=methodName#>(this BoolDataFrameColumn boolColumn, BoolDataFrameColumn column, bool inPlace = false)
         {
-            return (BoolDataFrameColumn)boolColumn.<#=methodName#>(column, inPlace);
+            return (BoolDataFrameColumn)boolColumn.<#=methodName#>Column(column, inPlace);
         }
 <#
 }
@@ -176,7 +176,7 @@ void GenerateAllBinaryScalarBitwiseOperationsForMethod(string methodName)
 #>
         public static BoolDataFrameColumn <#=methodName#>(this BoolDataFrameColumn boolColumn, bool value, bool inPlace = false)
         {
-            return (BoolDataFrameColumn)boolColumn.<#=methodName#>(value, inPlace);
+            return (BoolDataFrameColumn)boolColumn.<#=methodName#>Value(value, inPlace);
         }
 <#
 }
@@ -223,7 +223,7 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
 #>
         public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=fullOtherColumnType#> column)
         {
-            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>(column);
+            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>Column(column);
         }
 <# 
  }
@@ -244,7 +244,7 @@ void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
 #>
         public static <#=fullReturnType#> <#=methodName#>(this <#=fullColumnType#> <#=columnType#>Column, <#=otherColumnType#> value)
         {
-            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>(value);
+            return (<#=fullReturnType#>)<#=columnType#>Column.<#=methodName#>Value(value);
         }
 <# 
  }
@@ -282,7 +282,7 @@ void GenerateAllBinaryShiftCombinationsForMethod(string methodName)
 #>
         public static <#=fullReturnType#> <#=methodName#>(this <#=fullReturnType#> column, int value, bool inPlace = false)
         {
-            return (<#=fullReturnType#>)column.<#=methodName#>(value, inPlace);
+            return (<#=fullReturnType#>)column.<#=methodName#>Value(value, inPlace);
         }
 <#
     }

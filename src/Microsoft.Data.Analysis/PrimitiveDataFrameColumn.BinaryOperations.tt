@@ -23,9 +23,9 @@ namespace Microsoft.Data.Analysis
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
 <# if (method.MethodType == MethodType.Binary || method.MethodType == MethodType.Comparison) {#>
 <# if (method.MethodType == MethodType.Binary) {#>
-        public override DataFrameColumn <#=method.MethodName#>(DataFrameColumn column, bool inPlace = false)
+        internal DataFrameColumn <#=method.MethodName#>Column(DataFrameColumn column, bool inPlace = false)
 <# } else { #>
-        public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(DataFrameColumn column)
+        internal PrimitiveDataFrameColumn<bool> <#=method.MethodName#>Column(DataFrameColumn column)
 <# } #>
         {
             switch (column)
@@ -46,12 +46,12 @@ namespace Microsoft.Data.Analysis
 <# if (method.MethodType == MethodType.BinaryScalar || method.MethodType == MethodType.ComparisonScalar) {#>
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
 <# if (method.IsBitwise == true) { #>
-        public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(bool value, bool inPlace = false)
+        internal PrimitiveDataFrameColumn<bool> <#=method.MethodName#>Value(bool value, bool inPlace = false)
 <# } else { #>
-        public override DataFrameColumn <#=method.MethodName#><U>(U value, bool inPlace = false)
+        internal DataFrameColumn <#=method.MethodName#>Value<U>(U value, bool inPlace = false)
 <# } #>
 <# } else {#>
-        public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#><U>(U value)
+        internal PrimitiveDataFrameColumn<bool> <#=method.MethodName#>Value<U>(U value)
 <# } #>
         {
 <# if (method.MethodType == MethodType.BinaryScalar) {#>
@@ -61,7 +61,7 @@ namespace Microsoft.Data.Analysis
             DataFrameColumn column = value as DataFrameColumn;
             if (column != null)
             {
-                return <#=method.MethodName#>(column, inPlace);
+                return <#=method.MethodName#>Column(column, inPlace);
             }
             return <#=method.MethodName#>Implementation(value, inPlace);
 <# } #>
@@ -69,14 +69,14 @@ namespace Microsoft.Data.Analysis
             DataFrameColumn column = value as DataFrameColumn;
             if (column != null)
             {
-                return <#=method.MethodName#>(column);
+                return <#=method.MethodName#>Column(column);
             }
             return <#=method.MethodName#>Implementation(value);
 <# } #>
         }
 <# } #>
 <# if (method.MethodType == MethodType.BinaryInt ) {#>
-        public override DataFrameColumn <#=method.MethodName#>(int value, bool inPlace = false)
+        internal DataFrameColumn <#=method.MethodName#>Value(int value, bool inPlace = false)
         {
             return <#=method.MethodName#>Implementation(value, inPlace);
         }
