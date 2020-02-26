@@ -19,5 +19,7 @@ namespace Microsoft.Data.Analysis
         public ByteDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
         internal ByteDataFrameColumn(PrimitiveDataFrameColumn<byte> byteColumn) : base(byteColumn.Name, byteColumn._columnContainer) { }
+
+        internal ByteDataFrameColumn(string name, PrimitiveColumnContainer<byte> values) : base(name, values) { }
     }
 }

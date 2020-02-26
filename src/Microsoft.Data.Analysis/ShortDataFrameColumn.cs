@@ -19,5 +19,7 @@ namespace Microsoft.Data.Analysis
         public ShortDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
         internal ShortDataFrameColumn(PrimitiveDataFrameColumn<short> shortColumn) : base(shortColumn.Name, shortColumn._columnContainer) { }
+
+        internal ShortDataFrameColumn(string name, PrimitiveColumnContainer<short> values) : base(name, values) { }
     }
 }

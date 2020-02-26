@@ -36,10 +36,6 @@ namespace Microsoft.Data.Analysis
         {
             return (PrimitiveDataFrameColumn<long>)left.Add(right);
         }
-        public static PrimitiveDataFrameColumn<byte> Add(PrimitiveDataFrameColumn<byte> left, PrimitiveDataFrameColumn<sbyte> right)
-        {
-            return (PrimitiveDataFrameColumn<byte>)left.Add(right);
-        }
         public static PrimitiveDataFrameColumn<short> Add(PrimitiveDataFrameColumn<byte> left, PrimitiveDataFrameColumn<short> right)
         {
             return (PrimitiveDataFrameColumn<short>)left.Add(right);
@@ -220,10 +216,6 @@ namespace Microsoft.Data.Analysis
         {
             return (PrimitiveDataFrameColumn<int>)left.Add(right);
         }
-        public static PrimitiveDataFrameColumn<int> Add(PrimitiveDataFrameColumn<int> left, PrimitiveDataFrameColumn<uint> right)
-        {
-            return (PrimitiveDataFrameColumn<int>)left.Add(right);
-        }
         public static PrimitiveDataFrameColumn<ulong> Add(PrimitiveDataFrameColumn<int> left, PrimitiveDataFrameColumn<ulong> right)
         {
             return (PrimitiveDataFrameColumn<ulong>)left.Add(right);
@@ -268,17 +260,9 @@ namespace Microsoft.Data.Analysis
         {
             return (PrimitiveDataFrameColumn<long>)left.Add(right);
         }
-        public static PrimitiveDataFrameColumn<long> Add(PrimitiveDataFrameColumn<long> left, PrimitiveDataFrameColumn<ulong> right)
-        {
-            return (PrimitiveDataFrameColumn<long>)left.Add(right);
-        }
         public static PrimitiveDataFrameColumn<long> Add(PrimitiveDataFrameColumn<long> left, PrimitiveDataFrameColumn<ushort> right)
         {
             return (PrimitiveDataFrameColumn<long>)left.Add(right);
-        }
-        public static PrimitiveDataFrameColumn<sbyte> Add(PrimitiveDataFrameColumn<sbyte> left, PrimitiveDataFrameColumn<byte> right)
-        {
-            return (PrimitiveDataFrameColumn<sbyte>)left.Add(right);
         }
         public static PrimitiveDataFrameColumn<decimal> Add(PrimitiveDataFrameColumn<sbyte> left, PrimitiveDataFrameColumn<decimal> right)
         {
@@ -360,10 +344,6 @@ namespace Microsoft.Data.Analysis
         {
             return (PrimitiveDataFrameColumn<ulong>)left.Add(right);
         }
-        public static PrimitiveDataFrameColumn<short> Add(PrimitiveDataFrameColumn<short> left, PrimitiveDataFrameColumn<ushort> right)
-        {
-            return (PrimitiveDataFrameColumn<short>)left.Add(right);
-        }
         public static PrimitiveDataFrameColumn<uint> Add(PrimitiveDataFrameColumn<uint> left, PrimitiveDataFrameColumn<byte> right)
         {
             return (PrimitiveDataFrameColumn<uint>)left.Add(right);
@@ -379,10 +359,6 @@ namespace Microsoft.Data.Analysis
         public static PrimitiveDataFrameColumn<float> Add(PrimitiveDataFrameColumn<uint> left, PrimitiveDataFrameColumn<float> right)
         {
             return (PrimitiveDataFrameColumn<float>)left.Add(right);
-        }
-        public static PrimitiveDataFrameColumn<uint> Add(PrimitiveDataFrameColumn<uint> left, PrimitiveDataFrameColumn<int> right)
-        {
-            return (PrimitiveDataFrameColumn<uint>)left.Add(right);
         }
         public static PrimitiveDataFrameColumn<long> Add(PrimitiveDataFrameColumn<uint> left, PrimitiveDataFrameColumn<long> right)
         {
@@ -425,10 +401,6 @@ namespace Microsoft.Data.Analysis
             return (PrimitiveDataFrameColumn<float>)left.Add(right);
         }
         public static PrimitiveDataFrameColumn<ulong> Add(PrimitiveDataFrameColumn<ulong> left, PrimitiveDataFrameColumn<int> right)
-        {
-            return (PrimitiveDataFrameColumn<ulong>)left.Add(right);
-        }
-        public static PrimitiveDataFrameColumn<ulong> Add(PrimitiveDataFrameColumn<ulong> left, PrimitiveDataFrameColumn<long> right)
         {
             return (PrimitiveDataFrameColumn<ulong>)left.Add(right);
         }
@@ -477,10 +449,6 @@ namespace Microsoft.Data.Analysis
             return (PrimitiveDataFrameColumn<long>)left.Add(right);
         }
         public static PrimitiveDataFrameColumn<ushort> Add(PrimitiveDataFrameColumn<ushort> left, PrimitiveDataFrameColumn<sbyte> right)
-        {
-            return (PrimitiveDataFrameColumn<ushort>)left.Add(right);
-        }
-        public static PrimitiveDataFrameColumn<ushort> Add(PrimitiveDataFrameColumn<ushort> left, PrimitiveDataFrameColumn<short> right)
         {
             return (PrimitiveDataFrameColumn<ushort>)left.Add(right);
         }

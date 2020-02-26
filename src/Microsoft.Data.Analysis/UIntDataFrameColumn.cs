@@ -19,5 +19,7 @@ namespace Microsoft.Data.Analysis
         public UIntDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
         internal UIntDataFrameColumn(PrimitiveDataFrameColumn<uint> uintColumn) : base(uintColumn.Name, uintColumn._columnContainer) { }
+
+        internal UIntDataFrameColumn(string name, PrimitiveColumnContainer<uint> values) : base(name, values) { }
     }
 }

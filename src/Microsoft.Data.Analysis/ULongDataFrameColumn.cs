@@ -19,5 +19,7 @@ namespace Microsoft.Data.Analysis
         public ULongDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
         internal ULongDataFrameColumn(PrimitiveDataFrameColumn<ulong> ulongColumn) : base(ulongColumn.Name, ulongColumn._columnContainer) { }
+
+        internal ULongDataFrameColumn(string name, PrimitiveColumnContainer<ulong> values) : base(name, values) { }
     }
 }

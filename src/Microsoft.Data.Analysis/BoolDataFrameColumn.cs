@@ -20,5 +20,6 @@ namespace Microsoft.Data.Analysis
 
         internal BoolDataFrameColumn(PrimitiveDataFrameColumn<bool> boolColumn) : base(boolColumn.Name, boolColumn._columnContainer) { }
 
+        internal BoolDataFrameColumn(string name, PrimitiveColumnContainer<bool> values) : base(name, values) { }
     }
 }
