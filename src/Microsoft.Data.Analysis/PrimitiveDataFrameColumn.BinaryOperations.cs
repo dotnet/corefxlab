@@ -16,33 +16,33 @@ namespace Microsoft.Data.Analysis
     {
         public override DataFrameColumn Add(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return AddImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return AddImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return AddImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return AddImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return AddImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return AddImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return AddImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return AddImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return AddImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return AddImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return AddImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return AddImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return AddImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -59,33 +59,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Subtract(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -102,33 +102,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Multiply(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -145,33 +145,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Divide(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -188,33 +188,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Modulo(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -231,33 +231,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn And(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return AndImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return AndImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return AndImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return AndImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return AndImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return AndImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return AndImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return AndImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return AndImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return AndImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return AndImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return AndImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return AndImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -269,33 +269,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Or(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return OrImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return OrImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return OrImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return OrImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return OrImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return OrImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return OrImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return OrImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return OrImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return OrImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return OrImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return OrImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return OrImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -307,33 +307,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Xor(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return XorImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return XorImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return XorImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return XorImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return XorImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return XorImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return XorImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return XorImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return XorImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return XorImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return XorImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return XorImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return XorImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -353,33 +353,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<char>);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<double>);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<float>);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<int>);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<long>);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<short>);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -396,33 +396,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<char>);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<double>);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<float>);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<int>);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<long>);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<short>);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -439,33 +439,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqual(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<char>);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<double>);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<float>);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<int>);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<long>);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<short>);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -482,33 +482,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqual(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<char>);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<double>);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<float>);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<int>);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<long>);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<short>);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -525,33 +525,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThan(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<char>);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<double>);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<float>);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<int>);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<long>);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<short>);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -568,33 +568,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThan(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case BoolDataFrameColumn boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case ByteDataFrameColumn byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case CharDataFrameColumn charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<char>);
-                case DecimalDataFrameColumn decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case DoubleDataFrameColumn doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<double>);
-                case FloatDataFrameColumn floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<float>);
-                case IntDataFrameColumn intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<int>);
-                case LongDataFrameColumn longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<long>);
-                case SByteDataFrameColumn sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case ShortDataFrameColumn shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<short>);
-                case UIntDataFrameColumn uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case ULongDataFrameColumn ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case UShortDataFrameColumn ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -634,7 +634,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Add(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Add(column.CloneAsDecimalColumn()._columnContainer);
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -658,7 +667,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Add(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Add((column as PrimitiveDataFrameColumn<decimal>)._columnContainer);
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Add(column.CloneAsDoubleColumn()._columnContainer);
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -682,7 +709,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Add(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Add(DecimalConverter<U>.Instance.GetDecimal(value));
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -706,7 +742,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Add(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Add(DecimalConverter<U>.Instance.GetDecimal(value));
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Add(DoubleConverter<U>.Instance.GetDouble(value));
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -735,7 +789,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Subtract(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Subtract(column.CloneAsDecimalColumn()._columnContainer);
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -759,7 +822,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Subtract(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Subtract((column as PrimitiveDataFrameColumn<decimal>)._columnContainer);
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Subtract(column.CloneAsDoubleColumn()._columnContainer);
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -783,7 +864,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Subtract(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Subtract(DecimalConverter<U>.Instance.GetDecimal(value));
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -807,7 +897,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Subtract(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Subtract(DecimalConverter<U>.Instance.GetDecimal(value));
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Subtract(DoubleConverter<U>.Instance.GetDouble(value));
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -836,7 +944,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Multiply(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Multiply(column.CloneAsDecimalColumn()._columnContainer);
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -860,7 +977,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Multiply(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Multiply((column as PrimitiveDataFrameColumn<decimal>)._columnContainer);
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Multiply(column.CloneAsDoubleColumn()._columnContainer);
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -884,7 +1019,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Multiply(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Multiply(DecimalConverter<U>.Instance.GetDecimal(value));
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -908,7 +1052,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Multiply(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Multiply(DecimalConverter<U>.Instance.GetDecimal(value));
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Multiply(DoubleConverter<U>.Instance.GetDouble(value));
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -937,7 +1099,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Divide(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Divide(column.CloneAsDecimalColumn()._columnContainer);
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -961,7 +1132,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Divide(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Divide((column as PrimitiveDataFrameColumn<decimal>)._columnContainer);
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Divide(column.CloneAsDoubleColumn()._columnContainer);
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -985,7 +1174,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Divide(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Divide(DecimalConverter<U>.Instance.GetDecimal(value));
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1009,7 +1207,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Divide(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Divide(DecimalConverter<U>.Instance.GetDecimal(value));
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Divide(DoubleConverter<U>.Instance.GetDouble(value));
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1038,7 +1254,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Modulo(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Modulo(column.CloneAsDecimalColumn()._columnContainer);
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1062,7 +1287,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Modulo(column._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedColumnValueType, typeof(T)), nameof(column));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Modulo((column as PrimitiveDataFrameColumn<decimal>)._columnContainer);
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Modulo(column.CloneAsDoubleColumn()._columnContainer);
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1086,7 +1329,16 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Modulo(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.Modulo(DecimalConverter<U>.Instance.GetDecimal(value));
+                        return decimalColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1110,7 +1362,25 @@ namespace Microsoft.Data.Analysis
                         newColumn._columnContainer.Modulo(Unsafe.As<U, T>(ref value));
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (inPlace)
+                        {
+                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(T)), nameof(value));
+                        }
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.Modulo(DecimalConverter<U>.Instance.GetDecimal(value));
+                            return decimalColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.Modulo(DoubleConverter<U>.Instance.GetDouble(value));
+                            return doubleColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1456,7 +1726,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseEquals(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1480,7 +1756,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseEquals((column as PrimitiveDataFrameColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseEquals(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1510,7 +1802,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1534,7 +1832,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseEquals(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1569,7 +1883,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseNotEquals(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1593,7 +1913,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseNotEquals((column as PrimitiveDataFrameColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseNotEquals(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1623,7 +1959,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseNotEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseNotEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1647,7 +1989,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseNotEquals(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseNotEquals(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseNotEquals(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1676,7 +2034,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseGreaterThanOrEqual(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1700,7 +2064,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseGreaterThanOrEqual((column as PrimitiveDataFrameColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseGreaterThanOrEqual(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1724,7 +2104,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseGreaterThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1748,7 +2134,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseGreaterThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseGreaterThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseGreaterThanOrEqual(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1777,7 +2179,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseLessThanOrEqual(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1801,7 +2209,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseLessThanOrEqual((column as PrimitiveDataFrameColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseLessThanOrEqual(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1825,7 +2249,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseLessThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1849,7 +2279,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseLessThanOrEqual(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseLessThanOrEqual(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseLessThanOrEqual(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1878,7 +2324,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseGreaterThan(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1902,7 +2354,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseGreaterThan((column as PrimitiveDataFrameColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseGreaterThan(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1926,7 +2394,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseGreaterThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseGreaterThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -1950,7 +2424,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseGreaterThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseGreaterThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseGreaterThan(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -1979,7 +2469,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseLessThan(column.CloneAsDecimalColumn()._columnContainer, newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -2003,7 +2499,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseLessThan((column as PrimitiveDataFrameColumn<decimal>)._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseLessThan(column.CloneAsDoubleColumn()._columnContainer, newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -2027,7 +2539,13 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseLessThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                        PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                        decimalColumn._columnContainer.ElementwiseLessThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                        return newColumn;
+                    }
                 case Type byteType when byteType == typeof(byte):
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
@@ -2051,7 +2569,23 @@ namespace Microsoft.Data.Analysis
                         primitiveColumn._columnContainer.ElementwiseLessThan(Unsafe.As<U, T>(ref value), newColumn._columnContainer);
                         return newColumn;
                     }
-                    throw new ArgumentException(string.Format(Strings.MismatchedValueType, typeof(U)));
+                    else 
+                    {
+                        if (typeof(U) == typeof(decimal))
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<decimal> decimalColumn = CloneAsDecimalColumn();
+                            decimalColumn._columnContainer.ElementwiseLessThan(DecimalConverter<U>.Instance.GetDecimal(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                        else
+                        {
+                            PrimitiveDataFrameColumn<bool> newColumn = CloneAsBoolColumn();
+                            PrimitiveDataFrameColumn<double> doubleColumn = CloneAsDoubleColumn();
+                            doubleColumn._columnContainer.ElementwiseLessThan(DoubleConverter<U>.Instance.GetDouble(value), newColumn._columnContainer);
+                            return newColumn;
+                        }
+                    }
                 default:
                     throw new NotSupportedException();
             }

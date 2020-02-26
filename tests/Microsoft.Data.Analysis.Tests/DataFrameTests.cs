@@ -941,7 +941,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(numberOfNulls, intColumn.NullCount);
 
             // Should handle all nulls
-            IntDataFrameColumn sortedIntColumn = intColumn.Sort() as IntDataFrameColumn;
+            PrimitiveDataFrameColumn<int> sortedIntColumn = intColumn.Sort();
             Assert.Equal(numberOfNulls, sortedIntColumn.NullCount);
             Assert.Null(sortedIntColumn[0]);
 
@@ -952,12 +952,12 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(numberOfNulls, intColumn.NullCount);
 
             // Ascending sort
-            sortedIntColumn = intColumn.Sort() as IntDataFrameColumn;
+            sortedIntColumn = intColumn.Sort();
             Assert.Equal(0, sortedIntColumn[0]);
             Assert.Null(sortedIntColumn[9]);
 
             // Descending sort
-            sortedIntColumn = intColumn.Sort(false) as IntDataFrameColumn;
+            sortedIntColumn = intColumn.Sort(ascending: false);
             Assert.Equal(4, sortedIntColumn[0]);
             Assert.Null(sortedIntColumn[9]);
         }
@@ -2175,8 +2175,6 @@ namespace Microsoft.Data.Analysis.Tests
             AssertLengthTypeAndValues(ulongColumn, typeof(ulong));
             DataFrameColumn ushortColumn = DataFrameColumn.Create("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
             AssertLengthTypeAndValues(ushortColumn, typeof(ushort));
-            DataFrameColumn charColumn = DataFrameColumn.Create("Char", Enumerable.Range(0, length).Select(x => (char)(x + 65)));
-            AssertLengthTypeAndValues(charColumn, typeof(char));
         }
 
         [Fact]
