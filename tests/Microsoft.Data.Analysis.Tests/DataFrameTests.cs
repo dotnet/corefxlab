@@ -2182,7 +2182,7 @@ namespace Microsoft.Data.Analysis.Tests
         {
             int[] values = { 1, 2, 3, 4, 5 };
             IntDataFrameColumn ints = new IntDataFrameColumn("Ints", values);
-
+            IntDataFrameColumn add = ints.Add(1);
         }
     }
 }

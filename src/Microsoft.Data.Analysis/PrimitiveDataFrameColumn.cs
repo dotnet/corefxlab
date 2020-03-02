@@ -435,6 +435,18 @@ namespace Microsoft.Data.Analysis
             return new PrimitiveDataFrameColumn<bool>(Name, newColumnContainer);
         }
 
+        internal ByteDataFrameColumn CloneAsByteColumn()
+        {
+            PrimitiveColumnContainer<byte> newColumnContainer = _columnContainer.CloneAsByteContainer();
+            return new ByteDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal SByteDataFrameColumn CloneAsSByteColumn()
+        {
+            PrimitiveColumnContainer<sbyte> newColumnContainer = _columnContainer.CloneAsSByteContainer();
+            return new SByteDataFrameColumn(Name, newColumnContainer);
+        }
+
         internal DoubleDataFrameColumn CloneAsDoubleColumn()
         {
             PrimitiveColumnContainer<double> newColumnContainer = _columnContainer.CloneAsDoubleContainer();

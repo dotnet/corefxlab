@@ -10,6 +10,82 @@ using System.Collections.Generic;
 
 namespace Microsoft.Data.Analysis
 {
+    internal interface IByteConverter<T>
+    {
+        byte GetByte(T value);
+    }
+    internal static class ByteConverter<T>
+    {
+        public static IByteConverter<T> Instance { get; } = ByteConverter.GetByteConverter<T>();
+    }
+    internal static class ByteConverter
+    {
+        public static IByteConverter<T> GetByteConverter<T>()
+        {
+            if (typeof(T) == typeof(byte))
+            {
+                return (IByteConverter<T>)new ByteByteConverter();
+            }
+            if (typeof(T) == typeof(sbyte))
+            {
+                return (IByteConverter<T>)new SByteByteConverter();
+            }
+            throw new NotSupportedException();
+        
+        }
+    }
+    internal class ByteByteConverter : IByteConverter<byte>
+    {
+        public byte GetByte(byte value)
+        {
+            return (byte)value;
+        }
+    }
+    internal class SByteByteConverter : IByteConverter<sbyte>
+    {
+        public byte GetByte(sbyte value)
+        {
+            return (byte)value;
+        }
+    }
+    internal interface ISByteConverter<T>
+    {
+        sbyte GetSByte(T value);
+    }
+    internal static class SByteConverter<T>
+    {
+        public static ISByteConverter<T> Instance { get; } = SByteConverter.GetSByteConverter<T>();
+    }
+    internal static class SByteConverter
+    {
+        public static ISByteConverter<T> GetSByteConverter<T>()
+        {
+            if (typeof(T) == typeof(byte))
+            {
+                return (ISByteConverter<T>)new ByteSByteConverter();
+            }
+            if (typeof(T) == typeof(sbyte))
+            {
+                return (ISByteConverter<T>)new SByteSByteConverter();
+            }
+            throw new NotSupportedException();
+        
+        }
+    }
+    internal class ByteSByteConverter : ISByteConverter<byte>
+    {
+        public sbyte GetSByte(byte value)
+        {
+            return (sbyte)value;
+        }
+    }
+    internal class SByteSByteConverter : ISByteConverter<sbyte>
+    {
+        public sbyte GetSByte(sbyte value)
+        {
+            return (sbyte)value;
+        }
+    }
     internal interface IShortConverter<T>
     {
         short GetShort(T value);

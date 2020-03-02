@@ -21,10 +21,5 @@ namespace Microsoft.Data.Analysis
         internal IntDataFrameColumn(PrimitiveDataFrameColumn<int> intColumn) : base(intColumn.Name, intColumn._columnContainer) { }
 
         internal IntDataFrameColumn(string name, PrimitiveColumnContainer<int> values) : base(name, values) { }
-        public IntDataFrameColumn Add(IntDataFrameColumn column, bool inPlace = false)
-        {
-            var result = (PrimitiveDataFrameColumn<int>)intColumn.Add(column, inPlace);
-            return new IntDataFrameColumn(result);
-        }
     }
 }

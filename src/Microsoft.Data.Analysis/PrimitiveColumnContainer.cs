@@ -617,6 +617,46 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
+        internal PrimitiveColumnContainer<byte> CloneAsByteContainer()
+        {
+            var ret = new PrimitiveColumnContainer<byte>();
+            foreach (ReadOnlyDataFrameBuffer<T> buffer in Buffers)
+            {
+                ret.Length += buffer.Length;
+                DataFrameBuffer<byte> newBuffer = new DataFrameBuffer<byte>();
+                ret.Buffers.Add(newBuffer);
+                newBuffer.EnsureCapacity(buffer.Length);
+                ReadOnlySpan<T> span = buffer.ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    newBuffer.Append(ByteConverter<T>.Instance.GetByte(span[i]));
+                }
+            }
+            ret.NullBitMapBuffers = CloneNullBitMapBuffers();
+            ret.NullCount = NullCount;
+            return ret;
+        }
+
+        internal PrimitiveColumnContainer<sbyte> CloneAsSByteContainer()
+        {
+            var ret = new PrimitiveColumnContainer<sbyte>();
+            foreach (ReadOnlyDataFrameBuffer<T> buffer in Buffers)
+            {
+                ret.Length += buffer.Length;
+                DataFrameBuffer<sbyte> newBuffer = new DataFrameBuffer<sbyte>();
+                ret.Buffers.Add(newBuffer);
+                newBuffer.EnsureCapacity(buffer.Length);
+                ReadOnlySpan<T> span = buffer.ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    newBuffer.Append(SByteConverter<T>.Instance.GetSByte(span[i]));
+                }
+            }
+            ret.NullBitMapBuffers = CloneNullBitMapBuffers();
+            ret.NullCount = NullCount;
+            return ret;
+        }
+
         internal PrimitiveColumnContainer<double> CloneAsDoubleContainer()
         {
             var ret = new PrimitiveColumnContainer<double>();
