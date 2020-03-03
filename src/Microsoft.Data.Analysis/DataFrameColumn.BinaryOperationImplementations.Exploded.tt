@@ -131,6 +131,77 @@ void GenerateAllBinaryScalarCombinationsForMethod(string inputMethodName)
 } 
 }
 #>
+<# 
+void GenerateAllComparisonCombinationsForMethod(string inputMethodName)
+{
+ foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ {
+    string returnType = types[2];
+    string columnType = types[0];
+    string otherColumnType = types[1];
+    if (columnType != otherColumnType)
+    {
+        continue;
+    }
+    Debug.Assert(returnType == otherColumnType);
+
+    string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+    string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+    string fullOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType) + "DataFrameColumn";
+
+    string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+    string methodName = inputMethodName;
+    methodName += "Implementation";
+
+#>
+    public partial class <#=fullColumnType#>
+    {
+        public <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+<# 
+ }
+ }
+#>
+<# 
+void GenerateAllComparisonScalarCombinationsForMethod(string inputMethodName)
+{
+ foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ {
+    string returnType = types[2];
+    string columnType = types[0];
+    string otherColumnType = types[1];
+    if (columnType != otherColumnType)
+    {
+        continue;
+    }
+    Debug.Assert(returnType == otherColumnType);
+
+    string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+    string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+
+    string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+    string methodName = inputMethodName;
+    methodName += "Implementation";
+
+#>
+    public partial class <#=fullColumnType#>
+    {
+        public <#=fullReturnType#> <#=methodName#>(<#=otherColumnType#> value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+<# 
+ }
+ }
+#>
 <#
 foreach (MethodConfiguration method in methodConfiguration)
 {
@@ -143,6 +214,14 @@ foreach (MethodConfiguration method in methodConfiguration)
     {
         GenerateAllBinaryScalarCombinationsForMethod(method.MethodName);
         GenerateAllBinaryScalarCombinationsForMethod("Reverse" + method.MethodName);
+    }
+    else if (method.MethodType == MethodType.Comparison)
+    {
+        GenerateAllComparisonCombinationsForMethod(method.MethodName);
+    }
+    else if (method.MethodType == MethodType.ComparisonScalar)
+    {
+        GenerateAllComparisonScalarCombinationsForMethod(method.MethodName);
     }
     /*
     else if (method.MethodType == MethodType.Binary && method.IsBitwise)

@@ -132,8 +132,7 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
     if (columnType == valueType)
     {
 #>
-            var result = (PrimitiveDataFrameColumn<<#=columnType#>>)base.<#=methodName#>(value, inPlace);
-            return new <#=fullReturnType#>(result);
+            return <#=methodName#>Implementation(value, inPlace);
 <#
     }
     else
@@ -144,16 +143,14 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
         {
 #>
             <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
-            var result = (PrimitiveDataFrameColumn<<#=returnType#>>)<#=returnType#>Column.<#=methodName#>(value, inPlace: true);
-            return new <#=fullReturnType#>(result);
+            return <#=returnType#>Column.<#=methodName#>Implementation(value, inPlace: true);
 <#
         }
         else
         {
 #>
             <#=returnType#> convertedValue = (<#=returnType#>)value;
-            var result = (PrimitiveDataFrameColumn<<#=returnType#>>)base.<#=methodName#>(convertedValue, inPlace);
-            return new <#=fullReturnType#>(result);
+            return <#=methodName#>Implementation(convertedValue, inPlace);
 <#
         }
 #>
@@ -174,8 +171,13 @@ void GenerateAllBinaryBitwiseOperationsForMethod(string methodName)
     {
         public BoolDataFrameColumn <#=methodName#>(BoolDataFrameColumn column, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<bool>)base.<#=methodName#>(column, inPlace);
-            return new BoolDataFrameColumn(result);
+            if (column.Length != Length)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
+            retColumn._columnContainer.And(column._columnContainer);
+            return retColumn;
         }
     }
 <#
@@ -189,8 +191,9 @@ void GenerateAllBinaryScalarBitwiseOperationsForMethod(string methodName)
     {
         public new BoolDataFrameColumn <#=methodName#>(bool value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<bool>)base.<#=methodName#>(value, inPlace);
-            return new BoolDataFrameColumn(result);
+            BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
+            retColumn._columnContainer.And(value);
+            return retColumn;
         }
     }
 <#
@@ -233,14 +236,43 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
     string fullOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType) + "DataFrameColumn";
 
     string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+    string capitalizedOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType);
+    string capitalizedColumnType = GetCapitalizedPrimitiveTypes(columnType);
 
 #>
     public partial class <#=fullColumnType#>
     {
         public <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column)
         {
-            PrimitiveDataFrameColumn<bool> result = base.<#=methodName#>(column);
-            return new <#=fullReturnType#>(result);
+<#
+    if (columnType == otherColumnType)
+    {
+#>
+            return <#=methodName#>Implementation(column);
+<#
+    }
+    else
+    {
+        primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
+        primitiveTypeToPrimitivityLevelMap.TryGetValue(otherColumnType, out int otherColumnTypeLevel);
+        if (otherColumnTypeLevel > columnTypeLevel)
+        {
+#>
+            <#=fullOtherColumnType#> <#=otherColumnType#>Column = CloneAs<#=capitalizedOtherColumnType#>Column();
+            return <#=otherColumnType#>Column.<#=methodName#>Implementation(column);
+<#
+        }
+        else
+        {
+#>
+            <#=fullColumnType#> other<#=columnType#>Column = column.CloneAs<#=capitalizedColumnType#>Column();
+            return <#=methodName#>Implementation(other<#=columnType#>Column);
+<#
+        }
+#>
+<#
+    }
+#>
         }
     }
 <# 
@@ -259,13 +291,45 @@ void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+    string fullOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType) + "DataFrameColumn";
+
+    string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+    string capitalizedOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType);
+    string capitalizedColumnType = GetCapitalizedPrimitiveTypes(columnType);
 #>
     public partial class <#=fullColumnType#>
     {
         public <#=fullReturnType#> <#=methodName#>(<#=otherColumnType#> value)
         {
-            PrimitiveDataFrameColumn<bool> result = base.<#=methodName#>(value);
-            return new <#=fullReturnType#>(result);
+<#
+    if (columnType == otherColumnType)
+    {
+#>
+            return <#=methodName#>Implementation(value);
+<#
+    }
+    else
+    {
+        primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
+        primitiveTypeToPrimitivityLevelMap.TryGetValue(otherColumnType, out int otherColumnTypeLevel);
+        if (otherColumnTypeLevel > columnTypeLevel)
+        {
+#>
+            <#=fullOtherColumnType#> <#=otherColumnType#>Column = CloneAs<#=capitalizedOtherColumnType#>Column();
+            return <#=otherColumnType#>Column.<#=methodName#>Implementation(value);
+<#
+        }
+        else
+        {
+#>
+            <#=columnType#> other<#=columnType#>Value = (<#=columnType#>)value;
+            return <#=methodName#>Implementation(other<#=columnType#>Value);
+<#
+        }
+#>
+<#
+    }
+#>
         }
     }
 <# 

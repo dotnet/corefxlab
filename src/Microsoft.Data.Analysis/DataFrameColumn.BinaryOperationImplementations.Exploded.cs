@@ -1716,4 +1716,1300 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(BoolDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(ByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(DecimalDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(DoubleDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(FloatDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(IntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(LongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(SByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(ShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(UIntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(ULongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(UShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(bool value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(byte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(decimal value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(double value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(float value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(int value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(long value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(sbyte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(short value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(uint value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(ulong value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseEqualsImplementation(ushort value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(BoolDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(DecimalDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(DoubleDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(FloatDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(IntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(LongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(SByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(UIntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ULongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(UShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(bool value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(byte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(decimal value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(double value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(float value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(int value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(long value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(sbyte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(short value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(uint value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ulong value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ushort value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(BoolDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(DecimalDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(DoubleDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(FloatDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(IntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(LongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(SByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UIntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ULongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(bool value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(byte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(decimal value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(double value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(float value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(int value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(long value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(sbyte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(short value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(uint value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ulong value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ushort value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(BoolDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(DecimalDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(DoubleDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(FloatDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(IntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(LongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(SByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(UIntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ULongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(UShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(bool value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(byte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(decimal value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(double value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(float value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(int value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(long value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(sbyte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(short value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(uint value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ulong value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ushort value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(BoolDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(DecimalDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(DoubleDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(FloatDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(IntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(LongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(SByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(UIntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ULongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(UShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(bool value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(byte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(decimal value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(double value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(float value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(int value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(long value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(sbyte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(short value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(uint value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ulong value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ushort value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(BoolDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(ByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(DecimalDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(DoubleDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(FloatDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(IntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(LongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(SByteDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(ShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(UIntDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(ULongDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(UShortDataFrameColumn column)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class BoolDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(bool value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(byte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DecimalDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(decimal value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class DoubleDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(double value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class FloatDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(float value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class IntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(int value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class LongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(long value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class SByteDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(sbyte value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(short value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UIntDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(uint value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class ULongDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(ulong value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
+    public partial class UShortDataFrameColumn
+    {
+        public BoolDataFrameColumn ElementwiseLessThanImplementation(ushort value)
+        {
+            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            return newColumn;
+        }
+    }
 }

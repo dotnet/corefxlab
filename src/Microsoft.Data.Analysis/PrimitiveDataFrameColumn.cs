@@ -429,10 +429,10 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        internal PrimitiveDataFrameColumn<bool> CloneAsBoolColumn()
+        internal BoolDataFrameColumn CloneAsBoolColumn()
         {
             PrimitiveColumnContainer<bool> newColumnContainer = _columnContainer.CloneAsBoolContainer();
-            return new PrimitiveDataFrameColumn<bool>(Name, newColumnContainer);
+            return new BoolDataFrameColumn(Name, newColumnContainer);
         }
 
         internal ByteDataFrameColumn CloneAsByteColumn()
