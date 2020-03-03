@@ -16,33 +16,33 @@ namespace Microsoft.Data.Analysis
     {
         public override DataFrameColumn Add(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return AddImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return AddImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return AddImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return AddImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return AddImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return AddImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return AddImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return AddImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return AddImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return AddImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return AddImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return AddImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return AddImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -59,33 +59,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Subtract(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -102,33 +102,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Multiply(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -145,33 +145,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Divide(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return DivideImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -188,33 +188,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Modulo(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -231,33 +231,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn And(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return AndImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return AndImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return AndImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return AndImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return AndImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return AndImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return AndImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return AndImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return AndImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return AndImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return AndImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return AndImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return AndImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -269,33 +269,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Or(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return OrImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return OrImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return OrImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return OrImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return OrImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return OrImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return OrImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return OrImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return OrImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return OrImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return OrImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return OrImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return OrImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -307,33 +307,33 @@ namespace Microsoft.Data.Analysis
         }
         public override DataFrameColumn Xor(DataFrameColumn column, bool inPlace = false)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return XorImplementation(column as PrimitiveDataFrameColumn<bool>, inPlace);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return XorImplementation(column as PrimitiveDataFrameColumn<byte>, inPlace);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return XorImplementation(column as PrimitiveDataFrameColumn<char>, inPlace);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return XorImplementation(column as PrimitiveDataFrameColumn<decimal>, inPlace);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return XorImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return XorImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return XorImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return XorImplementation(column as PrimitiveDataFrameColumn<long>, inPlace);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return XorImplementation(column as PrimitiveDataFrameColumn<sbyte>, inPlace);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return XorImplementation(column as PrimitiveDataFrameColumn<short>, inPlace);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return XorImplementation(column as PrimitiveDataFrameColumn<uint>, inPlace);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return XorImplementation(column as PrimitiveDataFrameColumn<ulong>, inPlace);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return XorImplementation(column as PrimitiveDataFrameColumn<ushort>, inPlace);
                 default:
                     throw new NotSupportedException();
@@ -353,33 +353,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<char>);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<double>);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<float>);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<int>);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<long>);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<short>);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -396,33 +396,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<char>);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<double>);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<float>);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<int>);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<long>);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<short>);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -439,33 +439,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqual(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<char>);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<double>);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<float>);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<int>);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<long>);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<short>);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -482,33 +482,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqual(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<char>);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<double>);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<float>);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<int>);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<long>);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<short>);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -525,33 +525,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThan(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<char>);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<double>);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<float>);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<int>);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<long>);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<short>);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();
@@ -568,33 +568,33 @@ namespace Microsoft.Data.Analysis
         }
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThan(DataFrameColumn column)
         {
-            switch (column)
+            switch (column.DataType)
             {
-                case PrimitiveDataFrameColumn<bool> boolColumn:
+                case Type boolType when boolType == typeof(bool):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<bool>);
-                case PrimitiveDataFrameColumn<byte> byteColumn:
+                case Type byteType when byteType == typeof(byte):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<byte>);
-                case PrimitiveDataFrameColumn<char> charColumn:
+                case Type charType when charType == typeof(char):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<char>);
-                case PrimitiveDataFrameColumn<decimal> decimalColumn:
+                case Type decimalType when decimalType == typeof(decimal):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<decimal>);
-                case PrimitiveDataFrameColumn<double> doubleColumn:
+                case Type doubleType when doubleType == typeof(double):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<double>);
-                case PrimitiveDataFrameColumn<float> floatColumn:
+                case Type floatType when floatType == typeof(float):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<float>);
-                case PrimitiveDataFrameColumn<int> intColumn:
+                case Type intType when intType == typeof(int):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<int>);
-                case PrimitiveDataFrameColumn<long> longColumn:
+                case Type longType when longType == typeof(long):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<long>);
-                case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
+                case Type sbyteType when sbyteType == typeof(sbyte):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<sbyte>);
-                case PrimitiveDataFrameColumn<short> shortColumn:
+                case Type shortType when shortType == typeof(short):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<short>);
-                case PrimitiveDataFrameColumn<uint> uintColumn:
+                case Type uintType when uintType == typeof(uint):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<uint>);
-                case PrimitiveDataFrameColumn<ulong> ulongColumn:
+                case Type ulongType when ulongType == typeof(ulong):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<ulong>);
-                case PrimitiveDataFrameColumn<ushort> ushortColumn:
+                case Type ushortType when ushortType == typeof(ushort):
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<ushort>);
                 default:
                     throw new NotSupportedException();

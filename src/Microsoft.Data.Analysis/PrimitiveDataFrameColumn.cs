@@ -20,7 +20,7 @@ namespace Microsoft.Data.Analysis
     public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn, IEnumerable<T?>
         where T : unmanaged
     {
-        private PrimitiveColumnContainer<T> _columnContainer;
+        internal PrimitiveColumnContainer<T> _columnContainer;
 
         internal PrimitiveDataFrameColumn(string name, PrimitiveColumnContainer<T> column) : base(name, column.Length, typeof(T))
         {
@@ -429,22 +429,77 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        internal PrimitiveDataFrameColumn<bool> CloneAsBoolColumn()
+        internal BoolDataFrameColumn CloneAsBoolColumn()
         {
             PrimitiveColumnContainer<bool> newColumnContainer = _columnContainer.CloneAsBoolContainer();
-            return new PrimitiveDataFrameColumn<bool>(Name, newColumnContainer);
+            return new BoolDataFrameColumn(Name, newColumnContainer);
         }
 
-        internal PrimitiveDataFrameColumn<double> CloneAsDoubleColumn()
+        internal ByteDataFrameColumn CloneAsByteColumn()
+        {
+            PrimitiveColumnContainer<byte> newColumnContainer = _columnContainer.CloneAsByteContainer();
+            return new ByteDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal SByteDataFrameColumn CloneAsSByteColumn()
+        {
+            PrimitiveColumnContainer<sbyte> newColumnContainer = _columnContainer.CloneAsSByteContainer();
+            return new SByteDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal DoubleDataFrameColumn CloneAsDoubleColumn()
         {
             PrimitiveColumnContainer<double> newColumnContainer = _columnContainer.CloneAsDoubleContainer();
-            return new PrimitiveDataFrameColumn<double>(Name, newColumnContainer);
+            return new DoubleDataFrameColumn(Name, newColumnContainer);
         }
 
-        internal PrimitiveDataFrameColumn<decimal> CloneAsDecimalColumn()
+        internal DecimalDataFrameColumn CloneAsDecimalColumn()
         {
             PrimitiveColumnContainer<decimal> newColumnContainer = _columnContainer.CloneAsDecimalContainer();
-            return new PrimitiveDataFrameColumn<decimal>(Name, newColumnContainer);
+            return new DecimalDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal ShortDataFrameColumn CloneAsShortColumn()
+        {
+            PrimitiveColumnContainer<short> newColumnContainer = _columnContainer.CloneAsShortContainer();
+            return new ShortDataFrameColumn(Name, newColumnContainer);
+        }
+
+
+        internal UShortDataFrameColumn CloneAsUShortColumn()
+        {
+            PrimitiveColumnContainer<ushort> newColumnContainer = _columnContainer.CloneAsUShortContainer();
+            return new UShortDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal IntDataFrameColumn CloneAsIntColumn()
+        {
+            PrimitiveColumnContainer<int> newColumnContainer = _columnContainer.CloneAsIntContainer();
+            return new IntDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal UIntDataFrameColumn CloneAsUIntColumn()
+        {
+            PrimitiveColumnContainer<uint> newColumnContainer = _columnContainer.CloneAsUIntContainer();
+            return new UIntDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal LongDataFrameColumn CloneAsLongColumn()
+        {
+            PrimitiveColumnContainer<long> newColumnContainer = _columnContainer.CloneAsLongContainer();
+            return new LongDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal ULongDataFrameColumn CloneAsULongColumn()
+        {
+            PrimitiveColumnContainer<ulong> newColumnContainer = _columnContainer.CloneAsULongContainer();
+            return new ULongDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal FloatDataFrameColumn CloneAsFloatColumn()
+        {
+            PrimitiveColumnContainer<float> newColumnContainer = _columnContainer.CloneAsFloatContainer();
+            return new FloatDataFrameColumn(Name, newColumnContainer);
         }
 
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
