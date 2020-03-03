@@ -21,11 +21,6 @@ namespace Microsoft.Data.Analysis
     {
         string type = typeToLevel.Key;
         int level = typeToLevel.Value;
-        /*
-        if (level <= 1) {
-            continue;
-        }
-        */
         string typeFirstCharUpper = GetCapitalizedPrimitiveTypes(type);
 #>
     internal interface I<#=typeFirstCharUpper#>Converter<T>

@@ -1937,7 +1937,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(BoolDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -1946,7 +1946,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -1955,7 +1955,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(DecimalDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -1964,7 +1964,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(DoubleDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -1973,7 +1973,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(FloatDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -1982,7 +1982,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(IntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -1991,7 +1991,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(LongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2000,7 +2000,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(SByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2009,7 +2009,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2018,7 +2018,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(UIntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2027,7 +2027,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ULongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2036,7 +2036,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(UShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2045,7 +2045,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(bool value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2054,7 +2054,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(byte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2063,7 +2063,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(decimal value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2072,7 +2072,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(double value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2081,7 +2081,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(float value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2090,7 +2090,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(int value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2099,7 +2099,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(long value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2108,7 +2108,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(sbyte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2117,7 +2117,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(short value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2126,7 +2126,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(uint value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2135,7 +2135,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ulong value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2144,7 +2144,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ushort value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2153,7 +2153,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(BoolDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2162,7 +2162,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2171,7 +2171,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(DecimalDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2180,7 +2180,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(DoubleDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2189,7 +2189,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(FloatDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2198,7 +2198,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(IntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2207,7 +2207,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(LongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2216,7 +2216,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(SByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2225,7 +2225,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2234,7 +2234,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UIntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2243,7 +2243,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ULongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2252,7 +2252,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2261,7 +2261,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(bool value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2270,7 +2270,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(byte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2279,7 +2279,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(decimal value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2288,7 +2288,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(double value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2297,7 +2297,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(float value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2306,7 +2306,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(int value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2315,7 +2315,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(long value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2324,7 +2324,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(sbyte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2333,7 +2333,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(short value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2342,7 +2342,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(uint value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2351,7 +2351,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ulong value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2360,7 +2360,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ushort value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2369,7 +2369,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(BoolDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2378,7 +2378,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2387,7 +2387,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(DecimalDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2396,7 +2396,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(DoubleDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2405,7 +2405,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(FloatDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2414,7 +2414,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(IntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2423,7 +2423,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(LongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2432,7 +2432,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(SByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2441,7 +2441,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2450,7 +2450,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(UIntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2459,7 +2459,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ULongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2468,7 +2468,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(UShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2477,7 +2477,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(bool value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2486,7 +2486,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(byte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2495,7 +2495,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(decimal value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2504,7 +2504,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(double value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2513,7 +2513,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(float value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2522,7 +2522,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(int value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2531,7 +2531,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(long value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2540,7 +2540,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(sbyte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2549,7 +2549,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(short value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2558,7 +2558,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(uint value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2567,7 +2567,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ulong value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2576,7 +2576,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ushort value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2585,7 +2585,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(BoolDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2594,7 +2594,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2603,7 +2603,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(DecimalDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2612,7 +2612,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(DoubleDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2621,7 +2621,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(FloatDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2630,7 +2630,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(IntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2639,7 +2639,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(LongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2648,7 +2648,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(SByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2657,7 +2657,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2666,7 +2666,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(UIntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2675,7 +2675,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ULongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2684,7 +2684,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(UShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2693,7 +2693,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(bool value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2702,7 +2702,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(byte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2711,7 +2711,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(decimal value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2720,7 +2720,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(double value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2729,7 +2729,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(float value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2738,7 +2738,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(int value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2747,7 +2747,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(long value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2756,7 +2756,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(sbyte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2765,7 +2765,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(short value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2774,7 +2774,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(uint value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2783,7 +2783,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ulong value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2792,7 +2792,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ushort value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2801,7 +2801,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(BoolDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2810,7 +2810,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(ByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2819,7 +2819,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(DecimalDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2828,7 +2828,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(DoubleDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2837,7 +2837,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(FloatDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2846,7 +2846,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(IntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2855,7 +2855,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(LongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2864,7 +2864,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(SByteDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2873,7 +2873,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(ShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2882,7 +2882,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(UIntDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2891,7 +2891,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(ULongDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2900,7 +2900,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(UShortDataFrameColumn column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2909,7 +2909,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(bool value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2918,7 +2918,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(byte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2927,7 +2927,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(decimal value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2936,7 +2936,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(double value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2945,7 +2945,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(float value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2954,7 +2954,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(int value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2963,7 +2963,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(long value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2972,7 +2972,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(sbyte value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2981,7 +2981,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(short value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2990,7 +2990,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(uint value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -2999,7 +2999,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(ulong value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -3008,7 +3008,7 @@ namespace Microsoft.Data.Analysis
         public BoolDataFrameColumn ElementwiseLessThanImplementation(ushort value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }

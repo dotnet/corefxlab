@@ -159,7 +159,7 @@ void GenerateAllComparisonCombinationsForMethod(string inputMethodName)
         public <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
+            _columnContainer.<#=inputMethodName#>(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -194,7 +194,7 @@ void GenerateAllComparisonScalarCombinationsForMethod(string inputMethodName)
         public <#=fullReturnType#> <#=methodName#>(<#=otherColumnType#> value)
         {
             BoolDataFrameColumn newColumn = CloneAsBoolColumn();
-            _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
+            _columnContainer.<#=inputMethodName#>(value, newColumn._columnContainer);
             return newColumn;
         }
     }
@@ -223,16 +223,6 @@ foreach (MethodConfiguration method in methodConfiguration)
     {
         GenerateAllComparisonScalarCombinationsForMethod(method.MethodName);
     }
-    /*
-    else if (method.MethodType == MethodType.Binary && method.IsBitwise)
-    {
-        GenerateAllBinaryBitwiseOperationsForMethod(method.MethodName);
-    }
-    else if (method.MethodType == MethodType.BinaryScalar && method.IsBitwise)
-    {
-        GenerateAllBinaryScalarBitwiseOperationsForMethod(method.MethodName);
-    }
-    */
 }
 #>
 }

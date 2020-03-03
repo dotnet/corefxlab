@@ -176,7 +176,7 @@ void GenerateAllBinaryBitwiseOperationsForMethod(string methodName)
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
-            retColumn._columnContainer.And(column._columnContainer);
+            retColumn._columnContainer.<#=methodName#>(column._columnContainer);
             return retColumn;
         }
     }
@@ -192,7 +192,7 @@ void GenerateAllBinaryScalarBitwiseOperationsForMethod(string methodName)
         public new BoolDataFrameColumn <#=methodName#>(bool value, bool inPlace = false)
         {
             BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
-            retColumn._columnContainer.And(value);
+            retColumn._columnContainer.<#=methodName#>(value);
             return retColumn;
         }
     }

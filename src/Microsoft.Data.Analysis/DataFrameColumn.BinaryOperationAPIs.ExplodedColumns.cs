@@ -13437,7 +13437,7 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
-            retColumn._columnContainer.And(column._columnContainer);
+            retColumn._columnContainer.Or(column._columnContainer);
             return retColumn;
         }
     }
@@ -13446,7 +13446,7 @@ namespace Microsoft.Data.Analysis
         public new BoolDataFrameColumn Or(bool value, bool inPlace = false)
         {
             BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
-            retColumn._columnContainer.And(value);
+            retColumn._columnContainer.Or(value);
             return retColumn;
         }
     }
@@ -13459,7 +13459,7 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
-            retColumn._columnContainer.And(column._columnContainer);
+            retColumn._columnContainer.Xor(column._columnContainer);
             return retColumn;
         }
     }
@@ -13468,7 +13468,7 @@ namespace Microsoft.Data.Analysis
         public new BoolDataFrameColumn Xor(bool value, bool inPlace = false)
         {
             BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
-            retColumn._columnContainer.And(value);
+            retColumn._columnContainer.Xor(value);
             return retColumn;
         }
     }

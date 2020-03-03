@@ -17,25 +17,31 @@ public class BinaryOperationCombinations
 
     public static List<List<string>> binaryOperationCombinations = new List<List<string>>
     {
-<#foreach (TypeConfiguration type in typeConfiguration) {#>
-<#if(!type.SupportsNumeric || type.TypeName == "char") {#>
-<#continue;#>
-<#}#>
-<#foreach (TypeConfiguration type2 in typeConfiguration) {#>
-<# 
-if (!type2.SupportsNumeric || type2.TypeName == "char") {
-    continue;
-}
+<#
+foreach (TypeConfiguration type in typeConfiguration) 
+{
+    if(!type.SupportsNumeric || type.TypeName == "char") 
+    {
+        continue;
+    }
+    foreach (TypeConfiguration type2 in typeConfiguration) 
+    {
+        if (!type2.SupportsNumeric || type2.TypeName == "char") 
+        {
+            continue;
+        }
 #>
 <# 
-// We won't support binary operations on pairs of signed and unsigned types yet. For users, there is a simple work around of cloning the columns to bigger higher types(short -> int, int -> long etc) and then performing binary ops on them
+// We won't support binary operations on pairs of signed and unsigned types yet. For users, there is a simple work around of cloning the columns to higher types(short -> int, int -> long etc) and then performing binary ops on them
 if (IsMixedSignedAndUnsignedTypePair(type.TypeName, type2.TypeName)) {
     continue;
 } 
 #>
         new List<string> {"<#=type.TypeName#>", "<#=type2.TypeName#>", "<#=GetBinaryOperationReturnType(type, type2)#>"},
-<#}#>
-<#}#>
+<#
+    }
+}
+#>
     };
 }
 
