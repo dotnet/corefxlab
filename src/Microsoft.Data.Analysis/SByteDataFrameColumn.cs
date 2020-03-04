@@ -18,8 +18,6 @@ namespace Microsoft.Data.Analysis
 
         public SByteDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
-        internal SByteDataFrameColumn(PrimitiveDataFrameColumn<sbyte> sbyteColumn) : base(sbyteColumn.Name, sbyteColumn._columnContainer) { }
-
         internal SByteDataFrameColumn(string name, PrimitiveColumnContainer<sbyte> values) : base(name, values) { }
     }
 }
