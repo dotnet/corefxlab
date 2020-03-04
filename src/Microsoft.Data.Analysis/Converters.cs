@@ -31,7 +31,6 @@ namespace Microsoft.Data.Analysis
                 return (IByteConverter<T>)new SByteByteConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteByteConverter : IByteConverter<byte>
@@ -69,7 +68,6 @@ namespace Microsoft.Data.Analysis
                 return (ISByteConverter<T>)new SByteSByteConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteSByteConverter : ISByteConverter<byte>
@@ -115,7 +113,6 @@ namespace Microsoft.Data.Analysis
                 return (IShortConverter<T>)new UShortShortConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteShortConverter : IShortConverter<byte>
@@ -175,7 +172,6 @@ namespace Microsoft.Data.Analysis
                 return (IUShortConverter<T>)new UShortUShortConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteUShortConverter : IUShortConverter<byte>
@@ -243,7 +239,6 @@ namespace Microsoft.Data.Analysis
                 return (IIntConverter<T>)new UIntIntConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteIntConverter : IIntConverter<byte>
@@ -325,7 +320,6 @@ namespace Microsoft.Data.Analysis
                 return (IUIntConverter<T>)new UIntUIntConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteUIntConverter : IUIntConverter<byte>
@@ -415,7 +409,6 @@ namespace Microsoft.Data.Analysis
                 return (ILongConverter<T>)new ULongLongConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteLongConverter : ILongConverter<byte>
@@ -519,7 +512,6 @@ namespace Microsoft.Data.Analysis
                 return (IULongConverter<T>)new ULongULongConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteULongConverter : IULongConverter<byte>
@@ -627,7 +619,6 @@ namespace Microsoft.Data.Analysis
                 return (IFloatConverter<T>)new FloatFloatConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteFloatConverter : IFloatConverter<byte>
@@ -746,7 +737,6 @@ namespace Microsoft.Data.Analysis
                 return (IDoubleConverter<T>)new DoubleDoubleConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteDoubleConverter : IDoubleConverter<byte>
@@ -876,7 +866,6 @@ namespace Microsoft.Data.Analysis
                 return (IDecimalConverter<T>)new DecimalDecimalConverter();
             }
             throw new NotSupportedException();
-        
         }
     }
     internal class ByteDecimalConverter : IDecimalConverter<byte>

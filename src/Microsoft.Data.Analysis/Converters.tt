@@ -55,7 +55,6 @@ namespace Microsoft.Data.Analysis
     }
 #>
             throw new NotSupportedException();
-        
         }
     }
 <#
