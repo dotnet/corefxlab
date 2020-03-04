@@ -18,8 +18,6 @@ namespace Microsoft.Data.Analysis
 
         public CharDataFrameColumn(string name, ReadOnlyMemory<byte> buffer, ReadOnlyMemory<byte> nullBitMap, int length = 0, int nullCount = 0) : base(name, buffer, nullBitMap, length, nullCount) { }
 
-        internal CharDataFrameColumn(PrimitiveDataFrameColumn<char> charColumn) : base(charColumn.Name, charColumn._columnContainer) { }
-
         internal CharDataFrameColumn(string name, PrimitiveColumnContainer<char> values) : base(name, values) { }
     }
 }
