@@ -28,11 +28,10 @@ namespace Microsoft.Data.Analysis
         public override PrimitiveDataFrameColumn<bool> <#=method.MethodName#>(DataFrameColumn column)
 <# } #>
         {
-<#          // The column here could be a PrimitiveColumn or an exploded column like IntDataFrameColumn#>
-            switch (column.DataType)
+            switch (column)
             {
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
-                case Type <#=type.TypeName#>Type when <#=type.TypeName#>Type == typeof(<#=type.TypeName#>):
+                case PrimitiveDataFrameColumn<<#=type.TypeName#>> <#=type.TypeName#>Column:
 <# if (method.MethodType == MethodType.Binary) {#>
                     return <#=method.MethodName#>Implementation(column as PrimitiveDataFrameColumn<<#=type.TypeName#>>, inPlace);
 <# } else { #>
