@@ -83,8 +83,8 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Returns a new DataFrame using the boolean values in filter
         /// </summary>
-        /// <param name="filter">A column of booleans</param>
-        public DataFrame this[PrimitiveDataFrameColumn<bool> filter] => Filter(filter);
+        /// <param name="rowFilter">A column of booleans</param>
+        public DataFrame this[PrimitiveDataFrameColumn<bool> rowFilter] => Filter(rowFilter);
 
         /// <summary>
         /// Returns a new DataFrame using the row indices in <paramref name="rowIndices"/>
@@ -123,39 +123,14 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Returns a new DataFrame using the boolean values in <paramref name="boolFilter"/>
+        /// Returns a new DataFrame using the boolean values in <paramref name="rowFilter"/>
         /// </summary>
-        public DataFrame this[IEnumerable<bool> boolFilter]
+        public DataFrame this[IEnumerable<bool> rowFilter]
         {
             get
             {
-                PrimitiveDataFrameColumn<bool> filterColumn = new PrimitiveDataFrameColumn<bool>("Filter", boolFilter);
+                PrimitiveDataFrameColumn<bool> filterColumn = new PrimitiveDataFrameColumn<bool>("Filter", rowFilter);
                 return Clone(filterColumn);
-            }
-        }
-
-        public DataFrameColumn this[string columnName]
-        {
-            get
-            {
-                int columnIndex = _columnCollection.IndexOf(columnName);
-                if (columnIndex == -1)
-                    throw new ArgumentException(Strings.InvalidColumnName, nameof(columnName));
-                return _columnCollection[columnIndex];
-            }
-            set
-            {
-                int columnIndex = _columnCollection.IndexOf(columnName);
-                DataFrameColumn newColumn = value;
-                newColumn.SetName(columnName);
-                if (columnIndex == -1)
-                {
-                    _columnCollection.Insert(Columns.Count, newColumn);
-                }
-                else
-                {
-                    _columnCollection[columnIndex] = newColumn;
-                }
             }
         }
 
@@ -583,7 +558,7 @@ namespace Microsoft.Data.Analysis
 
         private DataFrame Sort(string columnName, bool isAscending)
         {
-            DataFrameColumn column = this[columnName];
+            DataFrameColumn column = Columns[columnName];
             DataFrameColumn sortIndices = column.GetAscendingSortIndices();
             List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
             for (int i = 0; i < Columns.Count; i++)
