@@ -453,7 +453,7 @@ namespace Microsoft.Data.Analysis
 
         public override DataFrameColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
 
-        public override DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
+        public override DataFrameColumn Clamp<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
 
         public override DataFrameColumn Filter<U>(U lower, U upper) => throw new NotSupportedException();
 

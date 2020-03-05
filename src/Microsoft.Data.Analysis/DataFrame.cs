@@ -253,7 +253,7 @@ namespace Microsoft.Data.Analysis
         /// <typeparam name="U"></typeparam>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
-        public DataFrame Clip<U>(U lower, U upper, bool inPlace = false)
+        public DataFrame Clamp<U>(U lower, U upper, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();
 
@@ -261,7 +261,7 @@ namespace Microsoft.Data.Analysis
             {
                 DataFrameColumn column = ret.Columns[i];
                 if (column.IsNumericColumn())
-                    column.Clip(lower, upper, inPlace: true);
+                    column.Clamp(lower, upper, inPlace: true);
             }
             return ret;
         }

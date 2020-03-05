@@ -580,7 +580,7 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        protected override DataFrameColumn ClipImplementation<U>(U lower, U upper, bool inPlace)
+        protected override DataFrameColumn ClampImplementation<U>(U lower, U upper, bool inPlace)
         {
             object convertedLower = Convert.ChangeType(lower, typeof(T));
             if (typeof(T) == typeof(U) || convertedLower != null)

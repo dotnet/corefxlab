@@ -1505,7 +1505,7 @@ namespace Microsoft.Data.Analysis.Tests
             }
 
             // Out of place
-            DataFrame clipped = df.Clip(3, 7);
+            DataFrame clipped = df.Clamp(3, 7);
             VerifyDataFrameClip(clipped);
             for (int i = 0; i < 10; i++)
             {
@@ -1516,7 +1516,7 @@ namespace Microsoft.Data.Analysis.Tests
             }
 
             // Inplace
-            df.Clip(3, 7, true);
+            df.Clamp(3, 7, true);
             VerifyDataFrameClip(df);
 
         }

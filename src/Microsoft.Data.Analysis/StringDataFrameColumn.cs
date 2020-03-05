@@ -165,7 +165,7 @@ namespace Microsoft.Data.Analysis
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
-        public override DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
+        public override DataFrameColumn Clamp<U>(U lower, U upper, bool inPlace = false) => throw new NotSupportedException();
 
         public override DataFrameColumn Filter<U>(U lower, U upper) => throw new NotSupportedException();
 

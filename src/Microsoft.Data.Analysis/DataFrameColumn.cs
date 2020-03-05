@@ -188,9 +188,9 @@ namespace Microsoft.Data.Analysis
         /// <typeparam name="U"></typeparam>
         /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
         /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
-        public virtual DataFrameColumn Clip<U>(U lower, U upper, bool inPlace = false) => ClipImplementation(lower, upper, inPlace);
+        public virtual DataFrameColumn Clamp<U>(U lower, U upper, bool inPlace = false) => ClampImplementation(lower, upper, inPlace);
 
-        protected virtual DataFrameColumn ClipImplementation<U>(U lower, U upper, bool inPlace) => throw new NotImplementedException();
+        protected virtual DataFrameColumn ClampImplementation<U>(U lower, U upper, bool inPlace) => throw new NotImplementedException();
 
         /// <summary>
         /// Returns a new column filtered by the lower and upper bounds
