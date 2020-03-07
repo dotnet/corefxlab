@@ -248,12 +248,12 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Clips values beyond the specified thresholds on numeric columns
+        /// Clamps values beyond the specified thresholds on numeric columns
         /// </summary>
         /// <typeparam name="U"></typeparam>
-        /// <param name="lower">Minimum value. All values below this threshold will be set to it</param>
-        /// <param name="upper">Maximum value. All values above this threshold will be set to it</param>
-        public DataFrame Clamp<U>(U lower, U upper, bool inPlace = false)
+        /// <param name="min">Minimum value. All values below this threshold will be set to it</param>
+        /// <param name="max">Maximum value. All values above this threshold will be set to it</param>
+        public DataFrame Clamp<U>(U min, U max, bool inPlace = false)
         {
             DataFrame ret = inPlace ? this : Clone();
 
@@ -261,7 +261,7 @@ namespace Microsoft.Data.Analysis
             {
                 DataFrameColumn column = ret.Columns[i];
                 if (column.IsNumericColumn())
-                    column.Clamp(lower, upper, inPlace: true);
+                    column.Clamp(min, max, inPlace: true);
             }
             return ret;
         }

@@ -998,9 +998,9 @@ namespace Microsoft.Data.Analysis.Tests
                 HashSet<int> intersection = new HashSet<int>();
                 for (int i = 0; i < merge.Columns["Int_left"].Length; i++)
                 {
-                    if ( merge.Columns["Int_left"][i] == null)
+                    if (merge.Columns["Int_left"][i] == null)
                         continue;
-                    intersection.Add((int) merge.Columns["Int_left"][i]);
+                    intersection.Add((int)merge.Columns["Int_left"][i]);
                 }
                 for (int i = 0; i < left.Columns["Int"].Length; i++)
                 {
@@ -1014,9 +1014,9 @@ namespace Microsoft.Data.Analysis.Tests
                 HashSet<int> intersection = new HashSet<int>();
                 for (int i = 0; i < merge.Columns["Int_right"].Length; i++)
                 {
-                    if ( merge.Columns["Int_right"][i] == null)
+                    if (merge.Columns["Int_right"][i] == null)
                         continue;
-                    intersection.Add((int) merge.Columns["Int_right"][i]);
+                    intersection.Add((int)merge.Columns["Int_right"][i]);
                 }
                 for (int i = 0; i < right.Columns["Int"].Length; i++)
                 {
@@ -1363,30 +1363,30 @@ namespace Microsoft.Data.Analysis.Tests
         }
 
         [Fact]
-        public void TestColumnClip()
+        public void TestColumnClamp()
         {
             DataFrame df = MakeDataFrameWithNumericColumns(10);
             // Out of place
-            DataFrameColumn clipped = df.Columns["Int"].Clamp(3, 7);
-            Assert.Equal(3, clipped[0]);
+            DataFrameColumn clamped = df.Columns["Int"].Clamp(3, 7);
+            Assert.Equal(3, clamped[0]);
             Assert.Equal(0, df.Columns["Int"][0]);
-            Assert.Equal(3, clipped[1]);
+            Assert.Equal(3, clamped[1]);
             Assert.Equal(1, df.Columns["Int"][1]);
-            Assert.Equal(3, clipped[2]);
+            Assert.Equal(3, clamped[2]);
             Assert.Equal(2, df.Columns["Int"][2]);
-            Assert.Equal(3, clipped[3]);
+            Assert.Equal(3, clamped[3]);
             Assert.Equal(3, df.Columns["Int"][3]);
-            Assert.Equal(4, clipped[4]);
+            Assert.Equal(4, clamped[4]);
             Assert.Equal(4, df.Columns["Int"][4]);
-            Assert.Null(clipped[5]);
+            Assert.Null(clamped[5]);
             Assert.Null(df.Columns["Int"][5]);
-            Assert.Equal(6, clipped[6]);
+            Assert.Equal(6, clamped[6]);
             Assert.Equal(6, df.Columns["Int"][6]);
-            Assert.Equal(7, clipped[7]);
+            Assert.Equal(7, clamped[7]);
             Assert.Equal(7, df.Columns["Int"][7]);
-            Assert.Equal(7, clipped[8]);
+            Assert.Equal(7, clamped[8]);
             Assert.Equal(8, df.Columns["Int"][8]);
-            Assert.Equal(7, clipped[9]);
+            Assert.Equal(7, clamped[9]);
             Assert.Equal(9, df.Columns["Int"][9]);
 
             // In place
@@ -1416,20 +1416,20 @@ namespace Microsoft.Data.Analysis.Tests
         }
 
         [Fact]
-        public void TestDataFrameClip()
+        public void TestDataFrameClamp()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);
             IEnumerable<DataViewSchema.Column> dfColumns = ((IDataView)df).Schema;
 
-            void VerifyDataFrameClip(DataFrame clippedColumn)
+            void VerifyDataFrameClamp(DataFrame clampedColumn)
             {
 
-                IEnumerable<DataViewSchema.Column> clippedColumns = ((IDataView)clippedColumn).Schema;
-                Assert.Equal(df.Columns.Count, clippedColumn.Columns.Count);
-                Assert.Equal(dfColumns, clippedColumns);
+                IEnumerable<DataViewSchema.Column> clampedColumns = ((IDataView)clampedColumn).Schema;
+                Assert.Equal(df.Columns.Count, clampedColumn.Columns.Count);
+                Assert.Equal(dfColumns, clampedColumns);
                 for (int c = 0; c < df.Columns.Count; c++)
                 {
-                    DataFrameColumn column = clippedColumn.Columns[c];
+                    DataFrameColumn column = clampedColumn.Columns[c];
                     if (column.IsNumericColumn())
                     {
                         for (int i = 0; i < 4; i++)
@@ -1457,8 +1457,8 @@ namespace Microsoft.Data.Analysis.Tests
             }
 
             // Out of place
-            DataFrame clipped = df.Clamp(3, 7);
-            VerifyDataFrameClip(clipped);
+            DataFrame clamped = df.Clamp(3, 7);
+            VerifyDataFrameClamp(clamped);
             for (int i = 0; i < 10; i++)
             {
                 if (i != 5)
@@ -1469,7 +1469,7 @@ namespace Microsoft.Data.Analysis.Tests
 
             // Inplace
             df.Clamp(3, 7, true);
-            VerifyDataFrameClip(df);
+            VerifyDataFrameClamp(df);
 
         }
 
@@ -1573,31 +1573,31 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrame merge = left.Merge<int>(right, "Int", "Int");
             Assert.Equal(10, merge.Rows.Count);
             Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
-            Assert.Null( merge.Columns["Int_right"][6]);
-            Assert.Null( merge.Columns["Int_left"][5]);
+            Assert.Null(merge.Columns["Int_right"][6]);
+            Assert.Null(merge.Columns["Int_left"][5]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Left);
 
             // Right merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Right);
             Assert.Equal(5, merge.Rows.Count);
             Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
-            Assert.Equal( merge.Columns["Int_right"][3], right.Columns["Int"][3]);
-            Assert.Null( merge.Columns["Int_right"][2]);
+            Assert.Equal(merge.Columns["Int_right"][3], right.Columns["Int"][3]);
+            Assert.Null(merge.Columns["Int_right"][2]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Right);
 
             // Outer merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(merge.Rows.Count, left.Rows.Count);
             Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
-            Assert.Null( merge.Columns["Int_right"][6]);
+            Assert.Null(merge.Columns["Int_right"][6]);
             VerifyMerge(merge, left, right, JoinAlgorithm.FullOuter);
 
             // Inner merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Inner);
             Assert.Equal(merge.Rows.Count, right.Rows.Count);
             Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
-            Assert.Equal( merge.Columns["Int_right"][2], right.Columns["Int"][3]);
-            Assert.Null( merge.Columns["Int_right"][4]);
+            Assert.Equal(merge.Columns["Int_right"][2], right.Columns["Int"][3]);
+            Assert.Null(merge.Columns["Int_right"][4]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Inner);
 
             // Tests with right.Rows.Count > left.Rows.Count 
@@ -1606,30 +1606,30 @@ namespace Microsoft.Data.Analysis.Tests
             merge = left.Merge<int>(right, "Int", "Int");
             Assert.Equal(merge.Rows.Count, left.Rows.Count);
             Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
-            Assert.Equal( merge.Columns["Int_right"][6], right.Columns["Int"][6]);
+            Assert.Equal(merge.Columns["Int_right"][6], right.Columns["Int"][6]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Left);
 
             // Right merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Right);
             Assert.Equal(merge.Rows.Count, right.Rows.Count);
             Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
-            Assert.Equal( merge.Columns["Int_right"][2], right.Columns["Int"][2]);
-            Assert.Null( merge.Columns["Int_left"][12]);
+            Assert.Equal(merge.Columns["Int_right"][2], right.Columns["Int"][2]);
+            Assert.Null(merge.Columns["Int_left"][12]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Right);
 
             // Outer merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.FullOuter);
             Assert.Equal(16, merge.Rows.Count);
             Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
-            Assert.Null( merge.Columns["Int_left"][12]);
-            Assert.Null( merge.Columns["Int_left"][5]);
+            Assert.Null(merge.Columns["Int_left"][12]);
+            Assert.Null(merge.Columns["Int_left"][5]);
             VerifyMerge(merge, left, right, JoinAlgorithm.FullOuter);
 
             // Inner merge 
             merge = left.Merge<int>(right, "Int", "Int", joinAlgorithm: JoinAlgorithm.Inner);
             Assert.Equal(9, merge.Rows.Count);
             Assert.Equal(merge.Columns.Count, left.Columns.Count + right.Columns.Count);
-            Assert.Equal( merge.Columns["Int_right"][2], right.Columns["Int"][2]);
+            Assert.Equal(merge.Columns["Int_right"][2], right.Columns["Int"][2]);
             VerifyMerge(merge, left, right, JoinAlgorithm.Inner);
         }
 

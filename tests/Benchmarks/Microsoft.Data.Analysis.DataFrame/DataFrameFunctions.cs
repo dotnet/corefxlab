@@ -71,7 +71,7 @@ namespace Benchmarks.Microsoft.Data.Analysis
         }
 
         [Benchmark]
-        public DataFrame Clip()
+        public DataFrame Clamp()
         {
             return _dataFrame.Clamp(10000, 40000);
         }
