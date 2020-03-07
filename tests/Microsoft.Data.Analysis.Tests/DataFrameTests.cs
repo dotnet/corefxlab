@@ -2177,12 +2177,5 @@ namespace Microsoft.Data.Analysis.Tests
             AssertLengthTypeAndValues(ushortColumn, typeof(ushort));
         }
 
-        [Fact]
-        public void TestIntColumn()
-        {
-            int[] values = { 1, 2, 3, 4, 5 };
-            IntDataFrameColumn ints = new IntDataFrameColumn("Ints", values);
-            IntDataFrameColumn add = ints.Add(1);
-        }
     }
 }
