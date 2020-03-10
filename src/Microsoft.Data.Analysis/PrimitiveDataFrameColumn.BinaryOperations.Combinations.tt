@@ -12,10 +12,27 @@
 
 // Generated from PrimitiveDataFrameColumn.BinaryOperations.Combinations.tt. Do not modify directly
 
+public class TypeCombination
+{
+       private string _thisColumnType;
+       private string _otherColumnType;
+       private string _returnColumnType;
+
+       public TypeCombination(string thisColumnType, string otherColumnType, string returnColumnType)
+       {
+           _thisColumnType = thisColumnType;
+           _otherColumnType = otherColumnType;
+           _returnColumnType = returnColumnType;
+       }
+       public string ThisColumnType => _thisColumnType;
+       public string OtherColumnType => _otherColumnType;
+       public string ReturnColumnType => _returnColumnType;
+}
+
 public class BinaryOperationCombinations
 {
 
-    public static List<List<string>> binaryOperationCombinations = new List<List<string>>
+    public static List<TypeCombination> binaryOperationCombinations = new List<TypeCombination>
     {
 <#
 foreach (TypeConfiguration type in typeConfiguration) 
@@ -37,7 +54,7 @@ if (IsMixedSignedAndUnsignedTypePair(type.TypeName, type2.TypeName)) {
     continue;
 } 
 #>
-        new List<string> {"<#=type.TypeName#>", "<#=type2.TypeName#>", "<#=GetBinaryOperationReturnType(type, type2)#>"},
+        new TypeCombination("<#=type.TypeName#>", "<#=type2.TypeName#>", "<#=GetBinaryOperationReturnType(type, type2)#>"),
 <#
     }
 }
@@ -47,7 +64,7 @@ if (IsMixedSignedAndUnsignedTypePair(type.TypeName, type2.TypeName)) {
 
 public class ComparisonOperationCombinations
 {
-    public static List<List<string>> comparisonOperationCombinations = new List<List<string>>
+    public static List<TypeCombination> comparisonOperationCombinations = new List<TypeCombination>
     {
 <#
         foreach (TypeConfiguration type in typeConfiguration) 
@@ -72,7 +89,7 @@ public class ComparisonOperationCombinations
                 }
                 // For comparison, we don't exclude mixed signed and unsigned types since the result is always a bool
 #>
-        new List<string> {"<#=type.TypeName#>", "<#=innerType.TypeName#>", "bool"},
+        new TypeCombination("<#=type.TypeName#>", "<#=innerType.TypeName#>", "bool"),
 <#
             }
         }

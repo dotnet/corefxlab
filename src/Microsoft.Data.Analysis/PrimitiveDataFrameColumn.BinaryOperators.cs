@@ -33,49 +33,49 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(ByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator +(ByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator +(ByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(ByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(ByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(ByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
@@ -103,21 +103,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
@@ -131,28 +131,28 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
@@ -180,21 +180,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
@@ -208,245 +208,245 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(FloatDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(FloatDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(IntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(IntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(IntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(IntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(IntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(LongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(LongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(LongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
@@ -467,21 +467,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(SByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator +(SByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator +(SByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
@@ -495,308 +495,308 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(SByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(SByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(SByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(SByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(ShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(ShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(ShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(ShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(ShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(ShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(ShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(ShortDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(ShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(UIntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(UIntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(UIntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(UIntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(UIntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(ULongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(ULongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(ULongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(UShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(UShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(UShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(UShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(UShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(UShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(UShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(UShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(UShortDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
         }
@@ -836,77 +836,77 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(ByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(ByteDataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, ByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator +(ByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator +(ByteDataFrameColumn left, int right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(int left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(int left, ByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator +(ByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator +(ByteDataFrameColumn left, long right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(long left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(long left, ByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(ByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator +(ByteDataFrameColumn left, short right)
         {
             return left.Add(right);
         }
-        public static ShortDataFrameColumn operator +(short left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(short left, ByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(ByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator +(ByteDataFrameColumn left, uint right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(uint left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(uint left, ByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator +(ByteDataFrameColumn left, ulong right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(ulong left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ulong left, ByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(ByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator +(ByteDataFrameColumn left, ushort right)
         {
             return left.Add(right);
         }
-        public static UShortDataFrameColumn operator +(ushort left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(ushort left, ByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
@@ -1153,343 +1153,343 @@ namespace Microsoft.Data.Analysis
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, byte right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, byte right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(byte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(byte left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(FloatDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator +(SingleDataFrameColumn left, decimal right)
         {
             return left.Add(right);
         }
-        public static DecimalDataFrameColumn operator +(decimal left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(decimal left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(FloatDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator +(SingleDataFrameColumn left, double right)
         {
             return left.Add(right);
         }
-        public static DoubleDataFrameColumn operator +(double left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(double left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, int right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, int right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(int left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(int left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, long right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, long right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(long left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(long left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, sbyte right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, sbyte right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(sbyte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(sbyte left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, short right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, short right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(short left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(short left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, uint right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, uint right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(uint left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(uint left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, ulong right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, ulong right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(ulong left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(ulong left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(FloatDataFrameColumn left, ushort right)
+        public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, ushort right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(ushort left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(ushort left, SingleDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, byte right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, byte right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(byte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(byte left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(IntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator +(Int32DataFrameColumn left, decimal right)
         {
             return left.Add(right);
         }
-        public static DecimalDataFrameColumn operator +(decimal left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(decimal left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(IntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator +(Int32DataFrameColumn left, double right)
         {
             return left.Add(right);
         }
-        public static DoubleDataFrameColumn operator +(double left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(double left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(IntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(Int32DataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, int right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(int left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(int left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(IntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator +(Int32DataFrameColumn left, long right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(long left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(long left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, sbyte right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(sbyte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(sbyte left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, short right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, short right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(short left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(short left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(IntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator +(Int32DataFrameColumn left, ulong right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(ulong left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ulong left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(IntDataFrameColumn left, ushort right)
+        public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, ushort right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(ushort left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(ushort left, Int32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, byte right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, byte right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(byte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(byte left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(LongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator +(Int64DataFrameColumn left, decimal right)
         {
             return left.Add(right);
         }
-        public static DecimalDataFrameColumn operator +(decimal left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(decimal left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(LongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator +(Int64DataFrameColumn left, double right)
         {
             return left.Add(right);
         }
-        public static DoubleDataFrameColumn operator +(double left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(double left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(LongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(Int64DataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, int right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, int right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(int left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(int left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, long right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(long left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(long left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, sbyte right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(sbyte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(sbyte left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, short right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, short right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(short left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(short left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, uint right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, uint right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(uint left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(uint left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(LongDataFrameColumn left, ushort right)
+        public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, ushort right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(ushort left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(ushort left, Int64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
@@ -1518,33 +1518,33 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(SByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(SByteDataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, SByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator +(SByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator +(SByteDataFrameColumn left, int right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(int left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(int left, SByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator +(SByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator +(SByteDataFrameColumn left, long right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(long left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(long left, SByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
@@ -1562,484 +1562,484 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(SByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator +(SByteDataFrameColumn left, short right)
         {
             return left.Add(right);
         }
-        public static ShortDataFrameColumn operator +(short left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(short left, SByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(SByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator +(SByteDataFrameColumn left, uint right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(uint left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(uint left, SByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(SByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator +(SByteDataFrameColumn left, ulong right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(ulong left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ulong left, SByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(SByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator +(SByteDataFrameColumn left, ushort right)
         {
             return left.Add(right);
         }
-        public static UShortDataFrameColumn operator +(ushort left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(ushort left, SByteDataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(ShortDataFrameColumn left, byte right)
+        public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, byte right)
         {
             return left.Add(right);
         }
-        public static ShortDataFrameColumn operator +(byte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(byte left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(ShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator +(Int16DataFrameColumn left, decimal right)
         {
             return left.Add(right);
         }
-        public static DecimalDataFrameColumn operator +(decimal left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(decimal left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(ShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator +(Int16DataFrameColumn left, double right)
         {
             return left.Add(right);
         }
-        public static DoubleDataFrameColumn operator +(double left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(double left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(ShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(Int16DataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(ShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator +(Int16DataFrameColumn left, int right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(int left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(int left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(ShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator +(Int16DataFrameColumn left, long right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(long left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(long left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(ShortDataFrameColumn left, sbyte right)
+        public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
         }
-        public static ShortDataFrameColumn operator +(sbyte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(sbyte left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator +(ShortDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, short right)
         {
             return left.Add(right);
         }
-        public static ShortDataFrameColumn operator +(short left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator +(short left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(ShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator +(Int16DataFrameColumn left, uint right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(uint left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(uint left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator +(Int16DataFrameColumn left, ulong right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(ulong left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ulong left, Int16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, byte right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, byte right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(byte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(byte left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(UIntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator +(UInt32DataFrameColumn left, decimal right)
         {
             return left.Add(right);
         }
-        public static DecimalDataFrameColumn operator +(decimal left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(decimal left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(UIntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator +(UInt32DataFrameColumn left, double right)
         {
             return left.Add(right);
         }
-        public static DoubleDataFrameColumn operator +(double left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(double left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(UIntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(UInt32DataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(UIntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator +(UInt32DataFrameColumn left, long right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(long left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(long left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, sbyte right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(sbyte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(sbyte left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, short right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, short right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(short left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(short left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, uint right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(uint left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(uint left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(UIntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator +(UInt32DataFrameColumn left, ulong right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(ulong left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ulong left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UIntDataFrameColumn left, ushort right)
+        public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, ushort right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(ushort left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(ushort left, UInt32DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, byte right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, byte right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(byte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(byte left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(ULongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator +(UInt64DataFrameColumn left, decimal right)
         {
             return left.Add(right);
         }
-        public static DecimalDataFrameColumn operator +(decimal left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(decimal left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(ULongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator +(UInt64DataFrameColumn left, double right)
         {
             return left.Add(right);
         }
-        public static DoubleDataFrameColumn operator +(double left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(double left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(ULongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(UInt64DataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, int right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, int right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(int left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(int left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, sbyte right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(sbyte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(sbyte left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, short right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, short right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(short left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(short left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, uint right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, uint right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(uint left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(uint left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, ulong right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(ulong left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ulong left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(ULongDataFrameColumn left, ushort right)
+        public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, ushort right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(ushort left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ushort left, UInt64DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(UShortDataFrameColumn left, byte right)
+        public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, byte right)
         {
             return left.Add(right);
         }
-        public static UShortDataFrameColumn operator +(byte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(byte left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator +(UShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator +(UInt16DataFrameColumn left, decimal right)
         {
             return left.Add(right);
         }
-        public static DecimalDataFrameColumn operator +(decimal left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator +(decimal left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator +(UShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator +(UInt16DataFrameColumn left, double right)
         {
             return left.Add(right);
         }
-        public static DoubleDataFrameColumn operator +(double left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator +(double left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator +(UShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator +(UInt16DataFrameColumn left, float right)
         {
             return left.Add(right);
         }
-        public static FloatDataFrameColumn operator +(float left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator +(float left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator +(UShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator +(UInt16DataFrameColumn left, int right)
         {
             return left.Add(right);
         }
-        public static IntDataFrameColumn operator +(int left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator +(int left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator +(UShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator +(UInt16DataFrameColumn left, long right)
         {
             return left.Add(right);
         }
-        public static LongDataFrameColumn operator +(long left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator +(long left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(UShortDataFrameColumn left, sbyte right)
+        public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
         }
-        public static UShortDataFrameColumn operator +(sbyte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(sbyte left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator +(UShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator +(UInt16DataFrameColumn left, uint right)
         {
             return left.Add(right);
         }
-        public static UIntDataFrameColumn operator +(uint left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator +(uint left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator +(UShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator +(UInt16DataFrameColumn left, ulong right)
         {
             return left.Add(right);
         }
-        public static ULongDataFrameColumn operator +(ulong left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator +(ulong left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator +(UShortDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, ushort right)
         {
             return left.Add(right);
         }
-        public static UShortDataFrameColumn operator +(ushort left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator +(ushort left, UInt16DataFrameColumn right)
         {
             return right.ReverseAdd(left);
         }
@@ -2067,49 +2067,49 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(ByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator -(ByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator -(ByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(ByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(ByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(ByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
@@ -2137,21 +2137,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
@@ -2165,28 +2165,28 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
@@ -2214,21 +2214,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
@@ -2242,245 +2242,245 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(FloatDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(FloatDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(IntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(IntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(IntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(IntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(IntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(LongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(LongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(LongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
@@ -2501,21 +2501,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(SByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator -(SByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator -(SByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
@@ -2529,308 +2529,308 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(SByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(SByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(SByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(SByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(ShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(ShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(ShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(ShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(ShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(ShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(ShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(ShortDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(ShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(UIntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(UIntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(UIntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(UIntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(UIntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(ULongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(ULongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(ULongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(UShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(UShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(UShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(UShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(UShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(UShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(UShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(UShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(UShortDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
@@ -2870,77 +2870,77 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(ByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(ByteDataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, ByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator -(ByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator -(ByteDataFrameColumn left, int right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(int left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(int left, ByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator -(ByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator -(ByteDataFrameColumn left, long right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(long left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(long left, ByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(ByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator -(ByteDataFrameColumn left, short right)
         {
             return left.Subtract(right);
         }
-        public static ShortDataFrameColumn operator -(short left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(short left, ByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(ByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator -(ByteDataFrameColumn left, uint right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(uint left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(uint left, ByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator -(ByteDataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(ulong left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ulong left, ByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(ByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator -(ByteDataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
         }
-        public static UShortDataFrameColumn operator -(ushort left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(ushort left, ByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
@@ -3187,343 +3187,343 @@ namespace Microsoft.Data.Analysis
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, byte right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, byte right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(byte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(byte left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(FloatDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator -(SingleDataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
         }
-        public static DecimalDataFrameColumn operator -(decimal left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(decimal left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(FloatDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator -(SingleDataFrameColumn left, double right)
         {
             return left.Subtract(right);
         }
-        public static DoubleDataFrameColumn operator -(double left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(double left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, int right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, int right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(int left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(int left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, long right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, long right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(long left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(long left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, sbyte right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(sbyte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(sbyte left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, short right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, short right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(short left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(short left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, uint right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, uint right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(uint left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(uint left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, ulong right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(ulong left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(ulong left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(FloatDataFrameColumn left, ushort right)
+        public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(ushort left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(ushort left, SingleDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, byte right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, byte right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(byte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(byte left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(IntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator -(Int32DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
         }
-        public static DecimalDataFrameColumn operator -(decimal left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(decimal left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(IntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator -(Int32DataFrameColumn left, double right)
         {
             return left.Subtract(right);
         }
-        public static DoubleDataFrameColumn operator -(double left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(double left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(IntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(Int32DataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, int right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(int left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(int left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(IntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator -(Int32DataFrameColumn left, long right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(long left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(long left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, sbyte right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(sbyte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(sbyte left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, short right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, short right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(short left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(short left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(IntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator -(Int32DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(ulong left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ulong left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(IntDataFrameColumn left, ushort right)
+        public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(ushort left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(ushort left, Int32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, byte right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, byte right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(byte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(byte left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(LongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator -(Int64DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
         }
-        public static DecimalDataFrameColumn operator -(decimal left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(decimal left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(LongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator -(Int64DataFrameColumn left, double right)
         {
             return left.Subtract(right);
         }
-        public static DoubleDataFrameColumn operator -(double left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(double left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(LongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(Int64DataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, int right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, int right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(int left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(int left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, long right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(long left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(long left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, sbyte right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(sbyte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(sbyte left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, short right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, short right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(short left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(short left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, uint right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(uint left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(uint left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(LongDataFrameColumn left, ushort right)
+        public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(ushort left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(ushort left, Int64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
@@ -3552,33 +3552,33 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(SByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(SByteDataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, SByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator -(SByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator -(SByteDataFrameColumn left, int right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(int left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(int left, SByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator -(SByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator -(SByteDataFrameColumn left, long right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(long left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(long left, SByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
@@ -3596,484 +3596,484 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(SByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator -(SByteDataFrameColumn left, short right)
         {
             return left.Subtract(right);
         }
-        public static ShortDataFrameColumn operator -(short left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(short left, SByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(SByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator -(SByteDataFrameColumn left, uint right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(uint left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(uint left, SByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(SByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator -(SByteDataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(ulong left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ulong left, SByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(SByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator -(SByteDataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
         }
-        public static UShortDataFrameColumn operator -(ushort left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(ushort left, SByteDataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(ShortDataFrameColumn left, byte right)
+        public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, byte right)
         {
             return left.Subtract(right);
         }
-        public static ShortDataFrameColumn operator -(byte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(byte left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(ShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator -(Int16DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
         }
-        public static DecimalDataFrameColumn operator -(decimal left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(decimal left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(ShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator -(Int16DataFrameColumn left, double right)
         {
             return left.Subtract(right);
         }
-        public static DoubleDataFrameColumn operator -(double left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(double left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(ShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(Int16DataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(ShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator -(Int16DataFrameColumn left, int right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(int left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(int left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(ShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator -(Int16DataFrameColumn left, long right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(long left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(long left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(ShortDataFrameColumn left, sbyte right)
+        public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
         }
-        public static ShortDataFrameColumn operator -(sbyte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(sbyte left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator -(ShortDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, short right)
         {
             return left.Subtract(right);
         }
-        public static ShortDataFrameColumn operator -(short left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator -(short left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(ShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator -(Int16DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(uint left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(uint left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator -(Int16DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(ulong left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ulong left, Int16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, byte right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, byte right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(byte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(byte left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(UIntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator -(UInt32DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
         }
-        public static DecimalDataFrameColumn operator -(decimal left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(decimal left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(UIntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator -(UInt32DataFrameColumn left, double right)
         {
             return left.Subtract(right);
         }
-        public static DoubleDataFrameColumn operator -(double left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(double left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(UIntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(UInt32DataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(UIntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator -(UInt32DataFrameColumn left, long right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(long left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(long left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, sbyte right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(sbyte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(sbyte left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, short right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, short right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(short left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(short left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(uint left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(uint left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(UIntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator -(UInt32DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(ulong left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ulong left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UIntDataFrameColumn left, ushort right)
+        public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(ushort left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(ushort left, UInt32DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, byte right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, byte right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(byte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(byte left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(ULongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator -(UInt64DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
         }
-        public static DecimalDataFrameColumn operator -(decimal left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(decimal left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(ULongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator -(UInt64DataFrameColumn left, double right)
         {
             return left.Subtract(right);
         }
-        public static DoubleDataFrameColumn operator -(double left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(double left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(ULongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(UInt64DataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, int right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, int right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(int left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(int left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, sbyte right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(sbyte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(sbyte left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, short right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, short right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(short left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(short left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, uint right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(uint left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(uint left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(ulong left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ulong left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(ULongDataFrameColumn left, ushort right)
+        public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(ushort left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ushort left, UInt64DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(UShortDataFrameColumn left, byte right)
+        public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, byte right)
         {
             return left.Subtract(right);
         }
-        public static UShortDataFrameColumn operator -(byte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(byte left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator -(UShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator -(UInt16DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
         }
-        public static DecimalDataFrameColumn operator -(decimal left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator -(decimal left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator -(UShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator -(UInt16DataFrameColumn left, double right)
         {
             return left.Subtract(right);
         }
-        public static DoubleDataFrameColumn operator -(double left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator -(double left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator -(UShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator -(UInt16DataFrameColumn left, float right)
         {
             return left.Subtract(right);
         }
-        public static FloatDataFrameColumn operator -(float left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator -(float left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator -(UShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator -(UInt16DataFrameColumn left, int right)
         {
             return left.Subtract(right);
         }
-        public static IntDataFrameColumn operator -(int left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator -(int left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator -(UShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator -(UInt16DataFrameColumn left, long right)
         {
             return left.Subtract(right);
         }
-        public static LongDataFrameColumn operator -(long left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator -(long left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(UShortDataFrameColumn left, sbyte right)
+        public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
         }
-        public static UShortDataFrameColumn operator -(sbyte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(sbyte left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator -(UShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator -(UInt16DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
         }
-        public static UIntDataFrameColumn operator -(uint left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator -(uint left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator -(UShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator -(UInt16DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
         }
-        public static ULongDataFrameColumn operator -(ulong left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator -(ulong left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator -(UShortDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
         }
-        public static UShortDataFrameColumn operator -(ushort left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator -(ushort left, UInt16DataFrameColumn right)
         {
             return right.ReverseSubtract(left);
         }
@@ -4101,49 +4101,49 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(ByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator *(ByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator *(ByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(ByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(ByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(ByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
@@ -4171,21 +4171,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
@@ -4199,28 +4199,28 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
@@ -4248,21 +4248,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
@@ -4276,245 +4276,245 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(FloatDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(FloatDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(IntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(IntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(IntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(IntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(IntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(LongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(LongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(LongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
@@ -4535,21 +4535,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(SByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator *(SByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator *(SByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
@@ -4563,308 +4563,308 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(SByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(SByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(SByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(SByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(ShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(ShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(ShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(ShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(ShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(ShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(ShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(ShortDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(ShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(UIntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(UIntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(UIntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(UIntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(UIntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(ULongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(ULongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(ULongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(UShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(UShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(UShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(UShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(UShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(UShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(UShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(UShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(UShortDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
@@ -4904,77 +4904,77 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(ByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(ByteDataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, ByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator *(ByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator *(ByteDataFrameColumn left, int right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(int left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(int left, ByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator *(ByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator *(ByteDataFrameColumn left, long right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(long left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(long left, ByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(ByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator *(ByteDataFrameColumn left, short right)
         {
             return left.Multiply(right);
         }
-        public static ShortDataFrameColumn operator *(short left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(short left, ByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(ByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator *(ByteDataFrameColumn left, uint right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(uint left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(uint left, ByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator *(ByteDataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(ulong left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ulong left, ByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(ByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator *(ByteDataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
         }
-        public static UShortDataFrameColumn operator *(ushort left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(ushort left, ByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
@@ -5221,343 +5221,343 @@ namespace Microsoft.Data.Analysis
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, byte right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, byte right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(byte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(byte left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(FloatDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator *(SingleDataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
         }
-        public static DecimalDataFrameColumn operator *(decimal left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(decimal left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(FloatDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator *(SingleDataFrameColumn left, double right)
         {
             return left.Multiply(right);
         }
-        public static DoubleDataFrameColumn operator *(double left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(double left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, int right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, int right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(int left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(int left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, long right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, long right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(long left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(long left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, sbyte right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(sbyte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(sbyte left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, short right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, short right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(short left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(short left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, uint right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, uint right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(uint left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(uint left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, ulong right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(ulong left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(ulong left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(FloatDataFrameColumn left, ushort right)
+        public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(ushort left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(ushort left, SingleDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, byte right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, byte right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(byte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(byte left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(IntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator *(Int32DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
         }
-        public static DecimalDataFrameColumn operator *(decimal left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(decimal left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(IntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator *(Int32DataFrameColumn left, double right)
         {
             return left.Multiply(right);
         }
-        public static DoubleDataFrameColumn operator *(double left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(double left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(IntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(Int32DataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, int right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(int left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(int left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(IntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator *(Int32DataFrameColumn left, long right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(long left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(long left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, sbyte right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(sbyte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(sbyte left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, short right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, short right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(short left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(short left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(IntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator *(Int32DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(ulong left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ulong left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(IntDataFrameColumn left, ushort right)
+        public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(ushort left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(ushort left, Int32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, byte right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, byte right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(byte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(byte left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(LongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator *(Int64DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
         }
-        public static DecimalDataFrameColumn operator *(decimal left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(decimal left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(LongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator *(Int64DataFrameColumn left, double right)
         {
             return left.Multiply(right);
         }
-        public static DoubleDataFrameColumn operator *(double left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(double left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(LongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(Int64DataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, int right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, int right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(int left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(int left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, long right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(long left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(long left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, sbyte right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(sbyte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(sbyte left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, short right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, short right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(short left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(short left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, uint right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(uint left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(uint left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(LongDataFrameColumn left, ushort right)
+        public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(ushort left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(ushort left, Int64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
@@ -5586,33 +5586,33 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(SByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(SByteDataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, SByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator *(SByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator *(SByteDataFrameColumn left, int right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(int left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(int left, SByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator *(SByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator *(SByteDataFrameColumn left, long right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(long left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(long left, SByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
@@ -5630,484 +5630,484 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(SByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator *(SByteDataFrameColumn left, short right)
         {
             return left.Multiply(right);
         }
-        public static ShortDataFrameColumn operator *(short left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(short left, SByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(SByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator *(SByteDataFrameColumn left, uint right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(uint left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(uint left, SByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(SByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator *(SByteDataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(ulong left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ulong left, SByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(SByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator *(SByteDataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
         }
-        public static UShortDataFrameColumn operator *(ushort left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(ushort left, SByteDataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(ShortDataFrameColumn left, byte right)
+        public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, byte right)
         {
             return left.Multiply(right);
         }
-        public static ShortDataFrameColumn operator *(byte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(byte left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(ShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator *(Int16DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
         }
-        public static DecimalDataFrameColumn operator *(decimal left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(decimal left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(ShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator *(Int16DataFrameColumn left, double right)
         {
             return left.Multiply(right);
         }
-        public static DoubleDataFrameColumn operator *(double left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(double left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(ShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(Int16DataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(ShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator *(Int16DataFrameColumn left, int right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(int left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(int left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(ShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator *(Int16DataFrameColumn left, long right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(long left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(long left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(ShortDataFrameColumn left, sbyte right)
+        public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
         }
-        public static ShortDataFrameColumn operator *(sbyte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(sbyte left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator *(ShortDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, short right)
         {
             return left.Multiply(right);
         }
-        public static ShortDataFrameColumn operator *(short left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator *(short left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(ShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator *(Int16DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(uint left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(uint left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator *(Int16DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(ulong left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ulong left, Int16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, byte right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, byte right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(byte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(byte left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(UIntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator *(UInt32DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
         }
-        public static DecimalDataFrameColumn operator *(decimal left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(decimal left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(UIntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator *(UInt32DataFrameColumn left, double right)
         {
             return left.Multiply(right);
         }
-        public static DoubleDataFrameColumn operator *(double left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(double left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(UIntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(UInt32DataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(UIntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator *(UInt32DataFrameColumn left, long right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(long left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(long left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, sbyte right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(sbyte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(sbyte left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, short right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, short right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(short left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(short left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(uint left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(uint left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(UIntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator *(UInt32DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(ulong left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ulong left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UIntDataFrameColumn left, ushort right)
+        public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(ushort left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(ushort left, UInt32DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, byte right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, byte right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(byte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(byte left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(ULongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator *(UInt64DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
         }
-        public static DecimalDataFrameColumn operator *(decimal left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(decimal left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(ULongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator *(UInt64DataFrameColumn left, double right)
         {
             return left.Multiply(right);
         }
-        public static DoubleDataFrameColumn operator *(double left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(double left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(ULongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(UInt64DataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, int right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, int right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(int left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(int left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, sbyte right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(sbyte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(sbyte left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, short right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, short right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(short left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(short left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, uint right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(uint left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(uint left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(ulong left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ulong left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(ULongDataFrameColumn left, ushort right)
+        public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(ushort left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ushort left, UInt64DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(UShortDataFrameColumn left, byte right)
+        public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, byte right)
         {
             return left.Multiply(right);
         }
-        public static UShortDataFrameColumn operator *(byte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(byte left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator *(UShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator *(UInt16DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
         }
-        public static DecimalDataFrameColumn operator *(decimal left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator *(decimal left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator *(UShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator *(UInt16DataFrameColumn left, double right)
         {
             return left.Multiply(right);
         }
-        public static DoubleDataFrameColumn operator *(double left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator *(double left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator *(UShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator *(UInt16DataFrameColumn left, float right)
         {
             return left.Multiply(right);
         }
-        public static FloatDataFrameColumn operator *(float left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator *(float left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator *(UShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator *(UInt16DataFrameColumn left, int right)
         {
             return left.Multiply(right);
         }
-        public static IntDataFrameColumn operator *(int left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator *(int left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator *(UShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator *(UInt16DataFrameColumn left, long right)
         {
             return left.Multiply(right);
         }
-        public static LongDataFrameColumn operator *(long left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator *(long left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(UShortDataFrameColumn left, sbyte right)
+        public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
         }
-        public static UShortDataFrameColumn operator *(sbyte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(sbyte left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator *(UShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator *(UInt16DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
         }
-        public static UIntDataFrameColumn operator *(uint left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator *(uint left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator *(UShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator *(UInt16DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
         }
-        public static ULongDataFrameColumn operator *(ulong left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator *(ulong left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator *(UShortDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
         }
-        public static UShortDataFrameColumn operator *(ushort left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator *(ushort left, UInt16DataFrameColumn right)
         {
             return right.ReverseMultiply(left);
         }
@@ -6135,49 +6135,49 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(ByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator /(ByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator /(ByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(ByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(ByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(ByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
@@ -6205,21 +6205,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
@@ -6233,28 +6233,28 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
@@ -6282,21 +6282,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
@@ -6310,245 +6310,245 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(FloatDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(FloatDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(IntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(IntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(IntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(IntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(IntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(LongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(LongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(LongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
@@ -6569,21 +6569,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(SByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator /(SByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator /(SByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
@@ -6597,308 +6597,308 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(SByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(SByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(SByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(SByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(ShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(ShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(ShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(ShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(ShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(ShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(ShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(ShortDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(ShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(UIntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(UIntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(UIntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(UIntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(UIntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(ULongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(ULongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(ULongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(UShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(UShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(UShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(UShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(UShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(UShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(UShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(UShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(UShortDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
         }
@@ -6938,77 +6938,77 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(ByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(ByteDataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, ByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator /(ByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator /(ByteDataFrameColumn left, int right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(int left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(int left, ByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator /(ByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator /(ByteDataFrameColumn left, long right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(long left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(long left, ByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(ByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator /(ByteDataFrameColumn left, short right)
         {
             return left.Divide(right);
         }
-        public static ShortDataFrameColumn operator /(short left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(short left, ByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(ByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator /(ByteDataFrameColumn left, uint right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(uint left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(uint left, ByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator /(ByteDataFrameColumn left, ulong right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(ulong left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ulong left, ByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(ByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator /(ByteDataFrameColumn left, ushort right)
         {
             return left.Divide(right);
         }
-        public static UShortDataFrameColumn operator /(ushort left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(ushort left, ByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
@@ -7255,343 +7255,343 @@ namespace Microsoft.Data.Analysis
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, byte right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, byte right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(byte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(byte left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(FloatDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator /(SingleDataFrameColumn left, decimal right)
         {
             return left.Divide(right);
         }
-        public static DecimalDataFrameColumn operator /(decimal left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(decimal left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(FloatDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator /(SingleDataFrameColumn left, double right)
         {
             return left.Divide(right);
         }
-        public static DoubleDataFrameColumn operator /(double left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(double left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, int right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, int right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(int left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(int left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, long right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, long right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(long left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(long left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, sbyte right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(sbyte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(sbyte left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, short right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, short right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(short left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(short left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, uint right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, uint right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(uint left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(uint left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, ulong right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, ulong right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(ulong left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(ulong left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(FloatDataFrameColumn left, ushort right)
+        public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, ushort right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(ushort left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(ushort left, SingleDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, byte right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, byte right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(byte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(byte left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(IntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator /(Int32DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
         }
-        public static DecimalDataFrameColumn operator /(decimal left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(decimal left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(IntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator /(Int32DataFrameColumn left, double right)
         {
             return left.Divide(right);
         }
-        public static DoubleDataFrameColumn operator /(double left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(double left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(IntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(Int32DataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, int right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(int left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(int left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(IntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator /(Int32DataFrameColumn left, long right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(long left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(long left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, sbyte right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(sbyte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(sbyte left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, short right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, short right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(short left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(short left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(IntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator /(Int32DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(ulong left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ulong left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(IntDataFrameColumn left, ushort right)
+        public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(ushort left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(ushort left, Int32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, byte right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, byte right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(byte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(byte left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(LongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator /(Int64DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
         }
-        public static DecimalDataFrameColumn operator /(decimal left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(decimal left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(LongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator /(Int64DataFrameColumn left, double right)
         {
             return left.Divide(right);
         }
-        public static DoubleDataFrameColumn operator /(double left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(double left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(LongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(Int64DataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, int right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, int right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(int left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(int left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, long right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(long left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(long left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, sbyte right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(sbyte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(sbyte left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, short right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, short right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(short left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(short left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, uint right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, uint right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(uint left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(uint left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(LongDataFrameColumn left, ushort right)
+        public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(ushort left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(ushort left, Int64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
@@ -7620,33 +7620,33 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(SByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(SByteDataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, SByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator /(SByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator /(SByteDataFrameColumn left, int right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(int left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(int left, SByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator /(SByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator /(SByteDataFrameColumn left, long right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(long left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(long left, SByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
@@ -7664,484 +7664,484 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(SByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator /(SByteDataFrameColumn left, short right)
         {
             return left.Divide(right);
         }
-        public static ShortDataFrameColumn operator /(short left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(short left, SByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(SByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator /(SByteDataFrameColumn left, uint right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(uint left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(uint left, SByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(SByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator /(SByteDataFrameColumn left, ulong right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(ulong left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ulong left, SByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(SByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator /(SByteDataFrameColumn left, ushort right)
         {
             return left.Divide(right);
         }
-        public static UShortDataFrameColumn operator /(ushort left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(ushort left, SByteDataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(ShortDataFrameColumn left, byte right)
+        public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, byte right)
         {
             return left.Divide(right);
         }
-        public static ShortDataFrameColumn operator /(byte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(byte left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(ShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator /(Int16DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
         }
-        public static DecimalDataFrameColumn operator /(decimal left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(decimal left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(ShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator /(Int16DataFrameColumn left, double right)
         {
             return left.Divide(right);
         }
-        public static DoubleDataFrameColumn operator /(double left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(double left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(ShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(Int16DataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(ShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator /(Int16DataFrameColumn left, int right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(int left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(int left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(ShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator /(Int16DataFrameColumn left, long right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(long left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(long left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(ShortDataFrameColumn left, sbyte right)
+        public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
         }
-        public static ShortDataFrameColumn operator /(sbyte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(sbyte left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator /(ShortDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, short right)
         {
             return left.Divide(right);
         }
-        public static ShortDataFrameColumn operator /(short left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator /(short left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(ShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator /(Int16DataFrameColumn left, uint right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(uint left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(uint left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator /(Int16DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(ulong left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ulong left, Int16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, byte right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, byte right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(byte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(byte left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(UIntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator /(UInt32DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
         }
-        public static DecimalDataFrameColumn operator /(decimal left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(decimal left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(UIntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator /(UInt32DataFrameColumn left, double right)
         {
             return left.Divide(right);
         }
-        public static DoubleDataFrameColumn operator /(double left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(double left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(UIntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(UInt32DataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(UIntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator /(UInt32DataFrameColumn left, long right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(long left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(long left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, sbyte right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(sbyte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(sbyte left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, short right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, short right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(short left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(short left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, uint right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(uint left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(uint left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(UIntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator /(UInt32DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(ulong left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ulong left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UIntDataFrameColumn left, ushort right)
+        public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(ushort left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(ushort left, UInt32DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, byte right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, byte right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(byte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(byte left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(ULongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator /(UInt64DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
         }
-        public static DecimalDataFrameColumn operator /(decimal left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(decimal left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(ULongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator /(UInt64DataFrameColumn left, double right)
         {
             return left.Divide(right);
         }
-        public static DoubleDataFrameColumn operator /(double left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(double left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(ULongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(UInt64DataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, int right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, int right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(int left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(int left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, sbyte right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(sbyte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(sbyte left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, short right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, short right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(short left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(short left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, uint right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, uint right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(uint left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(uint left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(ulong left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ulong left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(ULongDataFrameColumn left, ushort right)
+        public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(ushort left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ushort left, UInt64DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(UShortDataFrameColumn left, byte right)
+        public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, byte right)
         {
             return left.Divide(right);
         }
-        public static UShortDataFrameColumn operator /(byte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(byte left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator /(UShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator /(UInt16DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
         }
-        public static DecimalDataFrameColumn operator /(decimal left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator /(decimal left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator /(UShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator /(UInt16DataFrameColumn left, double right)
         {
             return left.Divide(right);
         }
-        public static DoubleDataFrameColumn operator /(double left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator /(double left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator /(UShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator /(UInt16DataFrameColumn left, float right)
         {
             return left.Divide(right);
         }
-        public static FloatDataFrameColumn operator /(float left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator /(float left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator /(UShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator /(UInt16DataFrameColumn left, int right)
         {
             return left.Divide(right);
         }
-        public static IntDataFrameColumn operator /(int left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator /(int left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator /(UShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator /(UInt16DataFrameColumn left, long right)
         {
             return left.Divide(right);
         }
-        public static LongDataFrameColumn operator /(long left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator /(long left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(UShortDataFrameColumn left, sbyte right)
+        public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
         }
-        public static UShortDataFrameColumn operator /(sbyte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(sbyte left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator /(UShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator /(UInt16DataFrameColumn left, uint right)
         {
             return left.Divide(right);
         }
-        public static UIntDataFrameColumn operator /(uint left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator /(uint left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator /(UShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator /(UInt16DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
         }
-        public static ULongDataFrameColumn operator /(ulong left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator /(ulong left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator /(UShortDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
         }
-        public static UShortDataFrameColumn operator /(ushort left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator /(ushort left, UInt16DataFrameColumn right)
         {
             return right.ReverseDivide(left);
         }
@@ -8169,49 +8169,49 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(ByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator %(ByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator %(ByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(ByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(ByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(ByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
@@ -8239,21 +8239,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
@@ -8267,28 +8267,28 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
@@ -8316,21 +8316,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
@@ -8344,245 +8344,245 @@ namespace Microsoft.Data.Analysis
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(FloatDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(FloatDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(IntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(IntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(IntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(IntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(IntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(LongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(LongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(LongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
@@ -8603,21 +8603,21 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(SByteDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator %(SByteDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator %(SByteDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
@@ -8631,308 +8631,308 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(SByteDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(SByteDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(SByteDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(SByteDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(ShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(ShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(ShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(ShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(ShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(ShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(ShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(ShortDataFrameColumn left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(ShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(UIntDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(UIntDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(UIntDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(UIntDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(UIntDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(ULongDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(ULongDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(ULongDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(UShortDataFrameColumn left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, ByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(UShortDataFrameColumn left, DecimalDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(UShortDataFrameColumn left, DoubleDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(UShortDataFrameColumn left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(UShortDataFrameColumn left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(UShortDataFrameColumn left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(UShortDataFrameColumn left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UShortDataFrameColumn left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(UShortDataFrameColumn left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(UShortDataFrameColumn left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
@@ -8972,77 +8972,77 @@ namespace Microsoft.Data.Analysis
     }
     public partial class ByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(ByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(ByteDataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, ByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, ByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator %(ByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator %(ByteDataFrameColumn left, int right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(int left, ByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(int left, ByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator %(ByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator %(ByteDataFrameColumn left, long right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(long left, ByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(long left, ByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(ByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator %(ByteDataFrameColumn left, short right)
         {
             return left.Modulo(right);
         }
-        public static ShortDataFrameColumn operator %(short left, ByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(short left, ByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(ByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator %(ByteDataFrameColumn left, uint right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(uint left, ByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(uint left, ByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator %(ByteDataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(ulong left, ByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ulong left, ByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(ByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator %(ByteDataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
         }
-        public static UShortDataFrameColumn operator %(ushort left, ByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(ushort left, ByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
@@ -9289,343 +9289,343 @@ namespace Microsoft.Data.Analysis
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, byte right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, byte right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(byte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(byte left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(FloatDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator %(SingleDataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
         }
-        public static DecimalDataFrameColumn operator %(decimal left, FloatDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(decimal left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(FloatDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator %(SingleDataFrameColumn left, double right)
         {
             return left.Modulo(right);
         }
-        public static DoubleDataFrameColumn operator %(double left, FloatDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(double left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, int right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, int right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(int left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(int left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, long right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, long right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(long left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(long left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, sbyte right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(sbyte left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(sbyte left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, short right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, short right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(short left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(short left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, uint right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, uint right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(uint left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(uint left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, ulong right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(ulong left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(ulong left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(FloatDataFrameColumn left, ushort right)
+        public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(ushort left, FloatDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(ushort left, SingleDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, byte right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, byte right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(byte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(byte left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(IntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator %(Int32DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
         }
-        public static DecimalDataFrameColumn operator %(decimal left, IntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(decimal left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(IntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator %(Int32DataFrameColumn left, double right)
         {
             return left.Modulo(right);
         }
-        public static DoubleDataFrameColumn operator %(double left, IntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(double left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(IntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(Int32DataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, IntDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, int right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(int left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(int left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(IntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator %(Int32DataFrameColumn left, long right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(long left, IntDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(long left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, sbyte right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(sbyte left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(sbyte left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, short right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, short right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(short left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(short left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(IntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator %(Int32DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(ulong left, IntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ulong left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(IntDataFrameColumn left, ushort right)
+        public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(ushort left, IntDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(ushort left, Int32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, byte right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, byte right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(byte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(byte left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(LongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator %(Int64DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
         }
-        public static DecimalDataFrameColumn operator %(decimal left, LongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(decimal left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(LongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator %(Int64DataFrameColumn left, double right)
         {
             return left.Modulo(right);
         }
-        public static DoubleDataFrameColumn operator %(double left, LongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(double left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(LongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(Int64DataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, LongDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, int right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, int right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(int left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(int left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, long right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(long left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(long left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, sbyte right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(sbyte left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(sbyte left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, short right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, short right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(short left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(short left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, uint right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(uint left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(uint left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(LongDataFrameColumn left, ushort right)
+        public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(ushort left, LongDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(ushort left, Int64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
@@ -9654,33 +9654,33 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(SByteDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(SByteDataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, SByteDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, SByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static IntDataFrameColumn operator %(SByteDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator %(SByteDataFrameColumn left, int right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(int left, SByteDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(int left, SByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static LongDataFrameColumn operator %(SByteDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator %(SByteDataFrameColumn left, long right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(long left, SByteDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(long left, SByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
@@ -9698,526 +9698,526 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(SByteDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator %(SByteDataFrameColumn left, short right)
         {
             return left.Modulo(right);
         }
-        public static ShortDataFrameColumn operator %(short left, SByteDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(short left, SByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(SByteDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator %(SByteDataFrameColumn left, uint right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(uint left, SByteDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(uint left, SByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(SByteDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator %(SByteDataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(ulong left, SByteDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ulong left, SByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(SByteDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator %(SByteDataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
         }
-        public static UShortDataFrameColumn operator %(ushort left, SByteDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(ushort left, SByteDataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(ShortDataFrameColumn left, byte right)
+        public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, byte right)
         {
             return left.Modulo(right);
         }
-        public static ShortDataFrameColumn operator %(byte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(byte left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(ShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator %(Int16DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
         }
-        public static DecimalDataFrameColumn operator %(decimal left, ShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(decimal left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(ShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator %(Int16DataFrameColumn left, double right)
         {
             return left.Modulo(right);
         }
-        public static DoubleDataFrameColumn operator %(double left, ShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(double left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(ShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(Int16DataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, ShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(ShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator %(Int16DataFrameColumn left, int right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(int left, ShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(int left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(ShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator %(Int16DataFrameColumn left, long right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(long left, ShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(long left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(ShortDataFrameColumn left, sbyte right)
+        public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
         }
-        public static ShortDataFrameColumn operator %(sbyte left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(sbyte left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator %(ShortDataFrameColumn left, short right)
+        public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, short right)
         {
             return left.Modulo(right);
         }
-        public static ShortDataFrameColumn operator %(short left, ShortDataFrameColumn right)
+        public static Int16DataFrameColumn operator %(short left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(ShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator %(Int16DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(uint left, ShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(uint left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator %(Int16DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(ulong left, ShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ulong left, Int16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, byte right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, byte right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(byte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(byte left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(UIntDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator %(UInt32DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
         }
-        public static DecimalDataFrameColumn operator %(decimal left, UIntDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(decimal left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(UIntDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator %(UInt32DataFrameColumn left, double right)
         {
             return left.Modulo(right);
         }
-        public static DoubleDataFrameColumn operator %(double left, UIntDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(double left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(UIntDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(UInt32DataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, UIntDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(UIntDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator %(UInt32DataFrameColumn left, long right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(long left, UIntDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(long left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, sbyte right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(sbyte left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(sbyte left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, short right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, short right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(short left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(short left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(uint left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(uint left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(UIntDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator %(UInt32DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(ulong left, UIntDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ulong left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UIntDataFrameColumn left, ushort right)
+        public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(ushort left, UIntDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(ushort left, UInt32DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, byte right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, byte right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(byte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(byte left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(ULongDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator %(UInt64DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
         }
-        public static DecimalDataFrameColumn operator %(decimal left, ULongDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(decimal left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(ULongDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator %(UInt64DataFrameColumn left, double right)
         {
             return left.Modulo(right);
         }
-        public static DoubleDataFrameColumn operator %(double left, ULongDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(double left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(ULongDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(UInt64DataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, ULongDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, int right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, int right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(int left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(int left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, sbyte right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(sbyte left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(sbyte left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, short right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, short right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(short left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(short left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, uint right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(uint left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(uint left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(ulong left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ulong left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(ULongDataFrameColumn left, ushort right)
+        public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(ushort left, ULongDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ushort left, UInt64DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(UShortDataFrameColumn left, byte right)
+        public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, byte right)
         {
             return left.Modulo(right);
         }
-        public static UShortDataFrameColumn operator %(byte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(byte left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DecimalDataFrameColumn operator %(UShortDataFrameColumn left, decimal right)
+        public static DecimalDataFrameColumn operator %(UInt16DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
         }
-        public static DecimalDataFrameColumn operator %(decimal left, UShortDataFrameColumn right)
+        public static DecimalDataFrameColumn operator %(decimal left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static DoubleDataFrameColumn operator %(UShortDataFrameColumn left, double right)
+        public static DoubleDataFrameColumn operator %(UInt16DataFrameColumn left, double right)
         {
             return left.Modulo(right);
         }
-        public static DoubleDataFrameColumn operator %(double left, UShortDataFrameColumn right)
+        public static DoubleDataFrameColumn operator %(double left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static FloatDataFrameColumn operator %(UShortDataFrameColumn left, float right)
+        public static SingleDataFrameColumn operator %(UInt16DataFrameColumn left, float right)
         {
             return left.Modulo(right);
         }
-        public static FloatDataFrameColumn operator %(float left, UShortDataFrameColumn right)
+        public static SingleDataFrameColumn operator %(float left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static IntDataFrameColumn operator %(UShortDataFrameColumn left, int right)
+        public static Int32DataFrameColumn operator %(UInt16DataFrameColumn left, int right)
         {
             return left.Modulo(right);
         }
-        public static IntDataFrameColumn operator %(int left, UShortDataFrameColumn right)
+        public static Int32DataFrameColumn operator %(int left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static LongDataFrameColumn operator %(UShortDataFrameColumn left, long right)
+        public static Int64DataFrameColumn operator %(UInt16DataFrameColumn left, long right)
         {
             return left.Modulo(right);
         }
-        public static LongDataFrameColumn operator %(long left, UShortDataFrameColumn right)
+        public static Int64DataFrameColumn operator %(long left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(UShortDataFrameColumn left, sbyte right)
+        public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
         }
-        public static UShortDataFrameColumn operator %(sbyte left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(sbyte left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UIntDataFrameColumn operator %(UShortDataFrameColumn left, uint right)
+        public static UInt32DataFrameColumn operator %(UInt16DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
         }
-        public static UIntDataFrameColumn operator %(uint left, UShortDataFrameColumn right)
+        public static UInt32DataFrameColumn operator %(uint left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static ULongDataFrameColumn operator %(UShortDataFrameColumn left, ulong right)
+        public static UInt64DataFrameColumn operator %(UInt16DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
         }
-        public static ULongDataFrameColumn operator %(ulong left, UShortDataFrameColumn right)
+        public static UInt64DataFrameColumn operator %(ulong left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator %(UShortDataFrameColumn left, ushort right)
+        public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
         }
-        public static UShortDataFrameColumn operator %(ushort left, UShortDataFrameColumn right)
+        public static UInt16DataFrameColumn operator %(ushort left, UInt16DataFrameColumn right)
         {
             return right.ReverseModulo(left);
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public static BoolDataFrameColumn operator &(BoolDataFrameColumn left, BoolDataFrameColumn right)
+        public static BooleanDataFrameColumn operator &(BooleanDataFrameColumn left, BooleanDataFrameColumn right)
         {
             return left.And(right);
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public static BoolDataFrameColumn operator &(BoolDataFrameColumn left, bool right)
+        public static BooleanDataFrameColumn operator &(BooleanDataFrameColumn left, bool right)
         {
             return left.And(right);
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public static BoolDataFrameColumn operator |(BoolDataFrameColumn left, BoolDataFrameColumn right)
+        public static BooleanDataFrameColumn operator |(BooleanDataFrameColumn left, BooleanDataFrameColumn right)
         {
             return left.Or(right);
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public static BoolDataFrameColumn operator |(BoolDataFrameColumn left, bool right)
+        public static BooleanDataFrameColumn operator |(BooleanDataFrameColumn left, bool right)
         {
             return left.Or(right);
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public static BoolDataFrameColumn operator ^(BoolDataFrameColumn left, BoolDataFrameColumn right)
+        public static BooleanDataFrameColumn operator ^(BooleanDataFrameColumn left, BooleanDataFrameColumn right)
         {
             return left.Xor(right);
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public static BoolDataFrameColumn operator ^(BoolDataFrameColumn left, bool right)
+        public static BooleanDataFrameColumn operator ^(BooleanDataFrameColumn left, bool right)
         {
             return left.Xor(right);
         }
@@ -10236,16 +10236,16 @@ namespace Microsoft.Data.Analysis
             return left.LeftShift(value);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator <<(IntDataFrameColumn left, int value)
+        public static Int32DataFrameColumn operator <<(Int32DataFrameColumn left, int value)
         {
             return left.LeftShift(value);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator <<(LongDataFrameColumn left, int value)
+        public static Int64DataFrameColumn operator <<(Int64DataFrameColumn left, int value)
         {
             return left.LeftShift(value);
         }
@@ -10257,30 +10257,30 @@ namespace Microsoft.Data.Analysis
             return left.LeftShift(value);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator <<(ShortDataFrameColumn left, int value)
+        public static Int16DataFrameColumn operator <<(Int16DataFrameColumn left, int value)
         {
             return left.LeftShift(value);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator <<(UIntDataFrameColumn left, int value)
+        public static UInt32DataFrameColumn operator <<(UInt32DataFrameColumn left, int value)
         {
             return left.LeftShift(value);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator <<(ULongDataFrameColumn left, int value)
+        public static UInt64DataFrameColumn operator <<(UInt64DataFrameColumn left, int value)
         {
             return left.LeftShift(value);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator <<(UShortDataFrameColumn left, int value)
+        public static UInt16DataFrameColumn operator <<(UInt16DataFrameColumn left, int value)
         {
             return left.LeftShift(value);
         }
@@ -10299,16 +10299,16 @@ namespace Microsoft.Data.Analysis
             return left.RightShift(value);
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public static IntDataFrameColumn operator >>(IntDataFrameColumn left, int value)
+        public static Int32DataFrameColumn operator >>(Int32DataFrameColumn left, int value)
         {
             return left.RightShift(value);
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public static LongDataFrameColumn operator >>(LongDataFrameColumn left, int value)
+        public static Int64DataFrameColumn operator >>(Int64DataFrameColumn left, int value)
         {
             return left.RightShift(value);
         }
@@ -10320,30 +10320,30 @@ namespace Microsoft.Data.Analysis
             return left.RightShift(value);
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public static ShortDataFrameColumn operator >>(ShortDataFrameColumn left, int value)
+        public static Int16DataFrameColumn operator >>(Int16DataFrameColumn left, int value)
         {
             return left.RightShift(value);
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public static UIntDataFrameColumn operator >>(UIntDataFrameColumn left, int value)
+        public static UInt32DataFrameColumn operator >>(UInt32DataFrameColumn left, int value)
         {
             return left.RightShift(value);
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public static ULongDataFrameColumn operator >>(ULongDataFrameColumn left, int value)
+        public static UInt64DataFrameColumn operator >>(UInt64DataFrameColumn left, int value)
         {
             return left.RightShift(value);
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public static UShortDataFrameColumn operator >>(UShortDataFrameColumn left, int value)
+        public static UInt16DataFrameColumn operator >>(UInt16DataFrameColumn left, int value)
         {
             return left.RightShift(value);
         }

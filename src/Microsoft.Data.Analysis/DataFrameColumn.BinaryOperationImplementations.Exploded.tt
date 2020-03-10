@@ -34,11 +34,11 @@ bool supportedInPlace(string type1, string type2)
 // This method generates implementations where the arguments are of the same type.
 void GenerateAllBinaryCombinationsForMethod(string inputMethodName)
 {
- foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+ foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
     if (columnType != otherColumnType)
     {
         continue;
@@ -86,11 +86,11 @@ void GenerateAllBinaryCombinationsForMethod(string inputMethodName)
 // This method generates implementations where the arguments are of the same type.
 void GenerateAllBinaryScalarCombinationsForMethod(string inputMethodName)
 {
- foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+ foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
     if (columnType != otherColumnType)
     {
         continue;
@@ -134,11 +134,11 @@ void GenerateAllBinaryScalarCombinationsForMethod(string inputMethodName)
 <# 
 void GenerateAllComparisonCombinationsForMethod(string inputMethodName)
 {
- foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
  {
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
     if (columnType != otherColumnType)
     {
         continue;
@@ -158,7 +158,7 @@ void GenerateAllComparisonCombinationsForMethod(string inputMethodName)
     {
         public <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.<#=inputMethodName#>(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
@@ -170,11 +170,11 @@ void GenerateAllComparisonCombinationsForMethod(string inputMethodName)
 <# 
 void GenerateAllComparisonScalarCombinationsForMethod(string inputMethodName)
 {
- foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
  {
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
     if (columnType != otherColumnType)
     {
         continue;
@@ -193,7 +193,7 @@ void GenerateAllComparisonScalarCombinationsForMethod(string inputMethodName)
     {
         public <#=fullReturnType#> <#=methodName#>(<#=otherColumnType#> value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.<#=inputMethodName#>(value, newColumn._columnContainer);
             return newColumn;
         }

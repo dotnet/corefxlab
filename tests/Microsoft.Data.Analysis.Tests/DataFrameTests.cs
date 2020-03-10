@@ -2176,6 +2176,5 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrameColumn ushortColumn = DataFrameColumn.Create("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
             AssertLengthTypeAndValues(ushortColumn, typeof(ushort));
         }
-
     }
 }

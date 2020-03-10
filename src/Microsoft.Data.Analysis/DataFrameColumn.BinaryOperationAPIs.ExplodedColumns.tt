@@ -32,11 +32,11 @@ bool supportedInPlace(string type1, string type2)
 <# 
 void GenerateAllBinaryCombinationsForMethod(string methodName)
 {
- foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+ foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -99,11 +99,11 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
 <# 
 void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
 {
- foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+ foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
-    string valueType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string valueType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -167,15 +167,15 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
 void GenerateAllBinaryBitwiseOperationsForMethod(string methodName)
 {
 #>
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn <#=methodName#>(BoolDataFrameColumn column, bool inPlace = false)
+        public BooleanDataFrameColumn <#=methodName#>(BooleanDataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
+            BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
             retColumn._columnContainer.<#=methodName#>(column._columnContainer);
             return retColumn;
         }
@@ -187,11 +187,11 @@ void GenerateAllBinaryBitwiseOperationsForMethod(string methodName)
 void GenerateAllBinaryScalarBitwiseOperationsForMethod(string methodName)
 {
 #>
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public new BoolDataFrameColumn <#=methodName#>(bool value, bool inPlace = false)
+        public new BooleanDataFrameColumn <#=methodName#>(bool value, bool inPlace = false)
         {
-            BoolDataFrameColumn retColumn = inPlace ? this : CloneAsBoolColumn();
+            BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
             retColumn._columnContainer.<#=methodName#>(value);
             return retColumn;
         }
@@ -225,11 +225,11 @@ foreach (MethodConfiguration method in methodConfiguration)
 <# 
 void GenerateAllComparisonCombinationsForMethod(string methodName)
 {
- foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
  {
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -283,11 +283,11 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
 <# 
 void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
 {
- foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
  {
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -368,7 +368,7 @@ void GenerateAllBinaryShiftCombinationsForMethod(string methodName)
         public new <#=fullReturnType#> <#=methodName#>(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<<#=returnType#>>)base.<#=methodName#>(value, inPlace);
-            return new <#=fullReturnType#>(result);
+            return new <#=fullReturnType#>(result.Name, result._columnContainer);
         }
     }
 <#

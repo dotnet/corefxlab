@@ -50,41 +50,41 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn AddImplementation(FloatDataFrameColumn column, bool inPlace = false)
+        internal SingleDataFrameColumn AddImplementation(SingleDataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Add(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn AddImplementation(IntDataFrameColumn column, bool inPlace = false)
+        internal Int32DataFrameColumn AddImplementation(Int32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Add(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn AddImplementation(LongDataFrameColumn column, bool inPlace = false)
+        internal Int64DataFrameColumn AddImplementation(Int64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Add(column._columnContainer);
             return newColumn;
         }
@@ -102,54 +102,54 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn AddImplementation(ShortDataFrameColumn column, bool inPlace = false)
+        internal Int16DataFrameColumn AddImplementation(Int16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Add(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn AddImplementation(UIntDataFrameColumn column, bool inPlace = false)
+        internal UInt32DataFrameColumn AddImplementation(UInt32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Add(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn AddImplementation(ULongDataFrameColumn column, bool inPlace = false)
+        internal UInt64DataFrameColumn AddImplementation(UInt64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Add(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn AddImplementation(UShortDataFrameColumn column, bool inPlace = false)
+        internal UInt16DataFrameColumn AddImplementation(UInt16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Add(column._columnContainer);
             return newColumn;
         }
@@ -181,29 +181,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn AddImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn AddImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Add(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn AddImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn AddImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Add(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn AddImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn AddImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Add(value);
             return newColumn;
         }
@@ -217,38 +217,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn AddImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn AddImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Add(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn AddImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn AddImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Add(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn AddImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn AddImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Add(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn AddImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn AddImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Add(value);
             return newColumn;
         }
@@ -280,29 +280,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn ReverseAddImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn ReverseAddImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.ReverseAdd(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn ReverseAddImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn ReverseAddImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.ReverseAdd(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn ReverseAddImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn ReverseAddImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.ReverseAdd(value);
             return newColumn;
         }
@@ -316,38 +316,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn ReverseAddImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn ReverseAddImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.ReverseAdd(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn ReverseAddImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn ReverseAddImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.ReverseAdd(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn ReverseAddImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn ReverseAddImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseAdd(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn ReverseAddImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn ReverseAddImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.ReverseAdd(value);
             return newColumn;
         }
@@ -391,41 +391,41 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn SubtractImplementation(FloatDataFrameColumn column, bool inPlace = false)
+        internal SingleDataFrameColumn SubtractImplementation(SingleDataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Subtract(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn SubtractImplementation(IntDataFrameColumn column, bool inPlace = false)
+        internal Int32DataFrameColumn SubtractImplementation(Int32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Subtract(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn SubtractImplementation(LongDataFrameColumn column, bool inPlace = false)
+        internal Int64DataFrameColumn SubtractImplementation(Int64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Subtract(column._columnContainer);
             return newColumn;
         }
@@ -443,54 +443,54 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn SubtractImplementation(ShortDataFrameColumn column, bool inPlace = false)
+        internal Int16DataFrameColumn SubtractImplementation(Int16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Subtract(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn SubtractImplementation(UIntDataFrameColumn column, bool inPlace = false)
+        internal UInt32DataFrameColumn SubtractImplementation(UInt32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Subtract(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn SubtractImplementation(ULongDataFrameColumn column, bool inPlace = false)
+        internal UInt64DataFrameColumn SubtractImplementation(UInt64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Subtract(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn SubtractImplementation(UShortDataFrameColumn column, bool inPlace = false)
+        internal UInt16DataFrameColumn SubtractImplementation(UInt16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Subtract(column._columnContainer);
             return newColumn;
         }
@@ -522,29 +522,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn SubtractImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn SubtractImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Subtract(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn SubtractImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn SubtractImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Subtract(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn SubtractImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn SubtractImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Subtract(value);
             return newColumn;
         }
@@ -558,38 +558,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn SubtractImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn SubtractImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Subtract(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn SubtractImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn SubtractImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Subtract(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn SubtractImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn SubtractImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Subtract(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn SubtractImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn SubtractImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Subtract(value);
             return newColumn;
         }
@@ -621,29 +621,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn ReverseSubtractImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn ReverseSubtractImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.ReverseSubtract(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn ReverseSubtractImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn ReverseSubtractImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.ReverseSubtract(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn ReverseSubtractImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn ReverseSubtractImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.ReverseSubtract(value);
             return newColumn;
         }
@@ -657,38 +657,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn ReverseSubtractImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn ReverseSubtractImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.ReverseSubtract(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn ReverseSubtractImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn ReverseSubtractImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.ReverseSubtract(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn ReverseSubtractImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn ReverseSubtractImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseSubtract(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn ReverseSubtractImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn ReverseSubtractImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.ReverseSubtract(value);
             return newColumn;
         }
@@ -732,41 +732,41 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn MultiplyImplementation(FloatDataFrameColumn column, bool inPlace = false)
+        internal SingleDataFrameColumn MultiplyImplementation(SingleDataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Multiply(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn MultiplyImplementation(IntDataFrameColumn column, bool inPlace = false)
+        internal Int32DataFrameColumn MultiplyImplementation(Int32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Multiply(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn MultiplyImplementation(LongDataFrameColumn column, bool inPlace = false)
+        internal Int64DataFrameColumn MultiplyImplementation(Int64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Multiply(column._columnContainer);
             return newColumn;
         }
@@ -784,54 +784,54 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn MultiplyImplementation(ShortDataFrameColumn column, bool inPlace = false)
+        internal Int16DataFrameColumn MultiplyImplementation(Int16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Multiply(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn MultiplyImplementation(UIntDataFrameColumn column, bool inPlace = false)
+        internal UInt32DataFrameColumn MultiplyImplementation(UInt32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Multiply(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn MultiplyImplementation(ULongDataFrameColumn column, bool inPlace = false)
+        internal UInt64DataFrameColumn MultiplyImplementation(UInt64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Multiply(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn MultiplyImplementation(UShortDataFrameColumn column, bool inPlace = false)
+        internal UInt16DataFrameColumn MultiplyImplementation(UInt16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Multiply(column._columnContainer);
             return newColumn;
         }
@@ -863,29 +863,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn MultiplyImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn MultiplyImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Multiply(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn MultiplyImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn MultiplyImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Multiply(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn MultiplyImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn MultiplyImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Multiply(value);
             return newColumn;
         }
@@ -899,38 +899,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn MultiplyImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn MultiplyImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Multiply(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn MultiplyImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn MultiplyImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Multiply(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn MultiplyImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn MultiplyImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Multiply(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn MultiplyImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn MultiplyImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Multiply(value);
             return newColumn;
         }
@@ -962,29 +962,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn ReverseMultiplyImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn ReverseMultiplyImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.ReverseMultiply(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn ReverseMultiplyImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn ReverseMultiplyImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.ReverseMultiply(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn ReverseMultiplyImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn ReverseMultiplyImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.ReverseMultiply(value);
             return newColumn;
         }
@@ -998,38 +998,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn ReverseMultiplyImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn ReverseMultiplyImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.ReverseMultiply(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn ReverseMultiplyImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn ReverseMultiplyImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.ReverseMultiply(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn ReverseMultiplyImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn ReverseMultiplyImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseMultiply(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn ReverseMultiplyImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn ReverseMultiplyImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.ReverseMultiply(value);
             return newColumn;
         }
@@ -1073,41 +1073,41 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn DivideImplementation(FloatDataFrameColumn column, bool inPlace = false)
+        internal SingleDataFrameColumn DivideImplementation(SingleDataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Divide(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn DivideImplementation(IntDataFrameColumn column, bool inPlace = false)
+        internal Int32DataFrameColumn DivideImplementation(Int32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Divide(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn DivideImplementation(LongDataFrameColumn column, bool inPlace = false)
+        internal Int64DataFrameColumn DivideImplementation(Int64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Divide(column._columnContainer);
             return newColumn;
         }
@@ -1125,54 +1125,54 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn DivideImplementation(ShortDataFrameColumn column, bool inPlace = false)
+        internal Int16DataFrameColumn DivideImplementation(Int16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Divide(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn DivideImplementation(UIntDataFrameColumn column, bool inPlace = false)
+        internal UInt32DataFrameColumn DivideImplementation(UInt32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Divide(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn DivideImplementation(ULongDataFrameColumn column, bool inPlace = false)
+        internal UInt64DataFrameColumn DivideImplementation(UInt64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Divide(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn DivideImplementation(UShortDataFrameColumn column, bool inPlace = false)
+        internal UInt16DataFrameColumn DivideImplementation(UInt16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Divide(column._columnContainer);
             return newColumn;
         }
@@ -1204,29 +1204,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn DivideImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn DivideImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Divide(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn DivideImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn DivideImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Divide(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn DivideImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn DivideImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Divide(value);
             return newColumn;
         }
@@ -1240,38 +1240,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn DivideImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn DivideImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Divide(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn DivideImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn DivideImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Divide(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn DivideImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn DivideImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Divide(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn DivideImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn DivideImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Divide(value);
             return newColumn;
         }
@@ -1303,29 +1303,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn ReverseDivideImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn ReverseDivideImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.ReverseDivide(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn ReverseDivideImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn ReverseDivideImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.ReverseDivide(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn ReverseDivideImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn ReverseDivideImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.ReverseDivide(value);
             return newColumn;
         }
@@ -1339,38 +1339,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn ReverseDivideImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn ReverseDivideImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.ReverseDivide(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn ReverseDivideImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn ReverseDivideImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.ReverseDivide(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn ReverseDivideImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn ReverseDivideImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseDivide(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn ReverseDivideImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn ReverseDivideImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.ReverseDivide(value);
             return newColumn;
         }
@@ -1414,41 +1414,41 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn ModuloImplementation(FloatDataFrameColumn column, bool inPlace = false)
+        internal SingleDataFrameColumn ModuloImplementation(SingleDataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Modulo(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn ModuloImplementation(IntDataFrameColumn column, bool inPlace = false)
+        internal Int32DataFrameColumn ModuloImplementation(Int32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Modulo(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn ModuloImplementation(LongDataFrameColumn column, bool inPlace = false)
+        internal Int64DataFrameColumn ModuloImplementation(Int64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Modulo(column._columnContainer);
             return newColumn;
         }
@@ -1466,54 +1466,54 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn ModuloImplementation(ShortDataFrameColumn column, bool inPlace = false)
+        internal Int16DataFrameColumn ModuloImplementation(Int16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Modulo(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn ModuloImplementation(UIntDataFrameColumn column, bool inPlace = false)
+        internal UInt32DataFrameColumn ModuloImplementation(UInt32DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Modulo(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn ModuloImplementation(ULongDataFrameColumn column, bool inPlace = false)
+        internal UInt64DataFrameColumn ModuloImplementation(UInt64DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Modulo(column._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn ModuloImplementation(UShortDataFrameColumn column, bool inPlace = false)
+        internal UInt16DataFrameColumn ModuloImplementation(UInt16DataFrameColumn column, bool inPlace = false)
         {
             if (column.Length != Length)
             {
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Modulo(column._columnContainer);
             return newColumn;
         }
@@ -1545,29 +1545,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn ModuloImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn ModuloImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.Modulo(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn ModuloImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn ModuloImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.Modulo(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn ModuloImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn ModuloImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.Modulo(value);
             return newColumn;
         }
@@ -1581,38 +1581,38 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn ModuloImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn ModuloImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.Modulo(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn ModuloImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn ModuloImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.Modulo(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn ModuloImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn ModuloImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Modulo(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn ModuloImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn ModuloImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.Modulo(value);
             return newColumn;
         }
@@ -1644,29 +1644,29 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        internal FloatDataFrameColumn ReverseModuloImplementation(float value, bool inPlace = false)
+        internal SingleDataFrameColumn ReverseModuloImplementation(float value, bool inPlace = false)
         {
-            FloatDataFrameColumn newColumn = inPlace ? this : CloneAsFloatColumn();
+            SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
             newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        internal IntDataFrameColumn ReverseModuloImplementation(int value, bool inPlace = false)
+        internal Int32DataFrameColumn ReverseModuloImplementation(int value, bool inPlace = false)
         {
-            IntDataFrameColumn newColumn = inPlace ? this : CloneAsIntColumn();
+            Int32DataFrameColumn newColumn = inPlace ? this : CloneAsInt32Column();
             newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        internal LongDataFrameColumn ReverseModuloImplementation(long value, bool inPlace = false)
+        internal Int64DataFrameColumn ReverseModuloImplementation(long value, bool inPlace = false)
         {
-            LongDataFrameColumn newColumn = inPlace ? this : CloneAsLongColumn();
+            Int64DataFrameColumn newColumn = inPlace ? this : CloneAsInt64Column();
             newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }
@@ -1680,1334 +1680,1334 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        internal ShortDataFrameColumn ReverseModuloImplementation(short value, bool inPlace = false)
+        internal Int16DataFrameColumn ReverseModuloImplementation(short value, bool inPlace = false)
         {
-            ShortDataFrameColumn newColumn = inPlace ? this : CloneAsShortColumn();
+            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
             newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        internal UIntDataFrameColumn ReverseModuloImplementation(uint value, bool inPlace = false)
+        internal UInt32DataFrameColumn ReverseModuloImplementation(uint value, bool inPlace = false)
         {
-            UIntDataFrameColumn newColumn = inPlace ? this : CloneAsUIntColumn();
+            UInt32DataFrameColumn newColumn = inPlace ? this : CloneAsUInt32Column();
             newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        internal ULongDataFrameColumn ReverseModuloImplementation(ulong value, bool inPlace = false)
+        internal UInt64DataFrameColumn ReverseModuloImplementation(ulong value, bool inPlace = false)
         {
-            ULongDataFrameColumn newColumn = inPlace ? this : CloneAsULongColumn();
+            UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        internal UShortDataFrameColumn ReverseModuloImplementation(ushort value, bool inPlace = false)
+        internal UInt16DataFrameColumn ReverseModuloImplementation(ushort value, bool inPlace = false)
         {
-            UShortDataFrameColumn newColumn = inPlace ? this : CloneAsUShortColumn();
+            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(BoolDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(BooleanDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(ByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(ByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(DecimalDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(DecimalDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(DoubleDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(DoubleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(FloatDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(SingleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(IntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(Int32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(LongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(Int64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(SByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(SByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(ShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(Int16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(UIntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(UInt32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(ULongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(UInt64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(UShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(UInt16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(bool value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(bool value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(byte value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(byte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(decimal value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(decimal value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(double value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(double value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(float value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(float value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(int value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(int value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(long value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(long value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(sbyte value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(sbyte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(short value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(short value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(uint value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(uint value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(ulong value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(ulong value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseEqualsImplementation(ushort value)
+        public BooleanDataFrameColumn ElementwiseEqualsImplementation(ushort value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(BoolDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(BooleanDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(ByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(DecimalDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(DecimalDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(DoubleDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(DoubleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(FloatDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(SingleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(IntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(Int32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(LongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(Int64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(SByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(SByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(Int16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(UIntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(UInt32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ULongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(UInt64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(UShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(UInt16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(bool value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(bool value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(byte value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(byte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(decimal value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(decimal value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(double value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(double value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(float value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(float value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(int value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(int value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(long value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(long value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(sbyte value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(sbyte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(short value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(short value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(uint value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(uint value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ulong value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(ulong value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseNotEqualsImplementation(ushort value)
+        public BooleanDataFrameColumn ElementwiseNotEqualsImplementation(ushort value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseNotEquals(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(BoolDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(BooleanDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(DecimalDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(DecimalDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(DoubleDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(DoubleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(FloatDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(SingleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(IntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(Int32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(LongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(Int64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(SByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(SByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(Int16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UIntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UInt32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ULongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UInt64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(UInt16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(bool value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(bool value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(byte value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(byte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(decimal value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(decimal value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(double value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(double value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(float value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(float value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(int value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(int value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(long value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(long value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(sbyte value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(sbyte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(short value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(short value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(uint value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(uint value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ulong value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ulong value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ushort value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(ushort value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(BoolDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(BooleanDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(ByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(DecimalDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(DecimalDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(DoubleDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(DoubleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(FloatDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(SingleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(IntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(Int32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(LongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(Int64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(SByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(SByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(Int16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(UIntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(UInt32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ULongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(UInt64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(UShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(UInt16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(bool value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(bool value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(byte value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(byte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(decimal value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(decimal value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(double value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(double value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(float value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(float value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(int value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(int value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(long value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(long value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(sbyte value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(sbyte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(short value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(short value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(uint value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(uint value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ulong value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(ulong value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanOrEqualImplementation(ushort value)
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(ushort value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThanOrEqual(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(BoolDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(BooleanDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(ByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(DecimalDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(DecimalDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(DoubleDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(DoubleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(FloatDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(SingleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(IntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(Int32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(LongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(Int64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(SByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(SByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(Int16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(UIntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(UInt32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ULongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(UInt64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(UShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(UInt16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(bool value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(bool value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(byte value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(byte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(decimal value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(decimal value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(double value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(double value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(float value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(float value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(int value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(int value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(long value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(long value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(sbyte value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(sbyte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(short value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(short value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(uint value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(uint value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ulong value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(ulong value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseGreaterThanImplementation(ushort value)
+        public BooleanDataFrameColumn ElementwiseGreaterThanImplementation(ushort value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseGreaterThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(BoolDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(BooleanDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(ByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(ByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(DecimalDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(DecimalDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(DoubleDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(DoubleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(FloatDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(SingleDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(IntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(Int32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(LongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(Int64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(SByteDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(SByteDataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(ShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(Int16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(UIntDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(UInt32DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(ULongDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(UInt64DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(UShortDataFrameColumn column)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(UInt16DataFrameColumn column)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(column._columnContainer, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(bool value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(bool value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(byte value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(byte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DecimalDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(decimal value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(decimal value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class DoubleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(double value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(double value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class FloatDataFrameColumn
+    public partial class SingleDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(float value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(float value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class IntDataFrameColumn
+    public partial class Int32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(int value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(int value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class LongDataFrameColumn
+    public partial class Int64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(long value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(long value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
     public partial class SByteDataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(sbyte value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(sbyte value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ShortDataFrameColumn
+    public partial class Int16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(short value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(short value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UIntDataFrameColumn
+    public partial class UInt32DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(uint value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(uint value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class ULongDataFrameColumn
+    public partial class UInt64DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(ulong value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(ulong value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }
     }
-    public partial class UShortDataFrameColumn
+    public partial class UInt16DataFrameColumn
     {
-        public BoolDataFrameColumn ElementwiseLessThanImplementation(ushort value)
+        public BooleanDataFrameColumn ElementwiseLessThanImplementation(ushort value)
         {
-            BoolDataFrameColumn newColumn = CloneAsBoolColumn();
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             _columnContainer.ElementwiseLessThan(value, newColumn._columnContainer);
             return newColumn;
         }

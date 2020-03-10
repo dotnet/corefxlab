@@ -709,7 +709,7 @@ namespace Microsoft.Data.Analysis
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
-                    newBuffer.Append(ShortConverter<T>.Instance.GetShort(span[i]));
+                    newBuffer.Append(Int16Converter<T>.Instance.GetInt16(span[i]));
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
@@ -729,7 +729,7 @@ namespace Microsoft.Data.Analysis
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
-                    newBuffer.Append(UShortConverter<T>.Instance.GetUShort(span[i]));
+                    newBuffer.Append(UInt16Converter<T>.Instance.GetUInt16(span[i]));
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
@@ -749,7 +749,7 @@ namespace Microsoft.Data.Analysis
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
-                    newBuffer.Append(IntConverter<T>.Instance.GetInt(span[i]));
+                    newBuffer.Append(Int32Converter<T>.Instance.GetInt32(span[i]));
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
@@ -769,7 +769,7 @@ namespace Microsoft.Data.Analysis
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
-                    newBuffer.Append(UIntConverter<T>.Instance.GetUInt(span[i]));
+                    newBuffer.Append(UInt32Converter<T>.Instance.GetUInt32(span[i]));
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
@@ -789,7 +789,7 @@ namespace Microsoft.Data.Analysis
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
-                    newBuffer.Append(LongConverter<T>.Instance.GetLong(span[i]));
+                    newBuffer.Append(Int64Converter<T>.Instance.GetInt64(span[i]));
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
@@ -809,7 +809,7 @@ namespace Microsoft.Data.Analysis
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
-                    newBuffer.Append(ULongConverter<T>.Instance.GetULong(span[i]));
+                    newBuffer.Append(UInt64Converter<T>.Instance.GetUInt64(span[i]));
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();
@@ -829,7 +829,7 @@ namespace Microsoft.Data.Analysis
                 ReadOnlySpan<T> span = buffer.ReadOnlySpan;
                 for (int i = 0; i < span.Length; i++)
                 {
-                    newBuffer.Append(FloatConverter<T>.Instance.GetFloat(span[i]));
+                    newBuffer.Append(SingleConverter<T>.Instance.GetSingle(span[i]));
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();

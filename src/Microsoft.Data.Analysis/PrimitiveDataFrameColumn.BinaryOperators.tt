@@ -19,11 +19,11 @@ namespace Microsoft.Data.Analysis
 <#
 void GenerateAllBinaryCombinationsForOperator(string op, string methodName)
 {
-    foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+    foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
     {
-        string returnType = types[2];
-        string columnType = types[0];
-        string otherColumnType = types[1];
+        string returnType = types.ReturnColumnType;
+        string columnType = types.ThisColumnType;
+        string otherColumnType = types.OtherColumnType;
 
         string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
         string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -43,11 +43,11 @@ void GenerateAllBinaryCombinationsForOperator(string op, string methodName)
 <#
 void GenerateAllBinaryScalarCombinationsForOperator(string op, string methodName)
 {
-    foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+    foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
     {
-        string returnType = types[2];
-        string columnType = types[0];
-        string otherColumnType = types[1];
+        string returnType = types.ReturnColumnType;
+        string columnType = types.ThisColumnType;
+        string otherColumnType = types.OtherColumnType;
 
         string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
         string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -71,9 +71,9 @@ void GenerateAllBinaryScalarCombinationsForOperator(string op, string methodName
 void GenerateAllBinaryBitwiseCombinationsForOperator(string op, string methodName)
 {
 #>
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public static BoolDataFrameColumn operator <#=op#>(BoolDataFrameColumn left, BoolDataFrameColumn right)
+        public static BooleanDataFrameColumn operator <#=op#>(BooleanDataFrameColumn left, BooleanDataFrameColumn right)
         {
             return left.<#=methodName#>(right);
         }
@@ -85,9 +85,9 @@ void GenerateAllBinaryBitwiseCombinationsForOperator(string op, string methodNam
 void GenerateAllBinaryScalarBitwiseCombinationsForOperator(string op, string methodName)
 {
 #>
-    public partial class BoolDataFrameColumn
+    public partial class BooleanDataFrameColumn
     {
-        public static BoolDataFrameColumn operator <#=op#>(BoolDataFrameColumn left, bool right)
+        public static BooleanDataFrameColumn operator <#=op#>(BooleanDataFrameColumn left, bool right)
         {
             return left.<#=methodName#>(right);
         }
@@ -121,11 +121,11 @@ void GenerateAllBinaryIntBitwiseCombinationsForOperator(string op, string method
 <# 
 void GenerateAllComparisonCombinationsForOperator(string op, string methodName)
 {
- foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
  {
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -148,11 +148,11 @@ void GenerateAllComparisonCombinationsForOperator(string op, string methodName)
 <# 
 void GenerateAllComparisonScalarCombinationsForOperator(string op, string methodName)
 {
- foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
  {
-    string returnType = types[2];
-    string columnType = types[0];
-    string otherColumnType = types[1];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";

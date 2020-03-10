@@ -64,6 +64,38 @@
         {
             typeFirstCharUpper = type[0].ToString().ToUpper() + type.Substring(1);
         }
+        if (typeFirstCharUpper == "Bool")
+        {
+            return "Boolean";
+        }
+        else if (typeFirstCharUpper == "Float")
+        {
+            return "Single";
+        }
+        else if (typeFirstCharUpper == "Int")
+        {
+            return "Int32";
+        }
+        else if (typeFirstCharUpper == "Short")
+        {
+            return "Int16";
+        }
+        else if (typeFirstCharUpper == "Long")
+        {
+            return "Int64";
+        }
+        else if (typeFirstCharUpper == "UInt")
+        {
+            return "UInt32";
+        }
+        else if (typeFirstCharUpper == "UShort")
+        {
+            return "UInt16";
+        }
+        else if (typeFirstCharUpper == "ULong")
+        {
+            return "UInt64";
+        }
         return typeFirstCharUpper;
     }
 

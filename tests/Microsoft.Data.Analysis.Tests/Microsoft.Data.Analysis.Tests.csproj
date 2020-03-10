@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DataFrameColumn.BinaryOperationTests.Bad.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DataFrameColumn.BinaryOperationTests.Bad.cs</LastGenOutput>
-    </None>
     <None Update="DataFrameColumn.BinaryOperationTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataFrameColumn.BinaryOperationTests.cs</LastGenOutput>

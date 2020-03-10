@@ -81,15 +81,15 @@ void GenerateBinaryVerify(string methodName, string fullReturnType, string retur
 // Only generate the tests for ByteDataFrameColumn. It exercises all the possible paths since it includes cloning the non byte columns and keeps the number of tests low enough.
 void GenerateAllBinaryTestsForMethod(string methodName, string methodOperator)
 {
- foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+ foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
     if (columnType != "byte")
     {
         continue;
     }
-    string otherColumnType = types[1];
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -405,15 +405,15 @@ void GenerateBinaryBitwiseScalarVerify(string methodName, string fullReturnType,
 // Only generate the tests for ByteDataFrameColumn. It exercises all the possible paths since it includes cloning the non byte columns and keeps the number of tests low enough.
 void GenerateAllBinaryScalarTestsForMethod(string methodName, string methodOperator)
 {
- foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+ foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
     if (columnType != "byte")
     {
         continue;
     }
-    string otherColumnType = types[1];
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -452,18 +452,18 @@ void GenerateAllBinaryScalarTestsForMethod(string methodName, string methodOpera
 }
 #>
 <#
-// Only generate the tests for BoolDataFrameColumn.
+// Only generate the tests for BooleanDataFrameColumn.
 void GenerateAllBinaryScalarBitwiseTestsForMethod(string methodName, string methodOperator)
 {
- foreach (List<string> types in BinaryOperationCombinations.binaryOperationCombinations) 
+ foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
-    if (columnType != "bool")
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
+    if (columnType != "byte")
     {
         continue;
     }
-    string otherColumnType = types[1];
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -505,15 +505,15 @@ void GenerateAllBinaryScalarBitwiseTestsForMethod(string methodName, string meth
 // Only generate the tests for ByteDataFrameColumn. It exercises all the possible paths since it includes cloning the non byte columns and keeps the number of tests low enough.
 void GenerateAllBinaryScalarComparisonTestsForMethod(string methodName, string methodOperator)
 {
- foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
     if (columnType != "byte")
     {
         continue;
     }
-    string otherColumnType = types[1];
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -529,7 +529,7 @@ void GenerateAllBinaryScalarComparisonTestsForMethod(string methodName, string m
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (<#=columnType#>)x);
             <#=fullColumnType#> column = new <#=fullColumnType#>("<#=capitalizedColumnType#>", columnEnumerable);
             <#=otherColumnType#> value = 100;
-            BoolDataFrameColumn columnResult = column.<#=methodName#>(value);
+            BooleanDataFrameColumn columnResult = column.<#=methodName#>(value);
 <#GenerateBinaryComparisonScalarVerify(methodName, fullReturnType, returnType, (byte)5, methodName.Contains("Reverse") ? true : false); #>
             Assert.Equal(columnResult.Length, verify.Count());
 <# if (!methodName.Contains("Not")) { #>
@@ -546,15 +546,15 @@ void GenerateAllBinaryScalarComparisonTestsForMethod(string methodName, string m
 // Only generate the tests for ByteDataFrameColumn. It exercises all the possible paths since it includes cloning the non byte columns and keeps the number of tests low enough.
 void GenerateAllBinaryComparisonTestsForMethod(string methodName, string methodOperator)
 {
- foreach (List<string> types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
 { 
-    string returnType = types[2];
-    string columnType = types[0];
+    string returnType = types.ReturnColumnType;
+    string columnType = types.ThisColumnType;
     if (columnType != "byte")
     {
         continue;
     }
-    string otherColumnType = types[1];
+    string otherColumnType = types.OtherColumnType;
 
     string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
     string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
@@ -571,7 +571,7 @@ void GenerateAllBinaryComparisonTestsForMethod(string methodName, string methodO
             <#=fullColumnType#> column = new <#=fullColumnType#>("<#=capitalizedColumnType#>", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (<#=otherColumnType#>)x);
             <#=fullOtherColumnType#> otherColumn = new <#=fullOtherColumnType#>("<#=capitalizedOtherColumnType#>", otherColumnEnumerable);
-            BoolDataFrameColumn columnResult = column.<#=methodName#>(otherColumn);
+            BooleanDataFrameColumn columnResult = column.<#=methodName#>(otherColumn);
 <#GenerateBinaryComparisonVerify(methodName, fullReturnType, returnType, (byte)5, methodName.Contains("Reverse") ? true : false); #>
             Assert.Equal(columnResult.Length, verify.Count());
 
