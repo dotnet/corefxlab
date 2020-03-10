@@ -16,65 +16,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(ByteDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(ByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator +(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator +(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -86,72 +59,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -163,72 +106,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DoubleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -240,72 +153,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -317,65 +200,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -387,65 +243,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -457,65 +286,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(SByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator +(SByteDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator +(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator +(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -527,65 +329,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
@@ -597,65 +372,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -667,65 +415,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -737,65 +458,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Add(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Add(right);
@@ -811,9 +505,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(ByteDataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -822,9 +513,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(ByteDataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -833,9 +521,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(ByteDataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -844,9 +529,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(ByteDataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -855,9 +537,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(ByteDataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -866,9 +545,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator +(ByteDataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -877,9 +553,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(ByteDataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -888,9 +561,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(ByteDataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -899,9 +569,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator +(ByteDataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -921,9 +588,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -932,9 +596,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -943,9 +604,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -954,9 +612,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -965,9 +620,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -976,9 +628,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -987,9 +636,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -998,9 +644,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -1009,9 +652,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -1020,9 +660,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DecimalDataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -1042,9 +679,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(DoubleDataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -1053,9 +687,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1064,9 +695,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1075,9 +703,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -1086,9 +711,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -1097,9 +719,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -1108,9 +727,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -1119,9 +735,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -1130,9 +743,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -1141,9 +751,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(DoubleDataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -1163,9 +770,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(SingleDataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -1174,9 +778,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(SingleDataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1185,9 +786,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1196,9 +794,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -1207,9 +802,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -1218,9 +810,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -1229,9 +818,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -1240,9 +826,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -1251,9 +834,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -1262,9 +842,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SingleDataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -1284,9 +861,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(Int32DataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -1295,9 +869,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(Int32DataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1306,9 +877,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(Int32DataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1317,9 +885,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -1328,9 +893,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int32DataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -1339,9 +901,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -1350,9 +909,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -1361,9 +917,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(Int32DataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -1372,9 +925,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int32DataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -1394,9 +944,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(Int64DataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -1405,9 +952,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(Int64DataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1416,9 +960,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(Int64DataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1427,9 +968,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -1438,9 +976,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -1449,9 +984,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -1460,9 +992,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -1471,9 +1000,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -1482,9 +1008,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int64DataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -1504,9 +1027,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(SByteDataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1515,9 +1035,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(SByteDataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1526,9 +1043,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(SByteDataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -1537,9 +1051,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(SByteDataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -1548,9 +1059,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator +(SByteDataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -1559,9 +1067,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator +(SByteDataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -1570,9 +1075,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(SByteDataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -1581,9 +1083,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(SByteDataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -1592,9 +1091,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator +(SByteDataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -1614,9 +1110,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(Int16DataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -1625,9 +1118,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(Int16DataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1636,9 +1126,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(Int16DataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1647,9 +1134,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(Int16DataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -1658,9 +1142,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(Int16DataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -1669,9 +1150,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -1680,9 +1158,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator +(Int16DataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -1691,9 +1166,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(Int16DataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -1702,9 +1174,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(Int16DataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -1724,9 +1193,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(UInt32DataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -1735,9 +1201,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(UInt32DataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1746,9 +1209,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(UInt32DataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1757,9 +1217,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(UInt32DataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -1768,9 +1225,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -1779,9 +1233,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -1790,9 +1241,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -1801,9 +1249,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt32DataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -1812,9 +1257,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt32DataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -1834,9 +1276,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(UInt64DataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -1845,9 +1284,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(UInt64DataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1856,9 +1292,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(UInt64DataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1867,9 +1300,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -1878,9 +1308,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -1889,9 +1316,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, short right)
         {
             return left.Add(right);
@@ -1900,9 +1324,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -1911,9 +1332,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -1922,9 +1340,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt64DataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -1944,9 +1359,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator +(UInt16DataFrameColumn left, decimal right)
         {
             return left.Add(right);
@@ -1955,9 +1367,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator +(UInt16DataFrameColumn left, double right)
         {
             return left.Add(right);
@@ -1966,9 +1375,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator +(UInt16DataFrameColumn left, float right)
         {
             return left.Add(right);
@@ -1977,9 +1383,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator +(UInt16DataFrameColumn left, int right)
         {
             return left.Add(right);
@@ -1988,9 +1391,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator +(UInt16DataFrameColumn left, long right)
         {
             return left.Add(right);
@@ -1999,9 +1399,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Add(right);
@@ -2010,9 +1407,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator +(UInt16DataFrameColumn left, uint right)
         {
             return left.Add(right);
@@ -2021,9 +1415,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator +(UInt16DataFrameColumn left, ulong right)
         {
             return left.Add(right);
@@ -2032,9 +1423,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseAdd(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator +(UInt16DataFrameColumn left, ushort right)
         {
             return left.Add(right);
@@ -2050,65 +1438,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(ByteDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(ByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator -(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator -(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2120,72 +1481,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2197,72 +1528,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DoubleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2274,72 +1575,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2351,65 +1622,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2421,65 +1665,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2491,65 +1708,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(SByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator -(SByteDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator -(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator -(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2561,65 +1751,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2631,65 +1794,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2701,65 +1837,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2771,65 +1880,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Subtract(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Subtract(right);
@@ -2845,9 +1927,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(ByteDataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -2856,9 +1935,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(ByteDataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -2867,9 +1943,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(ByteDataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -2878,9 +1951,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(ByteDataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -2889,9 +1959,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(ByteDataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -2900,9 +1967,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator -(ByteDataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -2911,9 +1975,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(ByteDataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -2922,9 +1983,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(ByteDataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -2933,9 +1991,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator -(ByteDataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -2955,9 +2010,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -2966,9 +2018,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -2977,9 +2026,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -2988,9 +2034,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -2999,9 +2042,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -3010,9 +2050,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3021,9 +2058,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3032,9 +2066,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -3043,9 +2074,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -3054,9 +2082,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DecimalDataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -3076,9 +2101,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(DoubleDataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -3087,9 +2109,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -3098,9 +2117,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -3109,9 +2125,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -3120,9 +2133,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -3131,9 +2141,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3142,9 +2149,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3153,9 +2157,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -3164,9 +2165,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -3175,9 +2173,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(DoubleDataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -3197,9 +2192,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(SingleDataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -3208,9 +2200,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(SingleDataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -3219,9 +2208,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -3230,9 +2216,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -3241,9 +2224,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -3252,9 +2232,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3263,9 +2240,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3274,9 +2248,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -3285,9 +2256,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -3296,9 +2264,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SingleDataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -3318,9 +2283,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(Int32DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -3329,9 +2291,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(Int32DataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -3340,9 +2299,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(Int32DataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -3351,9 +2307,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -3362,9 +2315,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int32DataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -3373,9 +2323,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3384,9 +2331,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3395,9 +2339,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(Int32DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -3406,9 +2347,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int32DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -3428,9 +2366,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(Int64DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -3439,9 +2374,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(Int64DataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -3450,9 +2382,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(Int64DataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -3461,9 +2390,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -3472,9 +2398,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -3483,9 +2406,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3494,9 +2414,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3505,9 +2422,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -3516,9 +2430,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int64DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -3538,9 +2449,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(SByteDataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -3549,9 +2457,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(SByteDataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -3560,9 +2465,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(SByteDataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -3571,9 +2473,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(SByteDataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -3582,9 +2481,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator -(SByteDataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3593,9 +2489,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator -(SByteDataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3604,9 +2497,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(SByteDataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -3615,9 +2505,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(SByteDataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -3626,9 +2513,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator -(SByteDataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -3648,9 +2532,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(Int16DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -3659,9 +2540,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(Int16DataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -3670,9 +2548,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(Int16DataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -3681,9 +2556,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(Int16DataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -3692,9 +2564,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(Int16DataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -3703,9 +2572,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3714,9 +2580,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator -(Int16DataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3725,9 +2588,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(Int16DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -3736,9 +2596,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(Int16DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -3758,9 +2615,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(UInt32DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -3769,9 +2623,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(UInt32DataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -3780,9 +2631,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(UInt32DataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -3791,9 +2639,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(UInt32DataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -3802,9 +2647,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3813,9 +2655,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3824,9 +2663,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -3835,9 +2671,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt32DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -3846,9 +2679,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt32DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -3868,9 +2698,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(UInt64DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -3879,9 +2706,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(UInt64DataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -3890,9 +2714,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(UInt64DataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -3901,9 +2722,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -3912,9 +2730,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -3923,9 +2738,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, short right)
         {
             return left.Subtract(right);
@@ -3934,9 +2746,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -3945,9 +2754,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -3956,9 +2762,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt64DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -3978,9 +2781,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator -(UInt16DataFrameColumn left, decimal right)
         {
             return left.Subtract(right);
@@ -3989,9 +2789,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator -(UInt16DataFrameColumn left, double right)
         {
             return left.Subtract(right);
@@ -4000,9 +2797,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator -(UInt16DataFrameColumn left, float right)
         {
             return left.Subtract(right);
@@ -4011,9 +2805,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator -(UInt16DataFrameColumn left, int right)
         {
             return left.Subtract(right);
@@ -4022,9 +2813,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator -(UInt16DataFrameColumn left, long right)
         {
             return left.Subtract(right);
@@ -4033,9 +2821,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Subtract(right);
@@ -4044,9 +2829,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator -(UInt16DataFrameColumn left, uint right)
         {
             return left.Subtract(right);
@@ -4055,9 +2837,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator -(UInt16DataFrameColumn left, ulong right)
         {
             return left.Subtract(right);
@@ -4066,9 +2845,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseSubtract(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator -(UInt16DataFrameColumn left, ushort right)
         {
             return left.Subtract(right);
@@ -4084,65 +2860,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(ByteDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(ByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator *(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator *(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4154,72 +2903,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4231,72 +2950,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DoubleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4308,72 +2997,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4385,65 +3044,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4455,65 +3087,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4525,65 +3130,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(SByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator *(SByteDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator *(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator *(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4595,65 +3173,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4665,65 +3216,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4735,65 +3259,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4805,65 +3302,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Multiply(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Multiply(right);
@@ -4879,9 +3349,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(ByteDataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -4890,9 +3357,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(ByteDataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -4901,9 +3365,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(ByteDataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -4912,9 +3373,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(ByteDataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -4923,9 +3381,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(ByteDataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -4934,9 +3389,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator *(ByteDataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -4945,9 +3397,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(ByteDataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -4956,9 +3405,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(ByteDataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -4967,9 +3413,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator *(ByteDataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -4989,9 +3432,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -5000,9 +3440,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5011,9 +3448,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5022,9 +3456,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -5033,9 +3464,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -5044,9 +3472,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5055,9 +3480,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5066,9 +3488,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -5077,9 +3496,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -5088,9 +3504,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DecimalDataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -5110,9 +3523,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(DoubleDataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -5121,9 +3531,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5132,9 +3539,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5143,9 +3547,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -5154,9 +3555,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -5165,9 +3563,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5176,9 +3571,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5187,9 +3579,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -5198,9 +3587,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -5209,9 +3595,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(DoubleDataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -5231,9 +3614,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(SingleDataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -5242,9 +3622,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(SingleDataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5253,9 +3630,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5264,9 +3638,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -5275,9 +3646,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -5286,9 +3654,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5297,9 +3662,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5308,9 +3670,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -5319,9 +3678,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -5330,9 +3686,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SingleDataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -5352,9 +3705,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(Int32DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -5363,9 +3713,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(Int32DataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5374,9 +3721,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(Int32DataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5385,9 +3729,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -5396,9 +3737,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int32DataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -5407,9 +3745,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5418,9 +3753,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5429,9 +3761,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(Int32DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -5440,9 +3769,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int32DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -5462,9 +3788,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(Int64DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -5473,9 +3796,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(Int64DataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5484,9 +3804,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(Int64DataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5495,9 +3812,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -5506,9 +3820,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -5517,9 +3828,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5528,9 +3836,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5539,9 +3844,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -5550,9 +3852,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int64DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -5572,9 +3871,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(SByteDataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5583,9 +3879,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(SByteDataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5594,9 +3887,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(SByteDataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -5605,9 +3895,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(SByteDataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -5616,9 +3903,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator *(SByteDataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5627,9 +3911,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator *(SByteDataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5638,9 +3919,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(SByteDataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -5649,9 +3927,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(SByteDataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -5660,9 +3935,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator *(SByteDataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -5682,9 +3954,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(Int16DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -5693,9 +3962,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(Int16DataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5704,9 +3970,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(Int16DataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5715,9 +3978,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(Int16DataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -5726,9 +3986,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(Int16DataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -5737,9 +3994,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5748,9 +4002,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator *(Int16DataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5759,9 +4010,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(Int16DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -5770,9 +4018,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(Int16DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -5792,9 +4037,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(UInt32DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -5803,9 +4045,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(UInt32DataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5814,9 +4053,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(UInt32DataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5825,9 +4061,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(UInt32DataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -5836,9 +4069,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5847,9 +4077,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5858,9 +4085,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -5869,9 +4093,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt32DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -5880,9 +4101,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt32DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -5902,9 +4120,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(UInt64DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -5913,9 +4128,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(UInt64DataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -5924,9 +4136,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(UInt64DataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -5935,9 +4144,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -5946,9 +4152,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -5957,9 +4160,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, short right)
         {
             return left.Multiply(right);
@@ -5968,9 +4168,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -5979,9 +4176,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -5990,9 +4184,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt64DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -6012,9 +4203,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator *(UInt16DataFrameColumn left, decimal right)
         {
             return left.Multiply(right);
@@ -6023,9 +4211,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator *(UInt16DataFrameColumn left, double right)
         {
             return left.Multiply(right);
@@ -6034,9 +4219,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator *(UInt16DataFrameColumn left, float right)
         {
             return left.Multiply(right);
@@ -6045,9 +4227,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator *(UInt16DataFrameColumn left, int right)
         {
             return left.Multiply(right);
@@ -6056,9 +4235,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator *(UInt16DataFrameColumn left, long right)
         {
             return left.Multiply(right);
@@ -6067,9 +4243,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Multiply(right);
@@ -6078,9 +4251,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator *(UInt16DataFrameColumn left, uint right)
         {
             return left.Multiply(right);
@@ -6089,9 +4259,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator *(UInt16DataFrameColumn left, ulong right)
         {
             return left.Multiply(right);
@@ -6100,9 +4267,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseMultiply(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator *(UInt16DataFrameColumn left, ushort right)
         {
             return left.Multiply(right);
@@ -6118,65 +4282,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(ByteDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(ByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator /(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator /(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6188,72 +4325,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6265,72 +4372,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DoubleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6342,72 +4419,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6419,65 +4466,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6489,65 +4509,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6559,65 +4552,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(SByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator /(SByteDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator /(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator /(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6629,65 +4595,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6699,65 +4638,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6769,65 +4681,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6839,65 +4724,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Divide(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Divide(right);
@@ -6913,9 +4771,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(ByteDataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -6924,9 +4779,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(ByteDataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -6935,9 +4787,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(ByteDataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -6946,9 +4795,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(ByteDataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -6957,9 +4803,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(ByteDataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -6968,9 +4811,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator /(ByteDataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -6979,9 +4819,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(ByteDataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -6990,9 +4827,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(ByteDataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -7001,9 +4835,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator /(ByteDataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -7023,9 +4854,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -7034,9 +4862,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7045,9 +4870,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7056,9 +4878,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -7067,9 +4886,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -7078,9 +4894,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7089,9 +4902,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -7100,9 +4910,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -7111,9 +4918,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -7122,9 +4926,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DecimalDataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -7144,9 +4945,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(DoubleDataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -7155,9 +4953,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7166,9 +4961,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7177,9 +4969,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -7188,9 +4977,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -7199,9 +4985,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7210,9 +4993,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -7221,9 +5001,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -7232,9 +5009,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -7243,9 +5017,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(DoubleDataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -7265,9 +5036,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(SingleDataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -7276,9 +5044,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(SingleDataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7287,9 +5052,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7298,9 +5060,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -7309,9 +5068,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -7320,9 +5076,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7331,9 +5084,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -7342,9 +5092,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -7353,9 +5100,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -7364,9 +5108,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SingleDataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -7386,9 +5127,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(Int32DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -7397,9 +5135,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(Int32DataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7408,9 +5143,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(Int32DataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7419,9 +5151,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -7430,9 +5159,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int32DataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -7441,9 +5167,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7452,9 +5175,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -7463,9 +5183,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(Int32DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -7474,9 +5191,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int32DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -7496,9 +5210,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(Int64DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -7507,9 +5218,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(Int64DataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7518,9 +5226,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(Int64DataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7529,9 +5234,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -7540,9 +5242,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -7551,9 +5250,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7562,9 +5258,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -7573,9 +5266,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -7584,9 +5274,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int64DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -7606,9 +5293,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(SByteDataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7617,9 +5301,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(SByteDataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7628,9 +5309,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(SByteDataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -7639,9 +5317,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(SByteDataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -7650,9 +5325,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator /(SByteDataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7661,9 +5333,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator /(SByteDataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -7672,9 +5341,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(SByteDataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -7683,9 +5349,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(SByteDataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -7694,9 +5357,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator /(SByteDataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -7716,9 +5376,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(Int16DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -7727,9 +5384,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(Int16DataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7738,9 +5392,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(Int16DataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7749,9 +5400,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(Int16DataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -7760,9 +5408,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(Int16DataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -7771,9 +5416,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7782,9 +5424,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator /(Int16DataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -7793,9 +5432,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(Int16DataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -7804,9 +5440,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(Int16DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -7826,9 +5459,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(UInt32DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -7837,9 +5467,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(UInt32DataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7848,9 +5475,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(UInt32DataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7859,9 +5483,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(UInt32DataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -7870,9 +5491,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7881,9 +5499,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -7892,9 +5507,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -7903,9 +5515,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt32DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -7914,9 +5523,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt32DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -7936,9 +5542,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(UInt64DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -7947,9 +5550,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(UInt64DataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -7958,9 +5558,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(UInt64DataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -7969,9 +5566,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -7980,9 +5574,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -7991,9 +5582,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, short right)
         {
             return left.Divide(right);
@@ -8002,9 +5590,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -8013,9 +5598,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -8024,9 +5606,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt64DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -8046,9 +5625,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator /(UInt16DataFrameColumn left, decimal right)
         {
             return left.Divide(right);
@@ -8057,9 +5633,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator /(UInt16DataFrameColumn left, double right)
         {
             return left.Divide(right);
@@ -8068,9 +5641,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator /(UInt16DataFrameColumn left, float right)
         {
             return left.Divide(right);
@@ -8079,9 +5649,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator /(UInt16DataFrameColumn left, int right)
         {
             return left.Divide(right);
@@ -8090,9 +5657,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator /(UInt16DataFrameColumn left, long right)
         {
             return left.Divide(right);
@@ -8101,9 +5665,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Divide(right);
@@ -8112,9 +5673,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator /(UInt16DataFrameColumn left, uint right)
         {
             return left.Divide(right);
@@ -8123,9 +5681,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator /(UInt16DataFrameColumn left, ulong right)
         {
             return left.Divide(right);
@@ -8134,9 +5689,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseDivide(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator /(UInt16DataFrameColumn left, ushort right)
         {
             return left.Divide(right);
@@ -8152,65 +5704,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(ByteDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(ByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(ByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(ByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(ByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator %(ByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(ByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(ByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator %(ByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8222,72 +5747,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8299,72 +5794,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DoubleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8376,72 +5841,42 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(SingleDataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(SingleDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8453,65 +5888,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(Int32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(Int32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(Int32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(Int32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8523,65 +5931,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(Int64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(Int64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(Int64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8593,65 +5974,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(SByteDataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SByteDataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(SByteDataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(SByteDataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator %(SByteDataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator %(SByteDataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(SByteDataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(SByteDataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator %(SByteDataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8663,65 +6017,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(Int16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(Int16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(Int16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(Int16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(Int16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8733,65 +6060,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(UInt32DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(UInt32DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(UInt32DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(UInt32DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt32DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8803,65 +6103,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(UInt64DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(UInt64DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(UInt64DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, Int16DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8873,65 +6146,38 @@ namespace Microsoft.Data.Analysis
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(UInt16DataFrameColumn left, DecimalDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(UInt16DataFrameColumn left, DoubleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(UInt16DataFrameColumn left, SingleDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(UInt16DataFrameColumn left, Int32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(UInt16DataFrameColumn left, Int64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, SByteDataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt16DataFrameColumn left, UInt32DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt16DataFrameColumn left, UInt64DataFrameColumn right)
         {
             return left.Modulo(right);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, UInt16DataFrameColumn right)
         {
             return left.Modulo(right);
@@ -8947,9 +6193,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(ByteDataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -8958,9 +6201,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(ByteDataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -8969,9 +6209,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(ByteDataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -8980,9 +6217,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(ByteDataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -8991,9 +6225,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(ByteDataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9002,9 +6233,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator %(ByteDataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9013,9 +6241,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(ByteDataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -9024,9 +6249,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(ByteDataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -9035,9 +6257,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class ByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator %(ByteDataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -9057,9 +6276,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -9068,9 +6284,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9079,9 +6292,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -9090,9 +6300,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -9101,9 +6308,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9112,9 +6316,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -9123,9 +6324,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9134,9 +6332,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -9145,9 +6340,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -9156,9 +6348,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DecimalDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DecimalDataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -9178,9 +6367,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(DoubleDataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -9189,9 +6375,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9200,9 +6383,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -9211,9 +6391,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -9222,9 +6399,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9233,9 +6407,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -9244,9 +6415,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9255,9 +6423,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -9266,9 +6431,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -9277,9 +6439,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class DoubleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(DoubleDataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -9299,9 +6458,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(SingleDataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -9310,9 +6466,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(SingleDataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9321,9 +6474,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -9332,9 +6482,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -9343,9 +6490,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9354,9 +6498,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -9365,9 +6506,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9376,9 +6514,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -9387,9 +6522,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -9398,9 +6530,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SingleDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SingleDataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -9420,9 +6549,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(Int32DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -9431,9 +6557,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(Int32DataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9442,9 +6565,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(Int32DataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -9453,9 +6573,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -9464,9 +6581,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int32DataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9475,9 +6589,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -9486,9 +6597,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9497,9 +6605,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(Int32DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -9508,9 +6613,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int32DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int32DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -9530,9 +6632,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(Int64DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -9541,9 +6640,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(Int64DataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9552,9 +6648,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(Int64DataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -9563,9 +6656,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -9574,9 +6664,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9585,9 +6672,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -9596,9 +6680,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9607,9 +6688,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -9618,9 +6696,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int64DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int64DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -9640,9 +6715,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(SByteDataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9651,9 +6723,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(SByteDataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -9662,9 +6731,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(SByteDataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -9673,9 +6739,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(SByteDataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9684,9 +6747,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static SByteDataFrameColumn operator %(SByteDataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -9695,9 +6755,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static Int16DataFrameColumn operator %(SByteDataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9706,9 +6763,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(SByteDataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -9717,9 +6771,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(SByteDataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -9728,9 +6779,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class SByteDataFrameColumn
-    {
         public static UInt16DataFrameColumn operator %(SByteDataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -9750,9 +6798,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(Int16DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -9761,9 +6806,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(Int16DataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9772,9 +6814,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(Int16DataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -9783,9 +6822,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(Int16DataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -9794,9 +6830,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(Int16DataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9805,9 +6838,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -9816,9 +6846,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static Int16DataFrameColumn operator %(Int16DataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9827,9 +6854,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(Int16DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -9838,9 +6862,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class Int16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(Int16DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -9860,9 +6881,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(UInt32DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -9871,9 +6889,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(UInt32DataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9882,9 +6897,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(UInt32DataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -9893,9 +6905,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(UInt32DataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -9904,9 +6913,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -9915,9 +6921,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -9926,9 +6929,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -9937,9 +6937,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt32DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -9948,9 +6945,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt32DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt32DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -9970,9 +6964,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(UInt64DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -9981,9 +6972,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(UInt64DataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -9992,9 +6980,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(UInt64DataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -10003,9 +6988,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -10014,9 +6996,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -10025,9 +7004,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, short right)
         {
             return left.Modulo(right);
@@ -10036,9 +7012,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -10047,9 +7020,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -10058,9 +7028,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt64DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt64DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);
@@ -10080,9 +7047,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DecimalDataFrameColumn operator %(UInt16DataFrameColumn left, decimal right)
         {
             return left.Modulo(right);
@@ -10091,9 +7055,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static DoubleDataFrameColumn operator %(UInt16DataFrameColumn left, double right)
         {
             return left.Modulo(right);
@@ -10102,9 +7063,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static SingleDataFrameColumn operator %(UInt16DataFrameColumn left, float right)
         {
             return left.Modulo(right);
@@ -10113,9 +7071,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int32DataFrameColumn operator %(UInt16DataFrameColumn left, int right)
         {
             return left.Modulo(right);
@@ -10124,9 +7079,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static Int64DataFrameColumn operator %(UInt16DataFrameColumn left, long right)
         {
             return left.Modulo(right);
@@ -10135,9 +7087,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, sbyte right)
         {
             return left.Modulo(right);
@@ -10146,9 +7095,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt32DataFrameColumn operator %(UInt16DataFrameColumn left, uint right)
         {
             return left.Modulo(right);
@@ -10157,9 +7103,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt64DataFrameColumn operator %(UInt16DataFrameColumn left, ulong right)
         {
             return left.Modulo(right);
@@ -10168,9 +7111,6 @@ namespace Microsoft.Data.Analysis
         {
             return right.ReverseModulo(left);
         }
-    }
-    public partial class UInt16DataFrameColumn
-    {
         public static UInt16DataFrameColumn operator %(UInt16DataFrameColumn left, ushort right)
         {
             return left.Modulo(right);

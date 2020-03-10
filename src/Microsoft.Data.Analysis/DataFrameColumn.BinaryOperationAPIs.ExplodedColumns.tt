@@ -32,7 +32,21 @@ bool supportedInPlace(string type1, string type2)
 <# 
 void GenerateAllBinaryCombinationsForMethod(string methodName)
 {
- foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
+    HashSet<string> visited = new HashSet<string> { };
+ foreach (TypeCombination outer in BinaryOperationCombinations.binaryOperationCombinations) 
+ {
+    string outerColumnType = outer.ThisColumnType;
+    if (visited.Contains(outerColumnType))
+    {
+        continue;
+    }
+    visited.Add(outerColumnType);
+    string fullOuterColumnType = GetCapitalizedPrimitiveTypes(outerColumnType) + "DataFrameColumn";
+#>
+    public partial class <#=fullOuterColumnType#>
+    {
+<#
+    foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
 { 
     string returnType = types.ReturnColumnType;
     string columnType = types.ThisColumnType;
@@ -44,8 +58,6 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
 
     string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
 #>
-    public partial class <#=fullColumnType#>
-    {
 <#
     if (supportedInPlace(columnType, otherColumnType))
     {
@@ -91,15 +103,32 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
     }
 #>
         }
-    }
 <# 
 } 
+#>
+    }
+<# 
+}
 }
 #>
 <# 
 void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
 {
- foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
+    HashSet<string> visited = new HashSet<string> { };
+ foreach (TypeCombination outer in BinaryOperationCombinations.binaryOperationCombinations) 
+ {
+    string outerColumnType = outer.ThisColumnType;
+    if (visited.Contains(outerColumnType))
+    {
+        continue;
+    }
+    visited.Add(outerColumnType);
+    string fullOuterColumnType = GetCapitalizedPrimitiveTypes(outerColumnType) + "DataFrameColumn";
+#>
+    public partial class <#=fullOuterColumnType#>
+    {
+<#
+    foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
 { 
     string returnType = types.ReturnColumnType;
     string columnType = types.ThisColumnType;
@@ -111,8 +140,6 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
     string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
 
 #>
-    public partial class <#=fullColumnType#>
-    {
 <#
     if (supportedInPlace(columnType, valueType))
     {
@@ -158,9 +185,12 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
     }
 #>
         }
-    }
 <# 
 } 
+#>
+    }
+<# 
+}
 }
 #>
 <#
@@ -225,7 +255,21 @@ foreach (MethodConfiguration method in methodConfiguration)
 <# 
 void GenerateAllComparisonCombinationsForMethod(string methodName)
 {
- foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+    HashSet<string> visited = new HashSet<string> { };
+ foreach (TypeCombination outer in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ {
+    string outerColumnType = outer.ThisColumnType;
+    if (visited.Contains(outerColumnType))
+    {
+        continue;
+    }
+    visited.Add(outerColumnType);
+    string fullOuterColumnType = GetCapitalizedPrimitiveTypes(outerColumnType) + "DataFrameColumn";
+#>
+    public partial class <#=fullOuterColumnType#>
+    {
+<#
+    foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
  {
     string returnType = types.ReturnColumnType;
     string columnType = types.ThisColumnType;
@@ -240,8 +284,6 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
     string capitalizedColumnType = GetCapitalizedPrimitiveTypes(columnType);
 
 #>
-    public partial class <#=fullColumnType#>
-    {
         public <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column)
         {
 <#
@@ -274,6 +316,9 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
     }
 #>
         }
+<# 
+ }
+#>
     }
 <# 
  }
@@ -283,7 +328,21 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
 <# 
 void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
 {
- foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations) 
+    HashSet<string> visited = new HashSet<string> { };
+ foreach (TypeCombination outer in ComparisonOperationCombinations.comparisonOperationCombinations) 
+ {
+    string outerColumnType = outer.ThisColumnType;
+    if (visited.Contains(outerColumnType))
+    {
+        continue;
+    }
+    visited.Add(outerColumnType);
+    string fullOuterColumnType = GetCapitalizedPrimitiveTypes(outerColumnType) + "DataFrameColumn";
+#>
+    public partial class <#=fullOuterColumnType#>
+    {
+<#
+    foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
  {
     string returnType = types.ReturnColumnType;
     string columnType = types.ThisColumnType;
@@ -297,8 +356,6 @@ void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
     string capitalizedOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType);
     string capitalizedColumnType = GetCapitalizedPrimitiveTypes(columnType);
 #>
-    public partial class <#=fullColumnType#>
-    {
         public <#=fullReturnType#> <#=methodName#>(<#=otherColumnType#> value)
         {
 <#
@@ -331,9 +388,12 @@ void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
     }
 #>
         }
-    }
 <# 
  }
+#>
+    }
+<# 
+}
 }
 #>
 <#

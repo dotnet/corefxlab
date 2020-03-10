@@ -19,7 +19,21 @@ namespace Microsoft.Data.Analysis
 <#
 void GenerateAllBinaryCombinationsForOperator(string op, string methodName)
 {
-    foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
+    HashSet<string> visited = new HashSet<string> { };
+ foreach (TypeCombination outer in BinaryOperationCombinations.binaryOperationCombinations) 
+ {
+    string outerColumnType = outer.ThisColumnType;
+    if (visited.Contains(outerColumnType))
+    {
+        continue;
+    }
+    visited.Add(outerColumnType);
+    string fullOuterColumnType = GetCapitalizedPrimitiveTypes(outerColumnType) + "DataFrameColumn";
+#>
+    public partial class <#=fullOuterColumnType#>
+    {
+<#
+    foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
     {
         string returnType = types.ReturnColumnType;
         string columnType = types.ThisColumnType;
@@ -29,21 +43,36 @@ void GenerateAllBinaryCombinationsForOperator(string op, string methodName)
         string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
         string fullOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType) + "DataFrameColumn";
 #>
-    public partial class <#=fullColumnType#>
-    {
         public static <#=fullReturnType#> operator <#=op#>(<#=fullColumnType#> left, <#=fullOtherColumnType#> right)
         {
             return left.<#=methodName#>(right);
         }
-    }
 <# 
     } 
+#>
+    }
+<#
+}
 }
 #>
 <#
 void GenerateAllBinaryScalarCombinationsForOperator(string op, string methodName)
 {
-    foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations) 
+    HashSet<string> visited = new HashSet<string> { };
+ foreach (TypeCombination outer in BinaryOperationCombinations.binaryOperationCombinations) 
+ {
+    string outerColumnType = outer.ThisColumnType;
+    if (visited.Contains(outerColumnType))
+    {
+        continue;
+    }
+    visited.Add(outerColumnType);
+    string fullOuterColumnType = GetCapitalizedPrimitiveTypes(outerColumnType) + "DataFrameColumn";
+#>
+    public partial class <#=fullOuterColumnType#>
+    {
+<#
+    foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
     {
         string returnType = types.ReturnColumnType;
         string columnType = types.ThisColumnType;
@@ -52,8 +81,6 @@ void GenerateAllBinaryScalarCombinationsForOperator(string op, string methodName
         string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
         string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
 #>
-    public partial class <#=fullColumnType#>
-    {
         public static <#=fullReturnType#> operator <#=op#>(<#=fullColumnType#> left, <#=otherColumnType#> right)
         {
             return left.<#=methodName#>(right);
@@ -62,9 +89,12 @@ void GenerateAllBinaryScalarCombinationsForOperator(string op, string methodName
         {
             return right.Reverse<#=methodName#>(left);
         }
-    }
 <# 
     } 
+#>
+    }
+<#
+}
 }
 #>
 <#
