@@ -16,6 +16,7 @@ namespace System.Buffers
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
                 capacity += buffer.Length;
 
+            position = sequence.Start;
             var count = 0;
             byte[] array = new byte[capacity];
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
@@ -33,6 +34,7 @@ namespace System.Buffers
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
                 capacity += buffer.Length;
 
+            position = sequence.Start;
             var count = 0;
             byte[] array = new byte[capacity];
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
