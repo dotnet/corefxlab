@@ -12,24 +12,36 @@ namespace System.Buffers
         public static ReadOnlySpan<byte> ToSpan(this ReadOnlySequence<byte> sequence)
         {
             SequencePosition position = sequence.Start;
-            ResizableArray<byte> array = new ResizableArray<byte>(1024);
+            int capacity = 0;
+            while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
+                capacity += buffer.Length;
+
+            var count = 0;
+            byte[] array = new byte[capacity];
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
             {
-                array.AddAll(buffer.Span);
+                buffer.Span.CopyTo(array.AsSpan(count));
+                count += buffer.Length;
             }
-            return array.Span;
+            return array.AsSpan();
         }
 
         public static ReadOnlySpan<byte> ToSpan<T>(this T sequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
             SequencePosition position = sequence.Start;
-            ResizableArray<byte> array = new ResizableArray<byte>(1024);
+            int capacity = 0;
+            while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
+                capacity += buffer.Length;
+
+            var count = 0;
+            byte[] array = new byte[capacity];
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
             {
-                array.AddAll(buffer.Span);
+                buffer.Span.CopyTo(array.AsSpan(count));
+                count += buffer.Length;
             }
-            array.Resize(array.Count);
-            return array.Span.Slice(0, array.Count);
+
+            return array.AsSpan();
         }
 
         // TODO: this cannot be an extension method (as I would like it to be).
