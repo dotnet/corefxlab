@@ -53,6 +53,21 @@
         {"decimal", 7}
     };
 
+    // These are the implicit conversions allowed in C#.
+    public Dictionary<string, List<string>> primitiveTypeToImplicitConversions = new Dictionary<string, List<string>> {
+        {"sbyte", new List<string> {"short", "int", "long", "float", "double", "decimal"}},
+        {"byte", new List<string> {"short", "ushort", "int", "uint", "long", "ulong", "float", "double", "decimal"}},
+        {"short", new List<string> {"int", "long", "float", "double", "decimal"}},
+        {"ushort", new List<string> {"int", "uint", "long", "ulong", "float", "double", "decimal"}},
+        {"int", new List<string> {"long", "float", "double", "decimal"}},
+        {"uint", new List<string> {"long", "ulong", "float", "double", "decimal"}},
+        {"long", new List<string> {"float", "double", "decimal"}},
+        {"ulong", new List<string> {"float", "double", "decimal"}},
+        {"float", new List<string> {"double"}},
+        {"double", new List<string> {}},
+        {"decimal", new List<string> {}},
+    };
+
     public string GetCapitalizedPrimitiveTypes(string type)
     {
         string typeFirstCharUpper;

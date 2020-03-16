@@ -53,6 +53,15 @@ foreach (TypeConfiguration type in typeConfiguration)
 if (IsMixedSignedAndUnsignedTypePair(type.TypeName, type2.TypeName)) {
     continue;
 } 
+
+// If the C# spec doesn't allow some implicit conversions, don't define that API
+primitiveTypeToImplicitConversions.TryGetValue(type.TypeName, out List<string> allowedImplicitConversions);
+primitiveTypeToPrimitivityLevelMap.TryGetValue(type.TypeName, out int typeLevel);
+primitiveTypeToPrimitivityLevelMap.TryGetValue(type2.TypeName, out int type2Level);
+if (typeLevel < type2Level && !allowedImplicitConversions.Contains(type2.TypeName))
+{
+    continue;
+}
 #>
         new TypeCombination("<#=type.TypeName#>", "<#=type2.TypeName#>", "<#=GetBinaryOperationReturnType(type, type2)#>"),
 <#
