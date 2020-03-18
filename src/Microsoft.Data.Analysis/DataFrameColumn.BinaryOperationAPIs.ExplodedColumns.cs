@@ -9175,7 +9175,7 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
-            retColumn._columnContainer.And(column._columnContainer);
+            retColumn.ColumnContainer.And(column.ColumnContainer);
             return retColumn;
         }
     }
@@ -9184,7 +9184,7 @@ namespace Microsoft.Data.Analysis
         public new BooleanDataFrameColumn And(bool value, bool inPlace = false)
         {
             BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
-            retColumn._columnContainer.And(value);
+            retColumn.ColumnContainer.And(value);
             return retColumn;
         }
     }
@@ -9197,7 +9197,7 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
-            retColumn._columnContainer.Or(column._columnContainer);
+            retColumn.ColumnContainer.Or(column.ColumnContainer);
             return retColumn;
         }
     }
@@ -9206,7 +9206,7 @@ namespace Microsoft.Data.Analysis
         public new BooleanDataFrameColumn Or(bool value, bool inPlace = false)
         {
             BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
-            retColumn._columnContainer.Or(value);
+            retColumn.ColumnContainer.Or(value);
             return retColumn;
         }
     }
@@ -9219,7 +9219,7 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
-            retColumn._columnContainer.Xor(column._columnContainer);
+            retColumn.ColumnContainer.Xor(column.ColumnContainer);
             return retColumn;
         }
     }
@@ -9228,7 +9228,7 @@ namespace Microsoft.Data.Analysis
         public new BooleanDataFrameColumn Xor(bool value, bool inPlace = false)
         {
             BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
-            retColumn._columnContainer.Xor(value);
+            retColumn.ColumnContainer.Xor(value);
             return retColumn;
         }
     }
@@ -16488,7 +16488,7 @@ namespace Microsoft.Data.Analysis
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
             var result = (PrimitiveDataFrameColumn<int>)(intColumn.LeftShift(value, inPlace));
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class Int32DataFrameColumn
@@ -16496,7 +16496,7 @@ namespace Microsoft.Data.Analysis
         public new Int32DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<int>)base.LeftShift(value, inPlace);
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class Int64DataFrameColumn
@@ -16504,7 +16504,7 @@ namespace Microsoft.Data.Analysis
         public new Int64DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<long>)base.LeftShift(value, inPlace);
-            return new Int64DataFrameColumn(result.Name, result._columnContainer);
+            return new Int64DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class SByteDataFrameColumn
@@ -16513,7 +16513,7 @@ namespace Microsoft.Data.Analysis
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
             var result = (PrimitiveDataFrameColumn<int>)(intColumn.LeftShift(value, inPlace));
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class Int16DataFrameColumn
@@ -16522,7 +16522,7 @@ namespace Microsoft.Data.Analysis
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
             var result = (PrimitiveDataFrameColumn<int>)(intColumn.LeftShift(value, inPlace));
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -16530,7 +16530,7 @@ namespace Microsoft.Data.Analysis
         public new UInt32DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<uint>)base.LeftShift(value, inPlace);
-            return new UInt32DataFrameColumn(result.Name, result._columnContainer);
+            return new UInt32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class UInt64DataFrameColumn
@@ -16538,7 +16538,7 @@ namespace Microsoft.Data.Analysis
         public new UInt64DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<ulong>)base.LeftShift(value, inPlace);
-            return new UInt64DataFrameColumn(result.Name, result._columnContainer);
+            return new UInt64DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class UInt16DataFrameColumn
@@ -16547,7 +16547,7 @@ namespace Microsoft.Data.Analysis
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
             var result = (PrimitiveDataFrameColumn<int>)(intColumn.LeftShift(value, inPlace));
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class ByteDataFrameColumn
@@ -16556,7 +16556,7 @@ namespace Microsoft.Data.Analysis
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
             var result = (PrimitiveDataFrameColumn<int>)(intColumn.RightShift(value, inPlace));
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class Int32DataFrameColumn
@@ -16564,7 +16564,7 @@ namespace Microsoft.Data.Analysis
         public new Int32DataFrameColumn RightShift(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<int>)base.RightShift(value, inPlace);
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class Int64DataFrameColumn
@@ -16572,7 +16572,7 @@ namespace Microsoft.Data.Analysis
         public new Int64DataFrameColumn RightShift(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<long>)base.RightShift(value, inPlace);
-            return new Int64DataFrameColumn(result.Name, result._columnContainer);
+            return new Int64DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class SByteDataFrameColumn
@@ -16581,7 +16581,7 @@ namespace Microsoft.Data.Analysis
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
             var result = (PrimitiveDataFrameColumn<int>)(intColumn.RightShift(value, inPlace));
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class Int16DataFrameColumn
@@ -16590,7 +16590,7 @@ namespace Microsoft.Data.Analysis
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
             var result = (PrimitiveDataFrameColumn<int>)(intColumn.RightShift(value, inPlace));
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -16598,7 +16598,7 @@ namespace Microsoft.Data.Analysis
         public new UInt32DataFrameColumn RightShift(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<uint>)base.RightShift(value, inPlace);
-            return new UInt32DataFrameColumn(result.Name, result._columnContainer);
+            return new UInt32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class UInt64DataFrameColumn
@@ -16606,7 +16606,7 @@ namespace Microsoft.Data.Analysis
         public new UInt64DataFrameColumn RightShift(int value, bool inPlace = false)
         {
             var result = (PrimitiveDataFrameColumn<ulong>)base.RightShift(value, inPlace);
-            return new UInt64DataFrameColumn(result.Name, result._columnContainer);
+            return new UInt64DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
     public partial class UInt16DataFrameColumn
@@ -16615,7 +16615,7 @@ namespace Microsoft.Data.Analysis
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
             var result = (PrimitiveDataFrameColumn<int>)(intColumn.RightShift(value, inPlace));
-            return new Int32DataFrameColumn(result.Name, result._columnContainer);
+            return new Int32DataFrameColumn(result.Name, result.ColumnContainer);
         }
     }
 }

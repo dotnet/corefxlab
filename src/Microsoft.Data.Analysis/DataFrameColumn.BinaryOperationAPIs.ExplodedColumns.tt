@@ -251,7 +251,7 @@ void GenerateAllBinaryBitwiseOperationsForMethod(string methodName)
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
-            retColumn._columnContainer.<#=methodName#>(column._columnContainer);
+            retColumn.ColumnContainer.<#=methodName#>(column.ColumnContainer);
             return retColumn;
         }
     }
@@ -267,7 +267,7 @@ void GenerateAllBinaryScalarBitwiseOperationsForMethod(string methodName)
         public new BooleanDataFrameColumn <#=methodName#>(bool value, bool inPlace = false)
         {
             BooleanDataFrameColumn retColumn = inPlace ? this : CloneAsBooleanColumn();
-            retColumn._columnContainer.<#=methodName#>(value);
+            retColumn.ColumnContainer.<#=methodName#>(value);
             return retColumn;
         }
     }
@@ -483,7 +483,7 @@ void GenerateAllBinaryShiftCombinationsForMethod(string methodName)
             {
 #>
             var result = (PrimitiveDataFrameColumn<<#=returnType#>>)base.<#=methodName#>(value, inPlace);
-            return new <#=fullReturnType#>(result.Name, result._columnContainer);
+            return new <#=fullReturnType#>(result.Name, result.ColumnContainer);
 <#
             }
             else
@@ -491,7 +491,7 @@ void GenerateAllBinaryShiftCombinationsForMethod(string methodName)
 #>
             <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
             var result = (PrimitiveDataFrameColumn<<#=returnType#>>)(<#=returnType#>Column.<#=methodName#>(value, inPlace));
-            return new <#=fullReturnType#>(result.Name, result._columnContainer);
+            return new <#=fullReturnType#>(result.Name, result.ColumnContainer);
 <#
             }
 #>

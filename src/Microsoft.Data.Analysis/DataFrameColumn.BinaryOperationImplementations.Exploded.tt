@@ -77,7 +77,7 @@ void GenerateAllBinaryCombinationsForMethod(string inputMethodName)
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             <#=fullReturnType#> newColumn = inPlace ? this : CloneAs<#=capitalizedReturnType#>Column();
-            newColumn._columnContainer.<#=inputMethodName#>(column._columnContainer);
+            newColumn.ColumnContainer.<#=inputMethodName#>(column.ColumnContainer);
             return newColumn;
         }
     }
@@ -130,7 +130,7 @@ void GenerateAllBinaryScalarCombinationsForMethod(string inputMethodName)
 #>
         {
             <#=fullReturnType#> newColumn = inPlace ? this : CloneAs<#=capitalizedReturnType#>Column();
-            newColumn._columnContainer.<#=inputMethodName#>(value);
+            newColumn.ColumnContainer.<#=inputMethodName#>(value);
             return newColumn;
         }
     }
@@ -163,10 +163,10 @@ void GenerateAllComparisonCombinationsForMethod(string inputMethodName)
 #>
     public partial class <#=fullColumnType#>
     {
-        public <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column)
+        internal <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column)
         {
             BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
-            _columnContainer.<#=inputMethodName#>(column._columnContainer, newColumn._columnContainer);
+            ColumnContainer.<#=inputMethodName#>(column.ColumnContainer, newColumn.ColumnContainer);
             return newColumn;
         }
     }
@@ -198,10 +198,10 @@ void GenerateAllComparisonScalarCombinationsForMethod(string inputMethodName)
 #>
     public partial class <#=fullColumnType#>
     {
-        public <#=fullReturnType#> <#=methodName#>(<#=otherColumnType#> value)
+        internal <#=fullReturnType#> <#=methodName#>(<#=otherColumnType#> value)
         {
             BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
-            _columnContainer.<#=inputMethodName#>(value, newColumn._columnContainer);
+            ColumnContainer.<#=inputMethodName#>(value, newColumn.ColumnContainer);
             return newColumn;
         }
     }

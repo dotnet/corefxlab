@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -608,7 +609,16 @@ namespace Microsoft.Data.Analysis
                 DataFrameBuffer<bool> newBuffer = new DataFrameBuffer<bool>();
                 ret.Buffers.Add(newBuffer);
                 newBuffer.EnsureCapacity(buffer.Length);
-                newBuffer.Span.Fill(false);
+                if (typeof(T) == typeof(bool))
+                {
+                    var localBuffer = buffer;
+                    ReadOnlyDataFrameBuffer<bool> boolLocalBuffer = Unsafe.As<ReadOnlyDataFrameBuffer<T>, ReadOnlyDataFrameBuffer<bool>>(ref localBuffer);
+                    boolLocalBuffer.ReadOnlySpan.TryCopyTo(newBuffer.RawSpan);
+                }
+                else
+                {
+                    newBuffer.Span.Fill(false);
+                }
                 newBuffer.Length = buffer.Length;
                 ret.Length += buffer.Length;
             }

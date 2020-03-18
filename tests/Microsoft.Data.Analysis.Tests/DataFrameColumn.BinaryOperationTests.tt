@@ -100,7 +100,7 @@ void GenerateAllBinaryTestsForMethod(string methodName, string methodOperator)
     string capitalizedOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType);
 #>
         [Fact]
-        public void <#=methodName#><#=fullReturnType#>To<#=fullColumnType#>()
+        public void <#=methodName#><#=fullOtherColumnType#>To<#=fullColumnType#>()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (<#=columnType#>)x);
             <#=fullColumnType#> column = new <#=fullColumnType#>("<#=capitalizedColumnType#>", columnEnumerable);
@@ -424,11 +424,11 @@ void GenerateAllBinaryScalarTestsForMethod(string methodName, string methodOpera
     string capitalizedOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType);
 #>
         [Fact]
-        public void <#=methodName#><#=capitalizedReturnType#>To<#=fullColumnType#>()
+        public void <#=methodName#><#=capitalizedOtherColumnType#>To<#=fullColumnType#>()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (<#=columnType#>)x);
             <#=fullColumnType#> column = new <#=fullColumnType#>("<#=capitalizedColumnType#>", columnEnumerable);
-            <#=otherColumnType#> value = (byte)5;
+            <#=otherColumnType#> value = 5;
 <#
             if (methodName.Contains("Reverse"))
             {
@@ -589,7 +589,6 @@ void GenerateAllBinaryComparisonTestsForMethod(string methodName, string methodO
 <#
     foreach (MethodConfiguration method in methodConfiguration)
     {
-        // Don't generate method for Comparison and ComparisonScalar methods here
         if (method.MethodType == MethodType.Binary && method.IsNumeric)
         {
             GenerateAllBinaryTestsForMethod(method.MethodName, method.Operator);

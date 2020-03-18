@@ -20,7 +20,9 @@ namespace Microsoft.Data.Analysis
     public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn, IEnumerable<T?>
         where T : unmanaged
     {
-        internal PrimitiveColumnContainer<T> _columnContainer;
+        private PrimitiveColumnContainer<T> _columnContainer;
+
+        internal PrimitiveColumnContainer<T> ColumnContainer => _columnContainer;
 
         internal PrimitiveDataFrameColumn(string name, PrimitiveColumnContainer<T> column) : base(name, column.Length, typeof(T))
         {
