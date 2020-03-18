@@ -51,14 +51,12 @@ foreach (TypeConfiguration type in typeConfiguration)
 <# 
 // We won't support binary operations on pairs of signed and unsigned types yet. For users, there is a simple work around of cloning the columns to higher types(short -> int, int -> long etc) and then performing binary ops on them
 if (IsMixedSignedAndUnsignedTypePair(type.TypeName, type2.TypeName)) {
-    continue;
+    // continue;
 } 
 
 // If the C# spec doesn't allow some implicit conversions, don't define that API
-primitiveTypeToImplicitConversions.TryGetValue(type.TypeName, out List<string> allowedImplicitConversions);
-primitiveTypeToPrimitivityLevelMap.TryGetValue(type.TypeName, out int typeLevel);
-primitiveTypeToPrimitivityLevelMap.TryGetValue(type2.TypeName, out int type2Level);
-if (typeLevel < type2Level && !allowedImplicitConversions.Contains(type2.TypeName))
+string returnType = GetBinaryOperationReturnType(type, type2);
+if (returnType == string.Empty)
 {
     continue;
 }
@@ -97,6 +95,16 @@ public class ComparisonOperationCombinations
                     continue;
                 }
                 // For comparison, we don't exclude mixed signed and unsigned types since the result is always a bool
+
+                if (type.SupportsNumeric)
+                {
+                    // If the C# spec doesn't allow some implicit conversions, don't define that API. For ex: float == decimal or long == ulong are not allowed
+                    string returnType = GetBinaryOperationReturnType(type, innerType);
+                    if (returnType == string.Empty)
+                    {
+                        continue;
+                    }
+                }
 #>
         new TypeCombination("<#=type.TypeName#>", "<#=innerType.TypeName#>", "bool"),
 <#

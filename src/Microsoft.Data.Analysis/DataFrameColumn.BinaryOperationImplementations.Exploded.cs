@@ -11,19 +11,6 @@ using System.Collections.Generic;
 
 namespace Microsoft.Data.Analysis
 {
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn AddImplementation(ByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Add(column._columnContainer);
-            return newColumn;
-        }
-    }
     public partial class DecimalDataFrameColumn
     {
         internal DecimalDataFrameColumn AddImplementation(DecimalDataFrameColumn column, bool inPlace = false)
@@ -89,32 +76,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn AddImplementation(SByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Add(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn AddImplementation(Int16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Add(column._columnContainer);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn AddImplementation(UInt32DataFrameColumn column, bool inPlace = false)
@@ -138,28 +99,6 @@ namespace Microsoft.Data.Analysis
             }
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Add(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn AddImplementation(UInt16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Add(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn AddImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Add(value);
             return newColumn;
         }
     }
@@ -208,24 +147,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn AddImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Add(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn AddImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Add(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn AddImplementation(uint value, bool inPlace = false)
@@ -241,24 +162,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Add(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn AddImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Add(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn ReverseAddImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.ReverseAdd(value);
             return newColumn;
         }
     }
@@ -307,24 +210,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn ReverseAddImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.ReverseAdd(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn ReverseAddImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.ReverseAdd(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn ReverseAddImplementation(uint value, bool inPlace = false)
@@ -340,28 +225,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseAdd(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn ReverseAddImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.ReverseAdd(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn SubtractImplementation(ByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Subtract(column._columnContainer);
             return newColumn;
         }
     }
@@ -430,32 +293,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn SubtractImplementation(SByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Subtract(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn SubtractImplementation(Int16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Subtract(column._columnContainer);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn SubtractImplementation(UInt32DataFrameColumn column, bool inPlace = false)
@@ -479,28 +316,6 @@ namespace Microsoft.Data.Analysis
             }
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Subtract(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn SubtractImplementation(UInt16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Subtract(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn SubtractImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Subtract(value);
             return newColumn;
         }
     }
@@ -549,24 +364,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn SubtractImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Subtract(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn SubtractImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Subtract(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn SubtractImplementation(uint value, bool inPlace = false)
@@ -582,24 +379,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Subtract(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn SubtractImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Subtract(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn ReverseSubtractImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.ReverseSubtract(value);
             return newColumn;
         }
     }
@@ -648,24 +427,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn ReverseSubtractImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.ReverseSubtract(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn ReverseSubtractImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.ReverseSubtract(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn ReverseSubtractImplementation(uint value, bool inPlace = false)
@@ -681,28 +442,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseSubtract(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn ReverseSubtractImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.ReverseSubtract(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn MultiplyImplementation(ByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Multiply(column._columnContainer);
             return newColumn;
         }
     }
@@ -771,32 +510,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn MultiplyImplementation(SByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Multiply(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn MultiplyImplementation(Int16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Multiply(column._columnContainer);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn MultiplyImplementation(UInt32DataFrameColumn column, bool inPlace = false)
@@ -820,28 +533,6 @@ namespace Microsoft.Data.Analysis
             }
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Multiply(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn MultiplyImplementation(UInt16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Multiply(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn MultiplyImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Multiply(value);
             return newColumn;
         }
     }
@@ -890,24 +581,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn MultiplyImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Multiply(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn MultiplyImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Multiply(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn MultiplyImplementation(uint value, bool inPlace = false)
@@ -923,24 +596,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Multiply(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn MultiplyImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Multiply(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn ReverseMultiplyImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.ReverseMultiply(value);
             return newColumn;
         }
     }
@@ -989,24 +644,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn ReverseMultiplyImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.ReverseMultiply(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn ReverseMultiplyImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.ReverseMultiply(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn ReverseMultiplyImplementation(uint value, bool inPlace = false)
@@ -1022,28 +659,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseMultiply(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn ReverseMultiplyImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.ReverseMultiply(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn DivideImplementation(ByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Divide(column._columnContainer);
             return newColumn;
         }
     }
@@ -1112,32 +727,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn DivideImplementation(SByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Divide(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn DivideImplementation(Int16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Divide(column._columnContainer);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn DivideImplementation(UInt32DataFrameColumn column, bool inPlace = false)
@@ -1161,28 +750,6 @@ namespace Microsoft.Data.Analysis
             }
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Divide(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn DivideImplementation(UInt16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Divide(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn DivideImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Divide(value);
             return newColumn;
         }
     }
@@ -1231,24 +798,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn DivideImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Divide(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn DivideImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Divide(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn DivideImplementation(uint value, bool inPlace = false)
@@ -1264,24 +813,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Divide(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn DivideImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Divide(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn ReverseDivideImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.ReverseDivide(value);
             return newColumn;
         }
     }
@@ -1330,24 +861,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn ReverseDivideImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.ReverseDivide(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn ReverseDivideImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.ReverseDivide(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn ReverseDivideImplementation(uint value, bool inPlace = false)
@@ -1363,28 +876,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.ReverseDivide(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn ReverseDivideImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.ReverseDivide(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn ModuloImplementation(ByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Modulo(column._columnContainer);
             return newColumn;
         }
     }
@@ -1453,32 +944,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn ModuloImplementation(SByteDataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Modulo(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn ModuloImplementation(Int16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Modulo(column._columnContainer);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn ModuloImplementation(UInt32DataFrameColumn column, bool inPlace = false)
@@ -1502,28 +967,6 @@ namespace Microsoft.Data.Analysis
             }
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Modulo(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn ModuloImplementation(UInt16DataFrameColumn column, bool inPlace = false)
-        {
-            if (column.Length != Length)
-            {
-                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
-            }
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Modulo(column._columnContainer);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn ModuloImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.Modulo(value);
             return newColumn;
         }
     }
@@ -1572,24 +1015,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn ModuloImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.Modulo(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn ModuloImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.Modulo(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn ModuloImplementation(uint value, bool inPlace = false)
@@ -1605,24 +1030,6 @@ namespace Microsoft.Data.Analysis
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
             newColumn._columnContainer.Modulo(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn ModuloImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
-            newColumn._columnContainer.Modulo(value);
-            return newColumn;
-        }
-    }
-    public partial class ByteDataFrameColumn
-    {
-        internal ByteDataFrameColumn ReverseModuloImplementation(byte value, bool inPlace = false)
-        {
-            ByteDataFrameColumn newColumn = inPlace ? this : CloneAsByteColumn();
-            newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }
     }
@@ -1671,24 +1078,6 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
-    public partial class SByteDataFrameColumn
-    {
-        internal SByteDataFrameColumn ReverseModuloImplementation(sbyte value, bool inPlace = false)
-        {
-            SByteDataFrameColumn newColumn = inPlace ? this : CloneAsSByteColumn();
-            newColumn._columnContainer.ReverseModulo(value);
-            return newColumn;
-        }
-    }
-    public partial class Int16DataFrameColumn
-    {
-        internal Int16DataFrameColumn ReverseModuloImplementation(short value, bool inPlace = false)
-        {
-            Int16DataFrameColumn newColumn = inPlace ? this : CloneAsInt16Column();
-            newColumn._columnContainer.ReverseModulo(value);
-            return newColumn;
-        }
-    }
     public partial class UInt32DataFrameColumn
     {
         internal UInt32DataFrameColumn ReverseModuloImplementation(uint value, bool inPlace = false)
@@ -1703,15 +1092,6 @@ namespace Microsoft.Data.Analysis
         internal UInt64DataFrameColumn ReverseModuloImplementation(ulong value, bool inPlace = false)
         {
             UInt64DataFrameColumn newColumn = inPlace ? this : CloneAsUInt64Column();
-            newColumn._columnContainer.ReverseModulo(value);
-            return newColumn;
-        }
-    }
-    public partial class UInt16DataFrameColumn
-    {
-        internal UInt16DataFrameColumn ReverseModuloImplementation(ushort value, bool inPlace = false)
-        {
-            UInt16DataFrameColumn newColumn = inPlace ? this : CloneAsUInt16Column();
             newColumn._columnContainer.ReverseModulo(value);
             return newColumn;
         }

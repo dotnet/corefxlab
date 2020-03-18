@@ -20,13 +20,12 @@ namespace Microsoft.Data.Analysis
 <# 
 bool supportedInPlace(string type1, string type2)
 {
-    primitiveTypeToPrimitivityLevelMap.TryGetValue(type1, out int columnTypeLevel);
-    primitiveTypeToPrimitivityLevelMap.TryGetValue(type2, out int otherColumnTypeLevel);
-    if (columnTypeLevel < otherColumnTypeLevel)
+    string ret = GetBinaryOperationReturnType(type1, type2);
+    if (ret == type1)
     {
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 #>
 <# 
@@ -76,30 +75,54 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
 <#
     if (columnType == otherColumnType)
     {
-#>
-            return <#=methodName#>Implementation(column, inPlace);
-<#
-    }
-    else
-    {
-        primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
-        primitiveTypeToPrimitivityLevelMap.TryGetValue(otherColumnType, out int otherColumnTypeLevel);
-        if (otherColumnTypeLevel > columnTypeLevel)
+        // Handle the straightforward cases such as int + int resulting in int
+        if (fullReturnType == fullColumnType || fullReturnType == fullOtherColumnType)
         {
 #>
-            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
-            return <#=returnType#>Column.<#=methodName#>Implementation(column, inPlace: true);
+            return <#=methodName#>Implementation(column, inPlace);
 <#
         }
         else
         {
+            // Cases such as byte + byte resulting in int. Needs 2 clones
+#>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            <#=fullReturnType#> other<#=returnType#>Column = column.CloneAs<#=capitalizedReturnType#>Column();
+            return <#=returnType#>Column.<#=methodName#>Implementation(other<#=returnType#>Column, inPlace: true);
+<#
+        }
+    }
+    else
+    {
+        // Handle the straightforward cases
+        if (fullReturnType == fullColumnType || fullReturnType == fullOtherColumnType)
+        {
+            primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
+            primitiveTypeToPrimitivityLevelMap.TryGetValue(otherColumnType, out int otherColumnTypeLevel);
+            if (otherColumnTypeLevel > columnTypeLevel)
+            {
+#>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            return <#=returnType#>Column.<#=methodName#>Implementation(column, inPlace: true);
+<#
+            }
+            else
+            {
 #>
             <#=fullReturnType#> other<#=returnType#>Column = column.CloneAs<#=capitalizedReturnType#>Column();
             return <#=methodName#>Implementation(other<#=returnType#>Column, inPlace);
 <#
+            }
         }
+        else
+        {
+            // Cases such as byte + short resulting in int. Needs 2 clones
 #>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            <#=fullReturnType#> other<#=returnType#>Column = column.CloneAs<#=capitalizedReturnType#>Column();
+            return <#=returnType#>Column.<#=methodName#>Implementation(other<#=returnType#>Column, inPlace: true);
 <#
+        }
     }
 #>
         }
@@ -158,30 +181,52 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
 <#
     if (columnType == valueType)
     {
+        // Handle the straightforward cases such as int + int resulting in int
+        if (fullReturnType == fullColumnType)
+        {
 #>
             return <#=methodName#>Implementation(value, inPlace);
 <#
-    }
-    else
-    {
-        primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
-        primitiveTypeToPrimitivityLevelMap.TryGetValue(valueType, out int valueTypeLevel);
-        if (valueTypeLevel > columnTypeLevel)
+        }
+        else
         {
+            // Cases such as byte + byte resulting in int. Needs 2 clones
 #>
             <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
             return <#=returnType#>Column.<#=methodName#>Implementation(value, inPlace: true);
 <#
         }
-        else
+    }
+    else
+    {
+        // Handle the straightforward cases
+        if (fullReturnType == fullColumnType)
         {
+            primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
+            primitiveTypeToPrimitivityLevelMap.TryGetValue(valueType, out int valueTypeLevel);
+            if (valueTypeLevel > columnTypeLevel)
+            {
+#>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            return <#=returnType#>Column.<#=methodName#>Implementation(value, inPlace: true);
+<#
+            }
+            else
+            {
 #>
             <#=returnType#> convertedValue = (<#=returnType#>)value;
             return <#=methodName#>Implementation(convertedValue, inPlace);
 <#
+            }
         }
+        else
+        {
+            // Cases such as byte + short resulting in int. Needs 2 clones
 #>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            return <#=returnType#>Column.<#=methodName#>Implementation(value, inPlace: true);
 <#
+        }
     }
 #>
         }
@@ -415,20 +460,41 @@ void GenerateAllBinaryShiftCombinationsForMethod(string methodName)
 {
     foreach (var type in typeConfiguration)
     {
-        if (!type.SupportsNumeric || !type.SupportsBitwise)
+        if (!type.SupportsNumeric || !type.SupportsBitwise || type.TypeName == "char")
         {
             continue;
         }
         
-        string returnType = type.TypeName;
+        string returnType = GetBinaryShiftOperationReturnType(type);
+        if (returnType == string.Empty)
+        {
+            continue;
+        }
         string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+        string fullColumnType = GetCapitalizedPrimitiveTypes(type.TypeName) + "DataFrameColumn";
+        string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
 #>
-    public partial class <#=fullReturnType#>
+    public partial class <#=fullColumnType#>
     {
         public new <#=fullReturnType#> <#=methodName#>(int value, bool inPlace = false)
         {
+<#
+            if (fullColumnType == fullReturnType)
+            {
+#>
             var result = (PrimitiveDataFrameColumn<<#=returnType#>>)base.<#=methodName#>(value, inPlace);
             return new <#=fullReturnType#>(result.Name, result._columnContainer);
+<#
+            }
+            else
+            {
+#>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            var result = (PrimitiveDataFrameColumn<<#=returnType#>>)(<#=returnType#>Column.<#=methodName#>(value, inPlace));
+            return new <#=fullReturnType#>(result.Name, result._columnContainer);
+<#
+            }
+#>
         }
     }
 <#

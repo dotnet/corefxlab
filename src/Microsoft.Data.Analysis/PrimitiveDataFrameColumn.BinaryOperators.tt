@@ -130,16 +130,22 @@ void GenerateAllBinaryIntBitwiseCombinationsForOperator(string op, string method
 {
     foreach (var type in typeConfiguration)
     {
-        if (!type.SupportsNumeric || !type.SupportsBitwise)
+        if (!type.SupportsNumeric || !type.SupportsBitwise || type.TypeName == "char")
         {
             continue;
         }
-        string returnType = type.TypeName;
+        string returnType = GetBinaryShiftOperationReturnType(type);
+        if (returnType == string.Empty)
+        {
+            continue;
+        }
         string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+        string fullColumnType = GetCapitalizedPrimitiveTypes(type.TypeName) + "DataFrameColumn";
+        string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
 #>
-    public partial class <#=fullReturnType#>
+    public partial class <#=fullColumnType#>
     {
-        public static <#=fullReturnType#> operator <#=op#>(<#=fullReturnType#> left, int value)
+        public static <#=fullReturnType#> operator <#=op#>(<#=fullColumnType#> left, int value)
         {
             return left.<#=methodName#>(value);
         }

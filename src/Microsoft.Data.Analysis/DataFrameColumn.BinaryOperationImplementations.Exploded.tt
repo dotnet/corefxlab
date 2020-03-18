@@ -21,13 +21,12 @@ namespace Microsoft.Data.Analysis
 <# 
 bool supportedInPlace(string type1, string type2)
 {
-    primitiveTypeToPrimitivityLevelMap.TryGetValue(type1, out int columnTypeLevel);
-    primitiveTypeToPrimitivityLevelMap.TryGetValue(type2, out int otherColumnTypeLevel);
-    if (columnTypeLevel < otherColumnTypeLevel)
+    string ret = GetBinaryOperationReturnType(type1, type2);
+    if (ret == type1)
     {
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 #>
 <# 
@@ -40,6 +39,10 @@ void GenerateAllBinaryCombinationsForMethod(string inputMethodName)
     string columnType = types.ThisColumnType;
     string otherColumnType = types.OtherColumnType;
     if (columnType != otherColumnType)
+    {
+        continue;
+    }
+    if (columnType != returnType)
     {
         continue;
     }
@@ -92,6 +95,10 @@ void GenerateAllBinaryScalarCombinationsForMethod(string inputMethodName)
     string columnType = types.ThisColumnType;
     string otherColumnType = types.OtherColumnType;
     if (columnType != otherColumnType)
+    {
+        continue;
+    }
+    if (columnType != returnType)
     {
         continue;
     }

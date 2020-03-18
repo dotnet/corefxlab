@@ -13,9 +13,11 @@ namespace Microsoft.Data.Analysis
 {
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Add(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Add(ByteDataFrameColumn column)
         {
-            return AddImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Add(DecimalDataFrameColumn column)
         {
@@ -42,10 +44,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Add(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Add(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.AddImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Add(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Add(UInt32DataFrameColumn column)
         {
@@ -57,10 +66,11 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.AddImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Add(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Add(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.AddImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -73,16 +83,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Add(DecimalDataFrameColumn column, bool inPlace = false)
         {
             return AddImplementation(column, inPlace);
-        }
-        public DecimalDataFrameColumn Add(DoubleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return AddImplementation(otherdecimalColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Add(SingleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return AddImplementation(otherdecimalColumn, inPlace);
         }
         public DecimalDataFrameColumn Add(Int32DataFrameColumn column, bool inPlace = false)
         {
@@ -126,11 +126,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return AddImplementation(otherdoubleColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Add(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.AddImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Add(DoubleDataFrameColumn column, bool inPlace = false)
         {
@@ -183,11 +178,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return AddImplementation(otherfloatColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Add(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.AddImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Add(DoubleDataFrameColumn column)
         {
@@ -275,10 +265,17 @@ namespace Microsoft.Data.Analysis
             Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
             return AddImplementation(otherintColumn, inPlace);
         }
-        public UInt64DataFrameColumn Add(UInt64DataFrameColumn column)
+        public Int64DataFrameColumn Add(UInt32DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.AddImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.AddImplementation(otherlongColumn, inPlace: true);
+        }
+        public SingleDataFrameColumn Add(UInt64DataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
         }
         public Int32DataFrameColumn Add(UInt16DataFrameColumn column, bool inPlace = false)
         {
@@ -340,6 +337,12 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Add(ByteDataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
+        }
         public DecimalDataFrameColumn Add(DecimalDataFrameColumn column)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -365,37 +368,44 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(column, inPlace: true);
         }
-        public SByteDataFrameColumn Add(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Add(SByteDataFrameColumn column)
         {
-            return AddImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Add(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Add(Int16DataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.AddImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Add(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Add(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.AddImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.AddImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Add(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.AddImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt16DataFrameColumn Add(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Add(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.AddImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Add(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Add(ByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return AddImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Add(DecimalDataFrameColumn column)
         {
@@ -422,24 +432,35 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Add(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Add(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return AddImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Add(Int16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Add(Int16DataFrameColumn column)
         {
-            return AddImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Add(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Add(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.AddImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.AddImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Add(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.AddImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Add(UInt16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -464,20 +485,28 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.AddImplementation(column, inPlace: true);
         }
+        public Int64DataFrameColumn Add(Int32DataFrameColumn column)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.AddImplementation(otherlongColumn, inPlace: true);
+        }
         public Int64DataFrameColumn Add(Int64DataFrameColumn column)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(column, inPlace: true);
         }
-        public UInt32DataFrameColumn Add(SByteDataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Add(SByteDataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return AddImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.AddImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Add(Int16DataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Add(Int16DataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return AddImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.AddImplementation(otherlongColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Add(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -516,20 +545,23 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.AddImplementation(column, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(Int32DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Add(Int32DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return AddImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(SByteDataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Add(SByteDataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return AddImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(Int16DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Add(Int16DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return AddImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
         }
         public UInt64DataFrameColumn Add(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -548,10 +580,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Add(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Add(ByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return AddImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Add(DecimalDataFrameColumn column)
         {
@@ -578,10 +611,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Add(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Add(SByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return AddImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Add(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Add(UInt32DataFrameColumn column)
         {
@@ -593,16 +633,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.AddImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Add(UInt16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Add(UInt16DataFrameColumn column)
         {
-            return AddImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.AddImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Add(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Add(byte value)
         {
-            return AddImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Add(decimal value)
         {
@@ -629,10 +672,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Add(short value)
+        public Int32DataFrameColumn Add(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.AddImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Add(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Add(uint value)
         {
@@ -644,10 +692,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Add(ushort value)
+        public Int32DataFrameColumn Add(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.AddImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -660,16 +708,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Add(decimal value, bool inPlace = false)
         {
             return AddImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn Add(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return AddImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Add(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return AddImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn Add(int value, bool inPlace = false)
         {
@@ -713,11 +751,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return AddImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Add(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.AddImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Add(double value, bool inPlace = false)
         {
@@ -770,11 +803,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return AddImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Add(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.AddImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Add(double value)
         {
@@ -862,10 +890,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return AddImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn Add(ulong value)
+        public Int64DataFrameColumn Add(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.AddImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.AddImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Add(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.AddImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Add(ushort value, bool inPlace = false)
         {
@@ -927,6 +960,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Add(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn Add(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -952,37 +990,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn Add(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Add(sbyte value)
         {
-            return AddImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Add(short value)
+        public Int32DataFrameColumn Add(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.AddImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Add(uint value)
+        public Int64DataFrameColumn Add(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.AddImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(ulong value)
+        public SingleDataFrameColumn Add(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.AddImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Add(ushort value)
+        public Int32DataFrameColumn Add(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.AddImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Add(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Add(byte value)
         {
-            short convertedValue = (short)value;
-            return AddImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Add(decimal value)
         {
@@ -1009,24 +1048,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Add(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Add(sbyte value)
         {
-            short convertedValue = (short)value;
-            return AddImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Add(short value, bool inPlace = false)
+        public Int32DataFrameColumn Add(short value)
         {
-            return AddImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Add(uint value)
+        public Int64DataFrameColumn Add(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.AddImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(ulong value)
+        public SingleDataFrameColumn Add(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.AddImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.AddImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Add(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -1051,20 +1096,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.AddImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn Add(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.AddImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn Add(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Add(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn Add(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return AddImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Add(short value, bool inPlace = false)
+        public Int64DataFrameColumn Add(short value)
         {
-            uint convertedValue = (uint)value;
-            return AddImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.AddImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Add(uint value, bool inPlace = false)
         {
@@ -1103,20 +1153,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(int value, bool inPlace = false)
+        public SingleDataFrameColumn Add(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return AddImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn Add(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return AddImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Add(short value, bool inPlace = false)
+        public SingleDataFrameColumn Add(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return AddImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.AddImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn Add(uint value, bool inPlace = false)
         {
@@ -1135,10 +1185,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Add(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Add(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return AddImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Add(decimal value)
         {
@@ -1165,10 +1215,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Add(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Add(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return AddImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Add(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Add(uint value)
         {
@@ -1180,16 +1235,18 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.AddImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Add(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn Add(ushort value)
         {
-            return AddImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.AddImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn ReverseAdd(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseAdd(byte value)
         {
-            return ReverseAddImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseAdd(decimal value)
         {
@@ -1216,10 +1273,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseAdd(short value)
+        public Int32DataFrameColumn ReverseAdd(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseAddImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseAdd(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseAdd(uint value)
         {
@@ -1231,10 +1293,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseAdd(ushort value)
+        public Int32DataFrameColumn ReverseAdd(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseAddImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -1247,16 +1309,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn ReverseAdd(decimal value, bool inPlace = false)
         {
             return ReverseAddImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseAdd(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseAdd(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn ReverseAdd(int value, bool inPlace = false)
         {
@@ -1300,11 +1352,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return ReverseAddImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseAdd(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseAdd(double value, bool inPlace = false)
         {
@@ -1357,11 +1404,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return ReverseAddImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseAdd(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseAdd(double value)
         {
@@ -1449,10 +1491,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return ReverseAddImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn ReverseAdd(ulong value)
+        public Int64DataFrameColumn ReverseAdd(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseAddImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseAdd(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn ReverseAdd(ushort value, bool inPlace = false)
         {
@@ -1514,6 +1561,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn ReverseAdd(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn ReverseAdd(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -1539,37 +1591,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn ReverseAdd(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseAdd(sbyte value)
         {
-            return ReverseAddImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseAdd(short value)
+        public Int32DataFrameColumn ReverseAdd(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseAddImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseAdd(uint value)
+        public Int64DataFrameColumn ReverseAdd(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseAddImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseAdd(ulong value)
+        public SingleDataFrameColumn ReverseAdd(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseAddImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseAdd(ushort value)
+        public Int32DataFrameColumn ReverseAdd(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseAddImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn ReverseAdd(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseAdd(byte value)
         {
-            short convertedValue = (short)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseAdd(decimal value)
         {
@@ -1596,24 +1649,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseAdd(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseAdd(sbyte value)
         {
-            short convertedValue = (short)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseAdd(short value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseAdd(short value)
         {
-            return ReverseAddImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseAdd(uint value)
+        public Int64DataFrameColumn ReverseAdd(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseAddImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseAdd(ulong value)
+        public SingleDataFrameColumn ReverseAdd(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseAddImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseAdd(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -1638,20 +1697,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseAddImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn ReverseAdd(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseAddImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn ReverseAdd(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseAdd(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseAdd(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseAdd(short value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseAdd(short value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseAdd(uint value, bool inPlace = false)
         {
@@ -1690,20 +1754,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseAdd(int value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseAdd(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseAdd(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseAdd(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseAdd(short value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseAdd(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn ReverseAdd(uint value, bool inPlace = false)
         {
@@ -1722,10 +1786,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn ReverseAdd(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseAdd(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseAdd(decimal value)
         {
@@ -1752,10 +1816,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseAdd(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseAdd(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseAddImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseAdd(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseAdd(uint value)
         {
@@ -1767,16 +1836,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseAdd(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseAdd(ushort value)
         {
-            return ReverseAddImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseAddImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Subtract(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(ByteDataFrameColumn column)
         {
-            return SubtractImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Subtract(DecimalDataFrameColumn column)
         {
@@ -1803,10 +1875,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Subtract(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Subtract(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.SubtractImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Subtract(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Subtract(UInt32DataFrameColumn column)
         {
@@ -1818,10 +1897,11 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.SubtractImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Subtract(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Subtract(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.SubtractImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -1834,16 +1914,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Subtract(DecimalDataFrameColumn column, bool inPlace = false)
         {
             return SubtractImplementation(column, inPlace);
-        }
-        public DecimalDataFrameColumn Subtract(DoubleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return SubtractImplementation(otherdecimalColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Subtract(SingleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return SubtractImplementation(otherdecimalColumn, inPlace);
         }
         public DecimalDataFrameColumn Subtract(Int32DataFrameColumn column, bool inPlace = false)
         {
@@ -1887,11 +1957,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return SubtractImplementation(otherdoubleColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Subtract(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.SubtractImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Subtract(DoubleDataFrameColumn column, bool inPlace = false)
         {
@@ -1944,11 +2009,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return SubtractImplementation(otherfloatColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Subtract(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.SubtractImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Subtract(DoubleDataFrameColumn column)
         {
@@ -2036,10 +2096,17 @@ namespace Microsoft.Data.Analysis
             Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
             return SubtractImplementation(otherintColumn, inPlace);
         }
-        public UInt64DataFrameColumn Subtract(UInt64DataFrameColumn column)
+        public Int64DataFrameColumn Subtract(UInt32DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.SubtractImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.SubtractImplementation(otherlongColumn, inPlace: true);
+        }
+        public SingleDataFrameColumn Subtract(UInt64DataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
         }
         public Int32DataFrameColumn Subtract(UInt16DataFrameColumn column, bool inPlace = false)
         {
@@ -2101,6 +2168,12 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Subtract(ByteDataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
+        }
         public DecimalDataFrameColumn Subtract(DecimalDataFrameColumn column)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -2126,37 +2199,44 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(column, inPlace: true);
         }
-        public SByteDataFrameColumn Subtract(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(SByteDataFrameColumn column)
         {
-            return SubtractImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Subtract(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Subtract(Int16DataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.SubtractImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Subtract(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Subtract(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.SubtractImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.SubtractImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Subtract(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.SubtractImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt16DataFrameColumn Subtract(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Subtract(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.SubtractImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Subtract(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(ByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return SubtractImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Subtract(DecimalDataFrameColumn column)
         {
@@ -2183,24 +2263,35 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Subtract(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return SubtractImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Subtract(Int16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(Int16DataFrameColumn column)
         {
-            return SubtractImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Subtract(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Subtract(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.SubtractImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.SubtractImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Subtract(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.SubtractImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Subtract(UInt16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -2225,20 +2316,28 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.SubtractImplementation(column, inPlace: true);
         }
+        public Int64DataFrameColumn Subtract(Int32DataFrameColumn column)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.SubtractImplementation(otherlongColumn, inPlace: true);
+        }
         public Int64DataFrameColumn Subtract(Int64DataFrameColumn column)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(column, inPlace: true);
         }
-        public UInt32DataFrameColumn Subtract(SByteDataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Subtract(SByteDataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return SubtractImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.SubtractImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Subtract(Int16DataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Subtract(Int16DataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return SubtractImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.SubtractImplementation(otherlongColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Subtract(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -2277,20 +2376,23 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.SubtractImplementation(column, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(Int32DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Subtract(Int32DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return SubtractImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(SByteDataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Subtract(SByteDataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return SubtractImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(Int16DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Subtract(Int16DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return SubtractImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
         }
         public UInt64DataFrameColumn Subtract(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -2309,10 +2411,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Subtract(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(ByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return SubtractImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Subtract(DecimalDataFrameColumn column)
         {
@@ -2339,10 +2442,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Subtract(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(SByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return SubtractImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Subtract(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Subtract(UInt32DataFrameColumn column)
         {
@@ -2354,16 +2464,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.SubtractImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Subtract(UInt16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(UInt16DataFrameColumn column)
         {
-            return SubtractImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.SubtractImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Subtract(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(byte value)
         {
-            return SubtractImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Subtract(decimal value)
         {
@@ -2390,10 +2503,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Subtract(short value)
+        public Int32DataFrameColumn Subtract(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.SubtractImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Subtract(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Subtract(uint value)
         {
@@ -2405,10 +2523,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Subtract(ushort value)
+        public Int32DataFrameColumn Subtract(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.SubtractImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -2421,16 +2539,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Subtract(decimal value, bool inPlace = false)
         {
             return SubtractImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn Subtract(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return SubtractImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Subtract(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return SubtractImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn Subtract(int value, bool inPlace = false)
         {
@@ -2474,11 +2582,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return SubtractImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Subtract(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.SubtractImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Subtract(double value, bool inPlace = false)
         {
@@ -2531,11 +2634,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return SubtractImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Subtract(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.SubtractImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Subtract(double value)
         {
@@ -2623,10 +2721,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return SubtractImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn Subtract(ulong value)
+        public Int64DataFrameColumn Subtract(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.SubtractImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Subtract(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Subtract(ushort value, bool inPlace = false)
         {
@@ -2688,6 +2791,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Subtract(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn Subtract(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -2713,37 +2821,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn Subtract(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(sbyte value)
         {
-            return SubtractImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Subtract(short value)
+        public Int32DataFrameColumn Subtract(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.SubtractImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Subtract(uint value)
+        public Int64DataFrameColumn Subtract(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.SubtractImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(ulong value)
+        public SingleDataFrameColumn Subtract(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.SubtractImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Subtract(ushort value)
+        public Int32DataFrameColumn Subtract(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.SubtractImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Subtract(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(byte value)
         {
-            short convertedValue = (short)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Subtract(decimal value)
         {
@@ -2770,24 +2879,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Subtract(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(sbyte value)
         {
-            short convertedValue = (short)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Subtract(short value, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(short value)
         {
-            return SubtractImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Subtract(uint value)
+        public Int64DataFrameColumn Subtract(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.SubtractImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(ulong value)
+        public SingleDataFrameColumn Subtract(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.SubtractImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Subtract(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -2812,20 +2927,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.SubtractImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn Subtract(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.SubtractImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn Subtract(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Subtract(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn Subtract(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Subtract(short value, bool inPlace = false)
+        public Int64DataFrameColumn Subtract(short value)
         {
-            uint convertedValue = (uint)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.SubtractImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Subtract(uint value, bool inPlace = false)
         {
@@ -2864,20 +2984,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(int value, bool inPlace = false)
+        public SingleDataFrameColumn Subtract(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn Subtract(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Subtract(short value, bool inPlace = false)
+        public SingleDataFrameColumn Subtract(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn Subtract(uint value, bool inPlace = false)
         {
@@ -2896,10 +3016,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Subtract(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Subtract(decimal value)
         {
@@ -2926,10 +3046,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Subtract(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return SubtractImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Subtract(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Subtract(uint value)
         {
@@ -2941,16 +3066,18 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.SubtractImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Subtract(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn Subtract(ushort value)
         {
-            return SubtractImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.SubtractImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn ReverseSubtract(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseSubtract(byte value)
         {
-            return ReverseSubtractImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseSubtract(decimal value)
         {
@@ -2977,10 +3104,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseSubtract(short value)
+        public Int32DataFrameColumn ReverseSubtract(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseSubtractImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseSubtract(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseSubtract(uint value)
         {
@@ -2992,10 +3124,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseSubtract(ushort value)
+        public Int32DataFrameColumn ReverseSubtract(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseSubtractImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -3008,16 +3140,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn ReverseSubtract(decimal value, bool inPlace = false)
         {
             return ReverseSubtractImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseSubtract(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseSubtract(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn ReverseSubtract(int value, bool inPlace = false)
         {
@@ -3061,11 +3183,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return ReverseSubtractImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseSubtract(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseSubtract(double value, bool inPlace = false)
         {
@@ -3118,11 +3235,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return ReverseSubtractImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseSubtract(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseSubtract(double value)
         {
@@ -3210,10 +3322,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return ReverseSubtractImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn ReverseSubtract(ulong value)
+        public Int64DataFrameColumn ReverseSubtract(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseSubtractImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseSubtract(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn ReverseSubtract(ushort value, bool inPlace = false)
         {
@@ -3275,6 +3392,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn ReverseSubtract(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn ReverseSubtract(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -3300,37 +3422,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn ReverseSubtract(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseSubtract(sbyte value)
         {
-            return ReverseSubtractImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseSubtract(short value)
+        public Int32DataFrameColumn ReverseSubtract(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseSubtractImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseSubtract(uint value)
+        public Int64DataFrameColumn ReverseSubtract(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseSubtractImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseSubtract(ulong value)
+        public SingleDataFrameColumn ReverseSubtract(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseSubtractImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseSubtract(ushort value)
+        public Int32DataFrameColumn ReverseSubtract(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseSubtractImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn ReverseSubtract(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseSubtract(byte value)
         {
-            short convertedValue = (short)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseSubtract(decimal value)
         {
@@ -3357,24 +3480,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseSubtract(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseSubtract(sbyte value)
         {
-            short convertedValue = (short)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseSubtract(short value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseSubtract(short value)
         {
-            return ReverseSubtractImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseSubtract(uint value)
+        public Int64DataFrameColumn ReverseSubtract(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseSubtractImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseSubtract(ulong value)
+        public SingleDataFrameColumn ReverseSubtract(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseSubtractImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseSubtract(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -3399,20 +3528,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn ReverseSubtract(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn ReverseSubtract(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseSubtract(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseSubtract(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseSubtract(short value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseSubtract(short value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseSubtract(uint value, bool inPlace = false)
         {
@@ -3451,20 +3585,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseSubtract(int value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseSubtract(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseSubtract(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseSubtract(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseSubtract(short value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseSubtract(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn ReverseSubtract(uint value, bool inPlace = false)
         {
@@ -3483,10 +3617,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn ReverseSubtract(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseSubtract(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseSubtract(decimal value)
         {
@@ -3513,10 +3647,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseSubtract(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseSubtract(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseSubtractImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseSubtract(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseSubtract(uint value)
         {
@@ -3528,16 +3667,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseSubtract(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseSubtract(ushort value)
         {
-            return ReverseSubtractImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Multiply(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(ByteDataFrameColumn column)
         {
-            return MultiplyImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Multiply(DecimalDataFrameColumn column)
         {
@@ -3564,10 +3706,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Multiply(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Multiply(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.MultiplyImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Multiply(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Multiply(UInt32DataFrameColumn column)
         {
@@ -3579,10 +3728,11 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Multiply(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Multiply(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.MultiplyImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -3595,16 +3745,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Multiply(DecimalDataFrameColumn column, bool inPlace = false)
         {
             return MultiplyImplementation(column, inPlace);
-        }
-        public DecimalDataFrameColumn Multiply(DoubleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return MultiplyImplementation(otherdecimalColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Multiply(SingleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return MultiplyImplementation(otherdecimalColumn, inPlace);
         }
         public DecimalDataFrameColumn Multiply(Int32DataFrameColumn column, bool inPlace = false)
         {
@@ -3648,11 +3788,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return MultiplyImplementation(otherdoubleColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Multiply(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.MultiplyImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Multiply(DoubleDataFrameColumn column, bool inPlace = false)
         {
@@ -3705,11 +3840,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return MultiplyImplementation(otherfloatColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Multiply(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.MultiplyImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Multiply(DoubleDataFrameColumn column)
         {
@@ -3797,10 +3927,17 @@ namespace Microsoft.Data.Analysis
             Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
             return MultiplyImplementation(otherintColumn, inPlace);
         }
-        public UInt64DataFrameColumn Multiply(UInt64DataFrameColumn column)
+        public Int64DataFrameColumn Multiply(UInt32DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.MultiplyImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(otherlongColumn, inPlace: true);
+        }
+        public SingleDataFrameColumn Multiply(UInt64DataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
         }
         public Int32DataFrameColumn Multiply(UInt16DataFrameColumn column, bool inPlace = false)
         {
@@ -3862,6 +3999,12 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Multiply(ByteDataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
+        }
         public DecimalDataFrameColumn Multiply(DecimalDataFrameColumn column)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -3887,37 +4030,44 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public SByteDataFrameColumn Multiply(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(SByteDataFrameColumn column)
         {
-            return MultiplyImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Multiply(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Multiply(Int16DataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.MultiplyImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Multiply(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Multiply(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.MultiplyImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Multiply(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.MultiplyImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt16DataFrameColumn Multiply(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Multiply(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.MultiplyImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Multiply(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(ByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return MultiplyImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Multiply(DecimalDataFrameColumn column)
         {
@@ -3944,24 +4094,35 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Multiply(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return MultiplyImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Multiply(Int16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(Int16DataFrameColumn column)
         {
-            return MultiplyImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Multiply(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Multiply(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.MultiplyImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Multiply(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.MultiplyImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Multiply(UInt16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -3986,20 +4147,28 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.MultiplyImplementation(column, inPlace: true);
         }
+        public Int64DataFrameColumn Multiply(Int32DataFrameColumn column)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(otherlongColumn, inPlace: true);
+        }
         public Int64DataFrameColumn Multiply(Int64DataFrameColumn column)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public UInt32DataFrameColumn Multiply(SByteDataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Multiply(SByteDataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return MultiplyImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Multiply(Int16DataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Multiply(Int16DataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return MultiplyImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(otherlongColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Multiply(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -4038,20 +4207,23 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(Int32DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Multiply(Int32DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return MultiplyImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(SByteDataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Multiply(SByteDataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return MultiplyImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(Int16DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Multiply(Int16DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return MultiplyImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
         }
         public UInt64DataFrameColumn Multiply(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -4070,10 +4242,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Multiply(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(ByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return MultiplyImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Multiply(DecimalDataFrameColumn column)
         {
@@ -4100,10 +4273,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Multiply(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(SByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return MultiplyImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Multiply(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Multiply(UInt32DataFrameColumn column)
         {
@@ -4115,16 +4295,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Multiply(UInt16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(UInt16DataFrameColumn column)
         {
-            return MultiplyImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Multiply(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(byte value)
         {
-            return MultiplyImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Multiply(decimal value)
         {
@@ -4151,10 +4334,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Multiply(short value)
+        public Int32DataFrameColumn Multiply(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.MultiplyImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Multiply(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Multiply(uint value)
         {
@@ -4166,10 +4354,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Multiply(ushort value)
+        public Int32DataFrameColumn Multiply(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.MultiplyImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -4182,16 +4370,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Multiply(decimal value, bool inPlace = false)
         {
             return MultiplyImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn Multiply(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return MultiplyImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Multiply(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return MultiplyImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn Multiply(int value, bool inPlace = false)
         {
@@ -4235,11 +4413,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return MultiplyImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Multiply(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.MultiplyImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Multiply(double value, bool inPlace = false)
         {
@@ -4292,11 +4465,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return MultiplyImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Multiply(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.MultiplyImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Multiply(double value)
         {
@@ -4384,10 +4552,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return MultiplyImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn Multiply(ulong value)
+        public Int64DataFrameColumn Multiply(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.MultiplyImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Multiply(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Multiply(ushort value, bool inPlace = false)
         {
@@ -4449,6 +4622,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Multiply(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn Multiply(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -4474,37 +4652,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn Multiply(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(sbyte value)
         {
-            return MultiplyImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Multiply(short value)
+        public Int32DataFrameColumn Multiply(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.MultiplyImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Multiply(uint value)
+        public Int64DataFrameColumn Multiply(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.MultiplyImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(ulong value)
+        public SingleDataFrameColumn Multiply(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.MultiplyImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Multiply(ushort value)
+        public Int32DataFrameColumn Multiply(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.MultiplyImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Multiply(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(byte value)
         {
-            short convertedValue = (short)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Multiply(decimal value)
         {
@@ -4531,24 +4710,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Multiply(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(sbyte value)
         {
-            short convertedValue = (short)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Multiply(short value, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(short value)
         {
-            return MultiplyImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Multiply(uint value)
+        public Int64DataFrameColumn Multiply(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.MultiplyImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(ulong value)
+        public SingleDataFrameColumn Multiply(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.MultiplyImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Multiply(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -4573,20 +4758,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.MultiplyImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn Multiply(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn Multiply(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Multiply(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn Multiply(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Multiply(short value, bool inPlace = false)
+        public Int64DataFrameColumn Multiply(short value)
         {
-            uint convertedValue = (uint)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.MultiplyImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Multiply(uint value, bool inPlace = false)
         {
@@ -4625,20 +4815,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(int value, bool inPlace = false)
+        public SingleDataFrameColumn Multiply(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn Multiply(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Multiply(short value, bool inPlace = false)
+        public SingleDataFrameColumn Multiply(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn Multiply(uint value, bool inPlace = false)
         {
@@ -4657,10 +4847,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Multiply(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Multiply(decimal value)
         {
@@ -4687,10 +4877,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Multiply(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return MultiplyImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Multiply(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Multiply(uint value)
         {
@@ -4702,16 +4897,18 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Multiply(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn Multiply(ushort value)
         {
-            return MultiplyImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.MultiplyImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn ReverseMultiply(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseMultiply(byte value)
         {
-            return ReverseMultiplyImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseMultiply(decimal value)
         {
@@ -4738,10 +4935,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseMultiply(short value)
+        public Int32DataFrameColumn ReverseMultiply(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseMultiply(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseMultiply(uint value)
         {
@@ -4753,10 +4955,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseMultiply(ushort value)
+        public Int32DataFrameColumn ReverseMultiply(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -4769,16 +4971,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn ReverseMultiply(decimal value, bool inPlace = false)
         {
             return ReverseMultiplyImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseMultiply(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseMultiply(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn ReverseMultiply(int value, bool inPlace = false)
         {
@@ -4822,11 +5014,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return ReverseMultiplyImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseMultiply(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseMultiply(double value, bool inPlace = false)
         {
@@ -4879,11 +5066,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return ReverseMultiplyImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseMultiply(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseMultiply(double value)
         {
@@ -4971,10 +5153,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return ReverseMultiplyImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn ReverseMultiply(ulong value)
+        public Int64DataFrameColumn ReverseMultiply(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseMultiply(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn ReverseMultiply(ushort value, bool inPlace = false)
         {
@@ -5036,6 +5223,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn ReverseMultiply(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn ReverseMultiply(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -5061,37 +5253,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn ReverseMultiply(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseMultiply(sbyte value)
         {
-            return ReverseMultiplyImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseMultiply(short value)
+        public Int32DataFrameColumn ReverseMultiply(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseMultiply(uint value)
+        public Int64DataFrameColumn ReverseMultiply(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseMultiply(ulong value)
+        public SingleDataFrameColumn ReverseMultiply(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseMultiply(ushort value)
+        public Int32DataFrameColumn ReverseMultiply(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn ReverseMultiply(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseMultiply(byte value)
         {
-            short convertedValue = (short)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseMultiply(decimal value)
         {
@@ -5118,24 +5311,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseMultiply(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseMultiply(sbyte value)
         {
-            short convertedValue = (short)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseMultiply(short value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseMultiply(short value)
         {
-            return ReverseMultiplyImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseMultiply(uint value)
+        public Int64DataFrameColumn ReverseMultiply(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseMultiply(ulong value)
+        public SingleDataFrameColumn ReverseMultiply(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseMultiply(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -5160,20 +5359,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn ReverseMultiply(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn ReverseMultiply(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseMultiply(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseMultiply(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseMultiply(short value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseMultiply(short value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseMultiply(uint value, bool inPlace = false)
         {
@@ -5212,20 +5416,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseMultiply(int value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseMultiply(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseMultiply(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseMultiply(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseMultiply(short value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseMultiply(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn ReverseMultiply(uint value, bool inPlace = false)
         {
@@ -5244,10 +5448,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn ReverseMultiply(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseMultiply(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseMultiply(decimal value)
         {
@@ -5274,10 +5478,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseMultiply(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseMultiply(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseMultiplyImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseMultiply(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseMultiply(uint value)
         {
@@ -5289,16 +5498,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseMultiply(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseMultiply(ushort value)
         {
-            return ReverseMultiplyImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Divide(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Divide(ByteDataFrameColumn column)
         {
-            return DivideImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Divide(DecimalDataFrameColumn column)
         {
@@ -5325,10 +5537,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Divide(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Divide(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.DivideImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Divide(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Divide(UInt32DataFrameColumn column)
         {
@@ -5340,10 +5559,11 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.DivideImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Divide(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Divide(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.DivideImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -5356,16 +5576,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Divide(DecimalDataFrameColumn column, bool inPlace = false)
         {
             return DivideImplementation(column, inPlace);
-        }
-        public DecimalDataFrameColumn Divide(DoubleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return DivideImplementation(otherdecimalColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Divide(SingleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return DivideImplementation(otherdecimalColumn, inPlace);
         }
         public DecimalDataFrameColumn Divide(Int32DataFrameColumn column, bool inPlace = false)
         {
@@ -5409,11 +5619,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return DivideImplementation(otherdoubleColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Divide(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.DivideImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Divide(DoubleDataFrameColumn column, bool inPlace = false)
         {
@@ -5466,11 +5671,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return DivideImplementation(otherfloatColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Divide(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.DivideImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Divide(DoubleDataFrameColumn column)
         {
@@ -5558,10 +5758,17 @@ namespace Microsoft.Data.Analysis
             Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
             return DivideImplementation(otherintColumn, inPlace);
         }
-        public UInt64DataFrameColumn Divide(UInt64DataFrameColumn column)
+        public Int64DataFrameColumn Divide(UInt32DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.DivideImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.DivideImplementation(otherlongColumn, inPlace: true);
+        }
+        public SingleDataFrameColumn Divide(UInt64DataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
         }
         public Int32DataFrameColumn Divide(UInt16DataFrameColumn column, bool inPlace = false)
         {
@@ -5623,6 +5830,12 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Divide(ByteDataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
+        }
         public DecimalDataFrameColumn Divide(DecimalDataFrameColumn column)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -5648,37 +5861,44 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(column, inPlace: true);
         }
-        public SByteDataFrameColumn Divide(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Divide(SByteDataFrameColumn column)
         {
-            return DivideImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Divide(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Divide(Int16DataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.DivideImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Divide(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Divide(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.DivideImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.DivideImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Divide(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.DivideImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt16DataFrameColumn Divide(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Divide(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.DivideImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Divide(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Divide(ByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return DivideImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Divide(DecimalDataFrameColumn column)
         {
@@ -5705,24 +5925,35 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Divide(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Divide(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return DivideImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Divide(Int16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Divide(Int16DataFrameColumn column)
         {
-            return DivideImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Divide(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Divide(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.DivideImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.DivideImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Divide(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.DivideImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Divide(UInt16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -5747,20 +5978,28 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.DivideImplementation(column, inPlace: true);
         }
+        public Int64DataFrameColumn Divide(Int32DataFrameColumn column)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.DivideImplementation(otherlongColumn, inPlace: true);
+        }
         public Int64DataFrameColumn Divide(Int64DataFrameColumn column)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(column, inPlace: true);
         }
-        public UInt32DataFrameColumn Divide(SByteDataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Divide(SByteDataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return DivideImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.DivideImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Divide(Int16DataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Divide(Int16DataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return DivideImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.DivideImplementation(otherlongColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Divide(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -5799,20 +6038,23 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.DivideImplementation(column, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(Int32DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Divide(Int32DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return DivideImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(SByteDataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Divide(SByteDataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return DivideImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(Int16DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Divide(Int16DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return DivideImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
         }
         public UInt64DataFrameColumn Divide(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -5831,10 +6073,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Divide(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Divide(ByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return DivideImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Divide(DecimalDataFrameColumn column)
         {
@@ -5861,10 +6104,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Divide(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Divide(SByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return DivideImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Divide(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Divide(UInt32DataFrameColumn column)
         {
@@ -5876,16 +6126,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.DivideImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Divide(UInt16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Divide(UInt16DataFrameColumn column)
         {
-            return DivideImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.DivideImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Divide(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Divide(byte value)
         {
-            return DivideImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Divide(decimal value)
         {
@@ -5912,10 +6165,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Divide(short value)
+        public Int32DataFrameColumn Divide(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.DivideImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Divide(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Divide(uint value)
         {
@@ -5927,10 +6185,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Divide(ushort value)
+        public Int32DataFrameColumn Divide(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.DivideImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -5943,16 +6201,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Divide(decimal value, bool inPlace = false)
         {
             return DivideImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn Divide(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return DivideImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Divide(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return DivideImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn Divide(int value, bool inPlace = false)
         {
@@ -5996,11 +6244,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return DivideImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Divide(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.DivideImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Divide(double value, bool inPlace = false)
         {
@@ -6053,11 +6296,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return DivideImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Divide(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.DivideImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Divide(double value)
         {
@@ -6145,10 +6383,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return DivideImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn Divide(ulong value)
+        public Int64DataFrameColumn Divide(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.DivideImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.DivideImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Divide(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Divide(ushort value, bool inPlace = false)
         {
@@ -6210,6 +6453,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Divide(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn Divide(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -6235,37 +6483,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn Divide(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Divide(sbyte value)
         {
-            return DivideImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Divide(short value)
+        public Int32DataFrameColumn Divide(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.DivideImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Divide(uint value)
+        public Int64DataFrameColumn Divide(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.DivideImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(ulong value)
+        public SingleDataFrameColumn Divide(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.DivideImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Divide(ushort value)
+        public Int32DataFrameColumn Divide(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.DivideImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Divide(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Divide(byte value)
         {
-            short convertedValue = (short)value;
-            return DivideImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Divide(decimal value)
         {
@@ -6292,24 +6541,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Divide(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Divide(sbyte value)
         {
-            short convertedValue = (short)value;
-            return DivideImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Divide(short value, bool inPlace = false)
+        public Int32DataFrameColumn Divide(short value)
         {
-            return DivideImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Divide(uint value)
+        public Int64DataFrameColumn Divide(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.DivideImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(ulong value)
+        public SingleDataFrameColumn Divide(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.DivideImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Divide(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -6334,20 +6589,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.DivideImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn Divide(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.DivideImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn Divide(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Divide(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn Divide(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return DivideImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Divide(short value, bool inPlace = false)
+        public Int64DataFrameColumn Divide(short value)
         {
-            uint convertedValue = (uint)value;
-            return DivideImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.DivideImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Divide(uint value, bool inPlace = false)
         {
@@ -6386,20 +6646,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(int value, bool inPlace = false)
+        public SingleDataFrameColumn Divide(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return DivideImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn Divide(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return DivideImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Divide(short value, bool inPlace = false)
+        public SingleDataFrameColumn Divide(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return DivideImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn Divide(uint value, bool inPlace = false)
         {
@@ -6418,10 +6678,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Divide(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Divide(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return DivideImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Divide(decimal value)
         {
@@ -6448,10 +6708,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Divide(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Divide(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return DivideImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Divide(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Divide(uint value)
         {
@@ -6463,16 +6728,18 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.DivideImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Divide(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn Divide(ushort value)
         {
-            return DivideImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.DivideImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn ReverseDivide(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseDivide(byte value)
         {
-            return ReverseDivideImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseDivide(decimal value)
         {
@@ -6499,10 +6766,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseDivide(short value)
+        public Int32DataFrameColumn ReverseDivide(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseDivideImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseDivide(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseDivide(uint value)
         {
@@ -6514,10 +6786,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseDivide(ushort value)
+        public Int32DataFrameColumn ReverseDivide(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseDivideImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -6530,16 +6802,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn ReverseDivide(decimal value, bool inPlace = false)
         {
             return ReverseDivideImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseDivide(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseDivide(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn ReverseDivide(int value, bool inPlace = false)
         {
@@ -6583,11 +6845,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return ReverseDivideImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseDivide(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseDivide(double value, bool inPlace = false)
         {
@@ -6640,11 +6897,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return ReverseDivideImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseDivide(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseDivide(double value)
         {
@@ -6732,10 +6984,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return ReverseDivideImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn ReverseDivide(ulong value)
+        public Int64DataFrameColumn ReverseDivide(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseDivideImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseDivide(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn ReverseDivide(ushort value, bool inPlace = false)
         {
@@ -6797,6 +7054,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn ReverseDivide(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn ReverseDivide(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -6822,37 +7084,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn ReverseDivide(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseDivide(sbyte value)
         {
-            return ReverseDivideImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseDivide(short value)
+        public Int32DataFrameColumn ReverseDivide(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseDivideImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseDivide(uint value)
+        public Int64DataFrameColumn ReverseDivide(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseDivideImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseDivide(ulong value)
+        public SingleDataFrameColumn ReverseDivide(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseDivideImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseDivide(ushort value)
+        public Int32DataFrameColumn ReverseDivide(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseDivideImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn ReverseDivide(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseDivide(byte value)
         {
-            short convertedValue = (short)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseDivide(decimal value)
         {
@@ -6879,24 +7142,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseDivide(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseDivide(sbyte value)
         {
-            short convertedValue = (short)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseDivide(short value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseDivide(short value)
         {
-            return ReverseDivideImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseDivide(uint value)
+        public Int64DataFrameColumn ReverseDivide(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseDivideImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseDivide(ulong value)
+        public SingleDataFrameColumn ReverseDivide(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseDivideImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseDivide(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -6921,20 +7190,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseDivideImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn ReverseDivide(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn ReverseDivide(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseDivide(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseDivide(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseDivide(short value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseDivide(short value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseDivide(uint value, bool inPlace = false)
         {
@@ -6973,20 +7247,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseDivide(int value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseDivide(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseDivide(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseDivide(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseDivide(short value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseDivide(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn ReverseDivide(uint value, bool inPlace = false)
         {
@@ -7005,10 +7279,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn ReverseDivide(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseDivide(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseDivide(decimal value)
         {
@@ -7035,10 +7309,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseDivide(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseDivide(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseDivideImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseDivide(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseDivide(uint value)
         {
@@ -7050,16 +7329,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseDivide(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseDivide(ushort value)
         {
-            return ReverseDivideImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseDivideImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Modulo(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(ByteDataFrameColumn column)
         {
-            return ModuloImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Modulo(DecimalDataFrameColumn column)
         {
@@ -7086,10 +7368,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Modulo(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Modulo(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ModuloImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Modulo(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Modulo(UInt32DataFrameColumn column)
         {
@@ -7101,10 +7390,11 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ModuloImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Modulo(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Modulo(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ModuloImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -7117,16 +7407,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Modulo(DecimalDataFrameColumn column, bool inPlace = false)
         {
             return ModuloImplementation(column, inPlace);
-        }
-        public DecimalDataFrameColumn Modulo(DoubleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ModuloImplementation(otherdecimalColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Modulo(SingleDataFrameColumn column, bool inPlace = false)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ModuloImplementation(otherdecimalColumn, inPlace);
         }
         public DecimalDataFrameColumn Modulo(Int32DataFrameColumn column, bool inPlace = false)
         {
@@ -7170,11 +7450,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ModuloImplementation(otherdoubleColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Modulo(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ModuloImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Modulo(DoubleDataFrameColumn column, bool inPlace = false)
         {
@@ -7227,11 +7502,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return ModuloImplementation(otherfloatColumn, inPlace);
-        }
-        public DecimalDataFrameColumn Modulo(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ModuloImplementation(column, inPlace: true);
         }
         public DoubleDataFrameColumn Modulo(DoubleDataFrameColumn column)
         {
@@ -7319,10 +7589,17 @@ namespace Microsoft.Data.Analysis
             Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
             return ModuloImplementation(otherintColumn, inPlace);
         }
-        public UInt64DataFrameColumn Modulo(UInt64DataFrameColumn column)
+        public Int64DataFrameColumn Modulo(UInt32DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ModuloImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
+        }
+        public SingleDataFrameColumn Modulo(UInt64DataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
         }
         public Int32DataFrameColumn Modulo(UInt16DataFrameColumn column, bool inPlace = false)
         {
@@ -7384,6 +7661,12 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Modulo(ByteDataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
+        }
         public DecimalDataFrameColumn Modulo(DecimalDataFrameColumn column)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -7409,37 +7692,44 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(column, inPlace: true);
         }
-        public SByteDataFrameColumn Modulo(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(SByteDataFrameColumn column)
         {
-            return ModuloImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Modulo(Int16DataFrameColumn column)
+        public Int32DataFrameColumn Modulo(Int16DataFrameColumn column)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ModuloImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Modulo(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Modulo(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ModuloImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Modulo(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ModuloImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt16DataFrameColumn Modulo(UInt16DataFrameColumn column)
+        public Int32DataFrameColumn Modulo(UInt16DataFrameColumn column)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ModuloImplementation(column, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Modulo(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(ByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return ModuloImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Modulo(DecimalDataFrameColumn column)
         {
@@ -7466,24 +7756,35 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(column, inPlace: true);
         }
-        public Int16DataFrameColumn Modulo(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(SByteDataFrameColumn column)
         {
-            Int16DataFrameColumn othershortColumn = column.CloneAsInt16Column();
-            return ModuloImplementation(othershortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
-        public Int16DataFrameColumn Modulo(Int16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(Int16DataFrameColumn column)
         {
-            return ModuloImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Modulo(UInt32DataFrameColumn column)
+        public Int64DataFrameColumn Modulo(UInt32DataFrameColumn column)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ModuloImplementation(column, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(UInt64DataFrameColumn column)
+        public SingleDataFrameColumn Modulo(UInt64DataFrameColumn column)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ModuloImplementation(column, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Modulo(UInt16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -7508,20 +7809,28 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
         }
+        public Int64DataFrameColumn Modulo(Int32DataFrameColumn column)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
+        }
         public Int64DataFrameColumn Modulo(Int64DataFrameColumn column)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(column, inPlace: true);
         }
-        public UInt32DataFrameColumn Modulo(SByteDataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Modulo(SByteDataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return ModuloImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
         }
-        public UInt32DataFrameColumn Modulo(Int16DataFrameColumn column, bool inPlace = false)
+        public Int64DataFrameColumn Modulo(Int16DataFrameColumn column)
         {
-            UInt32DataFrameColumn otheruintColumn = column.CloneAsUInt32Column();
-            return ModuloImplementation(otheruintColumn, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
+            return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Modulo(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -7560,20 +7869,23 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(Int32DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Modulo(Int32DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ModuloImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(SByteDataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Modulo(SByteDataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ModuloImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(Int16DataFrameColumn column, bool inPlace = false)
+        public SingleDataFrameColumn Modulo(Int16DataFrameColumn column)
         {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ModuloImplementation(otherulongColumn, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
         }
         public UInt64DataFrameColumn Modulo(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -7592,10 +7904,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Modulo(ByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(ByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return ModuloImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
         public DecimalDataFrameColumn Modulo(DecimalDataFrameColumn column)
         {
@@ -7622,10 +7935,17 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Modulo(SByteDataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(SByteDataFrameColumn column)
         {
-            UInt16DataFrameColumn otherushortColumn = column.CloneAsUInt16Column();
-            return ModuloImplementation(otherushortColumn, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
+        }
+        public Int32DataFrameColumn Modulo(Int16DataFrameColumn column)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
         public UInt32DataFrameColumn Modulo(UInt32DataFrameColumn column)
         {
@@ -7637,16 +7957,19 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ModuloImplementation(column, inPlace: true);
         }
-        public UInt16DataFrameColumn Modulo(UInt16DataFrameColumn column, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(UInt16DataFrameColumn column)
         {
-            return ModuloImplementation(column, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            Int32DataFrameColumn otherintColumn = column.CloneAsInt32Column();
+            return intColumn.ModuloImplementation(otherintColumn, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn Modulo(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(byte value)
         {
-            return ModuloImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Modulo(decimal value)
         {
@@ -7673,10 +7996,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Modulo(short value)
+        public Int32DataFrameColumn Modulo(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ModuloImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Modulo(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Modulo(uint value)
         {
@@ -7688,10 +8016,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Modulo(ushort value)
+        public Int32DataFrameColumn Modulo(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ModuloImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -7704,16 +8032,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn Modulo(decimal value, bool inPlace = false)
         {
             return ModuloImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn Modulo(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ModuloImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Modulo(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ModuloImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn Modulo(int value, bool inPlace = false)
         {
@@ -7757,11 +8075,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return ModuloImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Modulo(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ModuloImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Modulo(double value, bool inPlace = false)
         {
@@ -7814,11 +8127,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return ModuloImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn Modulo(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ModuloImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn Modulo(double value)
         {
@@ -7906,10 +8214,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return ModuloImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn Modulo(ulong value)
+        public Int64DataFrameColumn Modulo(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ModuloImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Modulo(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Modulo(ushort value, bool inPlace = false)
         {
@@ -7971,6 +8284,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn Modulo(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn Modulo(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -7996,37 +8314,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn Modulo(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(sbyte value)
         {
-            return ModuloImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Modulo(short value)
+        public Int32DataFrameColumn Modulo(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ModuloImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Modulo(uint value)
+        public Int64DataFrameColumn Modulo(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ModuloImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(ulong value)
+        public SingleDataFrameColumn Modulo(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ModuloImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Modulo(ushort value)
+        public Int32DataFrameColumn Modulo(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ModuloImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn Modulo(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(byte value)
         {
-            short convertedValue = (short)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Modulo(decimal value)
         {
@@ -8053,24 +8372,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Modulo(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(sbyte value)
         {
-            short convertedValue = (short)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn Modulo(short value, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(short value)
         {
-            return ModuloImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Modulo(uint value)
+        public Int64DataFrameColumn Modulo(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ModuloImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(ulong value)
+        public SingleDataFrameColumn Modulo(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ModuloImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Modulo(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -8095,20 +8420,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn Modulo(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ModuloImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn Modulo(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Modulo(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn Modulo(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn Modulo(short value, bool inPlace = false)
+        public Int64DataFrameColumn Modulo(short value)
         {
-            uint convertedValue = (uint)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ModuloImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Modulo(uint value, bool inPlace = false)
         {
@@ -8147,20 +8477,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(int value, bool inPlace = false)
+        public SingleDataFrameColumn Modulo(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn Modulo(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn Modulo(short value, bool inPlace = false)
+        public SingleDataFrameColumn Modulo(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn Modulo(uint value, bool inPlace = false)
         {
@@ -8179,10 +8509,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn Modulo(byte value, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn Modulo(decimal value)
         {
@@ -8209,10 +8539,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Modulo(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ModuloImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn Modulo(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn Modulo(uint value)
         {
@@ -8224,16 +8559,18 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ModuloImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn Modulo(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn Modulo(ushort value)
         {
-            return ModuloImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ModuloImplementation(value, inPlace: true);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public ByteDataFrameColumn ReverseModulo(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseModulo(byte value)
         {
-            return ReverseModuloImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseModulo(decimal value)
         {
@@ -8260,10 +8597,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseModulo(short value)
+        public Int32DataFrameColumn ReverseModulo(sbyte value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseModuloImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseModulo(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseModulo(uint value)
         {
@@ -8275,10 +8617,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseModulo(ushort value)
+        public Int32DataFrameColumn ReverseModulo(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseModuloImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
     }
     public partial class DecimalDataFrameColumn
@@ -8291,16 +8633,6 @@ namespace Microsoft.Data.Analysis
         public DecimalDataFrameColumn ReverseModulo(decimal value, bool inPlace = false)
         {
             return ReverseModuloImplementation(value, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseModulo(double value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseModulo(float value, bool inPlace = false)
-        {
-            decimal convertedValue = (decimal)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
         }
         public DecimalDataFrameColumn ReverseModulo(int value, bool inPlace = false)
         {
@@ -8344,11 +8676,6 @@ namespace Microsoft.Data.Analysis
         {
             double convertedValue = (double)value;
             return ReverseModuloImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseModulo(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseModulo(double value, bool inPlace = false)
         {
@@ -8401,11 +8728,6 @@ namespace Microsoft.Data.Analysis
         {
             float convertedValue = (float)value;
             return ReverseModuloImplementation(convertedValue, inPlace);
-        }
-        public DecimalDataFrameColumn ReverseModulo(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public DoubleDataFrameColumn ReverseModulo(double value)
         {
@@ -8493,10 +8815,15 @@ namespace Microsoft.Data.Analysis
             int convertedValue = (int)value;
             return ReverseModuloImplementation(convertedValue, inPlace);
         }
-        public UInt64DataFrameColumn ReverseModulo(ulong value)
+        public Int64DataFrameColumn ReverseModulo(uint value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseModuloImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseModulo(ulong value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn ReverseModulo(ushort value, bool inPlace = false)
         {
@@ -8558,6 +8885,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
+        public Int32DataFrameColumn ReverseModulo(byte value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
         public DecimalDataFrameColumn ReverseModulo(decimal value)
         {
             DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
@@ -8583,37 +8915,38 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public SByteDataFrameColumn ReverseModulo(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseModulo(sbyte value)
         {
-            return ReverseModuloImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseModulo(short value)
+        public Int32DataFrameColumn ReverseModulo(short value)
         {
-            Int16DataFrameColumn shortColumn = CloneAsInt16Column();
-            return shortColumn.ReverseModuloImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseModulo(uint value)
+        public Int64DataFrameColumn ReverseModulo(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseModuloImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseModulo(ulong value)
+        public SingleDataFrameColumn ReverseModulo(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseModuloImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseModulo(ushort value)
+        public Int32DataFrameColumn ReverseModulo(ushort value)
         {
-            UInt16DataFrameColumn ushortColumn = CloneAsUInt16Column();
-            return ushortColumn.ReverseModuloImplementation(value, inPlace: true);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public Int16DataFrameColumn ReverseModulo(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseModulo(byte value)
         {
-            short convertedValue = (short)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseModulo(decimal value)
         {
@@ -8640,24 +8973,30 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseModulo(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseModulo(sbyte value)
         {
-            short convertedValue = (short)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public Int16DataFrameColumn ReverseModulo(short value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseModulo(short value)
         {
-            return ReverseModuloImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseModulo(uint value)
+        public Int64DataFrameColumn ReverseModulo(uint value)
         {
-            UInt32DataFrameColumn uintColumn = CloneAsUInt32Column();
-            return uintColumn.ReverseModuloImplementation(value, inPlace: true);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseModulo(ulong value)
+        public SingleDataFrameColumn ReverseModulo(ulong value)
         {
-            UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
-            return ulongColumn.ReverseModuloImplementation(value, inPlace: true);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseModulo(ushort value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -8682,20 +9021,25 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
+        public Int64DataFrameColumn ReverseModulo(int value)
+        {
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
         public Int64DataFrameColumn ReverseModulo(long value)
         {
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseModulo(sbyte value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseModulo(sbyte value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt32DataFrameColumn ReverseModulo(short value, bool inPlace = false)
+        public Int64DataFrameColumn ReverseModulo(short value)
         {
-            uint convertedValue = (uint)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            Int64DataFrameColumn longColumn = CloneAsInt64Column();
+            return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseModulo(uint value, bool inPlace = false)
         {
@@ -8734,20 +9078,20 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseModulo(int value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseModulo(int value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseModulo(sbyte value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseModulo(sbyte value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt64DataFrameColumn ReverseModulo(short value, bool inPlace = false)
+        public SingleDataFrameColumn ReverseModulo(short value)
         {
-            ulong convertedValue = (ulong)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn ReverseModulo(uint value, bool inPlace = false)
         {
@@ -8766,10 +9110,10 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public UInt16DataFrameColumn ReverseModulo(byte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseModulo(byte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public DecimalDataFrameColumn ReverseModulo(decimal value)
         {
@@ -8796,10 +9140,15 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseModulo(sbyte value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseModulo(sbyte value)
         {
-            ushort convertedValue = (ushort)value;
-            return ReverseModuloImplementation(convertedValue, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public Int32DataFrameColumn ReverseModulo(short value)
+        {
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public UInt32DataFrameColumn ReverseModulo(uint value)
         {
@@ -8811,9 +9160,10 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn ulongColumn = CloneAsUInt64Column();
             return ulongColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public UInt16DataFrameColumn ReverseModulo(ushort value, bool inPlace = false)
+        public Int32DataFrameColumn ReverseModulo(ushort value)
         {
-            return ReverseModuloImplementation(value, inPlace);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            return intColumn.ReverseModuloImplementation(value, inPlace: true);
         }
     }
     public partial class BooleanDataFrameColumn
@@ -8958,16 +9308,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseEqualsImplementation(column);
         }
-        public BooleanDataFrameColumn ElementwiseEquals(DoubleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseEqualsImplementation(otherdecimalColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseEquals(SingleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseEqualsImplementation(otherdecimalColumn);
-        }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
             DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
@@ -9010,11 +9350,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ElementwiseEqualsImplementation(otherdoubleColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseEquals(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseEqualsImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseEquals(DoubleDataFrameColumn column)
         {
@@ -9067,11 +9402,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return ElementwiseEqualsImplementation(otherfloatColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseEquals(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseEqualsImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseEquals(DoubleDataFrameColumn column)
         {
@@ -9217,11 +9547,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseEqualsImplementation(otherlongColumn);
         }
         public BooleanDataFrameColumn ElementwiseEquals(UInt32DataFrameColumn column)
-        {
-            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
-            return ElementwiseEqualsImplementation(otherlongColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseEquals(UInt64DataFrameColumn column)
         {
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return ElementwiseEqualsImplementation(otherlongColumn);
@@ -9430,11 +9755,6 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
             return ElementwiseEqualsImplementation(otherulongColumn);
         }
-        public BooleanDataFrameColumn ElementwiseEquals(Int64DataFrameColumn column)
-        {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ElementwiseEqualsImplementation(otherulongColumn);
-        }
         public BooleanDataFrameColumn ElementwiseEquals(SByteDataFrameColumn column)
         {
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
@@ -9592,16 +9912,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseEqualsImplementation(value);
         }
-        public BooleanDataFrameColumn ElementwiseEquals(double value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseEqualsImplementation(otherdecimalValue);
-        }
-        public BooleanDataFrameColumn ElementwiseEquals(float value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseEqualsImplementation(otherdecimalValue);
-        }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
             decimal otherdecimalValue = (decimal)value;
@@ -9644,11 +9954,6 @@ namespace Microsoft.Data.Analysis
         {
             double otherdoubleValue = (double)value;
             return ElementwiseEqualsImplementation(otherdoubleValue);
-        }
-        public BooleanDataFrameColumn ElementwiseEquals(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseEqualsImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseEquals(double value)
         {
@@ -9701,11 +10006,6 @@ namespace Microsoft.Data.Analysis
         {
             float otherfloatValue = (float)value;
             return ElementwiseEqualsImplementation(otherfloatValue);
-        }
-        public BooleanDataFrameColumn ElementwiseEquals(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseEqualsImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseEquals(double value)
         {
@@ -9851,11 +10151,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseEqualsImplementation(otherlongValue);
         }
         public BooleanDataFrameColumn ElementwiseEquals(uint value)
-        {
-            long otherlongValue = (long)value;
-            return ElementwiseEqualsImplementation(otherlongValue);
-        }
-        public BooleanDataFrameColumn ElementwiseEquals(ulong value)
         {
             long otherlongValue = (long)value;
             return ElementwiseEqualsImplementation(otherlongValue);
@@ -10064,11 +10359,6 @@ namespace Microsoft.Data.Analysis
             ulong otherulongValue = (ulong)value;
             return ElementwiseEqualsImplementation(otherulongValue);
         }
-        public BooleanDataFrameColumn ElementwiseEquals(long value)
-        {
-            ulong otherulongValue = (ulong)value;
-            return ElementwiseEqualsImplementation(otherulongValue);
-        }
         public BooleanDataFrameColumn ElementwiseEquals(sbyte value)
         {
             ulong otherulongValue = (ulong)value;
@@ -10226,16 +10516,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseNotEqualsImplementation(column);
         }
-        public BooleanDataFrameColumn ElementwiseNotEquals(DoubleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseNotEqualsImplementation(otherdecimalColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseNotEquals(SingleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseNotEqualsImplementation(otherdecimalColumn);
-        }
         public BooleanDataFrameColumn ElementwiseNotEquals(Int32DataFrameColumn column)
         {
             DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
@@ -10278,11 +10558,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ElementwiseNotEqualsImplementation(otherdoubleColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseNotEquals(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseNotEqualsImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseNotEquals(DoubleDataFrameColumn column)
         {
@@ -10335,11 +10610,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return ElementwiseNotEqualsImplementation(otherfloatColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseNotEquals(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseNotEqualsImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseNotEquals(DoubleDataFrameColumn column)
         {
@@ -10485,11 +10755,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseNotEqualsImplementation(otherlongColumn);
         }
         public BooleanDataFrameColumn ElementwiseNotEquals(UInt32DataFrameColumn column)
-        {
-            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
-            return ElementwiseNotEqualsImplementation(otherlongColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseNotEquals(UInt64DataFrameColumn column)
         {
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return ElementwiseNotEqualsImplementation(otherlongColumn);
@@ -10698,11 +10963,6 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
             return ElementwiseNotEqualsImplementation(otherulongColumn);
         }
-        public BooleanDataFrameColumn ElementwiseNotEquals(Int64DataFrameColumn column)
-        {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ElementwiseNotEqualsImplementation(otherulongColumn);
-        }
         public BooleanDataFrameColumn ElementwiseNotEquals(SByteDataFrameColumn column)
         {
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
@@ -10860,16 +11120,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseNotEqualsImplementation(value);
         }
-        public BooleanDataFrameColumn ElementwiseNotEquals(double value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseNotEqualsImplementation(otherdecimalValue);
-        }
-        public BooleanDataFrameColumn ElementwiseNotEquals(float value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseNotEqualsImplementation(otherdecimalValue);
-        }
         public BooleanDataFrameColumn ElementwiseNotEquals(int value)
         {
             decimal otherdecimalValue = (decimal)value;
@@ -10912,11 +11162,6 @@ namespace Microsoft.Data.Analysis
         {
             double otherdoubleValue = (double)value;
             return ElementwiseNotEqualsImplementation(otherdoubleValue);
-        }
-        public BooleanDataFrameColumn ElementwiseNotEquals(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseNotEqualsImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseNotEquals(double value)
         {
@@ -10969,11 +11214,6 @@ namespace Microsoft.Data.Analysis
         {
             float otherfloatValue = (float)value;
             return ElementwiseNotEqualsImplementation(otherfloatValue);
-        }
-        public BooleanDataFrameColumn ElementwiseNotEquals(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseNotEqualsImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseNotEquals(double value)
         {
@@ -11119,11 +11359,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseNotEqualsImplementation(otherlongValue);
         }
         public BooleanDataFrameColumn ElementwiseNotEquals(uint value)
-        {
-            long otherlongValue = (long)value;
-            return ElementwiseNotEqualsImplementation(otherlongValue);
-        }
-        public BooleanDataFrameColumn ElementwiseNotEquals(ulong value)
         {
             long otherlongValue = (long)value;
             return ElementwiseNotEqualsImplementation(otherlongValue);
@@ -11332,11 +11567,6 @@ namespace Microsoft.Data.Analysis
             ulong otherulongValue = (ulong)value;
             return ElementwiseNotEqualsImplementation(otherulongValue);
         }
-        public BooleanDataFrameColumn ElementwiseNotEquals(long value)
-        {
-            ulong otherulongValue = (ulong)value;
-            return ElementwiseNotEqualsImplementation(otherulongValue);
-        }
         public BooleanDataFrameColumn ElementwiseNotEquals(sbyte value)
         {
             ulong otherulongValue = (ulong)value;
@@ -11494,16 +11724,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseGreaterThanOrEqualImplementation(column);
         }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(DoubleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseGreaterThanOrEqualImplementation(otherdecimalColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(SingleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseGreaterThanOrEqualImplementation(otherdecimalColumn);
-        }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Int32DataFrameColumn column)
         {
             DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
@@ -11546,11 +11766,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ElementwiseGreaterThanOrEqualImplementation(otherdoubleColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseGreaterThanOrEqualImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(DoubleDataFrameColumn column)
         {
@@ -11603,11 +11818,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return ElementwiseGreaterThanOrEqualImplementation(otherfloatColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseGreaterThanOrEqualImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(DoubleDataFrameColumn column)
         {
@@ -11753,11 +11963,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseGreaterThanOrEqualImplementation(otherlongColumn);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(UInt32DataFrameColumn column)
-        {
-            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
-            return ElementwiseGreaterThanOrEqualImplementation(otherlongColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(UInt64DataFrameColumn column)
         {
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return ElementwiseGreaterThanOrEqualImplementation(otherlongColumn);
@@ -11966,11 +12171,6 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
             return ElementwiseGreaterThanOrEqualImplementation(otherulongColumn);
         }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Int64DataFrameColumn column)
-        {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ElementwiseGreaterThanOrEqualImplementation(otherulongColumn);
-        }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(SByteDataFrameColumn column)
         {
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
@@ -12128,16 +12328,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseGreaterThanOrEqualImplementation(value);
         }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(double value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseGreaterThanOrEqualImplementation(otherdecimalValue);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(float value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseGreaterThanOrEqualImplementation(otherdecimalValue);
-        }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(int value)
         {
             decimal otherdecimalValue = (decimal)value;
@@ -12180,11 +12370,6 @@ namespace Microsoft.Data.Analysis
         {
             double otherdoubleValue = (double)value;
             return ElementwiseGreaterThanOrEqualImplementation(otherdoubleValue);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseGreaterThanOrEqualImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(double value)
         {
@@ -12237,11 +12422,6 @@ namespace Microsoft.Data.Analysis
         {
             float otherfloatValue = (float)value;
             return ElementwiseGreaterThanOrEqualImplementation(otherfloatValue);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseGreaterThanOrEqualImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(double value)
         {
@@ -12387,11 +12567,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseGreaterThanOrEqualImplementation(otherlongValue);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(uint value)
-        {
-            long otherlongValue = (long)value;
-            return ElementwiseGreaterThanOrEqualImplementation(otherlongValue);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(ulong value)
         {
             long otherlongValue = (long)value;
             return ElementwiseGreaterThanOrEqualImplementation(otherlongValue);
@@ -12600,11 +12775,6 @@ namespace Microsoft.Data.Analysis
             ulong otherulongValue = (ulong)value;
             return ElementwiseGreaterThanOrEqualImplementation(otherulongValue);
         }
-        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(long value)
-        {
-            ulong otherulongValue = (ulong)value;
-            return ElementwiseGreaterThanOrEqualImplementation(otherulongValue);
-        }
         public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(sbyte value)
         {
             ulong otherulongValue = (ulong)value;
@@ -12762,16 +12932,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseLessThanOrEqualImplementation(column);
         }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(DoubleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseLessThanOrEqualImplementation(otherdecimalColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(SingleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseLessThanOrEqualImplementation(otherdecimalColumn);
-        }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Int32DataFrameColumn column)
         {
             DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
@@ -12814,11 +12974,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ElementwiseLessThanOrEqualImplementation(otherdoubleColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseLessThanOrEqualImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(DoubleDataFrameColumn column)
         {
@@ -12871,11 +13026,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return ElementwiseLessThanOrEqualImplementation(otherfloatColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseLessThanOrEqualImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(DoubleDataFrameColumn column)
         {
@@ -13021,11 +13171,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseLessThanOrEqualImplementation(otherlongColumn);
         }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(UInt32DataFrameColumn column)
-        {
-            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
-            return ElementwiseLessThanOrEqualImplementation(otherlongColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(UInt64DataFrameColumn column)
         {
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return ElementwiseLessThanOrEqualImplementation(otherlongColumn);
@@ -13234,11 +13379,6 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
             return ElementwiseLessThanOrEqualImplementation(otherulongColumn);
         }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Int64DataFrameColumn column)
-        {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ElementwiseLessThanOrEqualImplementation(otherulongColumn);
-        }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(SByteDataFrameColumn column)
         {
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
@@ -13396,16 +13536,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseLessThanOrEqualImplementation(value);
         }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(double value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseLessThanOrEqualImplementation(otherdecimalValue);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(float value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseLessThanOrEqualImplementation(otherdecimalValue);
-        }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(int value)
         {
             decimal otherdecimalValue = (decimal)value;
@@ -13448,11 +13578,6 @@ namespace Microsoft.Data.Analysis
         {
             double otherdoubleValue = (double)value;
             return ElementwiseLessThanOrEqualImplementation(otherdoubleValue);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseLessThanOrEqualImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(double value)
         {
@@ -13505,11 +13630,6 @@ namespace Microsoft.Data.Analysis
         {
             float otherfloatValue = (float)value;
             return ElementwiseLessThanOrEqualImplementation(otherfloatValue);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseLessThanOrEqualImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(double value)
         {
@@ -13655,11 +13775,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseLessThanOrEqualImplementation(otherlongValue);
         }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(uint value)
-        {
-            long otherlongValue = (long)value;
-            return ElementwiseLessThanOrEqualImplementation(otherlongValue);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(ulong value)
         {
             long otherlongValue = (long)value;
             return ElementwiseLessThanOrEqualImplementation(otherlongValue);
@@ -13868,11 +13983,6 @@ namespace Microsoft.Data.Analysis
             ulong otherulongValue = (ulong)value;
             return ElementwiseLessThanOrEqualImplementation(otherulongValue);
         }
-        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(long value)
-        {
-            ulong otherulongValue = (ulong)value;
-            return ElementwiseLessThanOrEqualImplementation(otherulongValue);
-        }
         public BooleanDataFrameColumn ElementwiseLessThanOrEqual(sbyte value)
         {
             ulong otherulongValue = (ulong)value;
@@ -14030,16 +14140,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseGreaterThanImplementation(column);
         }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(DoubleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseGreaterThanImplementation(otherdecimalColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(SingleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseGreaterThanImplementation(otherdecimalColumn);
-        }
         public BooleanDataFrameColumn ElementwiseGreaterThan(Int32DataFrameColumn column)
         {
             DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
@@ -14082,11 +14182,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ElementwiseGreaterThanImplementation(otherdoubleColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseGreaterThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThan(DoubleDataFrameColumn column)
         {
@@ -14139,11 +14234,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return ElementwiseGreaterThanImplementation(otherfloatColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseGreaterThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThan(DoubleDataFrameColumn column)
         {
@@ -14289,11 +14379,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseGreaterThanImplementation(otherlongColumn);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThan(UInt32DataFrameColumn column)
-        {
-            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
-            return ElementwiseGreaterThanImplementation(otherlongColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(UInt64DataFrameColumn column)
         {
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return ElementwiseGreaterThanImplementation(otherlongColumn);
@@ -14502,11 +14587,6 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
             return ElementwiseGreaterThanImplementation(otherulongColumn);
         }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(Int64DataFrameColumn column)
-        {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ElementwiseGreaterThanImplementation(otherulongColumn);
-        }
         public BooleanDataFrameColumn ElementwiseGreaterThan(SByteDataFrameColumn column)
         {
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
@@ -14664,16 +14744,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseGreaterThanImplementation(value);
         }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(double value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseGreaterThanImplementation(otherdecimalValue);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(float value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseGreaterThanImplementation(otherdecimalValue);
-        }
         public BooleanDataFrameColumn ElementwiseGreaterThan(int value)
         {
             decimal otherdecimalValue = (decimal)value;
@@ -14716,11 +14786,6 @@ namespace Microsoft.Data.Analysis
         {
             double otherdoubleValue = (double)value;
             return ElementwiseGreaterThanImplementation(otherdoubleValue);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseGreaterThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThan(double value)
         {
@@ -14773,11 +14838,6 @@ namespace Microsoft.Data.Analysis
         {
             float otherfloatValue = (float)value;
             return ElementwiseGreaterThanImplementation(otherfloatValue);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseGreaterThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThan(double value)
         {
@@ -14923,11 +14983,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseGreaterThanImplementation(otherlongValue);
         }
         public BooleanDataFrameColumn ElementwiseGreaterThan(uint value)
-        {
-            long otherlongValue = (long)value;
-            return ElementwiseGreaterThanImplementation(otherlongValue);
-        }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(ulong value)
         {
             long otherlongValue = (long)value;
             return ElementwiseGreaterThanImplementation(otherlongValue);
@@ -15136,11 +15191,6 @@ namespace Microsoft.Data.Analysis
             ulong otherulongValue = (ulong)value;
             return ElementwiseGreaterThanImplementation(otherulongValue);
         }
-        public BooleanDataFrameColumn ElementwiseGreaterThan(long value)
-        {
-            ulong otherulongValue = (ulong)value;
-            return ElementwiseGreaterThanImplementation(otherulongValue);
-        }
         public BooleanDataFrameColumn ElementwiseGreaterThan(sbyte value)
         {
             ulong otherulongValue = (ulong)value;
@@ -15298,16 +15348,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseLessThanImplementation(column);
         }
-        public BooleanDataFrameColumn ElementwiseLessThan(DoubleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseLessThanImplementation(otherdecimalColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThan(SingleDataFrameColumn column)
-        {
-            DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
-            return ElementwiseLessThanImplementation(otherdecimalColumn);
-        }
         public BooleanDataFrameColumn ElementwiseLessThan(Int32DataFrameColumn column)
         {
             DecimalDataFrameColumn otherdecimalColumn = column.CloneAsDecimalColumn();
@@ -15350,11 +15390,6 @@ namespace Microsoft.Data.Analysis
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ElementwiseLessThanImplementation(otherdoubleColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThan(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseLessThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseLessThan(DoubleDataFrameColumn column)
         {
@@ -15407,11 +15442,6 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
             return ElementwiseLessThanImplementation(otherfloatColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThan(DecimalDataFrameColumn column)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseLessThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseLessThan(DoubleDataFrameColumn column)
         {
@@ -15557,11 +15587,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseLessThanImplementation(otherlongColumn);
         }
         public BooleanDataFrameColumn ElementwiseLessThan(UInt32DataFrameColumn column)
-        {
-            Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
-            return ElementwiseLessThanImplementation(otherlongColumn);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThan(UInt64DataFrameColumn column)
         {
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return ElementwiseLessThanImplementation(otherlongColumn);
@@ -15770,11 +15795,6 @@ namespace Microsoft.Data.Analysis
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
             return ElementwiseLessThanImplementation(otherulongColumn);
         }
-        public BooleanDataFrameColumn ElementwiseLessThan(Int64DataFrameColumn column)
-        {
-            UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
-            return ElementwiseLessThanImplementation(otherulongColumn);
-        }
         public BooleanDataFrameColumn ElementwiseLessThan(SByteDataFrameColumn column)
         {
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
@@ -15932,16 +15952,6 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseLessThanImplementation(value);
         }
-        public BooleanDataFrameColumn ElementwiseLessThan(double value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseLessThanImplementation(otherdecimalValue);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThan(float value)
-        {
-            decimal otherdecimalValue = (decimal)value;
-            return ElementwiseLessThanImplementation(otherdecimalValue);
-        }
         public BooleanDataFrameColumn ElementwiseLessThan(int value)
         {
             decimal otherdecimalValue = (decimal)value;
@@ -15984,11 +15994,6 @@ namespace Microsoft.Data.Analysis
         {
             double otherdoubleValue = (double)value;
             return ElementwiseLessThanImplementation(otherdoubleValue);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThan(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseLessThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseLessThan(double value)
         {
@@ -16041,11 +16046,6 @@ namespace Microsoft.Data.Analysis
         {
             float otherfloatValue = (float)value;
             return ElementwiseLessThanImplementation(otherfloatValue);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThan(decimal value)
-        {
-            DecimalDataFrameColumn decimalColumn = CloneAsDecimalColumn();
-            return decimalColumn.ElementwiseLessThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseLessThan(double value)
         {
@@ -16191,11 +16191,6 @@ namespace Microsoft.Data.Analysis
             return ElementwiseLessThanImplementation(otherlongValue);
         }
         public BooleanDataFrameColumn ElementwiseLessThan(uint value)
-        {
-            long otherlongValue = (long)value;
-            return ElementwiseLessThanImplementation(otherlongValue);
-        }
-        public BooleanDataFrameColumn ElementwiseLessThan(ulong value)
         {
             long otherlongValue = (long)value;
             return ElementwiseLessThanImplementation(otherlongValue);
@@ -16404,11 +16399,6 @@ namespace Microsoft.Data.Analysis
             ulong otherulongValue = (ulong)value;
             return ElementwiseLessThanImplementation(otherulongValue);
         }
-        public BooleanDataFrameColumn ElementwiseLessThan(long value)
-        {
-            ulong otherulongValue = (ulong)value;
-            return ElementwiseLessThanImplementation(otherulongValue);
-        }
         public BooleanDataFrameColumn ElementwiseLessThan(sbyte value)
         {
             ulong otherulongValue = (ulong)value;
@@ -16494,18 +16484,11 @@ namespace Microsoft.Data.Analysis
 
     public partial class ByteDataFrameColumn
     {
-        public new ByteDataFrameColumn LeftShift(int value, bool inPlace = false)
+        public new Int32DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<byte>)base.LeftShift(value, inPlace);
-            return new ByteDataFrameColumn(result.Name, result._columnContainer);
-        }
-    }
-    public partial class CharDataFrameColumn
-    {
-        public new CharDataFrameColumn LeftShift(int value, bool inPlace = false)
-        {
-            var result = (PrimitiveDataFrameColumn<char>)base.LeftShift(value, inPlace);
-            return new CharDataFrameColumn(result.Name, result._columnContainer);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            var result = (PrimitiveDataFrameColumn<int>)(intColumn.LeftShift(value, inPlace));
+            return new Int32DataFrameColumn(result.Name, result._columnContainer);
         }
     }
     public partial class Int32DataFrameColumn
@@ -16526,18 +16509,20 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public new SByteDataFrameColumn LeftShift(int value, bool inPlace = false)
+        public new Int32DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<sbyte>)base.LeftShift(value, inPlace);
-            return new SByteDataFrameColumn(result.Name, result._columnContainer);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            var result = (PrimitiveDataFrameColumn<int>)(intColumn.LeftShift(value, inPlace));
+            return new Int32DataFrameColumn(result.Name, result._columnContainer);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public new Int16DataFrameColumn LeftShift(int value, bool inPlace = false)
+        public new Int32DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<short>)base.LeftShift(value, inPlace);
-            return new Int16DataFrameColumn(result.Name, result._columnContainer);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            var result = (PrimitiveDataFrameColumn<int>)(intColumn.LeftShift(value, inPlace));
+            return new Int32DataFrameColumn(result.Name, result._columnContainer);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -16558,26 +16543,20 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public new UInt16DataFrameColumn LeftShift(int value, bool inPlace = false)
+        public new Int32DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<ushort>)base.LeftShift(value, inPlace);
-            return new UInt16DataFrameColumn(result.Name, result._columnContainer);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            var result = (PrimitiveDataFrameColumn<int>)(intColumn.LeftShift(value, inPlace));
+            return new Int32DataFrameColumn(result.Name, result._columnContainer);
         }
     }
     public partial class ByteDataFrameColumn
     {
-        public new ByteDataFrameColumn RightShift(int value, bool inPlace = false)
+        public new Int32DataFrameColumn RightShift(int value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<byte>)base.RightShift(value, inPlace);
-            return new ByteDataFrameColumn(result.Name, result._columnContainer);
-        }
-    }
-    public partial class CharDataFrameColumn
-    {
-        public new CharDataFrameColumn RightShift(int value, bool inPlace = false)
-        {
-            var result = (PrimitiveDataFrameColumn<char>)base.RightShift(value, inPlace);
-            return new CharDataFrameColumn(result.Name, result._columnContainer);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            var result = (PrimitiveDataFrameColumn<int>)(intColumn.RightShift(value, inPlace));
+            return new Int32DataFrameColumn(result.Name, result._columnContainer);
         }
     }
     public partial class Int32DataFrameColumn
@@ -16598,18 +16577,20 @@ namespace Microsoft.Data.Analysis
     }
     public partial class SByteDataFrameColumn
     {
-        public new SByteDataFrameColumn RightShift(int value, bool inPlace = false)
+        public new Int32DataFrameColumn RightShift(int value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<sbyte>)base.RightShift(value, inPlace);
-            return new SByteDataFrameColumn(result.Name, result._columnContainer);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            var result = (PrimitiveDataFrameColumn<int>)(intColumn.RightShift(value, inPlace));
+            return new Int32DataFrameColumn(result.Name, result._columnContainer);
         }
     }
     public partial class Int16DataFrameColumn
     {
-        public new Int16DataFrameColumn RightShift(int value, bool inPlace = false)
+        public new Int32DataFrameColumn RightShift(int value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<short>)base.RightShift(value, inPlace);
-            return new Int16DataFrameColumn(result.Name, result._columnContainer);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            var result = (PrimitiveDataFrameColumn<int>)(intColumn.RightShift(value, inPlace));
+            return new Int32DataFrameColumn(result.Name, result._columnContainer);
         }
     }
     public partial class UInt32DataFrameColumn
@@ -16630,10 +16611,11 @@ namespace Microsoft.Data.Analysis
     }
     public partial class UInt16DataFrameColumn
     {
-        public new UInt16DataFrameColumn RightShift(int value, bool inPlace = false)
+        public new Int32DataFrameColumn RightShift(int value, bool inPlace = false)
         {
-            var result = (PrimitiveDataFrameColumn<ushort>)base.RightShift(value, inPlace);
-            return new UInt16DataFrameColumn(result.Name, result._columnContainer);
+            Int32DataFrameColumn intColumn = CloneAsInt32Column();
+            var result = (PrimitiveDataFrameColumn<int>)(intColumn.RightShift(value, inPlace));
+            return new Int32DataFrameColumn(result.Name, result._columnContainer);
         }
     }
 }

@@ -16,15 +16,15 @@ namespace Microsoft.Data.Analysis.Tests
     public partial class DataFrameColumnTests
     {
         [Fact]
-        public void AddByteDataFrameColumnToByteDataFrameColumn()
+        public void AddInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn otherColumn = new ByteDataFrameColumn("Byte", otherColumnEnumerable);
-            ByteDataFrameColumn columnResult = column + otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)(2 * x));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column + otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(2 * x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -94,15 +94,28 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void AddInt16DataFrameColumnToByteDataFrameColumn()
+        public void AddInt32DataFrameColumnToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (sbyte)x);
+            SByteDataFrameColumn otherColumn = new SByteDataFrameColumn("SByte", otherColumnEnumerable);
+            Int32DataFrameColumn columnResult = column + otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(2 * x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void AddInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (short)x);
             Int16DataFrameColumn otherColumn = new Int16DataFrameColumn("Int16", otherColumnEnumerable);
-            Int16DataFrameColumn columnResult = column + otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)(2 * x));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column + otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(2 * x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -133,27 +146,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void AddUInt16DataFrameColumnToByteDataFrameColumn()
+        public void AddInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (ushort)x);
             UInt16DataFrameColumn otherColumn = new UInt16DataFrameColumn("UInt16", otherColumnEnumerable);
-            UInt16DataFrameColumn columnResult = column + otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)(2 * x));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column + otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(2 * x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void AddByteToByteDataFrameColumn()
+        public void AddInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = column + value;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)x + (byte)value));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column + value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x + (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -218,14 +231,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void AddInt16ToByteDataFrameColumn()
+        public void AddInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = column + value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x + (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void AddInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = column + value;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)x + (short)value));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column + value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x + (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -254,26 +279,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void AddUInt16ToByteDataFrameColumn()
+        public void AddInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = column + value;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)x + (ushort)value));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column + value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x + (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseAddByteToByteDataFrameColumn()
+        public void ReverseAddInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = value + column;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)x + (byte)value));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value + column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x + (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -338,14 +363,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseAddInt16ToByteDataFrameColumn()
+        public void ReverseAddInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = value + column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x + (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void ReverseAddInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = value + column;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)x + (short)value));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value + column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x + (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -374,27 +411,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseAddUInt16ToByteDataFrameColumn()
+        public void ReverseAddInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = value + column;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)x + (ushort)value));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value + column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x + (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void SubtractByteDataFrameColumnToByteDataFrameColumn()
+        public void SubtractInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn otherColumn = new ByteDataFrameColumn("Byte", otherColumnEnumerable);
-            ByteDataFrameColumn columnResult = column - otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)0);
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column - otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)0);
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -464,15 +501,28 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void SubtractInt16DataFrameColumnToByteDataFrameColumn()
+        public void SubtractInt32DataFrameColumnToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (sbyte)x);
+            SByteDataFrameColumn otherColumn = new SByteDataFrameColumn("SByte", otherColumnEnumerable);
+            Int32DataFrameColumn columnResult = column - otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)0);
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void SubtractInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (short)x);
             Int16DataFrameColumn otherColumn = new Int16DataFrameColumn("Int16", otherColumnEnumerable);
-            Int16DataFrameColumn columnResult = column - otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)0);
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column - otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)0);
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -503,27 +553,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void SubtractUInt16DataFrameColumnToByteDataFrameColumn()
+        public void SubtractInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (ushort)x);
             UInt16DataFrameColumn otherColumn = new UInt16DataFrameColumn("UInt16", otherColumnEnumerable);
-            UInt16DataFrameColumn columnResult = column - otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)0);
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column - otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)0);
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void SubtractByteToByteDataFrameColumn()
+        public void SubtractInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = column - value;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)x - (byte)value));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column - value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x - (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -588,14 +638,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void SubtractInt16ToByteDataFrameColumn()
+        public void SubtractInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = column - value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x - (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void SubtractInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = column - value;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)x - (short)value));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column - value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x - (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -624,26 +686,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void SubtractUInt16ToByteDataFrameColumn()
+        public void SubtractInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = column - value;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)x - (ushort)value));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column - value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x - (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseSubtractByteToByteDataFrameColumn()
+        public void ReverseSubtractInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = value - column;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)value - (byte)x));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value - column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value - (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -708,14 +770,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseSubtractInt16ToByteDataFrameColumn()
+        public void ReverseSubtractInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = value - column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value - (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void ReverseSubtractInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = value - column;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)value - (short)x));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value - column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value - (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -744,27 +818,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseSubtractUInt16ToByteDataFrameColumn()
+        public void ReverseSubtractInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = value - column;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)value - (ushort)x));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value - column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value - (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void MultiplyByteDataFrameColumnToByteDataFrameColumn()
+        public void MultiplyInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn otherColumn = new ByteDataFrameColumn("Byte", otherColumnEnumerable);
-            ByteDataFrameColumn columnResult = column * otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)(x * x));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column * otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(x * x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -834,15 +908,28 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void MultiplyInt16DataFrameColumnToByteDataFrameColumn()
+        public void MultiplyInt32DataFrameColumnToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (sbyte)x);
+            SByteDataFrameColumn otherColumn = new SByteDataFrameColumn("SByte", otherColumnEnumerable);
+            Int32DataFrameColumn columnResult = column * otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(x * x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void MultiplyInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (short)x);
             Int16DataFrameColumn otherColumn = new Int16DataFrameColumn("Int16", otherColumnEnumerable);
-            Int16DataFrameColumn columnResult = column * otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)(x * x));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column * otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(x * x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -873,27 +960,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void MultiplyUInt16DataFrameColumnToByteDataFrameColumn()
+        public void MultiplyInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (ushort)x);
             UInt16DataFrameColumn otherColumn = new UInt16DataFrameColumn("UInt16", otherColumnEnumerable);
-            UInt16DataFrameColumn columnResult = column * otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)(x * x));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column * otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(x * x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void MultiplyByteToByteDataFrameColumn()
+        public void MultiplyInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = column * value;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)x * (byte)value));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column * value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x * (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -958,14 +1045,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void MultiplyInt16ToByteDataFrameColumn()
+        public void MultiplyInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = column * value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x * (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void MultiplyInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = column * value;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)x * (short)value));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column * value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x * (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -994,26 +1093,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void MultiplyUInt16ToByteDataFrameColumn()
+        public void MultiplyInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = column * value;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)x * (ushort)value));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column * value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x * (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseMultiplyByteToByteDataFrameColumn()
+        public void ReverseMultiplyInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = value * column;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)x * (byte)value));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value * column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x * (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1078,14 +1177,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseMultiplyInt16ToByteDataFrameColumn()
+        public void ReverseMultiplyInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = value * column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x * (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void ReverseMultiplyInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = value * column;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)x * (short)value));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value * column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x * (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1114,27 +1225,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseMultiplyUInt16ToByteDataFrameColumn()
+        public void ReverseMultiplyInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = value * column;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)x * (ushort)value));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value * column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x * (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void DivideByteDataFrameColumnToByteDataFrameColumn()
+        public void DivideInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn otherColumn = new ByteDataFrameColumn("Byte", otherColumnEnumerable);
-            ByteDataFrameColumn columnResult = column / otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)(1));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column / otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(1));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1204,15 +1315,28 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void DivideInt16DataFrameColumnToByteDataFrameColumn()
+        public void DivideInt32DataFrameColumnToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (sbyte)x);
+            SByteDataFrameColumn otherColumn = new SByteDataFrameColumn("SByte", otherColumnEnumerable);
+            Int32DataFrameColumn columnResult = column / otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(1));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void DivideInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (short)x);
             Int16DataFrameColumn otherColumn = new Int16DataFrameColumn("Int16", otherColumnEnumerable);
-            Int16DataFrameColumn columnResult = column / otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)(1));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column / otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(1));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1243,27 +1367,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void DivideUInt16DataFrameColumnToByteDataFrameColumn()
+        public void DivideInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (ushort)x);
             UInt16DataFrameColumn otherColumn = new UInt16DataFrameColumn("UInt16", otherColumnEnumerable);
-            UInt16DataFrameColumn columnResult = column / otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)(1));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column / otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(1));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void DivideByteToByteDataFrameColumn()
+        public void DivideInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = column / value;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)x / (byte)value));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column / value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x / (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1328,14 +1452,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void DivideInt16ToByteDataFrameColumn()
+        public void DivideInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = column / value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x / (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void DivideInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = column / value;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)x / (short)value));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column / value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x / (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1364,26 +1500,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void DivideUInt16ToByteDataFrameColumn()
+        public void DivideInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = column / value;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)x / (ushort)value));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column / value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x / (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseDivideByteToByteDataFrameColumn()
+        public void ReverseDivideInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = value / column;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)value / (byte)x));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value / column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value / (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1448,14 +1584,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseDivideInt16ToByteDataFrameColumn()
+        public void ReverseDivideInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = value / column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value / (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void ReverseDivideInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = value / column;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)value / (short)x));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value / column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value / (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1484,27 +1632,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseDivideUInt16ToByteDataFrameColumn()
+        public void ReverseDivideInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = value / column;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)value / (ushort)x));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value / column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value / (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ModuloByteDataFrameColumnToByteDataFrameColumn()
+        public void ModuloInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn otherColumn = new ByteDataFrameColumn("Byte", otherColumnEnumerable);
-            ByteDataFrameColumn columnResult = column % otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)(0));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column % otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(0));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1574,15 +1722,28 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ModuloInt16DataFrameColumnToByteDataFrameColumn()
+        public void ModuloInt32DataFrameColumnToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (sbyte)x);
+            SByteDataFrameColumn otherColumn = new SByteDataFrameColumn("SByte", otherColumnEnumerable);
+            Int32DataFrameColumn columnResult = column % otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(0));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void ModuloInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (short)x);
             Int16DataFrameColumn otherColumn = new Int16DataFrameColumn("Int16", otherColumnEnumerable);
-            Int16DataFrameColumn columnResult = column % otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)(0));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column % otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(0));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1613,27 +1774,27 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ModuloUInt16DataFrameColumnToByteDataFrameColumn()
+        public void ModuloInt32DataFrameColumnToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             var otherColumnEnumerable = Enumerable.Range(1, 10).Select(x => (ushort)x);
             UInt16DataFrameColumn otherColumn = new UInt16DataFrameColumn("UInt16", otherColumnEnumerable);
-            UInt16DataFrameColumn columnResult = column % otherColumn;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)(0));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column % otherColumn;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)(0));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ModuloByteToByteDataFrameColumn()
+        public void ModuloInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = column % value;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)x % (byte)value));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column % value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x % (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1698,14 +1859,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ModuloInt16ToByteDataFrameColumn()
+        public void ModuloInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = column % value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x % (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void ModuloInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = column % value;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)x % (short)value));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column % value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x % (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1734,26 +1907,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ModuloUInt16ToByteDataFrameColumn()
+        public void ModuloInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = column % value;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)x % (ushort)value));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = column % value;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)x % (int)value));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseModuloByteToByteDataFrameColumn()
+        public void ReverseModuloInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             byte value = (byte)5;
-            ByteDataFrameColumn columnResult = value % column;
-            var verify = Enumerable.Range(1, 10).Select(x => (byte)((byte)value % (byte)x));
-            var verifyColumn = new ByteDataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value % column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value % (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1818,14 +1991,26 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseModuloInt16ToByteDataFrameColumn()
+        public void ReverseModuloInt32ToByteDataFrameColumn()
+        {
+            var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
+            ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
+            sbyte value = (byte)5;
+            Int32DataFrameColumn columnResult = value % column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value % (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
+            Assert.Equal(columnResult.Length, verify.Count());
+            Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
+        }
+        [Fact]
+        public void ReverseModuloInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             short value = (byte)5;
-            Int16DataFrameColumn columnResult = value % column;
-            var verify = Enumerable.Range(1, 10).Select(x => (short)((short)value % (short)x));
-            var verifyColumn = new Int16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value % column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value % (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
@@ -1854,14 +2039,14 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
         [Fact]
-        public void ReverseModuloUInt16ToByteDataFrameColumn()
+        public void ReverseModuloInt32ToByteDataFrameColumn()
         {
             var columnEnumerable = Enumerable.Range(1, 10).Select(x => (byte)x);
             ByteDataFrameColumn column = new ByteDataFrameColumn("Byte", columnEnumerable);
             ushort value = (byte)5;
-            UInt16DataFrameColumn columnResult = value % column;
-            var verify = Enumerable.Range(1, 10).Select(x => (ushort)((ushort)value % (ushort)x));
-            var verifyColumn = new UInt16DataFrameColumn("Verify", verify);
+            Int32DataFrameColumn columnResult = value % column;
+            var verify = Enumerable.Range(1, 10).Select(x => (int)((int)value % (int)x));
+            var verifyColumn = new Int32DataFrameColumn("Verify", verify);
             Assert.Equal(columnResult.Length, verify.Count());
             Assert.True(columnResult.ElementwiseEquals(verifyColumn).All());
         }
