@@ -29,7 +29,7 @@ public class TypeCombination
        public string ReturnColumnType => _returnColumnType;
 }
 
-public class BinaryOperationCombinations
+public static class BinaryOperationCombinations
 {
 
     public static List<TypeCombination> binaryOperationCombinations = new List<TypeCombination>
@@ -61,7 +61,7 @@ if (returnType == string.Empty)
     continue;
 }
 #>
-        new TypeCombination("<#=type.TypeName#>", "<#=type2.TypeName#>", "<#=GetBinaryOperationReturnType(type, type2)#>"),
+        new TypeCombination("<#=type.TypeName#>", "<#=type2.TypeName#>", "<#=returnType#>"),
 <#
     }
 }
@@ -69,7 +69,7 @@ if (returnType == string.Empty)
     };
 }
 
-public class ComparisonOperationCombinations
+public static class ComparisonOperationCombinations
 {
     public static List<TypeCombination> comparisonOperationCombinations = new List<TypeCombination>
     {

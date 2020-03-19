@@ -121,18 +121,19 @@
     }
 
     // These are a subset of the implicit conversions allowed in C#. They are used to generate the return type for binary ops
-    public Dictionary<string, LinkedList<string>> primitiveTypeToImplicitConversions = new Dictionary<string, LinkedList<string>> {
-        {"sbyte", new LinkedList<string>(new List<string> {"int", "long", "float", "double", "decimal"})},
-        {"byte", new LinkedList<string>(new List<string> {"int", "uint", "long", "ulong", "float", "double", "decimal"})},
-        {"short", new LinkedList<string>(new List<string> {"int", "long", "float", "double", "decimal"})},
-        {"ushort", new LinkedList<string>(new List<string> {"int", "uint", "long", "ulong", "float", "double", "decimal"})},
-        {"int", new LinkedList<string>(new List<string> {"int", "long", "float", "double", "decimal"})},
-        {"uint", new LinkedList<string>(new List<string> {"uint", "long", "ulong", "float", "double", "decimal"})},
-        {"long", new LinkedList<string>(new List<string> {"long", "float", "double", "decimal"})},
-        {"ulong", new LinkedList<string>(new List<string> {"ulong", "float", "double", "decimal"})},
-        {"float", new LinkedList<string>(new List<string> {"float", "double"})},
-        {"double", new LinkedList<string>(new List<string> {"double"})},
-        {"decimal", new LinkedList<string>(new List<string> {"decimal"})},
+    // https://github.com/dotnet/csharplang/blob/master/spec/conversions.md#implicit-numeric-conversions
+    public Dictionary<string, IReadOnlyList<string>> primitiveTypeToImplicitConversions = new Dictionary<string, IReadOnlyList<string>> {
+        {"sbyte", new List<string> {"int", "long", "float", "double", "decimal"}},
+        {"byte", new List<string> {"int", "uint", "long", "ulong", "float", "double", "decimal"}},
+        {"short", new List<string> {"int", "long", "float", "double", "decimal"}},
+        {"ushort", new List<string> {"int", "uint", "long", "ulong", "float", "double", "decimal"}},
+        {"int", new List<string> {"int", "long", "float", "double", "decimal"}},
+        {"uint", new List<string> {"uint", "long", "ulong", "float", "double", "decimal"}},
+        {"long", new List<string> {"long", "float", "double", "decimal"}},
+        {"ulong", new List<string> {"ulong", "float", "double", "decimal"}},
+        {"float", new List<string> {"float", "double"}},
+        {"double", new List<string> {"double"}},
+        {"decimal", new List<string> {"decimal"}},
     };
 
     public TypeConfiguration[] typeConfiguration = new []
@@ -154,18 +155,18 @@
 
     public string GetBinaryShiftOperationReturnType(TypeConfiguration t1)
     {
-        primitiveTypeToImplicitConversions.TryGetValue(t1.TypeName, out LinkedList<string> t1ImplicitConversions);
+        primitiveTypeToImplicitConversions.TryGetValue(t1.TypeName, out IReadOnlyList<string> t1ImplicitConversions);
         return t1ImplicitConversions.First() ?? string.Empty;
     }
 
     public string GetBinaryOperationReturnType(string t1, string t2)
     {
-        if (t1 == "long" && t2 == "ulong" || t1== "ulong" && t2== "long")
+        if (t1 == "long" && t2 == "ulong" || t1 == "ulong" && t2 == "long")
         {
             return string.Empty;
         }
-        primitiveTypeToImplicitConversions.TryGetValue(t1, out LinkedList<string> t1ImplicitConversions);
-        primitiveTypeToImplicitConversions.TryGetValue(t2, out LinkedList<string> t2ImplicitConversions);
+        primitiveTypeToImplicitConversions.TryGetValue(t1, out IReadOnlyList<string> t1ImplicitConversions);
+        primitiveTypeToImplicitConversions.TryGetValue(t2, out IReadOnlyList<string> t2ImplicitConversions);
         var intersection = t1ImplicitConversions.Intersect(t2ImplicitConversions);
         string ret;
         if (intersection.Count() == 0)

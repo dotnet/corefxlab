@@ -23,7 +23,7 @@ public class TypeCombination
        public string ReturnColumnType => _returnColumnType;
 }
 
-public class BinaryOperationCombinations
+public static class BinaryOperationCombinations
 {
 
     public static List<TypeCombination> binaryOperationCombinations = new List<TypeCombination>
@@ -146,7 +146,7 @@ public class BinaryOperationCombinations
     };
 }
 
-public class ComparisonOperationCombinations
+public static class ComparisonOperationCombinations
 {
     public static List<TypeCombination> comparisonOperationCombinations = new List<TypeCombination>
     {
