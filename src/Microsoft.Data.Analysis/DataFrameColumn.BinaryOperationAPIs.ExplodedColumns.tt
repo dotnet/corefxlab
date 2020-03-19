@@ -29,7 +29,7 @@ bool supportedInPlace(string type1, string type2)
 }
 #>
 <# 
-void GenerateAllBinaryCombinationsForMethod(string methodName)
+void GenerateAllBinaryCombinationsForMethod()
 {
     HashSet<string> visited = new HashSet<string> { };
  foreach (TypeCombination outer in BinaryOperationCombinations.binaryOperationCombinations) 
@@ -46,30 +46,35 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
     {
 <#
     foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
-{ 
-    string returnType = types.ReturnColumnType;
-    string columnType = types.ThisColumnType;
-    string otherColumnType = types.OtherColumnType;
+    {
+        foreach (MethodConfiguration method in methodConfiguration)
+        {
+        if (method.MethodType == MethodType.Binary && method.IsNumeric)
+        {
+            string methodName = method.MethodName;
+            string returnType = types.ReturnColumnType;
+            string columnType = types.ThisColumnType;
+            string otherColumnType = types.OtherColumnType;
 
-    string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
-    string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
-    string fullOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType) + "DataFrameColumn";
+            string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+            string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+            string fullOtherColumnType = GetCapitalizedPrimitiveTypes(otherColumnType) + "DataFrameColumn";
 
-    string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+            string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
 #>
 <#
-    if (supportedInPlace(columnType, otherColumnType))
-    {
+            if (supportedInPlace(columnType, otherColumnType))
+            {
 #>
         public <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column, bool inPlace = false)
 <#
-    }
-    else
-    {
+            }
+            else
+            {
 #>
         public <#=fullReturnType#> <#=methodName#>(<#=fullOtherColumnType#> column)
 <#
-    }
+            }
 #>
         {
 <#
@@ -127,7 +132,9 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
 #>
         }
 <# 
-} 
+    } 
+    }
+    }
 #>
     }
 <# 
@@ -135,7 +142,7 @@ void GenerateAllBinaryCombinationsForMethod(string methodName)
 }
 #>
 <# 
-void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
+void GenerateAllBinaryScalarCombinationsForMethod()
 {
     HashSet<string> visited = new HashSet<string> { };
  foreach (TypeCombination outer in BinaryOperationCombinations.binaryOperationCombinations) 
@@ -152,26 +159,31 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
     {
 <#
     foreach (TypeCombination types in BinaryOperationCombinations.binaryOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
-{ 
-    string returnType = types.ReturnColumnType;
-    string columnType = types.ThisColumnType;
-    string valueType = types.OtherColumnType;
+    { 
+        foreach (MethodConfiguration method in methodConfiguration)
+        {
+        if (method.MethodType == MethodType.BinaryScalar && method.IsNumeric)
+        {
+            string methodName = method.MethodName;
+            string returnType = types.ReturnColumnType;
+            string columnType = types.ThisColumnType;
+            string valueType = types.OtherColumnType;
 
-    string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
-    string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+            string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+            string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
 
-    string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+            string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
 
 #>
 <#
-    if (supportedInPlace(columnType, valueType))
-    {
+            if (supportedInPlace(columnType, valueType))
+            {
 #>
         public <#=fullReturnType#> <#=methodName#>(<#=valueType#> value, bool inPlace = false)
 <#
-    }
-    else
-    {
+            }
+            else
+            {
 #>
         public <#=fullReturnType#> <#=methodName#>(<#=valueType#> value)
 <#
@@ -231,7 +243,91 @@ void GenerateAllBinaryScalarCombinationsForMethod(string methodName)
 #>
         }
 <# 
-} 
+        }
+        if (method.MethodType == MethodType.BinaryScalar && method.IsNumeric)
+        {
+            string methodName = "Reverse" + method.MethodName;
+            string returnType = types.ReturnColumnType;
+            string columnType = types.ThisColumnType;
+            string valueType = types.OtherColumnType;
+
+            string fullColumnType = GetCapitalizedPrimitiveTypes(columnType) + "DataFrameColumn";
+            string fullReturnType = GetCapitalizedPrimitiveTypes(returnType) + "DataFrameColumn";
+
+            string capitalizedReturnType = GetCapitalizedPrimitiveTypes(returnType);
+
+#>
+<#
+            if (supportedInPlace(columnType, valueType))
+            {
+#>
+        public <#=fullReturnType#> <#=methodName#>(<#=valueType#> value, bool inPlace = false)
+<#
+            }
+            else
+            {
+#>
+        public <#=fullReturnType#> <#=methodName#>(<#=valueType#> value)
+<#
+    }
+#>
+        {
+<#
+    if (columnType == valueType)
+    {
+        // Handle the straightforward cases such as int + int resulting in int
+        if (fullReturnType == fullColumnType)
+        {
+#>
+            return <#=methodName#>Implementation(value, inPlace);
+<#
+        }
+        else
+        {
+            // Cases such as byte + byte resulting in int. Needs 2 clones
+#>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            return <#=returnType#>Column.<#=methodName#>Implementation(value, inPlace: true);
+<#
+        }
+    }
+    else
+    {
+        // Handle the straightforward cases
+        if (fullReturnType == fullColumnType)
+        {
+            primitiveTypeToPrimitivityLevelMap.TryGetValue(columnType, out int columnTypeLevel);
+            primitiveTypeToPrimitivityLevelMap.TryGetValue(valueType, out int valueTypeLevel);
+            if (valueTypeLevel > columnTypeLevel)
+            {
+#>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            return <#=returnType#>Column.<#=methodName#>Implementation(value, inPlace: true);
+<#
+            }
+            else
+            {
+#>
+            <#=returnType#> convertedValue = (<#=returnType#>)value;
+            return <#=methodName#>Implementation(convertedValue, inPlace);
+<#
+            }
+        }
+        else
+        {
+            // Cases such as byte + short resulting in int. Needs 2 clones
+#>
+            <#=fullReturnType#> <#=returnType#>Column = CloneAs<#=capitalizedReturnType#>Column();
+            return <#=returnType#>Column.<#=methodName#>Implementation(value, inPlace: true);
+<#
+        }
+    }
+#>
+        }
+<# 
+        }
+        } 
+    }
 #>
     }
 <# 
@@ -275,19 +371,11 @@ void GenerateAllBinaryScalarBitwiseOperationsForMethod(string methodName)
 }
 #>
 <#
+        GenerateAllBinaryCombinationsForMethod();
+        GenerateAllBinaryScalarCombinationsForMethod();
 foreach (MethodConfiguration method in methodConfiguration)
 {
-    // Don't generate method for Comparison and ComparisonScalar methods here
-    if (method.MethodType == MethodType.Binary && method.IsNumeric)
-    {
-        GenerateAllBinaryCombinationsForMethod(method.MethodName);
-    }
-    else if (method.MethodType == MethodType.BinaryScalar && method.IsNumeric)
-    {
-        GenerateAllBinaryScalarCombinationsForMethod(method.MethodName);
-        GenerateAllBinaryScalarCombinationsForMethod("Reverse" + method.MethodName);
-    }
-    else if (method.MethodType == MethodType.Binary && method.IsBitwise)
+    if (method.MethodType == MethodType.Binary && method.IsBitwise)
     {
         GenerateAllBinaryBitwiseOperationsForMethod(method.MethodName);
     }
@@ -298,7 +386,7 @@ foreach (MethodConfiguration method in methodConfiguration)
 }
 #>
 <# 
-void GenerateAllComparisonCombinationsForMethod(string methodName)
+void GenerateAllComparisonCombinationsForMethod()
 {
     HashSet<string> visited = new HashSet<string> { };
  foreach (TypeCombination outer in ComparisonOperationCombinations.comparisonOperationCombinations) 
@@ -316,6 +404,11 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
 <#
     foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
  {
+foreach (MethodConfiguration method in methodConfiguration)
+{
+    if (method.MethodType == MethodType.ComparisonScalar)
+    {
+    string methodName = method.MethodName;
     string returnType = types.ReturnColumnType;
     string columnType = types.ThisColumnType;
     string otherColumnType = types.OtherColumnType;
@@ -363,6 +456,8 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
         }
 <# 
  }
+ }
+ }
 #>
     }
 <# 
@@ -371,7 +466,7 @@ void GenerateAllComparisonCombinationsForMethod(string methodName)
 #>
 
 <# 
-void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
+void GenerateAllComparisonScalarCombinationsForMethod()
 {
     HashSet<string> visited = new HashSet<string> { };
  foreach (TypeCombination outer in ComparisonOperationCombinations.comparisonOperationCombinations) 
@@ -388,7 +483,12 @@ void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
     {
 <#
     foreach (TypeCombination types in ComparisonOperationCombinations.comparisonOperationCombinations.Where((ACombination) => ACombination.ThisColumnType == outerColumnType)) 
- {
+{
+foreach (MethodConfiguration method in methodConfiguration)
+{
+    if (method.MethodType == MethodType.Comparison)
+    {
+    string methodName = method.MethodName;
     string returnType = types.ReturnColumnType;
     string columnType = types.ThisColumnType;
     string otherColumnType = types.OtherColumnType;
@@ -435,6 +535,8 @@ void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
         }
 <# 
  }
+ }
+ }
 #>
     }
 <# 
@@ -442,17 +544,8 @@ void GenerateAllComparisonScalarCombinationsForMethod(string methodName)
 }
 #>
 <#
-foreach (MethodConfiguration method in methodConfiguration)
-{
-    if (method.MethodType == MethodType.Comparison)
-    {
-        GenerateAllComparisonCombinationsForMethod(method.MethodName);
-    }
-    else if (method.MethodType == MethodType.ComparisonScalar)
-    {
-        GenerateAllComparisonScalarCombinationsForMethod(method.MethodName);
-    }
-}
+        GenerateAllComparisonCombinationsForMethod();
+        GenerateAllComparisonScalarCombinationsForMethod();
 #>
 
 <#
