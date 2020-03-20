@@ -184,12 +184,7 @@ namespace Microsoft.Data.Analysis
         public PrimitiveDataFrameColumn<T> GetPrimitiveColumn<T>(string name)
             where T : unmanaged
         {
-            int columnIndex = IndexOf(name);
-            if (columnIndex == -1)
-            {
-                throw new ArgumentException(Strings.InvalidColumnName, nameof(name));
-            }
-            DataFrameColumn column = this[columnIndex];
+            DataFrameColumn column = this[name];
             if (column is PrimitiveDataFrameColumn<T> ret)
             {
                 return ret;
@@ -206,18 +201,251 @@ namespace Microsoft.Data.Analysis
         /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
         public ArrowStringDataFrameColumn GetArrowStringColumn(string name)
         {
-            int columnIndex = IndexOf(name);
-            if (columnIndex == -1)
-            {
-                throw new ArgumentException(Strings.InvalidColumnName, nameof(name));
-            }
-            DataFrameColumn column = this[columnIndex];
+            DataFrameColumn column = this[name];
             if (column is ArrowStringDataFrameColumn ret)
             {
                 return ret;
             }
 
             throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(string)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="StringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="StringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type string, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="StringDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public StringDataFrameColumn GetStringColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is StringDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(string)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="BooleanDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="BooleanDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Boolean"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="BooleanDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public BooleanDataFrameColumn GetBooleanColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is BooleanDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Boolean)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="ByteDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="ByteDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Byte"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="ByteDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public ByteDataFrameColumn GetByteColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is ByteDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Byte)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="CharDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="CharDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Char"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="CharDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public CharDataFrameColumn GetCharColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is CharDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Char)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="DoubleDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="DoubleDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Double"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="DoubleDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public DoubleDataFrameColumn GetDoubleColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is DoubleDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Double)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="DecimalDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="DecimalDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Char"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="DecimalDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public DecimalDataFrameColumn GetDecimalColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is DecimalDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Decimal)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="SingleDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="SingleDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Single"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="SingleDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public SingleDataFrameColumn GetSingleColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is SingleDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Single)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="Int32DataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="Int32DataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Int32"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="Int32DataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public Int32DataFrameColumn GetInt32Column(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is Int32DataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Int32)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="Int64DataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="Int64DataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Int64"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="Int64DataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public Int64DataFrameColumn GetInt64Column(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is Int64DataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Int64)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="SByteDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="SByteDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="SByte"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="SByteDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public SByteDataFrameColumn GetSByteColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is SByteDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(SByte)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="Int16DataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="Int16DataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="Int16"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="Int16DataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public Int16DataFrameColumn GetInt16Column(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is Int16DataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Int16)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="UInt32DataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="UInt32DataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="UInt32"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="UInt32DataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public UInt32DataFrameColumn GetUInt32Column(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is UInt32DataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(string)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="UInt64DataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="UInt64DataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="UInt64"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="UInt64DataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public UInt64DataFrameColumn GetUInt64Column(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is UInt64DataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(UInt64)));
+        }
+
+        /// <summary>
+        /// Searches for an <see cref="UInt16DataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="UInt16DataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="UInt16"/>, an exception is thrown.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="UInt16DataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">Throws this exception if types don't match</exception>
+        public UInt16DataFrameColumn GetUInt16Column(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is UInt16DataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(UInt16)));
         }
 
     }
