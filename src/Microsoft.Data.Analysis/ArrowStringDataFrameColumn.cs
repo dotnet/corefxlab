@@ -142,7 +142,7 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         /// <remarks><see langword="null" /> values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
         /// <remarks>The offsets buffers returned by GetReadOnlyOffsetBuffers can be used to delineate each value</remarks>
-        /// <returns>An IEnumerable<see cref="ReadOnlyMemory{Byte}"/> whose elements are the raw data buffers for the UTF8 string values.</returns>
+        /// <returns>An enumeration of <see cref="ReadOnlyMemory{Byte}"/> whose elements are the raw data buffers for the UTF8 string values.</returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyDataBuffers()
         {
             for (int i = 0; i < _dataBuffers.Count; i++)
@@ -156,7 +156,7 @@ namespace Microsoft.Data.Analysis
         /// Returns an enumeration of immutable <see cref="ReadOnlyMemory{Byte}"/> buffers representing <see langword="null" /> values in the Apache Arrow format
         /// </summary>
         /// <remarks>Each <see cref="ReadOnlyMemory{Byte}"/> encodes the indices of <see langword="null" /> values in its corresponding Data buffer</remarks>
-        /// <returns>An enumeration of <see cref="ReadOnlyMemory{Byte}"/> objects.</returns>
+        /// <returns>An enumeration of <see cref="ReadOnlyMemory{Byte}"/> objects whose elements encode the null bit maps for the column's values</returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyNullBitMapBuffers()
         {
             for (int i = 0; i < _nullBitMapBuffers.Count; i++)

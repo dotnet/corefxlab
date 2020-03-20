@@ -328,7 +328,7 @@ namespace Microsoft.Data.Analysis
         public override bool HasDescription() => IsNumericColumn();
 
         /// <summary>
-        /// Prints a preview of the column contents as a formatted string.
+        /// Returns a preview of the column contents as a formatted string.
         /// </summary>
         public override string ToString()
         {

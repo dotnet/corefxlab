@@ -26,18 +26,18 @@ namespace Microsoft.Data.Analysis
         public abstract DataFrame First(params string[] columnNames);
 
         /// <summary>
-        /// Returns the first numberOfRows rows of each group
+        /// Returns the first <paramref name="numberOfRows"/> rows of each group
         /// </summary>
-        /// <param name="numberOfRowsInEachGroup"></param>
+        /// <param name="numberOfRows"></param>
         /// <returns></returns>
-        public abstract DataFrame Head(int numberOfRowsInEachGroup);
+        public abstract DataFrame Head(int numberOfRows);
 
         /// <summary>
-        /// Returns the last numberOfRows rows of each group
+        /// Returns the last <paramref name="numberOfRows"/> rows of each group
         /// </summary>
-        /// <param name="numberOfRowsInEachGroup"></param>
+        /// <param name="numberOfRows"></param>
         /// <returns></returns>
-        public abstract DataFrame Tail(int numberOfRowsInEachGroup);
+        public abstract DataFrame Tail(int numberOfRows);
 
         /// <summary>
         /// Compute the max of group values

@@ -95,7 +95,7 @@ namespace Microsoft.Data.Analysis
         private string _name;
 
         /// <summary>
-        /// The name of this column;
+        /// The name of this column.
         /// </summary>
         public string Name => _name;
 

@@ -74,10 +74,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataFrameBinaryOperators.cs</LastGenOutput>
     </None>
-    <None Update="ColumnArithmeticTemplate.ttinclude">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ColumnArithmeticTemplate.cs</LastGenOutput>
-    </None>
     <None Update="PrimitiveDataFrameColumn.BinaryOperations.Combinations.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PrimitiveDataFrameColumn.BinaryOperations.Combinations.ttinclude</LastGenOutput>
