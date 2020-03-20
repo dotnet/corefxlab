@@ -66,9 +66,8 @@ namespace Microsoft.Data.Analysis
         }
 
         private long _nullCount;
-        /// <summary>
+
         /// <inheritdoc/>
-        /// </summary>
         public override long NullCount => _nullCount;
 
         /// <summary>
@@ -252,9 +251,7 @@ namespace Microsoft.Data.Analysis
             return _dataBuffers[offsetsBufferIndex].ReadOnlySpan.Slice(currentOffset, numberOfBytes);
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected override object GetValue(long rowIndex) => GetValueImplementation(rowIndex);
 
         private string GetValueImplementation(long rowIndex)
@@ -271,9 +268,7 @@ namespace Microsoft.Data.Analysis
             }
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected override IReadOnlyList<object> GetValues(long startIndex, int length)
         {
             var ret = new List<object>();
@@ -284,9 +279,7 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected override void SetValue(long rowIndex, object value) => throw new NotSupportedException(Strings.ImmutableColumn);
 
 
@@ -331,19 +324,13 @@ namespace Microsoft.Data.Analysis
             }
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected internal override Field GetArrowField() => new Field(Name, StringType.Default, NullCount != 0);
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected internal override int GetMaxRecordBatchLength(long startIndex)
         {
             if (Length == 0)
@@ -364,9 +351,7 @@ namespace Microsoft.Data.Analysis
             return nullCount;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected internal override Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows)
         {
             if (numberOfRows == 0)
@@ -383,14 +368,10 @@ namespace Microsoft.Data.Analysis
             return new StringArray(numberOfRows, offsetsBuffer, dataBuffer, nullBuffer, nullCount, indexInBuffer);
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Sort(bool ascending = true) => throw new NotSupportedException();
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Clone(DataFrameColumn mapIndices = null, bool invertMapIndices = false, long numberOfNullsToAppend = 0)
         {
             ArrowStringDataFrameColumn clone;
@@ -476,27 +457,21 @@ namespace Microsoft.Data.Analysis
             return CloneImplementation(mapIndices, invertMapIndex);
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrame ValueCounts()
         {
             Dictionary<string, ICollection<long>> groupedValues = GroupColumnValues<string>();
             return StringDataFrameColumn.ValueCountsImplementation(groupedValues);
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
         {
             Dictionary<string, ICollection<long>> dictionary = GroupColumnValues<string>();
             return new GroupBy<string>(parent, columnIndex, dictionary);
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>()
         {
             if (typeof(TKey) == typeof(string))
@@ -523,26 +498,20 @@ namespace Microsoft.Data.Analysis
             }
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn FillNulls(object value, bool inPlace = false) => throw new NotSupportedException();
 
         public override DataFrameColumn Clamp<U>(U min, U max, bool inPlace = false) => throw new NotSupportedException();
 
         public override DataFrameColumn Filter<U>(U min, U max) => throw new NotSupportedException();
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected internal override void AddDataViewColumn(DataViewSchema.Builder builder)
         {
             builder.AddColumn(Name, TextDataViewType.Instance);
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected internal override Delegate GetDataViewGetter(DataViewRowCursor cursor)
         {
             return CreateValueGetterDelegate(cursor);
@@ -576,9 +545,7 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
         {
             if (value is DataFrameColumn column)
@@ -588,9 +555,7 @@ namespace Microsoft.Data.Analysis
             return ElementwiseEquals(value.ToString());
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
         {
             return StringDataFrameColumn.ElementwiseEqualsImplementation(this, column);
@@ -621,9 +586,7 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
         {
             if (value is DataFrameColumn column)
@@ -633,9 +596,7 @@ namespace Microsoft.Data.Analysis
             return ElementwiseNotEquals(value.ToString());
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
             return StringDataFrameColumn.ElementwiseNotEqualsImplementation(this, column);

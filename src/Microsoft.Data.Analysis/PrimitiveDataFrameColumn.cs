@@ -324,9 +324,7 @@ namespace Microsoft.Data.Analysis
             return new DataFrame(new List<DataFrameColumn> { keys, counts });
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override bool HasDescription() => IsNumericColumn();
 
         /// <summary>
@@ -368,9 +366,7 @@ namespace Microsoft.Data.Analysis
             return clone;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected override DataFrameColumn CloneImplementation(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
         {
             return Clone(mapIndices, invertMapIndices, numberOfNullsToAppend);
@@ -521,9 +517,7 @@ namespace Microsoft.Data.Analysis
             return new SingleDataFrameColumn(Name, newColumnContainer);
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override GroupBy GroupBy(int columnIndex, DataFrame parent)
         {
             Dictionary<T, ICollection<long>> dictionary = GroupColumnValues<T>();

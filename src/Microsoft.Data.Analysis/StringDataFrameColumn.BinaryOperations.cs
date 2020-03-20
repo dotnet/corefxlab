@@ -12,9 +12,7 @@ namespace Microsoft.Data.Analysis
 {
     public partial class StringDataFrameColumn : DataFrameColumn
     {
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Add(DataFrameColumn column, bool inPlace = false)
         {
             if (Length != column.Length)
@@ -69,9 +67,7 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Add<T>(T value, bool inPlace = false)
         {
             return Add(value.ToString(), inPlace);
@@ -92,9 +88,7 @@ namespace Microsoft.Data.Analysis
             
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
         {
             return ElementwiseEqualsImplementation(this, column);
@@ -110,9 +104,7 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<T>(T value)
         {
             if (value is DataFrameColumn column)
@@ -146,17 +138,13 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
             return ElementwiseNotEqualsImplementation(this, column);
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<T>(T value)
         {
             if (value is DataFrameColumn column)

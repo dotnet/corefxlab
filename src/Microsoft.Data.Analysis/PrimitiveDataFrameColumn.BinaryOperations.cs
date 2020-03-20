@@ -14,9 +14,7 @@ namespace Microsoft.Data.Analysis
     public partial class PrimitiveDataFrameColumn<T> : DataFrameColumn
         where T : unmanaged
     {
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Add(DataFrameColumn column, bool inPlace = false)
         {
             switch (column)
@@ -51,9 +49,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Add<U>(U value, bool inPlace = false)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -63,9 +59,7 @@ namespace Microsoft.Data.Analysis
             }
             return AddImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Subtract(DataFrameColumn column, bool inPlace = false)
         {
             switch (column)
@@ -100,9 +94,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Subtract<U>(U value, bool inPlace = false)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -112,9 +104,7 @@ namespace Microsoft.Data.Analysis
             }
             return SubtractImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Multiply(DataFrameColumn column, bool inPlace = false)
         {
             switch (column)
@@ -149,9 +139,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Multiply<U>(U value, bool inPlace = false)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -161,9 +149,7 @@ namespace Microsoft.Data.Analysis
             }
             return MultiplyImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Divide(DataFrameColumn column, bool inPlace = false)
         {
             switch (column)
@@ -198,9 +184,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Divide<U>(U value, bool inPlace = false)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -210,9 +194,7 @@ namespace Microsoft.Data.Analysis
             }
             return DivideImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Modulo(DataFrameColumn column, bool inPlace = false)
         {
             switch (column)
@@ -247,9 +229,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Modulo<U>(U value, bool inPlace = false)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -259,9 +239,7 @@ namespace Microsoft.Data.Analysis
             }
             return ModuloImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn And(DataFrameColumn column, bool inPlace = false)
         {
             switch (column)
@@ -296,16 +274,12 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> And(bool value, bool inPlace = false)
         {
             return AndImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Or(DataFrameColumn column, bool inPlace = false)
         {
             switch (column)
@@ -340,16 +314,12 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> Or(bool value, bool inPlace = false)
         {
             return OrImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn Xor(DataFrameColumn column, bool inPlace = false)
         {
             switch (column)
@@ -384,30 +354,22 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> Xor(bool value, bool inPlace = false)
         {
             return XorImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn LeftShift(int value, bool inPlace = false)
         {
             return LeftShiftImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override DataFrameColumn RightShift(int value, bool inPlace = false)
         {
             return RightShiftImplementation(value, inPlace);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals(DataFrameColumn column)
         {
             switch (column)
@@ -442,9 +404,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseEquals<U>(U value)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -454,9 +414,7 @@ namespace Microsoft.Data.Analysis
             }
             return ElementwiseEqualsImplementation(value);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals(DataFrameColumn column)
         {
             switch (column)
@@ -491,9 +449,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseNotEquals<U>(U value)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -503,9 +459,7 @@ namespace Microsoft.Data.Analysis
             }
             return ElementwiseNotEqualsImplementation(value);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqual(DataFrameColumn column)
         {
             switch (column)
@@ -540,9 +494,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThanOrEqual<U>(U value)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -552,9 +504,7 @@ namespace Microsoft.Data.Analysis
             }
             return ElementwiseGreaterThanOrEqualImplementation(value);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqual(DataFrameColumn column)
         {
             switch (column)
@@ -589,9 +539,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThanOrEqual<U>(U value)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -601,9 +549,7 @@ namespace Microsoft.Data.Analysis
             }
             return ElementwiseLessThanOrEqualImplementation(value);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThan(DataFrameColumn column)
         {
             switch (column)
@@ -638,9 +584,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseGreaterThan<U>(U value)
         {
             DataFrameColumn column = value as DataFrameColumn;
@@ -650,9 +594,7 @@ namespace Microsoft.Data.Analysis
             }
             return ElementwiseGreaterThanImplementation(value);
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThan(DataFrameColumn column)
         {
             switch (column)
@@ -687,9 +629,7 @@ namespace Microsoft.Data.Analysis
                     throw new NotSupportedException();
             }
         }
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public override PrimitiveDataFrameColumn<bool> ElementwiseLessThan<U>(U value)
         {
             DataFrameColumn column = value as DataFrameColumn;
