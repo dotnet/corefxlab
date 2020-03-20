@@ -23,7 +23,7 @@ namespace Microsoft.Data.Analysis
         /// <param name="name">The name of this column.</param>
         /// <param name="length">The length of this column.</param>
         /// <param name="type">The type of data this column holds.</param>
-        public DataFrameColumn(string name, long length, Type type)
+        protected DataFrameColumn(string name, long length, Type type)
         {
             Length = length;
             _name = name;
