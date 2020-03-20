@@ -130,11 +130,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ColumnArithmeticTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ColumnArithmeticTemplate.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="Converters.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
