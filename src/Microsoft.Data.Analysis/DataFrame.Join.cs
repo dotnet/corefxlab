@@ -37,7 +37,7 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Joins columns of another <see cref="DataFrame"/>
         /// </summary>
-        /// <param name="other">The other <see cref="DataFrame"/></param>
+        /// <param name="other">The other <see cref="DataFrame"/> to join.</param>
         /// <param name="leftSuffix">The suffix to add to this <see cref="DataFrame"/>'s column if there are common column names</param>
         /// <param name="rightSuffix">The suffix to add to the <paramref name="other"/>'s column if there are common column names</param>
         /// <param name="joinAlgorithm">The <see cref="JoinAlgorithm"/> to use.</param>

@@ -28,9 +28,9 @@ namespace Microsoft.Data.Analysis
         /// <summary>
         /// Returns the first numberOfRows rows of each group
         /// </summary>
-        /// <param name="numberOfRows"></param>
+        /// <param name="numberOfRowsInEachGroup"></param>
         /// <returns></returns>
-        public abstract DataFrame Head(int numberOfRows);
+        public abstract DataFrame Head(int numberOfRowsInEachGroup);
 
         /// <summary>
         /// Returns the last numberOfRows rows of each group

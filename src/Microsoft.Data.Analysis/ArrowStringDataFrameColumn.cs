@@ -142,7 +142,7 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         /// <remarks><see langword="null" /> values are encoded in the buffers returned by GetReadOnlyNullBitmapBuffers in the Apache Arrow format</remarks>
         /// <remarks>The offsets buffers returned by GetReadOnlyOffsetBuffers can be used to delineate each value</remarks>
-        /// <returns>An enumeration of <see cref="ReadOnlyMemory{Byte}"/> objects</returns>
+        /// <returns>An IEnumerable<see cref="ReadOnlyMemory{Byte}"/> whose elements are the raw data buffers for the UTF8 string values.</returns>
         public IEnumerable<ReadOnlyMemory<byte>> GetReadOnlyDataBuffers()
         {
             for (int i = 0; i < _dataBuffers.Count; i++)
