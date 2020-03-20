@@ -194,7 +194,7 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Searches for an <see cref="ArrowStringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="ArrowStringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type string, an exception is thrown.
+        /// Searches for an <see cref="ArrowStringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="ArrowStringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="String"/>, an exception is thrown.
         /// </summary>
         /// <param name="name">The name of the column</param>
         /// <returns><see cref="ArrowStringDataFrameColumn"/>.</returns>
@@ -211,7 +211,7 @@ namespace Microsoft.Data.Analysis
         }
 
         /// <summary>
-        /// Searches for an <see cref="StringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="StringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type string, an exception is thrown.
+        /// Searches for an <see cref="StringDataFrameColumn"/> with the specified <paramref name="name"/> and attempts to return it as an <see cref="StringDataFrameColumn"/>. If <see cref="DataFrameColumn.DataType"/> is not of type <see cref="String"/>, an exception is thrown.
         /// </summary>
         /// <param name="name">The name of the column</param>
         /// <returns><see cref="StringDataFrameColumn"/>.</returns>
