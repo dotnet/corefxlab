@@ -106,64 +106,69 @@ namespace Microsoft.Data.Analysis
             }
         }
 
+        private static string GetColumnName(string[] columnNames, int columnIndex)
+        {
+            return columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex];
+        }
+
         private static DataFrameColumn CreateColumn(Type kind, string[] columnNames, int columnIndex)
         {
             DataFrameColumn ret;
             if (kind == typeof(bool))
             {
-                ret = new BooleanDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new BooleanDataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(int))
             {
-                ret = new BooleanDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new Int32DataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(float))
             {
-                ret = new SingleDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new SingleDataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(string))
             {
-                ret = new StringDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex], 0);
+                ret = new StringDataFrameColumn(GetColumnName(columnNames, columnIndex), 0);
             }
             else if (kind == typeof(long))
             {
-                ret = new Int64DataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new Int64DataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(decimal))
             {
-                ret = new DecimalDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new DecimalDataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(byte))
             {
-                ret = new ByteDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new ByteDataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(char))
             {
-                ret = new CharDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new CharDataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(double))
             {
-                ret = new DoubleDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new DoubleDataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(sbyte))
             {
-                ret = new SByteDataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new SByteDataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(short))
             {
-                ret = new Int16DataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new Int16DataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(uint))
             {
-                ret = new UInt32DataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new UInt32DataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(ulong))
             {
-                ret = new UInt64DataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new UInt64DataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else if (kind == typeof(ushort))
             {
-                ret = new UInt16DataFrameColumn(columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex]);
+                ret = new UInt16DataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else
             {

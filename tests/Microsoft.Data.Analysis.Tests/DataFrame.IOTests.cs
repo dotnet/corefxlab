@@ -16,59 +16,86 @@ namespace Microsoft.Data.Analysis.Tests
         {
             foreach (DataFrameColumn column in df.Columns)
             {
-                switch (column.DataType)
+                Type dataType = column.DataType;
+                if (dataType == typeof(bool))
                 {
-                    case Type boolType when boolType == typeof(bool):
-                        Assert.NotNull(column as BooleanDataFrameColumn);
-                        break;
-                    case Type decimalType when decimalType == typeof(decimal):
-                        Assert.NotNull(column as DecimalDataFrameColumn);
-                        break;
-                    case Type byteType when byteType == typeof(byte):
-                        Assert.NotNull(column as ByteDataFrameColumn);
-                        break;
-                    case Type charType when charType == typeof(char):
-                        Assert.NotNull(column as CharDataFrameColumn);
-                        break;
-                    case Type doubleType when doubleType == typeof(double):
-                        Assert.NotNull(column as DoubleDataFrameColumn);
-                        break;
-                    case Type floatType when floatType == typeof(float):
-                        Assert.NotNull(column as SingleDataFrameColumn);
-                        break;
-                    case Type intType when intType == typeof(int):
-                        Assert.NotNull(column as Int32DataFrameColumn);
-                        break;
-                    case Type longType when longType == typeof(long):
-                        Assert.NotNull(column as Int64DataFrameColumn);
-                        break;
-                    case Type sbyteType when sbyteType == typeof(sbyte):
-                        Assert.NotNull(column as SByteDataFrameColumn);
-                        break;
-                    case Type shortType when shortType == typeof(short):
-                        Assert.NotNull(column as Int16DataFrameColumn);
-                        break;
-                    case Type uintType when uintType == typeof(uint):
-                        Assert.NotNull(column as UInt32DataFrameColumn);
-                        break;
-                    case Type ulongType when ulongType == typeof(ulong):
-                        Assert.NotNull(column as UInt64DataFrameColumn);
-                        break;
-                    case Type ushortType when ushortType == typeof(ushort):
-                        Assert.NotNull(column as UInt16DataFrameColumn);
-                        break;
-                    case Type stringType when stringType == typeof(string):
-                        if (!testArrowStringColumn)
-                        {
-                            Assert.NotNull(column as StringDataFrameColumn);
-                        }
-                        else
-                        {
-                            Assert.NotNull(column as ArrowStringDataFrameColumn);
-                        }
-                        break;
-                    default:
-                        throw new NotImplementedException("Unit test has to be updated");
+                    Assert.IsType<BooleanDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(decimal))
+                {
+                    Assert.IsType<DecimalDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(byte))
+                {
+                    Assert.IsType<ByteDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(char))
+                {
+                    Assert.IsType<CharDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(double))
+                {
+                    Assert.IsType<DoubleDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(float))
+                {
+                    Assert.IsType<SingleDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(int))
+                {
+                    Assert.IsType<Int32DataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(long))
+                {
+
+                    Assert.IsType<Int64DataFrameColumn>(column);
+                }
+                else if (dataType == typeof(sbyte))
+                {
+                    Assert.IsType<SByteDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(short))
+                {
+                    Assert.IsType<Int16DataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(uint))
+                {
+                    Assert.IsType<UInt32DataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(ulong))
+                {
+
+                    Assert.IsType<UInt64DataFrameColumn>(column);
+                }
+                else if (dataType == typeof(ushort))
+                {
+                    Assert.IsType<UInt16DataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(string))
+                {
+                    if (!testArrowStringColumn)
+                    {
+                        Assert.IsType<StringDataFrameColumn>(column);
+                    }
+                    else
+                    {
+                        Assert.IsType<ArrowStringDataFrameColumn>(column);
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException("Unit test has to be updated");
                 }
             }
         }
