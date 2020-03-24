@@ -14,8 +14,4 @@
     <_TranslateUrlPattern>(https://dnceng%40dev\.azure\.com/dnceng/internal/_git|https://dev\.azure\.com/dnceng/internal/_git|https://dnceng\.visualstudio\.com/internal/_git|dnceng%40vs-ssh\.visualstudio\.com:v3/dnceng/internal|git%40ssh\.dev\.azure\.com:v3/dnceng/internal)/([^/-]+)-(.+)</_TranslateUrlPattern>
     <_TranslateUrlReplacement>https://github.com/$2/$3</_TranslateUrlReplacement>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <Version Condition="'$(IsStableRelease)' == 'true' and '$(IsShipping)' == 'true'">$(VersionPrefix)</Version>
-  </PropertyGroup>
 </Project>

@@ -29,4 +29,7 @@
     <Content Include="$(RepoRoot)THIRD-PARTY-NOTICES.TXT" Pack="true" PackagePath="\" />
     <Content Include="$(RepoRoot)LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
+  <PropertyGroup>
+    <SuppressFinalPackageVersion>true</SuppressFinalPackageVersion>
+  </PropertyGroup>
 </Project>
