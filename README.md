@@ -102,6 +102,10 @@ https://dev.azure.com/dnceng/public/_packaging?_a=feed&feed=dotnet-experimental-
 
 You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
 
+To produce a stable build for a project, set the following property in the .csproj.
+```
+<SuppressFinalPackageVersion>false</SuppressFinalPackageVersion>
+```
 ## License
 
 This project is licensed under the [MIT license](LICENSE).
