@@ -60,7 +60,7 @@ jobs:
 
           - ${{ if eq(parameters.isOfficialBuild, 'false') }}:
             - name: _buildArguments
-              value: -Configuration $(_BuildConfig) -test
+              value: -Configuration $(_BuildConfig) -test -ci
 
         pool: ${{ parameters.pool }}
 
