@@ -41,8 +41,6 @@ namespace System.Slices.Tests
             Span<byte> span = new Span<byte>(array);
             Assert.Equal(array.Length, span.Length);
 
-            Assert.NotSame(array, span.ToArray());
-
             for (int i = 0; i < span.Length; i++)
             {
                 Assert.Equal(array[i], Read<byte>(span.Slice(i)));
@@ -75,8 +73,6 @@ namespace System.Slices.Tests
         {
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(array);
             Assert.Equal(array.Length, span.Length);
-
-            Assert.NotSame(array, span.ToArray());
 
             for (int i = 0; i < span.Length; i++)
             {

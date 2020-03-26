@@ -7,5 +7,6 @@
     <ProjectReference Include="..\..\src\ALCProxy.Proxy\ALCProxy.Proxy.csproj" />
     <ProjectReference Include="..\ALCProxy.TestInterfaceUpdated\ALCProxy.TestInterfaceUpdated.csproj" />
     <ProjectReference Include="..\ALCProxy.TestInterface\ALCProxy.TestInterface.csproj" />
+    <ProjectReference Include="..\ALCProxy.TestAssembly\ALCProxy.TestAssembly.csproj" />
   </ItemGroup>
 </Project>
