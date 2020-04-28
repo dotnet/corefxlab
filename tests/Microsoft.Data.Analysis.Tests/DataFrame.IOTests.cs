@@ -176,6 +176,14 @@ CMT,1,1,181,0.6,CSH,4.5";
             Assert.True(typeof(float) == df.Columns[4].DataType);
             Assert.True(typeof(string) == df.Columns[5].DataType);
             Assert.True(typeof(double) == df.Columns[6].DataType);
+
+            Assert.Equal("vendor_id", df.Columns[0].Name);
+            Assert.Equal("rate_code", df.Columns[1].Name);
+            Assert.Equal("passenger_count", df.Columns[2].Name);
+            Assert.Equal("trip_time_in_secs", df.Columns[3].Name);
+            Assert.Equal("trip_distance", df.Columns[4].Name);
+            Assert.Equal("payment_type", df.Columns[5].Name);
+            Assert.Equal("fare_amount", df.Columns[6].Name);
             VerifyColumnTypes(df);
 
             foreach (var column in df.Columns)
