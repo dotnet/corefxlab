@@ -202,6 +202,11 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.NonSeekableStream, nameof(csvStream));
             }
 
+            if (dataTypes == null && guessRows <= 0)
+            {
+                throw new ArgumentException(string.Format(Strings.ExpectedEitherGuessRowsOrDataTypes, nameof(guessRows), nameof(dataTypes)));
+            }
+
             var linesForGuessType = new List<string[]>();
             long rowline = 0;
             int numberOfColumns = dataTypes?.Length ?? 0;
@@ -213,7 +218,7 @@ namespace Microsoft.Data.Analysis
 
             List<DataFrameColumn> columns;
             long streamStart = csvStream.Position;
-            // First pass: schema and number of rows.
+            // First pass: schema and column names.
             using (var streamReader = new StreamReader(csvStream, encoding ?? Encoding.UTF8, detectEncodingFromByteOrderMarks: true, DefaultStreamReaderBufferSize, leaveOpen: true))
             {
                 string line = null;
@@ -222,32 +227,30 @@ namespace Microsoft.Data.Analysis
                 {
                     if ((numberOfRowsToRead == -1) || rowline < numberOfRowsToRead)
                     {
-                        if (linesForGuessType.Count < guessRows)
+                        if (header && rowline == 0)
                         {
                             var spl = line.Split(separator);
-                            if (header && rowline == 0)
+                            if (columnNames == null)
                             {
-                                if (columnNames == null)
-                                {
-                                    columnNames = spl;
-                                }
+                                columnNames = spl;
                             }
-                            else
-                            {
-                                linesForGuessType.Add(spl);
-                                numberOfColumns = Math.Max(numberOfColumns, spl.Length);
-                            }
+                        }
+                        if (guessRows > 0 && linesForGuessType.Count < guessRows)
+                        {
+                            var spl = line.Split(separator);
+                            linesForGuessType.Add(spl);
+                            numberOfColumns = Math.Max(numberOfColumns, spl.Length);
                         }
                     }
                     ++rowline;
-                    if (rowline == guessRows)
+                    if (rowline == guessRows || dataTypes != null)
                     {
                         break;
                     }
                     line = streamReader.ReadLine();
                 }
 
-                if (linesForGuessType.Count == 0)
+                if (rowline == 0)
                 {
                     throw new FormatException(Strings.EmptyFile);
                 }
