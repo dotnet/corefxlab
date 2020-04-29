@@ -235,7 +235,7 @@ namespace Microsoft.Data.Analysis
                                 columnNames = spl;
                             }
                         }
-                        if (guessRows > 0 && linesForGuessType.Count < guessRows)
+                        if (linesForGuessType.Count < guessRows)
                         {
                             var spl = line.Split(separator);
                             linesForGuessType.Add(spl);
