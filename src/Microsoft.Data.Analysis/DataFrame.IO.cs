@@ -218,7 +218,7 @@ namespace Microsoft.Data.Analysis
 
             List<DataFrameColumn> columns;
             long streamStart = csvStream.Position;
-            // First pass: schema and column names.
+            // First pass: schema and number of rows.
             using (var streamReader = new StreamReader(csvStream, encoding ?? Encoding.UTF8, detectEncodingFromByteOrderMarks: true, DefaultStreamReaderBufferSize, leaveOpen: true))
             {
                 string line = null;
@@ -227,23 +227,30 @@ namespace Microsoft.Data.Analysis
                 {
                     if ((numberOfRowsToRead == -1) || rowline < numberOfRowsToRead)
                     {
-                        if (header && rowline == 0)
+                        if (linesForGuessType.Count < guessRows || guessRows == 0)
                         {
                             var spl = line.Split(separator);
-                            if (columnNames == null)
+                            if (header && rowline == 0)
                             {
-                                columnNames = spl;
+                                if (columnNames == null)
+                                {
+                                    columnNames = spl;
+                                    if (guessRows == 0)
+                                    {
+                                        ++rowline;
+                                        break;
+                                    }
+                                }
                             }
-                        }
-                        if (linesForGuessType.Count < guessRows)
-                        {
-                            var spl = line.Split(separator);
-                            linesForGuessType.Add(spl);
-                            numberOfColumns = Math.Max(numberOfColumns, spl.Length);
+                            else
+                            {
+                                linesForGuessType.Add(spl);
+                                numberOfColumns = Math.Max(numberOfColumns, spl.Length);
+                            }
                         }
                     }
                     ++rowline;
-                    if (rowline == guessRows || dataTypes != null)
+                    if (rowline == guessRows)
                     {
                         break;
                     }
