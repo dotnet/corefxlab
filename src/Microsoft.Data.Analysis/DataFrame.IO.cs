@@ -227,7 +227,7 @@ namespace Microsoft.Data.Analysis
                 {
                     if ((numberOfRowsToRead == -1) || rowline < numberOfRowsToRead)
                     {
-                        if (linesForGuessType.Count < guessRows || guessRows == 0)
+                        if (linesForGuessType.Count < guessRows || (header && rowline == 0))
                         {
                             var spl = line.Split(separator);
                             if (header && rowline == 0)
@@ -235,11 +235,6 @@ namespace Microsoft.Data.Analysis
                                 if (columnNames == null)
                                 {
                                     columnNames = spl;
-                                    if (guessRows == 0)
-                                    {
-                                        ++rowline;
-                                        break;
-                                    }
                                 }
                             }
                             else
@@ -250,7 +245,7 @@ namespace Microsoft.Data.Analysis
                         }
                     }
                     ++rowline;
-                    if (rowline == guessRows)
+                    if (rowline == guessRows || guessRows == 0)
                     {
                         break;
                     }
