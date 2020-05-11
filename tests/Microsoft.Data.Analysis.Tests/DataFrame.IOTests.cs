@@ -445,5 +445,12 @@ CMT,1,1,181,0.6,CSH";
             VerifyColumnTypes(df);
 
         }
+
+        [Fact]
+        public void Test()
+        {
+            DataFrame df = DataFrame.LoadCsv(@"C:\Users\prgovi\Downloads\Test.csv");
+            Console.WriteLine("bh");
+        }
     }
 }
