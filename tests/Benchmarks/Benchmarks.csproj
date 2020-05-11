@@ -32,7 +32,6 @@
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="$(BenchmarkDotNetVersion)" />
     <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="2.0.30" />
     <PackageReference Include="System.Text.Encodings.Web" Version="$(CoreFxStableVersion)" />
-    <PackageReference Include="xunit" Version="$(XUnitVersion)" IsImplicitlyDefined="true" PrivateAssets="all" ExcludeAssets="analyzers" Publish="true"/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
