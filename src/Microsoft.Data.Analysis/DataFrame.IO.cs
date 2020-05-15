@@ -23,6 +23,12 @@ namespace Microsoft.Data.Analysis
                     throw new FormatException(string.Format(Strings.LessColumnsThatExpected, nbline + 1));
 
                 string val = line[col];
+
+                if (val == "null" || val == "Null")
+                {
+                    continue;
+                }
+
                 bool boolParse = bool.TryParse(val, out bool boolResult);
                 if (boolParse)
                 {
