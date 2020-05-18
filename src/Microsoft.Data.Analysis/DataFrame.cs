@@ -478,7 +478,7 @@ namespace Microsoft.Data.Analysis
                         {
                             value = null;
                         }
-                        if (stringValue == "null" || stringValue == "Null")
+                        if (stringValue.Equals("null", StringComparison.OrdinalIgnoreCase))
                         {
                             value = null;
                         }
