@@ -24,7 +24,7 @@ namespace Microsoft.Data.Analysis
 
                 string val = line[col];
 
-                if (val == "null" || val == "Null")
+                if (val.Equals("null", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
