@@ -474,11 +474,11 @@ namespace Microsoft.Data.Analysis
                     // StringDataFrameColumn can accept empty strings. The other columns interpret empty values as nulls
                     if (value is string stringValue)
                     {
-                        if (string.IsNullOrEmpty(stringValue) && column.DataType != typeof(string))
+                        if (stringValue.Length == 0 && column.DataType != typeof(string))
                         {
                             value = null;
                         }
-                        if (stringValue.Equals("null", StringComparison.OrdinalIgnoreCase))
+                        else if (stringValue.Equals("null", StringComparison.OrdinalIgnoreCase))
                         {
                             value = null;
                         }
