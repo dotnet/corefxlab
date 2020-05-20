@@ -102,9 +102,9 @@ https://dev.azure.com/dnceng/public/_packaging?_a=feed&feed=dotnet-experimental-
 
 You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
 
-To produce a stable build for a project, set the following property in the .csproj.
+To produce a stable build for a project, set the following property in the .csproj. After the build artifacts have been produce, consider incrementing the patch version number in the csproj to prevent conflicts.
 ```
-<SuppressFinalPackageVersion>false</SuppressFinalPackageVersion>
+<DotNetFinalVersionKind>release</DotNetFinalVersionKind>
 ```
 ## License
 
