@@ -306,5 +306,72 @@ namespace Microsoft.Data.Analysis
                 return ret;
             }
         }
+        
+        /// <summary>
+        /// Reads an implementation of IDataReader into a DataFrame.
+        /// </summary>
+        /// <param name="reader">DataReader to be read in</param>
+        /// <param name="numberOfRowsToRead">number of rows to read not including the header(if present)</param>
+        /// <param name="addIndexColumn">add one column with the row index</param>
+        /// <returns><see cref="DataFrame"/></returns>
+        public static DataFrame FromDataReader(IDataReader reader, string[] columnNames = null, Type[] dataTypes = null, long numberOfRowsToRead = -1, bool addIndexColumn = false)
+        {
+            DataTable schemaTable = reader.GetSchemaTable();
+            int numberOfColumns = schemaTable.Rows.Count;
+
+            if (columnNames == null)
+            {
+                columnNames = new string[numberOfColumns];
+                for (int i = 0; i < numberOfColumns; ++i)
+                {
+                    string columnName = schemaTable.Rows[i]["ColumnName"].ToString();
+                    columnNames[i] = string.IsNullOrWhiteSpace(columnName) ? $"Column{i}" : columnName;
+                }
+            }
+
+            var columns = new List<DataFrameColumn>(numberOfColumns);
+            if (dataTypes == null)
+            {
+                for (int i = 0; i < numberOfColumns; ++i)
+                {
+                    var kind = (Type)schemaTable.Rows[i]["DataType"];
+                    columns.Add(CreateColumn(kind, columnNames, i));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < numberOfColumns; ++i)
+                {
+                    columns.Add(CreateColumn(dataTypes[i], columnNames, i));
+                }
+            }
+
+            long rowline = 0;
+            var ret = new DataFrame(columns);
+            while (reader.Read() && (numberOfRowsToRead == -1 || rowline < numberOfRowsToRead))
+            {
+                ret.Append(GetRecordValues(reader), inPlace: true);
+                ++rowline;
+            }
+
+            if (addIndexColumn)
+            {
+                PrimitiveDataFrameColumn<int> indexColumn = new PrimitiveDataFrameColumn<int>("IndexColumn", columns[0].Length);
+                for (int i = 0; i < columns[0].Length; i++)
+                {
+                    indexColumn[i] = i;
+                }
+                columns.Insert(0, indexColumn);
+            }
+            return ret;
+
+            IEnumerable<object> GetRecordValues(IDataRecord record)
+            {
+                for (int i = 0; i < record.FieldCount; i++)
+                {
+                    yield return record[i] == DBNull.Value ? null : record[i];
+                }
+            }
+        }
     }
 }
