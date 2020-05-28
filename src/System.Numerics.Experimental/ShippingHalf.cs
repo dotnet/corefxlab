@@ -12,19 +12,14 @@
 ===========================================================*/
 using System.Diagnostics;
 using System.Globalization;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System
 {
-    // ===================================================================================================
-    // Portions of the code implemented below are based on the 'Berkeley SoftFloat Release 3e' algorithms.
-    // ===================================================================================================
-
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public readonly struct ShippingHalf : IComparable, IFormattable, IComparable<ShippingHalf>, IEquatable<ShippingHalf>
+    public readonly partial struct ShippingHalf : IComparable, IFormattable, IComparable<ShippingHalf>, IEquatable<ShippingHalf>
     {
         private const NumberStyles DefaultParseStyle = NumberStyles.Float | NumberStyles.AllowThousands;
 
@@ -110,33 +105,7 @@ namespace System
         public ShippingHalf(float single)
         {
             uint value = (uint)BitConverter.SingleToInt32Bits(single);
-            bool sign = value >> 31 == 1;
-
-            uint singleExponent = value >> 23 & 0xFF;
-            uint singleSignificand = value & 0x007FFFFF;
-
-            if (singleExponent == 0xFF)
-            {
-                if (singleSignificand > 0)
-                {
-                    // Quiet (1) or Signaling (0) NaN. 
-                    var signV = (sign ? 1 : 0) << 31;
-                    m_value = (ushort)(((sign ? 1 : 0) << 31) + (MaxExponent << ExponentShift) + singleSignificand >> 13);
-                }
-                else
-                {
-                    m_value = (ushort)(((sign ? 1 : 0) << SignShift) + (MaxExponent << ExponentShift));
-                }
-            }
-            else
-            {
-                if (singleExponent == MinExponent)
-                {
-
-                }
-            }
-
-
+            m_value = (ushort)(s_baseTable[(value >> 23) & 0x1ff] + ((value & 0x007fffff) >> s_shiftTable[value >> 23]));
         }
 
         private sbyte Exponent
@@ -157,40 +126,12 @@ namespace System
 
         private bool Sign => (m_value & SignMask) >> SignShift == 1;
 
-        public float Float
+        public unsafe float Float
         {
             get
             {
-                if (Exponent == MaxExponent)
-                {
-                    ushort significand = Significand;
-                    if (significand > 0)
-                    {
-                        // Quiet (1) or Signaling (0) NaN. 
-                        return (Sign ? 1 : 0) << 31 + 0xFF << 23 + significand;
-                    }
-                    else
-                    {
-                        // +- Inf
-                        return (Sign ? 1 : 0) << 31 + 0xFF << 23;
-                    }
-                }
-                else
-                {
-                    if (Exponent == MinExponent)
-                    {
-                        ushort significand = Significand;
-                        if (significand > 0)
-                        {
-                            return (Sign ? 1 : 0) << 31 + significand;
-                        }
-                        else
-                        {
-                            return (Sign ? 1 : 0) << 31;
-                        }
-                    }
-                    return (Sign ? 1 : 0) << 31 + Exponent + 0x70 + Significand << 13;
-                }
+                uint result = s_mantissaTable[offsetTable[m_value >> 10] + (m_value & 0x3ff)] + s_exponentTable[m_value >> 10];
+                return *((float*)&result);
             }
         }
 
@@ -267,7 +208,7 @@ namespace System
 
         public static ShippingHalf Parse(ReadOnlySpan<char> s, NumberStyles style = DefaultParseStyle, IFormatProvider formatProvider = null)
         {
-            throw new NotImplementedException();
+            return new ShippingHalf(float.Parse(s, style, formatProvider));
         }
 
         public static bool TryParse(string s, out ShippingHalf result)
@@ -287,7 +228,17 @@ namespace System
 
         public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider formatProvider, out ShippingHalf result)
         {
-            throw new NotImplementedException();
+            bool ret = false;
+            if (float.TryParse(s, style, formatProvider, out float floatResult))
+            {
+                result = new ShippingHalf(floatResult);
+                ret = true;
+            }
+            else
+            {
+                result = new ShippingHalf();
+            }
+            return ret;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -375,65 +326,17 @@ namespace System
 
         public override string ToString()
         {
-            return $"0x{m_value:X4}";
-            // return ToString(format: null, formatProvider: null);
-            // TODO: Implement this
+            return ToString(format: null, formatProvider: null);
         }
 
         public string ToString(string format = null, IFormatProvider formatProvider = null)
         {
-            return $"0x{m_value:X4}";
-            // throw new NotImplementedException();
-            // TODO: Implement this
+            return Float.ToString(format, formatProvider);
         }
 
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider formatProvider)
         {
-            throw new NotImplementedException();
+            return Float.TryFormat(destination, out charsWritten, format, formatProvider);
         }
-
-        #region Utilities
-
-        // TODO: Replace long with uint?
-        public static long ShiftRightJam(long i, int dist)
-    => dist < 31 ? (i >> dist) | (i << (-dist & 31) != 0 ? 1U : 0U) : (i != 0 ? 1U : 0U);
-
-        private static ushort RoundPackToHalf(bool sign, short exp, ushort sig)
-        {
-            const int roundIncrement = 0x8; // Depends on rounding mode but it's always towards closest / ties to even
-            int roundBits = sig & 0xF;
-
-            if ((uint)exp >= 0x1D)
-            {
-                if (exp < 0)
-                {
-                    sig = (ushort)ShiftRightJam(sig, -exp);
-                    exp = 0;
-                }
-                else if (exp > 0x1D || sig + roundIncrement >= 0x8000) // Overflow
-                {
-                    return sign ? NegativeInfinityBits : PositiveInfinityBits;
-                }
-            }
-
-            sig = (ushort)((sig + roundIncrement) >> 4);
-            sig &= (ushort)~(((roundBits ^ 8) != 0 ? 0 : 1) & 1);
-
-            if (sig == 0)
-            {
-                exp = 0;
-            }
-
-            return new ShippingHalf(sign, (ushort)exp, sig).m_value;
-        }
-
-        private static (int Exp, uint Sig) NormSubnormalF16Sig(uint sig)
-        {
-            int shiftDist = BitOperations.LeadingZeroCount(sig) - 16 - 5; // No LZCNT for 16-bit
-            return (1 - shiftDist, sig << shiftDist);
-        }
-
-        #endregion
     }
-
 }
