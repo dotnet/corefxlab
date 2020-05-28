@@ -311,6 +311,8 @@ namespace Microsoft.Data.Analysis
         /// Reads an implementation of IDataReader into a DataFrame.
         /// </summary>
         /// <param name="reader">DataReader to be read in</param>
+        /// <param name="columnNames">column names (can be empty)</param>
+        /// <param name="dataTypes">column types (can be empty)</param>
         /// <param name="numberOfRowsToRead">number of rows to read not including the header(if present)</param>
         /// <param name="addIndexColumn">add one column with the row index</param>
         /// <returns><see cref="DataFrame"/></returns>
