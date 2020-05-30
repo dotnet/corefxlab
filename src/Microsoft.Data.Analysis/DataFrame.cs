@@ -485,7 +485,14 @@ namespace Microsoft.Data.Analysis
                     }
                     if (value != null)
                     {
-                        value = Convert.ChangeType(value, column.DataType);
+                        try
+                        {
+                            value = Convert.ChangeType(value, column.DataType);
+                        }
+                        catch
+                        {
+                            throw new FormatException($"Value \"{value}\" cannot be converted to type {column.DataType} (Column name: {column.Name})");
+                        }
                         if (value is null)
                         {
                             throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
