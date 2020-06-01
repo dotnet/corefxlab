@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;net461</TargetFrameworks>
+    <SuppressFinalPackageVersion>false</SuppressFinalPackageVersion>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>This package contains IO libraries that work with the Microsoft.Data.Analysis package.</Description>
+    <PackageReleaseNotes>Initial preview of IO routines that import data into a Microsoft.Data.Analysis.DataFrame.</PackageReleaseNotes>
+    <PackageTags>Data Science DataFrame Preparation DataView Analytics Exploration</PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Data.Analysis\Microsoft.Data.Analysis.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
