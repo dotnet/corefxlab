@@ -1,7 +1,7 @@
 ﻿
 namespace System
 {
-    public readonly partial struct ShippingHalf
+    public readonly partial struct TableBasedHalf
     {
         // Tables used for conversion to/from float
         // The tables are an implementation of an algorithm described in "Fast Half Float Conversions", Jeroen van der Zijp, http://www.fox-toolkit.org/ftp/fasthalffloatconversion.pdf

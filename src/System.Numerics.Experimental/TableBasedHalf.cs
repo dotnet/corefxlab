@@ -19,7 +19,7 @@ namespace System
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public readonly partial struct ShippingHalf : IComparable, IFormattable, IComparable<ShippingHalf>, IEquatable<ShippingHalf>
+    public readonly partial struct TableBasedHalf : IComparable, IFormattable, IComparable<TableBasedHalf>, IEquatable<TableBasedHalf>
     {
         private const NumberStyles DefaultParseStyle = NumberStyles.Float | NumberStyles.AllowThousands;
 
@@ -78,31 +78,31 @@ namespace System
         // Well-defined and commonly used values
         //
 
-        public static readonly ShippingHalf Epsilon = new ShippingHalf(EpsilonBits);                        //  5.9605E-08
+        public static readonly TableBasedHalf Epsilon = new TableBasedHalf(EpsilonBits);                        //  5.9605E-08
 
-        public static readonly ShippingHalf PositiveInfinity = new ShippingHalf(PositiveInfinityBits);      //  1.0 / 0.0
-        public static readonly ShippingHalf NegativeInfinity = new ShippingHalf(NegativeInfinityBits);      // -1.0 / 0.0
+        public static readonly TableBasedHalf PositiveInfinity = new TableBasedHalf(PositiveInfinityBits);      //  1.0 / 0.0
+        public static readonly TableBasedHalf NegativeInfinity = new TableBasedHalf(NegativeInfinityBits);      // -1.0 / 0.0
 
-        public static readonly ShippingHalf NaN = new ShippingHalf(NegativeQNaNBits);                       //  0.0 / 0.0
+        public static readonly TableBasedHalf NaN = new TableBasedHalf(NegativeQNaNBits);                       //  0.0 / 0.0
 
-        public static readonly ShippingHalf MinValue = new ShippingHalf(MinValueBits);                      // -65504
-        public static readonly ShippingHalf MaxValue = new ShippingHalf(MaxValueBits);                      //  65504
+        public static readonly TableBasedHalf MinValue = new TableBasedHalf(MinValueBits);                      // -65504
+        public static readonly TableBasedHalf MaxValue = new TableBasedHalf(MaxValueBits);                      //  65504
 
         // We use these explicit definitions to avoid the confusion between 0.0 and -0.0.
-        private static readonly ShippingHalf PositiveZero = new ShippingHalf(PositiveZeroBits);            //  0.0
-        private static readonly ShippingHalf NegativeZero = new ShippingHalf(NegativeZeroBits);            // -0.0
+        private static readonly TableBasedHalf PositiveZero = new TableBasedHalf(PositiveZeroBits);            //  0.0
+        private static readonly TableBasedHalf NegativeZero = new TableBasedHalf(NegativeZeroBits);            // -0.0
 
         private readonly ushort m_value; // Do not rename (binary serialization)
 
-        private ShippingHalf(ushort value)
+        private TableBasedHalf(ushort value)
         {
             m_value = value;
         }
 
-        private ShippingHalf(bool sign, ushort exp, ushort sig)
+        private TableBasedHalf(bool sign, ushort exp, ushort sig)
             => m_value = (ushort)(((sign ? 1 : 0) << SignShift) + (exp << ExponentShift) + sig);
 
-        private ShippingHalf(float single)
+        private TableBasedHalf(float single)
         {
             uint value = (uint)BitConverter.SingleToInt32Bits(single);
             m_value = (ushort)(s_baseTable[(value >> 23) & 0x1ff] + ((value & 0x007fffff) >> s_shiftTable[value >> 23]));
@@ -128,42 +128,42 @@ namespace System
 
         // <summary>Determines whether the specified value is finite (zero, subnormal, or normal).</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFinite(ShippingHalf value)
+        public static bool IsFinite(TableBasedHalf value)
         {
             return StripSign(value) < PositiveInfinityBits;
         }
 
         /// <summary>Determines whether the specified value is infinite.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsInfinity(ShippingHalf value)
+        public static bool IsInfinity(TableBasedHalf value)
         {
             return StripSign(value) == PositiveInfinityBits;
         }
 
         /// <summary>Determines whether the specified value is NaN.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNaN(ShippingHalf value)
+        public static bool IsNaN(TableBasedHalf value)
         {
             return StripSign(value) > PositiveInfinityBits;
         }
 
         /// <summary>Determines whether the specified value is negative.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNegative(ShippingHalf value)
+        public static bool IsNegative(TableBasedHalf value)
         {
             return (short)(value.m_value) < 0;
         }
 
         /// <summary>Determines whether the specified value is negative infinity.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNegativeInfinity(ShippingHalf value)
+        public static bool IsNegativeInfinity(TableBasedHalf value)
         {
             return value.m_value == NegativeInfinityBits;
         }
 
         /// <summary>Determines whether the specified value is normal.</summary>
         // This is probably not worth inlining, it has branches and should be rarely called
-        public static bool IsNormal(ShippingHalf value)
+        public static bool IsNormal(TableBasedHalf value)
         {
             int absValue = StripSign(value);
             return (absValue < PositiveInfinityBits)    // is finite
@@ -173,14 +173,14 @@ namespace System
 
         /// <summary>Determines whether the specified value is positive infinity.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsPositiveInfinity(ShippingHalf value)
+        public static bool IsPositiveInfinity(TableBasedHalf value)
         {
             return value.m_value == PositiveInfinityBits;
         }
 
         /// <summary>Determines whether the specified value is subnormal.</summary>
         // This is probably not worth inlining, it has branches and should be rarely called
-        public static bool IsSubnormal(ShippingHalf value)
+        public static bool IsSubnormal(TableBasedHalf value)
         {
             int absValue = StripSign(value);
             return (absValue < PositiveInfinityBits)    // is finite
@@ -188,7 +188,7 @@ namespace System
                 && ((absValue & ExponentMask) == 0);    // is subnormal (has a zero exponent)
         }
 
-        public static ShippingHalf Parse(string s, NumberStyles style = DefaultParseStyle, IFormatProvider formatProvider = null)
+        public static TableBasedHalf Parse(string s, NumberStyles style = DefaultParseStyle, IFormatProvider formatProvider = null)
         {
             if (s is null)
             {
@@ -197,43 +197,43 @@ namespace System
             return Parse(s.AsSpan(), style, formatProvider);
         }
 
-        public static ShippingHalf Parse(ReadOnlySpan<char> s, NumberStyles style = DefaultParseStyle, IFormatProvider formatProvider = null)
+        public static TableBasedHalf Parse(ReadOnlySpan<char> s, NumberStyles style = DefaultParseStyle, IFormatProvider formatProvider = null)
         {
-            return (ShippingHalf)(float.Parse(s, style, formatProvider));
+            return (TableBasedHalf)(float.Parse(s, style, formatProvider));
         }
 
-        public static bool TryParse(string s, out ShippingHalf result)
-        {
-            return TryParse(s, DefaultParseStyle, formatProvider: null, out result);
-        }
-
-        public static bool TryParse(ReadOnlySpan<char> s, out ShippingHalf result)
+        public static bool TryParse(string s, out TableBasedHalf result)
         {
             return TryParse(s, DefaultParseStyle, formatProvider: null, out result);
         }
 
-        public static bool TryParse(string s, NumberStyles style, IFormatProvider formatProvider, out ShippingHalf result)
+        public static bool TryParse(ReadOnlySpan<char> s, out TableBasedHalf result)
+        {
+            return TryParse(s, DefaultParseStyle, formatProvider: null, out result);
+        }
+
+        public static bool TryParse(string s, NumberStyles style, IFormatProvider formatProvider, out TableBasedHalf result)
         {
             return TryParse(s.AsSpan(), style, formatProvider, out result);
         }
 
-        public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider formatProvider, out ShippingHalf result)
+        public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider formatProvider, out TableBasedHalf result)
         {
             bool ret = false;
             if (float.TryParse(s, style, formatProvider, out float floatResult))
             {
-                result = (ShippingHalf)(floatResult);
+                result = (TableBasedHalf)(floatResult);
                 ret = true;
             }
             else
             {
-                result = new ShippingHalf();
+                result = new TableBasedHalf();
             }
             return ret;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool AreZero(ShippingHalf left, ShippingHalf right)
+        private static bool AreZero(TableBasedHalf left, TableBasedHalf right)
         {
             // IEEE defines that positive and negative zero are equal, this gives us a quick equality check
             // for two values by or'ing the private bits together and stripping the sign. They are both zero,
@@ -242,27 +242,27 @@ namespace System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsNaNOrZero(ShippingHalf value)
+        private static bool IsNaNOrZero(TableBasedHalf value)
         {
             return ((value.m_value - 1) & ~SignMask) >= PositiveInfinityBits;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static ushort StripSign(ShippingHalf value)
+        private static ushort StripSign(TableBasedHalf value)
         {
             return (ushort)(value.m_value & ~SignMask);
         }
 
         public int CompareTo(object obj)
         {
-            if (!(obj is ShippingHalf))
+            if (!(obj is TableBasedHalf))
             {
                 return (obj is null) ? 1 : throw new ArgumentException(Strings.Arg_MustBeHalf);
             }
-            return CompareTo((ShippingHalf)(obj));
+            return CompareTo((TableBasedHalf)(obj));
         }
 
-        public int CompareTo(ShippingHalf other)
+        public int CompareTo(TableBasedHalf other)
         {
             if ((short)(m_value) < (short)(other.m_value))
             {
@@ -290,10 +290,10 @@ namespace System
 
         public override bool Equals(object obj)
         {
-            return (obj is ShippingHalf) && Equals((ShippingHalf)(obj));
+            return (obj is TableBasedHalf) && Equals((TableBasedHalf)(obj));
         }
 
-        public bool Equals(ShippingHalf other)
+        public bool Equals(TableBasedHalf other)
         {
             if (IsNaN(this) || IsNaN(other))
             {
@@ -330,19 +330,19 @@ namespace System
             return ((float)this).TryFormat(destination, out charsWritten, format, formatProvider);
         }
 
-        public static explicit operator ShippingHalf(float value) => new ShippingHalf(value);
+        public static explicit operator TableBasedHalf(float value) => new TableBasedHalf(value);
 
-        public static explicit operator ShippingHalf(double value) => new ShippingHalf((float)value);
+        public static explicit operator TableBasedHalf(double value) => new TableBasedHalf((float)value);
 
-        public static explicit operator float(ShippingHalf half)
+        public static explicit operator float(TableBasedHalf half)
         {
             uint result = s_mantissaTable[offsetTable[half.m_value >> 10] + (half.m_value & 0x3ff)] + s_exponentTable[half.m_value >> 10];
             return BitConverter.ToSingle(BitConverter.GetBytes(result));
         }
 
-        public static explicit operator double(ShippingHalf half) => (float)half;
+        public static explicit operator double(TableBasedHalf half) => (float)half;
 
-        public static bool operator <(ShippingHalf left, ShippingHalf right)
+        public static bool operator <(TableBasedHalf left, TableBasedHalf right)
         {
             if (IsNaN(left) || IsNaN(right))
             {
@@ -362,12 +362,12 @@ namespace System
             return (short)(left.m_value) < (short)(right.m_value);
         }
 
-        public static bool operator >(ShippingHalf left, ShippingHalf right)
+        public static bool operator >(TableBasedHalf left, TableBasedHalf right)
         {
             return right < left;
         }
 
-        public static bool operator <=(ShippingHalf left, ShippingHalf right)
+        public static bool operator <=(TableBasedHalf left, TableBasedHalf right)
         {
             if (IsNaN(left) || IsNaN(right))
             {
@@ -387,12 +387,12 @@ namespace System
             return (short)(left.m_value) <= (short)(right.m_value);
         }
 
-        public static bool operator >=(ShippingHalf left, ShippingHalf right)
+        public static bool operator >=(TableBasedHalf left, TableBasedHalf right)
         {
             return right <= left;
         }
 
-        public static bool operator ==(ShippingHalf left, ShippingHalf right)
+        public static bool operator ==(TableBasedHalf left, TableBasedHalf right)
         {
             if (IsNaN(left) || IsNaN(right))
             {
@@ -404,7 +404,7 @@ namespace System
             return (left.m_value == right.m_value) || AreZero(left, right);
         }
 
-        public static bool operator !=(ShippingHalf left, ShippingHalf right)
+        public static bool operator !=(TableBasedHalf left, TableBasedHalf right)
         {
             return !(left == right);
         }
