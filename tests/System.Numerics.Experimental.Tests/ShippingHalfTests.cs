@@ -5,7 +5,6 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using Xunit;
 
@@ -312,20 +311,20 @@ namespace System.Numerics.Experimental.Tests
             Assert.Equal(expected, value.Equals(obj));
         }
 
-        public static IEnumerable<object[]> ToSingle_TestData()
+        public static IEnumerable<object[]> RoundTripFloat_CornerCases()
         {
             // Magnitude smaller than 2^-24 maps to 0
-            yield return new object[] { new ShippingHalf(5.2e-20f), 0 };
-            yield return new object[] { new ShippingHalf(-5.2e-20f), 0 };
-            // Magnitude smaller than 2^-14 map to subnormals
-            yield return new object[] { new ShippingHalf(1.52e-5f), 1.52e-5f };
-            yield return new object[] { new ShippingHalf(-1.52e-5f), -1.52e-5f };
+            yield return new object[] { (ShippingHalf)(5.2e-20f), 0 };
+            yield return new object[] { (ShippingHalf)(-5.2e-20f), 0 };
+            // Magnitude smaller than 2^(map to subnormals
+            yield return new object[] { (ShippingHalf)(1.52e-5f), 1.52e-5f };
+            yield return new object[] { (ShippingHalf)(-1.52e-5f), -1.52e-5f };
             // Normal numbers
-            yield return new object[] { new ShippingHalf(55.77f), 55.75f };
-            yield return new object[] { new ShippingHalf(-55.77f), -55.75f };
-            // Magnitude smaller than 2^128 map to infinity
-            yield return new object[] { new ShippingHalf(1.7e38f), float.PositiveInfinity };
-            yield return new object[] { new ShippingHalf(-1.7e38f), float.NegativeInfinity };
+            yield return new object[] { (ShippingHalf)(55.77f), 55.75f };
+            yield return new object[] { (ShippingHalf)(-55.77f), -55.75f };
+            // Magnitude smaller than 2^(map to infinity
+            yield return new object[] { (ShippingHalf)(1.7e38f), float.PositiveInfinity };
+            yield return new object[] { (ShippingHalf)(-1.7e38f), float.NegativeInfinity };
             // Infinity and NaN map to infinity and Nan
             yield return new object[] { ShippingHalf.PositiveInfinity, float.PositiveInfinity };
             yield return new object[] { ShippingHalf.NegativeInfinity, float.NegativeInfinity };
@@ -333,31 +332,103 @@ namespace System.Numerics.Experimental.Tests
         }
 
         [Theory]
-        [MemberData(nameof(ToSingle_TestData))]
+        [MemberData(nameof(RoundTripFloat_CornerCases))]
         public static void ToSingle(ShippingHalf ShippingHalf, float verify)
         {
-            float f = ShippingHalf.Float;
+            float f = (float)ShippingHalf;
             Assert.Equal(f, verify, precision: 1);
         }
 
         public static IEnumerable<object[]> FromSingle_TestData()
         {
             // Magnitude smaller than 2^-24 maps to 0
-            yield return new object[] { new ShippingHalf(5.2e-20f), 0, 0, false };
-            yield return new object[] { new ShippingHalf(-5.2e-20f), 0, 0, true };
-            // Magnitude smaller than 2^-14 map to subnormals
-            yield return new object[] { new ShippingHalf(1.52e-5f), 0, 255, false };
-            yield return new object[] { new ShippingHalf(1.52e-5f), 0, 255, true };
+            yield return new object[] { (ShippingHalf)(5.2e-20f), 0, 0, false };
+            yield return new object[] { (ShippingHalf)(-5.2e-20f), 0, 0, true };
+            // Magnitude smaller than 2^(map to subnf)rmals
+            yield return new object[] { (ShippingHalf)(1.52e-5f), 0, 255, false };
+            yield return new object[] { (ShippingHalf)(1.52e-5f), 0, 255, true };
             // Normal numbers
-            yield return new object[] { new ShippingHalf(55.77f), 20, 760, false };
-            yield return new object[] { new ShippingHalf(-55.77f), 20, 760, true };
-            // Magnitude smaller than 2^128 map to infinity
-            yield return new object[] { new ShippingHalf(1.7e38f), 31, 0, false };
-            yield return new object[] { new ShippingHalf(-1.7e38f), 31, 0, true };
+            yield return new object[] { (ShippingHalf)(55.77f), 20, 760, false };
+            yield return new object[] { (ShippingHalf)(-55.77f), 20, 760, true };
+            // Magnitude smaller than 2^(map to infif)ity
+            yield return new object[] { (ShippingHalf)(1.7e38f), 31, 0, false };
+            yield return new object[] { (ShippingHalf)(-1.7e38f), 31, 0, true };
             // Infinity and NaN map to infinity and Nan
             yield return new object[] { ShippingHalf.PositiveInfinity, 31, 0, false };
             yield return new object[] { ShippingHalf.NegativeInfinity, 31, 0, true };
             yield return new object[] { ShippingHalf.NaN, 31, 512, true };
+        }
+
+        public static IEnumerable<object[]> ExplicitConversion_FromSingle_TestData()
+        {
+            yield return new object[] { MathF.PI, UInt16BitsToShippingHalf(0b0_10000_1001001000) }; // 3.140625
+            yield return new object[] { MathF.E, UInt16BitsToShippingHalf(0b0_10000_0101101111) }; // 2.71875
+            yield return new object[] { -MathF.PI, UInt16BitsToShippingHalf(0b1_10000_1001001000) }; // -3.140625
+            yield return new object[] { -MathF.E, UInt16BitsToShippingHalf(0b1_10000_0101101111) }; // -2.71875
+            yield return new object[] { float.MaxValue, ShippingHalf.PositiveInfinity }; // Overflow
+            yield return new object[] { float.MinValue, ShippingHalf.NegativeInfinity }; // Overflow
+            yield return new object[] { float.NaN, ShippingHalf.NaN }; // Quiet Negative NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(0x7FC00000), UInt16BitsToShippingHalf(0b0_11111_1000000000) }; // Quiet Positive NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(unchecked((int)0xFFD55555)), UInt16BitsToShippingHalf(0b1_11111_1010101010) }; // Signalling Negative NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(0x7FD55555), UInt16BitsToShippingHalf(0b0_11111_1010101010) }; // Signalling Positive NaN
+            yield return new object[] { float.Epsilon, UInt16BitsToShippingHalf(0) }; // Underflow
+            yield return new object[] { -float.Epsilon, UInt16BitsToShippingHalf(0b1_00000_0000000000) }; // Underflow
+            yield return new object[] { 1f, UInt16BitsToShippingHalf(0b0_01111_0000000000) }; // 1
+            yield return new object[] { -1f, UInt16BitsToShippingHalf(0b1_01111_0000000000) }; // -1
+            yield return new object[] { 0f, UInt16BitsToShippingHalf(0) }; // 0
+            yield return new object[] { -0f, UInt16BitsToShippingHalf(0b1_00000_0000000000) }; // -0
+            yield return new object[] { 42f, UInt16BitsToShippingHalf(0b0_10100_0101000000) }; // 42
+            yield return new object[] { -42f, UInt16BitsToShippingHalf(0b1_10100_0101000000) }; // -42
+            yield return new object[] { 0.1f, UInt16BitsToShippingHalf(0b0_01011_1001100110) }; // 0.0999755859375
+            yield return new object[] { -0.1f, UInt16BitsToShippingHalf(0b1_01011_1001100110) }; // -0.0999755859375
+            yield return new object[] { 1.5f, UInt16BitsToShippingHalf(0b0_01111_1000000000) }; // 1.5
+            yield return new object[] { -1.5f, UInt16BitsToShippingHalf(0b1_01111_1000000000) }; // -1.5
+            yield return new object[] { 1.5009765625f, UInt16BitsToShippingHalf(0b0_01111_1000000001) }; // 1.5009765625
+            yield return new object[] { -1.5009765625f, UInt16BitsToShippingHalf(0b1_01111_1000000001) }; // -1.5009765625
+        }
+
+        [MemberData(nameof(ExplicitConversion_FromSingle_TestData))]
+        [Theory]
+        public static void ExplicitConversion_FromSingle(float f, ShippingHalf expected) // Check the underlying bits for verifying NaNs
+        {
+            ShippingHalf h = (ShippingHalf)f;
+            Assert.Equal(HalfToUInt16Bits(expected), HalfToUInt16Bits(h));
+        }
+
+        public static IEnumerable<object[]> ExplicitConversion_FromDouble_TestData()
+        {
+            yield return new object[] { MathF.PI, UInt16BitsToShippingHalf(0b0_10000_1001001000) }; // 3.140625
+            yield return new object[] { MathF.E, UInt16BitsToShippingHalf(0b0_10000_0101101111) }; // 2.71875
+            yield return new object[] { -MathF.PI, UInt16BitsToShippingHalf(0b1_10000_1001001000) }; // -3.140625
+            yield return new object[] { -MathF.E, UInt16BitsToShippingHalf(0b1_10000_0101101111) }; // -2.71875
+            yield return new object[] { double.MaxValue, ShippingHalf.PositiveInfinity }; // Overflow
+            yield return new object[] { double.MinValue, ShippingHalf.NegativeInfinity }; // Overflow
+            yield return new object[] { double.NaN, ShippingHalf.NaN }; // Quiet Negative NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(0x7FC00000), UInt16BitsToShippingHalf(0b0_11111_1000000000) }; // Quiet Positive NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(unchecked((int)0xFFD55555)), UInt16BitsToShippingHalf(0b1_11111_1010101010) }; // Signalling Negative NaN
+            yield return new object[] { BitConverter.Int32BitsToSingle(0x7FD55555), UInt16BitsToShippingHalf(0b0_11111_1010101010) }; // Signalling Positive NaN
+            yield return new object[] { double.Epsilon, UInt16BitsToShippingHalf(0) }; // Underflow
+            yield return new object[] { -double.Epsilon, UInt16BitsToShippingHalf(0b1_00000_0000000000) }; // Underflow
+            yield return new object[] { 1d, UInt16BitsToShippingHalf(0b0_01111_0000000000) }; // 1
+            yield return new object[] { -1d, UInt16BitsToShippingHalf(0b1_01111_0000000000) }; // -1
+            yield return new object[] { 0d, UInt16BitsToShippingHalf(0) }; // 0
+            yield return new object[] { -0d, UInt16BitsToShippingHalf(0b1_00000_0000000000) }; // -0
+            yield return new object[] { 42d, UInt16BitsToShippingHalf(0b0_10100_0101000000) }; // 42
+            yield return new object[] { -42d, UInt16BitsToShippingHalf(0b1_10100_0101000000) }; // -42
+            yield return new object[] { 0.1d, UInt16BitsToShippingHalf(0b0_01011_1001100110) }; // 0.0999755859375
+            yield return new object[] { -0.1d, UInt16BitsToShippingHalf(0b1_01011_1001100110) }; // -0.0999755859375
+            yield return new object[] { 1.5d, UInt16BitsToShippingHalf(0b0_01111_1000000000) }; // 1.5
+            yield return new object[] { -1.5d, UInt16BitsToShippingHalf(0b1_01111_1000000000) }; // -1.5
+            yield return new object[] { 1.5009765625d, UInt16BitsToShippingHalf(0b0_01111_1000000001) }; // 1.5009765625
+            yield return new object[] { -1.5009765625d, UInt16BitsToShippingHalf(0b1_01111_1000000001) }; // -1.5009765625
+        }
+
+        [MemberData(nameof(ExplicitConversion_FromDouble_TestData))]
+        [Theory]
+        public static void ExplicitConversion_FromDouble(double d, ShippingHalf expected) // Check the underlying bits for verifying NaNs
+        {
+            ShippingHalf h = (ShippingHalf)d;
+            Assert.Equal(HalfToUInt16Bits(expected), HalfToUInt16Bits(h));
         }
 
         public static IEnumerable<object[]> Parse_TestData()
@@ -372,7 +443,7 @@ namespace System.Numerics.Experimental.Tests
         {
             // The Parse method just relies on float.Parse, so the test is really just testing the constructor again
             ShippingHalf actual = ShippingHalf.Parse(value, formatProvider: provider);
-            Assert.Equal(expected, actual.Float, precision: 1);
+            Assert.Equal(expected, (float)actual, precision: 1);
         }
 
         [Fact]
@@ -381,7 +452,7 @@ namespace System.Numerics.Experimental.Tests
             for (ushort i = ushort.MinValue; i < ushort.MaxValue; i++)
             {
                 ShippingHalf half1 = UInt16BitsToShippingHalf(i);
-                ShippingHalf half2 = new ShippingHalf(half1.Float);
+                ShippingHalf half2 = (ShippingHalf)((float)half1);
 
                 bool half1IsNaN = ShippingHalf.IsNaN(half1);
                 bool half2IsNaN = ShippingHalf.IsNaN(half2);

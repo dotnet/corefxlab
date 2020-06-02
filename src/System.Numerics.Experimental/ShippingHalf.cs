@@ -102,7 +102,7 @@ namespace System
         private ShippingHalf(bool sign, ushort exp, ushort sig)
             => m_value = (ushort)(((sign ? 1 : 0) << SignShift) + (exp << ExponentShift) + sig);
 
-        public ShippingHalf(float single)
+        private ShippingHalf(float single)
         {
             uint value = (uint)BitConverter.SingleToInt32Bits(single);
             m_value = (ushort)(s_baseTable[(value >> 23) & 0x1ff] + ((value & 0x007fffff) >> s_shiftTable[value >> 23]));
@@ -125,15 +125,6 @@ namespace System
         }
 
         private bool Sign => (m_value & SignMask) >> SignShift == 1;
-
-        public unsafe float Float
-        {
-            get
-            {
-                uint result = s_mantissaTable[offsetTable[m_value >> 10] + (m_value & 0x3ff)] + s_exponentTable[m_value >> 10];
-                return *((float*)&result);
-            }
-        }
 
         // <summary>Determines whether the specified value is finite (zero, subnormal, or normal).</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -208,7 +199,7 @@ namespace System
 
         public static ShippingHalf Parse(ReadOnlySpan<char> s, NumberStyles style = DefaultParseStyle, IFormatProvider formatProvider = null)
         {
-            return new ShippingHalf(float.Parse(s, style, formatProvider));
+            return (ShippingHalf)(float.Parse(s, style, formatProvider));
         }
 
         public static bool TryParse(string s, out ShippingHalf result)
@@ -231,7 +222,7 @@ namespace System
             bool ret = false;
             if (float.TryParse(s, style, formatProvider, out float floatResult))
             {
-                result = new ShippingHalf(floatResult);
+                result = (ShippingHalf)(floatResult);
                 ret = true;
             }
             else
@@ -331,12 +322,91 @@ namespace System
 
         public string ToString(string format = null, IFormatProvider formatProvider = null)
         {
-            return Float.ToString(format, formatProvider);
+            return ((float)this).ToString(format, formatProvider);
         }
 
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider formatProvider)
         {
-            return Float.TryFormat(destination, out charsWritten, format, formatProvider);
+            return ((float)this).TryFormat(destination, out charsWritten, format, formatProvider);
+        }
+
+        public static explicit operator ShippingHalf(float value) => new ShippingHalf(value);
+
+        public static explicit operator ShippingHalf(double value) => new ShippingHalf((float)value);
+
+        public static explicit operator float(ShippingHalf half)
+        {
+            uint result = s_mantissaTable[offsetTable[half.m_value >> 10] + (half.m_value & 0x3ff)] + s_exponentTable[half.m_value >> 10];
+            return BitConverter.ToSingle(BitConverter.GetBytes(result));
+        }
+
+        public static explicit operator double(ShippingHalf half) => (float)half;
+
+        public static bool operator <(ShippingHalf left, ShippingHalf right)
+        {
+            if (IsNaN(left) || IsNaN(right))
+            {
+                // IEEE defines that NaN is unordered with respect to everything, including itself.
+                return false;
+            }
+
+            bool leftIsNegative = IsNegative(left);
+
+            if (leftIsNegative != IsNegative(right))
+            {
+                // When the signs of left and right differ, we know that left is less than right if it is
+                // the negative value. The exception to this is if both values are zero, in which case IEEE
+                // says they should be equal, even if the signs differ.
+                return leftIsNegative && !AreZero(left, right);
+            }
+            return (short)(left.m_value) < (short)(right.m_value);
+        }
+
+        public static bool operator >(ShippingHalf left, ShippingHalf right)
+        {
+            return right < left;
+        }
+
+        public static bool operator <=(ShippingHalf left, ShippingHalf right)
+        {
+            if (IsNaN(left) || IsNaN(right))
+            {
+                // IEEE defines that NaN is unordered with respect to everything, including itself.
+                return false;
+            }
+
+            bool leftIsNegative = IsNegative(left);
+
+            if (leftIsNegative != IsNegative(right))
+            {
+                // When the signs of left and right differ, we know that left is less than right if it is
+                // the negative value. The exception to this is if both values are zero, in which case IEEE
+                // says they should be equal, even if the signs differ.
+                return leftIsNegative || AreZero(left, right);
+            }
+            return (short)(left.m_value) <= (short)(right.m_value);
+        }
+
+        public static bool operator >=(ShippingHalf left, ShippingHalf right)
+        {
+            return right <= left;
+        }
+
+        public static bool operator ==(ShippingHalf left, ShippingHalf right)
+        {
+            if (IsNaN(left) || IsNaN(right))
+            {
+                // IEEE defines that NaN is not equal to anything, including itself.
+                return false;
+            }
+
+            // IEEE defines that positive and negative zero are equivalent.
+            return (left.m_value == right.m_value) || AreZero(left, right);
+        }
+
+        public static bool operator !=(ShippingHalf left, ShippingHalf right)
+        {
+            return !(left == right);
         }
     }
 }
