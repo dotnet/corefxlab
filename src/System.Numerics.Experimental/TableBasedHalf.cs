@@ -222,7 +222,7 @@ namespace System
             bool ret = false;
             if (float.TryParse(s, style, formatProvider, out float floatResult))
             {
-                result = (TableBasedHalf)(floatResult);
+                result = (TableBasedHalf)floatResult;
                 ret = true;
             }
             else
