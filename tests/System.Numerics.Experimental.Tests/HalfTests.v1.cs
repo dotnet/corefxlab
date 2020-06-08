@@ -441,7 +441,7 @@ namespace System.Numerics.Experimental.Tests
         // ---------- Start of To-half conversion tests ----------
         public static IEnumerable<object[]> ExplicitConversion_FromSingle_TestData()
         {
-            (float, Half)[] data = 
+            (float, Half)[] data =
             {
                 (MathF.PI, UInt16BitsToHalf(0b0_10000_1001001000)), // 3.140625
                 (MathF.E, UInt16BitsToHalf(0b0_10000_0101110000)), // 2.71875
@@ -449,6 +449,8 @@ namespace System.Numerics.Experimental.Tests
                 (-MathF.E, UInt16BitsToHalf(0b1_10000_0101110000)), // -2.71875
                 (float.MaxValue, Half.PositiveInfinity), // Overflow
                 (float.MinValue, Half.NegativeInfinity), // Overflow
+                (float.PositiveInfinity, Half.PositiveInfinity), // Overflow
+                (float.NegativeInfinity, Half.NegativeInfinity), // Overflow
                 (float.NaN, Half.NaN), // Quiet Negative NaN
                 (BitConverter.Int32BitsToSingle(0x7FC00000), UInt16BitsToHalf(0b0_11111_1000000000)), // Quiet Positive NaN
                 (BitConverter.Int32BitsToSingle(unchecked((int)0xFFD55555)),
@@ -494,6 +496,8 @@ namespace System.Numerics.Experimental.Tests
                 (-Math.E, UInt16BitsToHalf(0b1_10000_0101110000)), // -2.71875
                 (double.MaxValue, Half.PositiveInfinity), // Overflow
                 (double.MinValue, Half.NegativeInfinity), // Overflow
+                (double.PositiveInfinity, Half.PositiveInfinity), // Overflow
+                (double.NegativeInfinity, Half.NegativeInfinity), // Overflow
                 (double.NaN, Half.NaN), // Quiet Negative NaN
                 (BitConverter.Int64BitsToDouble(0x7FF80000_00000000),
                     UInt16BitsToHalf(0b0_11111_1000000000)), // Quiet Positive NaN
@@ -531,19 +535,377 @@ namespace System.Numerics.Experimental.Tests
             Assert.Equal(HalfToUInt16Bits(expected), HalfToUInt16Bits(h));
         }
 
-        public static IEnumerable<object[]> Parse_TestData()
+        public static IEnumerable<object[]> Parse_Valid_TestData()
         {
-            yield return new object[] { "123.456e-2", CultureInfo.CurrentCulture, 1.23456 };
-            yield return new object[] { "-123.456e-2", CultureInfo.CurrentCulture, -1.23456 };
+            NumberStyles defaultStyle = NumberStyles.Float | NumberStyles.AllowThousands;
+
+            NumberFormatInfo emptyFormat = NumberFormatInfo.CurrentInfo;
+
+            var dollarSignCommaSeparatorFormat = new NumberFormatInfo()
+            {
+                CurrencySymbol = "$",
+                CurrencyGroupSeparator = ","
+            };
+
+            var decimalSeparatorFormat = new NumberFormatInfo()
+            {
+                NumberDecimalSeparator = "."
+            };
+
+            NumberFormatInfo invariantFormat = NumberFormatInfo.InvariantInfo;
+
+            yield return new object[] { "-123", defaultStyle, null, -123.0f };
+            yield return new object[] { "0", defaultStyle, null, 0.0f };
+            yield return new object[] { "123", defaultStyle, null, 123.0f };
+            yield return new object[] { "  123  ", defaultStyle, null, 123.0f };
+            yield return new object[] { (567.89f).ToString(), defaultStyle, null, 567.89f };
+            yield return new object[] { (-567.89f).ToString(), defaultStyle, null, -567.89f };
+            yield return new object[] { "1E23", defaultStyle, null, 1E23f };
+
+            yield return new object[] { (123.1f).ToString(), NumberStyles.AllowDecimalPoint, null, 123.1f };
+            yield return new object[] { (1000.0f).ToString("N0"), NumberStyles.AllowThousands, null, 1000.0f };
+
+            yield return new object[] { "123", NumberStyles.Any, emptyFormat, 123.0f };
+            yield return new object[] { (123.567f).ToString(), NumberStyles.Any, emptyFormat, 123.567f };
+            yield return new object[] { "123", NumberStyles.Float, emptyFormat, 123.0f };
+            yield return new object[] { "$1,000", NumberStyles.Currency, dollarSignCommaSeparatorFormat, 1000.0f };
+            yield return new object[] { "$1000", NumberStyles.Currency, dollarSignCommaSeparatorFormat, 1000.0f };
+            yield return new object[] { "123.123", NumberStyles.Float, decimalSeparatorFormat, 123.123f };
+            yield return new object[] { "(123)", NumberStyles.AllowParentheses, decimalSeparatorFormat, -123.0f };
+
+            yield return new object[] { "NaN", NumberStyles.Any, invariantFormat, float.NaN };
+            yield return new object[] { "Infinity", NumberStyles.Any, invariantFormat, float.PositiveInfinity };
+            yield return new object[] { "-Infinity", NumberStyles.Any, invariantFormat, float.NegativeInfinity };
         }
 
         [Theory]
-        [MemberData(nameof(Parse_TestData))]
-        public static void ParseTests(string value, IFormatProvider provider, float expected)
+        [MemberData(nameof(Parse_Valid_TestData))]
+        public static void Parse(string value, NumberStyles style, IFormatProvider provider, float expectedFloat)
         {
-            // The Parse method just relies on float.Parse, so the test is really just testing the constructor again
-            Half actual = Half.Parse(value, formatProvider: provider);
-            Assert.Equal(expected, (float)actual, precision: 1);
+            bool isDefaultProvider = provider == null || provider == NumberFormatInfo.CurrentInfo;
+            Half result;
+            Half expected = (Half)expectedFloat;
+            if ((style & ~(NumberStyles.Float | NumberStyles.AllowThousands)) == 0 && style != NumberStyles.None)
+            {
+                // Use Parse(string) or Parse(string, IFormatProvider)
+                if (isDefaultProvider)
+                {
+                    Assert.True(Half.TryParse(value, out result));
+                    Assert.True(expected.Equals(result));
+
+                    Assert.Equal(expected, Half.Parse(value));
+                }
+
+                Assert.True(expected.Equals(Half.Parse(value, provider: provider)));
+            }
+
+            // Use Parse(string, NumberStyles, IFormatProvider)
+            Assert.True(Half.TryParse(value, style, provider, out result));
+            Assert.True(expected.Equals(result) || (Half.IsNaN(expected) && Half.IsNaN(result)));
+
+            Assert.True(expected.Equals(Half.Parse(value, style, provider)) || (Half.IsNaN(expected) && Half.IsNaN(result)));
+
+            if (isDefaultProvider)
+            {
+                // Use Parse(string, NumberStyles) or Parse(string, NumberStyles, IFormatProvider)
+                Assert.True(Half.TryParse(value, style, NumberFormatInfo.CurrentInfo, out result));
+                Assert.True(expected.Equals(result));
+
+                Assert.True(expected.Equals(Half.Parse(value, style)));
+                Assert.True(expected.Equals(Half.Parse(value, style, NumberFormatInfo.CurrentInfo)));
+            }
+        }
+
+        public static IEnumerable<object[]> Parse_Invalid_TestData()
+        {
+            NumberStyles defaultStyle = NumberStyles.Float;
+
+            var dollarSignDecimalSeparatorFormat = new NumberFormatInfo();
+            dollarSignDecimalSeparatorFormat.CurrencySymbol = "$";
+            dollarSignDecimalSeparatorFormat.NumberDecimalSeparator = ".";
+
+            yield return new object[] { null, defaultStyle, null, typeof(ArgumentNullException) };
+            yield return new object[] { "", defaultStyle, null, typeof(FormatException) };
+            yield return new object[] { " ", defaultStyle, null, typeof(FormatException) };
+            yield return new object[] { "Garbage", defaultStyle, null, typeof(FormatException) };
+
+            yield return new object[] { "ab", defaultStyle, null, typeof(FormatException) }; // Hex value
+            yield return new object[] { "(123)", defaultStyle, null, typeof(FormatException) }; // Parentheses
+            yield return new object[] { (100.0f).ToString("C0"), defaultStyle, null, typeof(FormatException) }; // Currency
+
+            yield return new object[] { (123.456f).ToString(), NumberStyles.Integer, null, typeof(FormatException) }; // Decimal
+            yield return new object[] { "  " + (123.456f).ToString(), NumberStyles.None, null, typeof(FormatException) }; // Leading space
+            yield return new object[] { (123.456f).ToString() + "   ", NumberStyles.None, null, typeof(FormatException) }; // Leading space
+            yield return new object[] { "1E23", NumberStyles.None, null, typeof(FormatException) }; // Exponent
+
+            yield return new object[] { "ab", NumberStyles.None, null, typeof(FormatException) }; // Negative hex value
+            yield return new object[] { "  123  ", NumberStyles.None, null, typeof(FormatException) }; // Trailing and leading whitespace
+        }
+
+        [Theory]
+        [MemberData(nameof(Parse_Invalid_TestData))]
+        public static void Parse_Invalid(string value, NumberStyles style, IFormatProvider provider, Type exceptionType)
+        {
+            bool isDefaultProvider = provider == null || provider == NumberFormatInfo.CurrentInfo;
+            Half result;
+            if ((style & ~(NumberStyles.Float | NumberStyles.AllowThousands)) == 0 && style != NumberStyles.None && (style & NumberStyles.AllowLeadingWhite) == (style & NumberStyles.AllowTrailingWhite))
+            {
+                // Use Parse(string) or Parse(string, IFormatProvider)
+                if (isDefaultProvider)
+                {
+                    Assert.False(Half.TryParse(value, out result));
+                    Assert.Equal(default(Half), result);
+
+                    Assert.Throws(exceptionType, () => Half.Parse(value));
+                }
+
+                Assert.Throws(exceptionType, () => Half.Parse(value, provider: provider));
+            }
+
+            // Use Parse(string, NumberStyles, IFormatProvider)
+            Assert.False(Half.TryParse(value, style, provider, out result));
+            Assert.Equal(default(Half), result);
+
+            Assert.Throws(exceptionType, () => Half.Parse(value, style, provider));
+
+            if (isDefaultProvider)
+            {
+                // Use Parse(string, NumberStyles) or Parse(string, NumberStyles, IFormatProvider)
+                Assert.False(Half.TryParse(value, style, NumberFormatInfo.CurrentInfo, out result));
+                Assert.Equal(default(Half), result);
+
+                Assert.Throws(exceptionType, () => Half.Parse(value, style));
+                Assert.Throws(exceptionType, () => Half.Parse(value, style, NumberFormatInfo.CurrentInfo));
+            }
+        }
+
+        public static IEnumerable<object[]> ToString_TestData()
+        {
+            yield return new object[] { -4568.0f, "G", null, "-4568" };
+            yield return new object[] { 0.0f, "G", null, "0" };
+            yield return new object[] { 4568.0f, "G", null, "4568" };
+
+            yield return new object[] { float.NaN, "G", null, "NaN" };
+
+            //yield return new object[] { 2468.0f, "N", null, "2,468.00" };
+
+            // Changing the negative pattern doesn't do anything without also passing in a format string
+            var customNegativePattern = new NumberFormatInfo() { NumberNegativePattern = 0 };
+            yield return new object[] { -6312.0f, "G", customNegativePattern, "-6312" };
+
+            var customNegativeSignDecimalGroupSeparator = new NumberFormatInfo()
+            {
+                NegativeSign = "#",
+                NumberDecimalSeparator = "~",
+                NumberGroupSeparator = "*"
+            };
+            //yield return new object[] { -2468.0f, "N", customNegativeSignDecimalGroupSeparator, "#2*468~00" };
+            //yield return new object[] { 2468.0f, "N", customNegativeSignDecimalGroupSeparator, "2*468~00" };
+
+            var customNegativeSignGroupSeparatorNegativePattern = new NumberFormatInfo()
+            {
+                NegativeSign = "xx", // Set to trash to make sure it doesn't show up
+                NumberGroupSeparator = "*",
+                NumberNegativePattern = 0
+            };
+            //yield return new object[] { -2468.0f, "N", customNegativeSignGroupSeparatorNegativePattern, "(2*468.00)" };
+
+            NumberFormatInfo invariantFormat = NumberFormatInfo.InvariantInfo;
+            yield return new object[] { float.NaN, "G", invariantFormat, "NaN" };
+            yield return new object[] { float.PositiveInfinity, "G", invariantFormat, "Infinity" };
+            yield return new object[] { float.NegativeInfinity, "G", invariantFormat, "-Infinity" };
+        }
+
+        public static IEnumerable<object[]> ToString_TestData_NotNetFramework()
+        {
+            foreach (var testData in ToString_TestData())
+            {
+                yield return testData;
+            }
+
+            yield return new object[] { Half.MinValue, "G", null, "-65504" };
+            yield return new object[] { Half.MaxValue, "G", null, "65504" };
+
+            //yield return new object[] { Half.Epsilon, "G", null, "5.9604645E-08" };
+
+            NumberFormatInfo invariantFormat = NumberFormatInfo.InvariantInfo;
+            //yield return new object[] { Half.Epsilon, "G", invariantFormat, "5.9604645E-08" };
+        }
+
+        [Fact]
+        public static void Test_ToString_NotNetFramework()
+        {
+            //using (new ThreadCultureChange(CultureInfo.InvariantCulture))
+            {
+                foreach (object[] testdata in ToString_TestData_NotNetFramework())
+                {
+                    ToStringTest(testdata[0] is float floatData ? (Half)floatData : (Half)testdata[0], (string)testdata[1], (IFormatProvider)testdata[2], (string)testdata[3]);
+                    //ToStringTest((Half)(float)testdata[0], (string)testdata[1], (IFormatProvider)testdata[2], (string)testdata[3]);
+                }
+            }
+        }
+
+        private static void ToStringTest(Half f, string format, IFormatProvider provider, string expected)
+        {
+            bool isDefaultProvider = provider == null;
+            if (string.IsNullOrEmpty(format) || format.ToUpperInvariant() == "G")
+            {
+                if (isDefaultProvider)
+                {
+                    Assert.Equal(expected, f.ToString());
+                    Assert.Equal(expected, f.ToString((IFormatProvider)null));
+                }
+                Assert.Equal(expected, f.ToString(provider));
+            }
+            if (isDefaultProvider)
+            {
+                Assert.Equal(expected.Replace('e', 'E'), f.ToString(format.ToUpperInvariant())); // If format is upper case, then exponents are printed in upper case
+                Assert.Equal(expected.Replace('E', 'e'), f.ToString(format.ToLowerInvariant())); // If format is lower case, then exponents are printed in lower case
+                Assert.Equal(expected.Replace('e', 'E'), f.ToString(format.ToUpperInvariant(), null));
+                Assert.Equal(expected.Replace('E', 'e'), f.ToString(format.ToLowerInvariant(), null));
+            }
+            Assert.Equal(expected.Replace('e', 'E'), f.ToString(format.ToUpperInvariant(), provider));
+            Assert.Equal(expected.Replace('E', 'e'), f.ToString(format.ToLowerInvariant(), provider));
+        }
+
+        public static IEnumerable<object[]> Parse_ValidWithOffsetCount_TestData()
+        {
+            foreach (object[] inputs in Parse_Valid_TestData())
+            {
+                yield return new object[] { inputs[0], 0, ((string)inputs[0]).Length, inputs[1], inputs[2], inputs[3] };
+            }
+
+            const NumberStyles DefaultStyle = NumberStyles.Float | NumberStyles.AllowThousands;
+
+            yield return new object[] { "-123", 1, 3, DefaultStyle, null, (float)123 };
+            yield return new object[] { "-123", 0, 3, DefaultStyle, null, (float)-12 };
+            yield return new object[] { "1E23", 0, 3, DefaultStyle, null, (float)1E2 };
+            yield return new object[] { "123", 0, 2, NumberStyles.Float, new NumberFormatInfo(), (float)12 };
+            yield return new object[] { "$1,000", 1, 3, NumberStyles.Currency, new NumberFormatInfo() { CurrencySymbol = "$", CurrencyGroupSeparator = "," }, (float)10 };
+            yield return new object[] { "(123)", 1, 3, NumberStyles.AllowParentheses, new NumberFormatInfo() { NumberDecimalSeparator = "." }, (float)123 };
+            yield return new object[] { "-Infinity", 1, 8, NumberStyles.Any, NumberFormatInfo.InvariantInfo, float.PositiveInfinity };
+        }
+
+        [Theory]
+        [MemberData(nameof(Parse_ValidWithOffsetCount_TestData))]
+        public static void Parse_Span_Valid(string value, int offset, int count, NumberStyles style, IFormatProvider provider, float expectedFloat)
+        {
+            bool isDefaultProvider = provider == null || provider == NumberFormatInfo.CurrentInfo;
+            Half result;
+            Half expected = (Half)expectedFloat;
+            if ((style & ~(NumberStyles.Float | NumberStyles.AllowThousands)) == 0 && style != NumberStyles.None)
+            {
+                // Use Parse(string) or Parse(string, IFormatProvider)
+                if (isDefaultProvider)
+                {
+                    Assert.True(Half.TryParse(value.AsSpan(offset, count), out result));
+                    Assert.Equal(expected, result);
+
+                    Assert.Equal(expected, Half.Parse(value.AsSpan(offset, count)));
+                }
+
+                Assert.Equal(expected, Half.Parse(value.AsSpan(offset, count), provider: provider));
+            }
+
+            Assert.True(expected.Equals(Half.Parse(value.AsSpan(offset, count), style, provider)) || (Half.IsNaN(expected) && Half.IsNaN(Half.Parse(value.AsSpan(offset, count), style, provider))));
+
+            Assert.True(Half.TryParse(value.AsSpan(offset, count), style, provider, out result));
+            Assert.True(expected.Equals(result) || (Half.IsNaN(expected) && Half.IsNaN(result)));
+        }
+
+        [Theory]
+        [MemberData(nameof(Parse_Invalid_TestData))]
+        public static void Parse_Span_Invalid(string value, NumberStyles style, IFormatProvider provider, Type exceptionType)
+        {
+            if (value != null)
+            {
+                Assert.Throws(exceptionType, () => float.Parse(value.AsSpan(), style, provider));
+
+                Assert.False(float.TryParse(value.AsSpan(), style, provider, out float result));
+                Assert.Equal(0, result);
+            }
+        }
+
+        [Fact]
+        public static void TryFormat()
+        {
+            //using (new ThreadCultureChange(CultureInfo.InvariantCulture))
+            {
+                foreach (object[] testdata in ToString_TestData())
+                {
+                    float localI = (float)testdata[0];
+                    string localFormat = (string)testdata[1];
+                    IFormatProvider localProvider = (IFormatProvider)testdata[2];
+                    string localExpected = (string)testdata[3];
+
+                    try
+                    {
+                        char[] actual;
+                        int charsWritten;
+
+                        // Just right
+                        actual = new char[localExpected.Length];
+                        Assert.True(localI.TryFormat(actual.AsSpan(), out charsWritten, localFormat, localProvider));
+                        Assert.Equal(localExpected.Length, charsWritten);
+                        Assert.Equal(localExpected, new string(actual));
+
+                        // Longer than needed
+                        actual = new char[localExpected.Length + 1];
+                        Assert.True(localI.TryFormat(actual.AsSpan(), out charsWritten, localFormat, localProvider));
+                        Assert.Equal(localExpected.Length, charsWritten);
+                        Assert.Equal(localExpected, new string(actual, 0, charsWritten));
+
+                        // Too short
+                        if (localExpected.Length > 0)
+                        {
+                            actual = new char[localExpected.Length - 1];
+                            Assert.False(localI.TryFormat(actual.AsSpan(), out charsWritten, localFormat, localProvider));
+                            Assert.Equal(0, charsWritten);
+                        }
+                    }
+                    catch (Exception exc)
+                    {
+                        throw new Exception($"Failed on `{localI}`, `{localFormat}`, `{localProvider}`, `{localExpected}`. {exc}");
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> ToStringRoundtrip_TestData()
+        {
+            yield return new object[] { Half.NegativeInfinity };
+            yield return new object[] { Half.MinValue };
+            yield return new object[] { -MathF.PI };
+            yield return new object[] { -MathF.E };
+            yield return new object[] { -Half.Epsilon };
+            yield return new object[] { -0.845512408f };
+            yield return new object[] { -0.0f };
+            yield return new object[] { Half.NaN };
+            yield return new object[] { 0.0f };
+            yield return new object[] { 0.845512408f };
+            yield return new object[] { Half.Epsilon };
+            yield return new object[] { MathF.E };
+            yield return new object[] { MathF.PI };
+            yield return new object[] { Half.MaxValue };
+            yield return new object[] { Half.PositiveInfinity };
+        }
+
+        [Theory]
+        [MemberData(nameof(ToStringRoundtrip_TestData))]
+        public static void ToStringRoundtrip(object o_value)
+        {
+            float value = o_value is float floatValue ? floatValue : (float)(Half)o_value;
+            Half result = Half.Parse(value.ToString());
+            Assert.Equal(HalfToUInt16Bits((Half)value), HalfToUInt16Bits(result));
+        }
+
+        [Theory]
+        [MemberData(nameof(ToStringRoundtrip_TestData))]
+        public static void ToStringRoundtrip_R(object o_value)
+        {
+            float value = o_value is float floatValue ? floatValue : (float)(Half)o_value;
+            Half result = Half.Parse(value.ToString("R"));
+            Assert.Equal(HalfToUInt16Bits((Half)value), HalfToUInt16Bits(result));
         }
 
         public static IEnumerable<object[]> RoundTripFloat_CornerCases()

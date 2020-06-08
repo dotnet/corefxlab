@@ -72,7 +72,7 @@ namespace System.Numerics.Experimental
         // Well-defined and commonly used values
         //
 
-        public static readonly Half Epsilon = new Half(EpsilonBits);                        //  5.9605E-08
+        public static readonly Half Epsilon = new Half(EpsilonBits);                        //  5.9604645E-08
 
         public static readonly Half PositiveInfinity = new Half(PositiveInfinityBits);      //  1.0 / 0.0
         public static readonly Half NegativeInfinity = new Half(NegativeInfinityBits);      // -1.0 / 0.0
@@ -241,39 +241,54 @@ namespace System.Numerics.Experimental
                 && ((absValue & ExponentMask) == 0);    // is subnormal (has a zero exponent)
         }
 
-        public static Half Parse(string s, NumberStyles style = DefaultParseStyle, IFormatProvider formatProvider = null)
+        public static Half Parse(string s)
+        {
+            return (Half)float.Parse(s, style: DefaultParseStyle, provider: null);
+        }
+
+        public static Half Parse(string s, NumberStyles style)
+        {
+            return (Half)float.Parse(s, style);
+        }
+
+        public static Half Parse(string s, IFormatProvider provider)
+        {
+            return (Half)float.Parse(s, provider);
+        }
+
+        public static Half Parse(string s, NumberStyles style = DefaultParseStyle, IFormatProvider provider = null)
         {
             if (s is null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
-            return Parse(s.AsSpan(), style, formatProvider);
+            return Parse(s.AsSpan(), style, provider);
         }
 
-        public static Half Parse(ReadOnlySpan<char> s, NumberStyles style = DefaultParseStyle, IFormatProvider formatProvider = null)
+        public static Half Parse(ReadOnlySpan<char> s, NumberStyles style = DefaultParseStyle, IFormatProvider provider = null)
         {
-            return (Half)(float.Parse(s, style, formatProvider));
+            return (Half)(float.Parse(s, style, provider));
         }
 
         public static bool TryParse(string s, out Half result)
         {
-            return TryParse(s, DefaultParseStyle, formatProvider: null, out result);
+            return TryParse(s, DefaultParseStyle, provider: null, out result);
         }
 
         public static bool TryParse(ReadOnlySpan<char> s, out Half result)
         {
-            return TryParse(s, DefaultParseStyle, formatProvider: null, out result);
+            return TryParse(s, DefaultParseStyle, provider: null, out result);
         }
 
-        public static bool TryParse(string s, NumberStyles style, IFormatProvider formatProvider, out Half result)
+        public static bool TryParse(string s, NumberStyles style, IFormatProvider provider, out Half result)
         {
-            return TryParse(s.AsSpan(), style, formatProvider, out result);
+            return TryParse(s.AsSpan(), style, provider, out result);
         }
 
-        public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider formatProvider, out Half result)
+        public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider provider, out Half result)
         {
             bool ret = false;
-            if (float.TryParse(s, style, formatProvider, out float floatResult))
+            if (float.TryParse(s, style, provider, out float floatResult))
             {
                 result = (Half)floatResult;
                 ret = true;
@@ -373,9 +388,20 @@ namespace System.Numerics.Experimental
             return ToString(format: null, formatProvider: null);
         }
 
-        public string ToString(string format = null, IFormatProvider formatProvider = null)
+        public string ToString(string format)
         {
-            return ((float)this).ToString(format, formatProvider);
+            return ((float)this).ToString(format);
+        }
+
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return ((float)this).ToString(formatProvider);
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ((float)this).ToString(format: null, formatProvider);
+
         }
 
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider formatProvider)
