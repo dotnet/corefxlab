@@ -1,0 +1,279 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+namespace System
+{
+    public readonly partial struct TableBasedHalf
+    {
+        // Tables used for conversion to/from float
+        // The tables are an implementation of an algorithm described in "Fast Half Float Conversions", Jeroen van der Zijp, http://www.fox-toolkit.org/ftp/fasthalffloatconversion.pdf
+        private static uint[] s_mantissaTable = new uint[] {
+            0,
+<#
+        for (int i = 1; i < 1024; i++)
+        {
+#>
+            <#=ConvertMantissa(i)#>,
+<#
+        }
+        for (int i = 1024; i < 2048; i++)
+        {
+#>
+            (uint)(0x38000000 + ((<#=i#> - 1024) << 13)),
+<#
+        }
+#>
+        };
+
+        private static uint[] s_exponentTable = new uint[] {
+            0,
+<#
+            for (int i = 1; i < 31; i++)
+            {
+#>
+            (uint)(<#=i#> << 23),
+<#
+            }
+#>
+            0x47800000,
+            0x80000000,
+<#
+            for (int i = 33; i < 63; i++)
+            {
+#>
+            (uint)(0x80000000 + ((<#=i#> - 32) << 23)),
+<#
+            }
+#>
+            0xc7800000,
+        };
+
+        private static ushort[] offsetTable = new ushort[] {
+            0,
+<#
+            for (int i = 1; i < 32; i++)
+            {
+#>
+            1024,
+<#
+            }
+#>
+            0,
+<#
+            for (int i = 33; i < 64; i++)
+            {
+#>
+            1024,
+<#
+            }
+#>
+        };
+
+        private static ushort[] s_baseTable = new ushort[] {
+<#
+            for (int i = 0; i < 512; ++i)
+            {
+                int e = i - 127;
+                if (i >= 256)
+                {
+                    e -= 256;
+                }
+                if (e < -24)
+                { // Very small numbers map to zero
+                    if (i < 256)
+                    {
+#>
+            0x0000,
+<#
+                    }
+                    else
+                    {
+#>
+            0x8000,
+<#
+                    }
+                }
+                else if (e < -14)
+                { 
+                    // Small numbers map to denorms
+                    if (i < 256)
+                    {
+#>
+            0x0400 >> (-14 + <#=-e#>),
+<#
+                    }
+                    else
+                    {
+#>
+            (0x0400 >> (-14 + <#=-e#>)) | 0x8000,
+<#
+                    }
+                }
+                else if (e <= 15)
+                { 
+                    // Normal numbers just lose precision
+                    if (i < 256)
+                    {
+#>
+            (15 + <#=e#>) << 10,
+<#
+                    }
+                    else
+                    {
+#>
+            ((15 + <#=e#>) << 10) | 0x8000,
+<#
+                    }
+                }
+                else if (e < 128)
+                { 
+                    // Large numbers map to Infinity
+                    if (i < 256)
+                    {
+#>
+            0x7C00,
+<#
+                    }
+                    else
+                    {
+#>
+            0xFC00,
+<#
+                    }
+                }
+                else
+                { 
+                    // Infinity and NaN's stay Infinity and NaN's
+                    if (i < 256)
+                    {
+#>
+            0x7C00,
+<#
+                    }
+                    else
+                    {
+#>
+            0xFC00,
+<#
+                    }
+                }
+            }
+#>
+        };
+        
+        private static sbyte[] s_shiftTable = new sbyte[] {
+<#
+            for (int i = 0; i < 512; ++i)
+            {
+                int e = i - 127;
+                if (i >= 256)
+                {
+                    e -= 256;
+                }
+                if (e < -24)
+                { // Very small numbers map to zero
+                    if (i < 256)
+                    {
+#>
+            24,
+<#
+                    }
+                    else
+                    {
+#>
+            24,
+<#
+                    }
+                }
+                else if (e < -14)
+                { 
+                    // Small numbers map to denorms
+                    if (i < 256)
+                    {
+#>
+             -1 + <#=-e#>,
+<#
+                    }
+                    else
+                    {
+#>
+             -1 + <#=-e#>,
+<#
+                    }
+                }
+                else if (e <= 15)
+                { 
+                    // Normal numbers just lose precision
+                    if (i < 256)
+                    {
+#>
+            13,
+<#
+                    }
+                    else
+                    {
+#>
+            13,
+<#
+                    }
+                }
+                else if (e < 128)
+                { 
+                    // Large numbers map to Infinity
+                    if (i < 256)
+                    {
+#>
+            24,
+<#
+                    }
+                    else
+                    {
+#>
+            24,
+<#
+                    }
+                }
+                else
+                { 
+                    // Infinity and NaN's stay Infinity and NaN's
+                    if (i < 256)
+                    {
+#>
+            13,
+<#
+                    }
+                    else
+                    {
+#>
+            13,
+<#
+                    }
+                }
+            }
+#>
+        };
+
+
+<#
+        uint ConvertMantissa(int i)
+        {
+            uint m = (uint)(i << 13); // Zero pad mantissa bits
+            uint e = 0; // Zero exponent
+
+            // While not normalized
+            while ((m & 0x00800000) == 0)
+            {
+                e -= 0x00800000; // Decrement exponent (1<<23)
+                m <<= 1; // Shift mantissa 
+            }
+            m &= unchecked((uint)~0x00800000); // Clear leading 1 bit
+            e += 0x38800000; // Adjust bias ((127-14)<<23)
+            return m | e; // Return combined number
+        }
+#>
+    }
+}
