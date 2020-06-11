@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +24,7 @@ namespace Microsoft.Data.Analysis.Interactive
 
                 var uniqueId = DateTime.Now.Ticks;
 
-                var maxMessage = df.Rows.Count > MAX ? $" (showing a max of {MAX} rows!)" : string.Empty;
+                var maxMessage = df.Rows.Count > MAX ? $" (showing a max of {MAX} rows)" : string.Empty;
                 var title = h3[style: "text-align: center;"]($"DataFrame - {df.Rows.Count} rows {maxMessage}");
 
                 var header = new List<IHtmlContent>
@@ -99,7 +103,7 @@ namespace Microsoft.Data.Analysis.Interactive
             static string BuildHideRowsScript(long uniqueId)
             {
                 var script = $"var allRows = document.querySelectorAll('#table_{uniqueId} tbody tr:nth-child(n)'); ";
-                script += "for (var i = 0; i < allRows.length; i++) { allRows[i].style.display='none'; } ";
+                script += "for (let i = 0; i < allRows.length; i++) { allRows[i].style.display='none'; } ";
                 return script;
             }
 
@@ -107,7 +111,7 @@ namespace Microsoft.Data.Analysis.Interactive
             {
                 var script = $"var page = parseInt(document.querySelector('#page_{uniqueId}').innerHTML) - 1; ";
                 script += $"var pageRows = document.querySelectorAll(`#table_{uniqueId} tbody tr:nth-child(n + ${{page * {size} + 1 }})`); ";
-                script += $"for (var j = 0; j < {size}; j++) {{ pageRows[j].style.display='table-row'; }} ";
+                script += $"for (let j = 0; j < {size}; j++) {{ pageRows[j].style.display='table-row'; }} ";
                 return script;
             }
 
