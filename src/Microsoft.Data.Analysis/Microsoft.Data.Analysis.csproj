@@ -230,10 +230,4 @@
       <CustomToolNamespace>Microsoft.Data</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Data.Analysis.Interactive\Microsoft.Data.Analysis.Interactive.csproj" >
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
