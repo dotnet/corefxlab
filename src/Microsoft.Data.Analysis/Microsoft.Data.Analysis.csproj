@@ -13,6 +13,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Documentation warnings -->
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   
   <ItemGroup>
