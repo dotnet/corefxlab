@@ -6,110 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.VisualBasic.FileIO;
+using System.Globalization;
 
-namespace Microsoft.Data.Analysis
+namespace Microsoft.Data.Analysis.IO
 {
-    public partial class DataFrame
+    public static class DataFrameIO
     {
-        private const int DefaultStreamReaderBufferSize = 1024;
-
-        private static Type GuessKind(int col, List<string[]> read)
+        private static void SetTextFieldParserProperties(TextFieldParser parser)
         {
-            Type res = typeof(string);
-            int nbline = 0;
-            foreach (var line in read)
-            {
-                if (col >= line.Length)
-                    throw new FormatException(string.Format(Strings.LessColumnsThatExpected, nbline + 1));
-
-                string val = line[col];
-
-                if (string.Equals(val, "null", StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                bool boolParse = bool.TryParse(val, out bool boolResult);
-                if (boolParse)
-                {
-                    res = DetermineType(nbline == 0, typeof(bool), res);
-                    ++nbline;
-                    continue;
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(val))
-                    {
-                        res = DetermineType(nbline == 0, typeof(bool), res);
-                        continue;
-                    }
-                }
-                bool floatParse = float.TryParse(val, out float floatResult);
-                if (floatParse)
-                {
-                    res = DetermineType(nbline == 0, typeof(float), res);
-                    ++nbline;
-                    continue;
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(val))
-                    {
-                        res = DetermineType(nbline == 0, typeof(float), res);
-                        continue;
-                    }
-                }
-                res = DetermineType(nbline == 0, typeof(string), res);
-                ++nbline;
-            }
-            return res;
-        }
-
-        private static Type DetermineType(bool first, Type suggested, Type previous)
-        {
-            if (first)
-                return suggested;
-            else
-                return MaxKind(suggested, previous);
-        }
-
-        private static Type MaxKind(Type a, Type b)
-        {
-            if (a == typeof(string) || b == typeof(string))
-                return typeof(string);
-            if (a == typeof(float) || b == typeof(float))
-                return typeof(float);
-            if (a == typeof(bool) || b == typeof(bool))
-                return typeof(bool);
-            return typeof(string);
-        }
-
-        /// <summary>
-        /// Reads a text file as a DataFrame.
-        /// Follows pandas API.
-        /// </summary>
-        /// <param name="filename">filename</param>
-        /// <param name="separator">column separator</param>
-        /// <param name="header">has a header or not</param>
-        /// <param name="columnNames">column names (can be empty)</param>
-        /// <param name="dataTypes">column types (can be empty)</param>
-        /// <param name="numRows">number of rows to read</param>
-        /// <param name="guessRows">number of rows used to guess types</param>
-        /// <param name="addIndexColumn">add one column with the row index</param>
-        /// <param name="encoding">The character encoding. Defaults to UTF8 if not specified</param>
-        /// <returns>DataFrame</returns>
-        public static DataFrame LoadCsv(string filename,
-                                char separator = ',', bool header = true,
-                                string[] columnNames = null, Type[] dataTypes = null,
-                                int numRows = -1, int guessRows = 10,
-                                bool addIndexColumn = false, Encoding encoding = null)
-        {
-            using (Stream fileStream = new FileStream(filename, FileMode.Open))
-            {
-                return LoadCsv(fileStream,
-                                  separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numberOfRowsToRead: numRows,
-                                  guessRows: guessRows, addIndexColumn: addIndexColumn, encoding: encoding);
-            }
+            parser.HasFieldsEnclosedInQuotes = true;
         }
 
         private static string GetColumnName(string[] columnNames, int columnIndex)
@@ -183,29 +89,125 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
+        private static Type MaxKind(Type a, Type b)
+        {
+            if (a == typeof(string) || b == typeof(string))
+                return typeof(string);
+            if (a == typeof(float) || b == typeof(float))
+                return typeof(float);
+            if (a == typeof(bool) || b == typeof(bool))
+                return typeof(bool);
+            return typeof(string);
+        }
+
+        private static Type DetermineType(bool first, Type suggested, Type previous)
+        {
+            if (first)
+                return suggested;
+            else
+                return MaxKind(suggested, previous);
+        }
+
+        private static Type GuessKind(int col, List<string[]> read)
+        {
+            Type res = typeof(string);
+            int nbline = 0;
+            foreach (var line in read)
+            {
+                if (col >= line.Length)
+                    throw new FormatException(string.Format(Strings.LessColumnsThatExpected, nbline + 1));
+
+                string val = line[col];
+
+                if (string.Equals(val, "null", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                bool boolParse = bool.TryParse(val, out bool boolResult);
+                if (boolParse)
+                {
+                    res = DetermineType(nbline == 0, typeof(bool), res);
+                    ++nbline;
+                    continue;
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(val))
+                    {
+                        res = DetermineType(nbline == 0, typeof(bool), res);
+                        continue;
+                    }
+                }
+                bool floatParse = float.TryParse(val, out float floatResult);
+                if (floatParse)
+                {
+                    res = DetermineType(nbline == 0, typeof(float), res);
+                    ++nbline;
+                    continue;
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(val))
+                    {
+                        res = DetermineType(nbline == 0, typeof(float), res);
+                        continue;
+                    }
+                }
+                res = DetermineType(nbline == 0, typeof(string), res);
+                ++nbline;
+            }
+            return res;
+        }
+
         /// <summary>
-        /// Reads a seekable stream of CSV data into a DataFrame.
+        /// Reads a text file as a DataFrame.
         /// Follows pandas API.
         /// </summary>
-        /// <param name="csvStream">stream of CSV data to be read in</param>
+        /// <param name="filename">filename</param>
         /// <param name="separator">column separator</param>
         /// <param name="header">has a header or not</param>
         /// <param name="columnNames">column names (can be empty)</param>
         /// <param name="dataTypes">column types (can be empty)</param>
-        /// <param name="numberOfRowsToRead">number of rows to read not including the header(if present)</param>
+        /// <param name="numRows">number of rows to read</param>
         /// <param name="guessRows">number of rows used to guess types</param>
         /// <param name="addIndexColumn">add one column with the row index</param>
         /// <param name="encoding">The character encoding. Defaults to UTF8 if not specified</param>
-        /// <returns><see cref="DataFrame"/></returns>
-        public static DataFrame LoadCsv(Stream csvStream,
+        /// <param name="cultureInfo">culture info for processing floats/doubles</param>
+        /// <returns>DataFrame</returns>
+        public static DataFrame LoadCsv(string filename,
+                                char separator = ',', bool header = true,
+                                string[] columnNames = null, Type[] dataTypes = null,
+                                int numRows = -1, int guessRows = 10,
+                                bool addIndexColumn = false, Encoding encoding = null,
+                                CultureInfo cultureInfo = null)
+        {
+            using (Stream fileStream = new FileStream(filename, FileMode.Open))
+            {
+                return LoadCsv(() => fileStream, SetTextFieldParserProperties,
+                                  separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numberOfRowsToRead: numRows,
+                                  guessRows: guessRows, addIndexColumn: addIndexColumn, encoding: encoding, cultureInfo: cultureInfo);
+                ;
+            }
+        }
+        public static DataFrame LoadCsv(Func<Stream> csvStream,
+                                Action<TextFieldParser> SetTextFieldParserProperties,
                                 char separator = ',', bool header = true,
                                 string[] columnNames = null, Type[] dataTypes = null,
                                 long numberOfRowsToRead = -1, int guessRows = 10, bool addIndexColumn = false,
-                                Encoding encoding = null)
+                                Encoding encoding = null, CultureInfo cultureInfo = null)
         {
-            if (!csvStream.CanSeek)
+            // if we have a comma separator and the cultureInfo has not been specified by the user, 
+            // we set it to Invariant Culture (since logically floats/doubles wouldn't be represented with commas in this case)
+            if(separator.Equals(',') && cultureInfo is null)
             {
-                throw new ArgumentException(Strings.NonSeekableStream, nameof(csvStream));
+                cultureInfo = CultureInfo.InvariantCulture;
+            }
+
+            Stream stream = csvStream();
+            if (!stream.CanSeek)
+            {
+                throw new ArgumentException(Strings.NonSeekableStream, nameof(stream));
             }
 
             if (dataTypes == null && guessRows <= 0)
@@ -223,19 +225,18 @@ namespace Microsoft.Data.Analysis
             }
 
             List<DataFrameColumn> columns;
-            long streamStart = csvStream.Position;
             // First pass: schema and number of rows.
-            using (var streamReader = new StreamReader(csvStream, encoding ?? Encoding.UTF8, detectEncodingFromByteOrderMarks: true, DefaultStreamReaderBufferSize, leaveOpen: true))
+            using (TextFieldParser parser = new TextFieldParser(stream, defaultEncoding: encoding ?? Encoding.UTF8))
             {
-                string line = null;
-                line = streamReader.ReadLine();
-                while (line != null)
+                parser.SetDelimiters(separator.ToString());
+                SetTextFieldParserProperties(parser);
+                while (!parser.EndOfData)
                 {
                     if ((numberOfRowsToRead == -1) || rowline < numberOfRowsToRead)
                     {
                         if (linesForGuessType.Count < guessRows || (header && rowline == 0))
                         {
-                            var spl = line.Split(separator);
+                            var spl = parser.ReadFields();
                             if (header && rowline == 0)
                             {
                                 if (columnNames == null)
@@ -255,7 +256,6 @@ namespace Microsoft.Data.Analysis
                     {
                         break;
                     }
-                    line = streamReader.ReadLine();
                 }
 
                 if (rowline == 0)
@@ -270,28 +270,27 @@ namespace Microsoft.Data.Analysis
                     Type kind = dataTypes == null ? GuessKind(i, linesForGuessType) : dataTypes[i];
                     columns.Add(CreateColumn(kind, columnNames, i));
                 }
+            }
 
+            using (TextFieldParser parser = new TextFieldParser(csvStream(), defaultEncoding: encoding ?? Encoding.UTF8))
+            { 
+                parser.SetDelimiters(separator.ToString());
+                SetTextFieldParserProperties(parser);
                 DataFrame ret = new DataFrame(columns);
-                line = null;
-                streamReader.DiscardBufferedData();
-                streamReader.BaseStream.Seek(streamStart, SeekOrigin.Begin);
-
                 // Fills values.
-                line = streamReader.ReadLine();
                 rowline = 0;
-                while (line != null && (numberOfRowsToRead == -1 || rowline < numberOfRowsToRead))
+                while (!parser.EndOfData && (numberOfRowsToRead == -1 || rowline < numberOfRowsToRead))
                 {
-                    var spl = line.Split(separator);
+                    var spl = parser.ReadFields();
                     if (header && rowline == 0)
                     {
                         // Skips.
                     }
                     else
                     {
-                        ret.Append(spl, inPlace: true);
+                        ret.Append(spl, inPlace: true, cultureInfo);
                     }
                     ++rowline;
-                    line = streamReader.ReadLine();
                 }
 
                 if (addIndexColumn)

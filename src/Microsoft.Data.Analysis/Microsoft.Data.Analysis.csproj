@@ -248,4 +248,5 @@
       <CustomToolNamespace>Microsoft.Data</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+
 </Project>

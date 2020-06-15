@@ -14,6 +14,94 @@ namespace Microsoft.Data.Analysis.Tests
 {
     public partial class DataFrameTests
     {
+        internal static void VerifyColumnTypes(DataFrame df, bool testArrowStringColumn = false)
+        {
+            foreach (DataFrameColumn column in df.Columns)
+            {
+                Type dataType = column.DataType;
+                if (dataType == typeof(bool))
+                {
+                    Assert.IsType<BooleanDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(decimal))
+                {
+                    Assert.IsType<DecimalDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(byte))
+                {
+                    Assert.IsType<ByteDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(char))
+                {
+                    Assert.IsType<CharDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(double))
+                {
+                    Assert.IsType<DoubleDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(float))
+                {
+                    Assert.IsType<SingleDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(int))
+                {
+                    Assert.IsType<Int32DataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(long))
+                {
+
+                    Assert.IsType<Int64DataFrameColumn>(column);
+                }
+                else if (dataType == typeof(sbyte))
+                {
+                    Assert.IsType<SByteDataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(short))
+                {
+                    Assert.IsType<Int16DataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(uint))
+                {
+                    Assert.IsType<UInt32DataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(ulong))
+                {
+
+                    Assert.IsType<UInt64DataFrameColumn>(column);
+                }
+                else if (dataType == typeof(ushort))
+                {
+                    Assert.IsType<UInt16DataFrameColumn>(column);
+
+                }
+                else if (dataType == typeof(string))
+                {
+                    if (!testArrowStringColumn)
+                    {
+                        Assert.IsType<StringDataFrameColumn>(column);
+                    }
+                    else
+                    {
+                        Assert.IsType<ArrowStringDataFrameColumn>(column);
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException("Unit test has to be updated");
+                }
+            }
+        }
+
         public static DataFrame MakeDataFrameWithTwoColumns(int length, bool withNulls = true)
         {
             DataFrameColumn dataFrameColumn1 = new Int32DataFrameColumn("Int1", Enumerable.Range(0, length).Select(x => x));

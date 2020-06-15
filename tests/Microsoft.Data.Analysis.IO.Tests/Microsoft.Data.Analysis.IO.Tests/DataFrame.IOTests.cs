@@ -1,17 +1,22 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
 using System;
 using System.IO;
 using System.Text;
-using Apache.Arrow;
+using Microsoft.VisualBasic.FileIO;
 using Xunit;
 
-namespace Microsoft.Data.Analysis.Tests
+namespace Microsoft.Data.Analysis.IO.Tests
 {
-    public partial class DataFrameTests
+    public partial class DataFrameIOTests
     {
+        private void SetTextFieldParserProperties(TextFieldParser parser)
+        {
+            parser.HasFieldsEnclosedInQuotes = true;
+        }
+
         internal static void VerifyColumnTypes(DataFrame df, bool testArrowStringColumn = false)
         {
             foreach (DataFrameColumn column in df.Columns)
@@ -113,13 +118,13 @@ CMT,1,1,181,0.6,CSH,4.5";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data));
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties);
             Assert.Equal(4, df.Rows.Count);
             Assert.Equal(7, df.Columns.Count);
             Assert.Equal("CMT", df.Columns["vendor_id"][3]);
             VerifyColumnTypes(df);
 
-            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), numberOfRowsToRead: 3);
+            DataFrame reducedRows = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, numberOfRowsToRead: 3);
             Assert.Equal(3, reducedRows.Rows.Count);
             Assert.Equal(7, reducedRows.Columns.Count);
             Assert.Equal("CMT", reducedRows.Columns["vendor_id"][2]);
@@ -138,13 +143,13 @@ CMT,1,1,181,0.6,CSH,4.5";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data), header: false);
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, header: false);
             Assert.Equal(4, df.Rows.Count);
             Assert.Equal(7, df.Columns.Count);
             Assert.Equal("CMT", df.Columns["Column0"][3]);
             VerifyColumnTypes(df);
 
-            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), header: false, numberOfRowsToRead: 3);
+            DataFrame reducedRows = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, header: false, numberOfRowsToRead: 3);
             Assert.Equal(3, reducedRows.Rows.Count);
             Assert.Equal(7, reducedRows.Columns.Count);
             Assert.Equal("CMT", reducedRows.Columns["Column0"][2]);
@@ -220,7 +225,8 @@ CMT,1,1,181,0.6,CSH,4.5";
             }
 
             string data = header ? headerLine + dataLines : dataLines;
-            DataFrame df = DataFrame.LoadCsv(GetStream(data),
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data),
+                                             SetTextFieldParserProperties,
                                              header: header,
                                              guessRows: guessRows,
                                              dataTypes: new Type[] { typeof(string), typeof(short), typeof(int), typeof(long), typeof(float), typeof(string), typeof(double) }
@@ -229,15 +235,14 @@ CMT,1,1,181,0.6,CSH,4.5";
 
             if (guessRows == 10)
             {
-                df = DataFrame.LoadCsv(GetStream(data),
-                                                 header: header,
-                                                 guessRows: guessRows
-                                                 );
+                df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, header: header,
+                                         guessRows: guessRows);
                 VerifyDataFrameWithNamedColumnsAndDataTypes(df, verifyColumnDataType: false, verifyNames: header);
             }
             else
             {
-                Assert.ThrowsAny<ArgumentException>(() => DataFrame.LoadCsv(GetStream(data),
+                Assert.ThrowsAny<ArgumentException>(() => DataFrameIO.LoadCsv(() => GetStream(data),
+                                                 SetTextFieldParserProperties,
                                                  header: header,
                                                  guessRows: guessRows
                                                  ));
@@ -258,7 +263,7 @@ CMT,1,1,181,0.6,CSH,4.5";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data), dataTypes: new Type[] { typeof(string), typeof(short), typeof(int), typeof(long), typeof(float), typeof(string), typeof(double) });
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, dataTypes: new Type[] { typeof(string), typeof(short), typeof(int), typeof(long), typeof(float), typeof(string), typeof(double) });
             Assert.Equal(5, df.Rows.Count);
             Assert.Equal(7, df.Columns.Count);
 
@@ -314,14 +319,14 @@ CMT|1|1|181|0.6|CSH|4.5";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data), separator: '|');
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, separator: '|');
 
             Assert.Equal(5, df.Rows.Count);
             Assert.Equal(7, df.Columns.Count);
             Assert.Equal("CMT", df.Columns["vendor_id"][4]);
             VerifyColumnTypes(df);
 
-            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), separator: '|', numberOfRowsToRead: 3);
+            DataFrame reducedRows = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, separator: '|', numberOfRowsToRead: 3);
             Assert.Equal(3, reducedRows.Rows.Count);
             Assert.Equal(7, reducedRows.Columns.Count);
             Assert.Equal("CMT", reducedRows.Columns["vendor_id"][2]);
@@ -351,14 +356,14 @@ CMT;1;1;181;0.6;CSH;4.5";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data), separator: ';');
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, separator: ';');
 
             Assert.Equal(5, df.Rows.Count);
             Assert.Equal(7, df.Columns.Count);
             Assert.Equal("CMT", df.Columns["vendor_id"][4]);
             VerifyColumnTypes(df);
 
-            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), separator: ';', numberOfRowsToRead: 3);
+            DataFrame reducedRows = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, separator: ';', numberOfRowsToRead: 3);
             Assert.Equal(3, reducedRows.Rows.Count);
             Assert.Equal(7, reducedRows.Columns.Count);
             Assert.Equal("CMT", reducedRows.Columns["vendor_id"][2]);
@@ -387,14 +392,14 @@ CMT,1,1,181,0.6,CSH,4.5";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data));
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties);
 
             Assert.Equal(4, df.Rows.Count);
             Assert.Equal(7, df.Columns.Count);
             Assert.Equal("CMT", df.Columns["vendor_id"][3]);
             VerifyColumnTypes(df);
 
-            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), numberOfRowsToRead: 3);
+            DataFrame reducedRows = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, numberOfRowsToRead: 3);
             Assert.Equal(3, reducedRows.Rows.Count);
             Assert.Equal(7, reducedRows.Columns.Count);
             Assert.Equal("CMT", reducedRows.Columns["vendor_id"][2]);
@@ -415,7 +420,7 @@ CMT,1,1,181,0.6,CSH,4.5,0";
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
 
-            Assert.Throws<IndexOutOfRangeException>(() => DataFrame.LoadCsv(GetStream(data)));
+            Assert.Throws<IndexOutOfRangeException>(() => DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties));
         }
 
         [Fact]
@@ -432,13 +437,13 @@ CMT,1,1,181,0.6,CSH";
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
 
-            DataFrame df = DataFrame.LoadCsv(GetStream(data));
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties);
             Assert.Equal(4, df.Rows.Count);
             Assert.Equal(6, df.Columns.Count);
             Assert.Equal("CMT", df.Columns["vendor_id"][3]);
             VerifyColumnTypes(df);
 
-            DataFrame reducedRows = DataFrame.LoadCsv(GetStream(data), numberOfRowsToRead: 3);
+            DataFrame reducedRows = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, numberOfRowsToRead: 3);
             Assert.Equal(3, reducedRows.Rows.Count);
             Assert.Equal(6, reducedRows.Columns.Count);
             Assert.Equal("CMT", reducedRows.Columns["vendor_id"][2]);
@@ -461,7 +466,7 @@ null,null,null,null";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data));
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties);
             Assert.Equal(6, df.Rows.Count);
             Assert.Equal(4, df.Columns.Count);
 
@@ -501,7 +506,7 @@ CMT,1,1,null";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data), dataTypes: new Type[] { typeof(string), typeof(short), typeof(int), typeof(long) });
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, dataTypes: new Type[] { typeof(string), typeof(short), typeof(int), typeof(long) });
             Assert.Equal(6, df.Rows.Count);
             Assert.Equal(4, df.Columns.Count);
 
@@ -560,7 +565,7 @@ CMT,1,1,null";
             {
                 return new MemoryStream(Encoding.Default.GetBytes(streamData));
             }
-            DataFrame df = DataFrame.LoadCsv(GetStream(data));
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties);
             Assert.Equal(6, df.Rows.Count);
             Assert.Equal(4, df.Columns.Count);
 
@@ -602,6 +607,51 @@ CMT,1,1,null";
             Assert.Null(df[1, 1]);
             Assert.Null(df[2, 2]);
             Assert.Null(df[5, 3]);
+        }
+
+        [Fact]
+        public void TestReadCsvWithQuotes()
+        {
+            string data = @"vendor_id,rate_code,passenger_count,trip_time_in_secs,trip_distance,payment_type,fare_amount" + Environment.NewLine + 
+"\"CMT, Comma\",1,1,1271,3.8,CRD,17.5" + Environment.NewLine + 
+@"CMT,1,1,474,1.5,CRD,8
+CMT,1,1,637,1.4,CRD,8.5
+CMT,1,1,181,0.6,CSH,4.5";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties);
+            Assert.Equal(4, df.Rows.Count);
+            Assert.Equal(7, df.Columns.Count);
+            Assert.Equal("CMT, Comma", df.Columns["vendor_id"][0]);
+            VerifyColumnTypes(df);
+
+            DataFrame reducedRows = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, numberOfRowsToRead: 3);
+            Assert.Equal(3, reducedRows.Rows.Count);
+            Assert.Equal(7, reducedRows.Columns.Count);
+            Assert.Equal("CMT, Comma", df.Columns["vendor_id"][0]);
+            VerifyColumnTypes(df);
+        }
+
+        [Fact]
+        public void TestReadCsvWithInvalidDoubleValues()
+        {
+            string data = @"date,value
+                18-2-2001,18.4
+                29-9-2010,$22.411
+                1-11-2007,%%812.34";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+
+            DataFrame df = DataFrameIO.LoadCsv(() => GetStream(data), SetTextFieldParserProperties, dataTypes: new Type[] { typeof(string), typeof(double) });
+
+            Assert.True(Double.IsNaN(Convert.ToDouble(df.Columns["value"][1])));
+            Assert.True(Double.IsNaN(Convert.ToDouble(df.Columns["value"][2])));
         }
     }
 }

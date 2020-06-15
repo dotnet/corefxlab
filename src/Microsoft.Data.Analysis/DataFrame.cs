@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 
 namespace Microsoft.Data.Analysis
 {
@@ -456,7 +457,8 @@ namespace Microsoft.Data.Analysis
         /// <remarks>If <paramref name="row"/> is null, a null value is appended to each column</remarks>
         /// <param name="row"></param> 
         /// <param name="inPlace">If set, appends a <paramref name="row"/> in place. Otherwise, a new DataFrame is returned with an appended <paramref name="row"/> </param>
-        public DataFrame Append(IEnumerable<object> row = null, bool inPlace = false)
+        /// <param name="cultureInfo">culture info for processing floats/doubles. Can be null if not loading from a csv file.</param>
+        public DataFrame Append(IEnumerable<object> row = null, bool inPlace = false, CultureInfo cultureInfo = null)
         {
             DataFrame ret = inPlace ? this : Clone();
             IEnumerator<DataFrameColumn> columnEnumerator = ret.Columns.GetEnumerator();
@@ -485,7 +487,23 @@ namespace Microsoft.Data.Analysis
                     }
                     if (value != null)
                     {
-                        value = Convert.ChangeType(value, column.DataType);
+                        try
+                        {
+                            value = Convert.ChangeType(value, column.DataType, cultureInfo);
+                        }
+                        catch(FormatException)
+                        {
+                            Console.WriteLine($"Value \"{value}\" cannot be converted to type {column.DataType} (Column name: {column.Name}). Converting to NaN instead (if possible).");
+
+                            if (column.DataType == typeof(double))
+                            {
+                                value = Double.NaN;
+                            }
+                            else if (column.DataType == typeof(float))
+                            {
+                                value = Single.NaN;
+                            }
+                        }
                         if (value is null)
                         {
                             throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
