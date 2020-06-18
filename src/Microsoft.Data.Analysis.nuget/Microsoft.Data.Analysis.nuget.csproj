@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>true</IsPackable>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <IncludeSymbols>false</IncludeSymbols>
     <VersionPrefix>0.5.0</VersionPrefix>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>This package contains easy-to-use and high-performance libraries for data analysis and transformation.</Description>
