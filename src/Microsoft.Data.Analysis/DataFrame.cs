@@ -493,15 +493,22 @@ namespace Microsoft.Data.Analysis
                         }
                         catch(FormatException)
                         {
-                            Console.WriteLine($"Value \"{value}\" cannot be converted to type {column.DataType} (Column name: {column.Name}). Converting to NaN instead (if possible).");
+                            Console.Write($"Value \"{value}\" cannot be converted to type {column.DataType} (Column name: {column.Name}). ");
 
                             if (column.DataType == typeof(double))
                             {
+                                Console.WriteLine("Converting to Double.NaN instead.");
                                 value = Double.NaN;
                             }
                             else if (column.DataType == typeof(float))
                             {
+                                Console.WriteLine("Converting to Single.NaN instead.");
                                 value = Single.NaN;
+                            }
+                            //throw FormatException with above message
+                            else
+                            {
+                                throw;
                             }
                         }
                         if (value is null)
