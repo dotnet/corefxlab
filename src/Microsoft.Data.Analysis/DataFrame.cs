@@ -316,14 +316,29 @@ namespace Microsoft.Data.Analysis
         /// <param name="numberOfRows">Number of rows in the returned DataFrame</param>
         public DataFrame Sample(int numberOfRows)
         {
-            Random rand = new Random();
-            PrimitiveDataFrameColumn<long> indices = new PrimitiveDataFrameColumn<long>("Indices", numberOfRows);
-            int randMaxValue = (int)Math.Min(Int32.MaxValue, Rows.Count);
-            for (long i = 0; i < numberOfRows; i++)
+            if (numberOfRows > Rows.Count)
             {
-                indices[i] = rand.Next(randMaxValue);
+                throw new ArgumentException(string.Format(Strings.ExceedsNumberOfRows, Rows.Count), nameof(numberOfRows));
+            }
+            
+            int shuffleSize = (int)Math.Min(Int32.MaxValue, Rows.Count);
+            int[] shuffleArray = Enumerable.Range(0, shuffleSize).ToArray();
+            Random rand = new Random();
+            while (shuffleSize > 1)
+            {
+                int randomIndex = rand.Next(shuffleSize--);
+                int temp = shuffleArray[shuffleSize];
+                shuffleArray[shuffleSize] = shuffleArray[randomIndex];
+                shuffleArray[randomIndex] = temp;
             }
 
+            PrimitiveDataFrameColumn<long> indices = new PrimitiveDataFrameColumn<long>("Indices", numberOfRows);
+            
+            for(long i = 0; i < numberOfRows; i++)
+            {
+                indices[i] = shuffleArray[i];
+            }
+            
             return Clone(indices);
         }
 
