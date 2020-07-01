@@ -25,7 +25,7 @@ namespace System.Web.Compatibility.Tests
         [Fact]
         public void HostingEnvironmentSiteNameDoesNotThrow()
         {
-            Assert.Null(HttpContext.Current);
+            Assert.Null(HostingEnvironment.SiteName);
         }
 
         [Fact]
