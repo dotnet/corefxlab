@@ -1,0 +1,7 @@
+# forwarded to netstandard
+T:System.Web.HttpUtility
+
+# implemented
+P:System.Web.HttpContext.Current
+P:System.Web.Hosting.HostingEnvironment.IsHosted
+P:System.Web.Hosting.HostingEnvironment.SiteName

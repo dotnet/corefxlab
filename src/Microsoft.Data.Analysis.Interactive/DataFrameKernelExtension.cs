@@ -24,73 +24,100 @@ namespace Microsoft.Data.Analysis.Interactive
 
                 var uniqueId = DateTime.Now.Ticks;
 
-                var maxMessage = df.Rows.Count > MAX ? $" (showing a max of {MAX} rows)" : string.Empty;
-                var title = h3[style: "text-align: center;"]($"DataFrame - {df.Rows.Count} rows {maxMessage}");
-
-                var header = new List<IHtmlContent>
-                {
-                    th(i("index"))
-                };
-                header.AddRange(df.Columns.Select(c => (IHtmlContent)th(c.Name)));
-
-                // table body
-                var maxRows = Math.Min(MAX, df.Rows.Count);
-                var rows = new List<List<IHtmlContent>>();
-                for (var index = 0; index < Math.Min(MAX, df.Rows.Count); index++)
-                {
-                    var cells = new List<IHtmlContent>
-                    {
-                        td(i((index)))
-                    };
-                    foreach (var obj in df.Rows[index])
-                    {
-                        cells.Add(td(obj));
-                    }
-                    rows.Add(cells);
-                }
-
-                //navigator      
-                var footer = new List<IHtmlContent>();
-                BuildHideRowsScript(uniqueId);
-
                 if (df.Rows.Count > SIZE)
                 {
-                    var paginateScriptFirst = BuildHideRowsScript(uniqueId) + GotoPageIndex(uniqueId, 0) + BuildPageScript(uniqueId, SIZE);
-                    footer.Add(button[style: "margin: 2px;", onclick: paginateScriptFirst]("⏮"));
+                    var maxMessage = df.Rows.Count > MAX ? $" (showing a max of {MAX} rows)" : string.Empty;
+                    var title = h3[style: "text-align: center;"]($"DataFrame - {df.Rows.Count} rows {maxMessage}");
 
-                    var paginateScriptPrevTen = BuildHideRowsScript(uniqueId) + UpdatePageIndex(uniqueId, -10, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
-                    footer.Add(button[style: "margin: 2px;", onclick: paginateScriptPrevTen]("⏪"));
+                    var header = new List<IHtmlContent>
+                    {
+                        th(i("index"))
+                    };
+                    header.AddRange(df.Columns.Select(c => (IHtmlContent)th(c.Name)));
 
-                    var paginateScriptPrev = BuildHideRowsScript(uniqueId) + UpdatePageIndex(uniqueId, -1, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
-                    footer.Add(button[style: "margin: 2px;", onclick: paginateScriptPrev]("◀️"));
+                    // table body
+                    var maxRows = Math.Min(MAX, df.Rows.Count);
+                    var rows = new List<List<IHtmlContent>>();
+                    for (var index = 0; index < Math.Min(MAX, df.Rows.Count); index++)
+                    {
+                        var cells = new List<IHtmlContent>
+                        {
+                            td(i((index)))
+                        };
+                        foreach (var obj in df.Rows[index])
+                        {
+                            cells.Add(td(obj));
+                        }
+                        rows.Add(cells);
+                    }
 
-                    footer.Add(b[style: "margin: 2px;"]("Page"));
-                    footer.Add(b[id: $"page_{uniqueId}", style: "margin: 2px;"]("1"));
+                    //navigator      
+                    var footer = new List<IHtmlContent>();
+                    BuildHideRowsScript(uniqueId);
 
-                    var paginateScriptNext = BuildHideRowsScript(uniqueId) + UpdatePageIndex(uniqueId, 1, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
-                    footer.Add(button[style: "margin: 2px;", onclick: paginateScriptNext]("▶️"));
+                    if (df.Rows.Count > SIZE)
+                    {
+                        var paginateScriptFirst = BuildHideRowsScript(uniqueId) + GotoPageIndex(uniqueId, 0) + BuildPageScript(uniqueId, SIZE);
+                        footer.Add(button[style: "margin: 2px;", onclick: paginateScriptFirst]("⏮"));
 
-                    var paginateScriptNextTen = BuildHideRowsScript(uniqueId) + UpdatePageIndex(uniqueId, 10, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
-                    footer.Add(button[style: "margin: 2px;", onclick: paginateScriptNextTen]("⏩"));
+                        var paginateScriptPrevTen = BuildHideRowsScript(uniqueId) + UpdatePageIndex(uniqueId, -10, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
+                        footer.Add(button[style: "margin: 2px;", onclick: paginateScriptPrevTen]("⏪"));
 
-                    var paginateScriptLast = BuildHideRowsScript(uniqueId) + GotoPageIndex(uniqueId, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
-                    footer.Add(button[style: "margin: 2px;", onclick: paginateScriptLast]("⏭️"));
+                        var paginateScriptPrev = BuildHideRowsScript(uniqueId) + UpdatePageIndex(uniqueId, -1, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
+                        footer.Add(button[style: "margin: 2px;", onclick: paginateScriptPrev]("◀️"));
+
+                        footer.Add(b[style: "margin: 2px;"]("Page"));
+                        footer.Add(b[id: $"page_{uniqueId}", style: "margin: 2px;"]("1"));
+
+                        var paginateScriptNext = BuildHideRowsScript(uniqueId) + UpdatePageIndex(uniqueId, 1, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
+                        footer.Add(button[style: "margin: 2px;", onclick: paginateScriptNext]("▶️"));
+
+                        var paginateScriptNextTen = BuildHideRowsScript(uniqueId) + UpdatePageIndex(uniqueId, 10, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
+                        footer.Add(button[style: "margin: 2px;", onclick: paginateScriptNextTen]("⏩"));
+
+                        var paginateScriptLast = BuildHideRowsScript(uniqueId) + GotoPageIndex(uniqueId, (maxRows - 1) / SIZE) + BuildPageScript(uniqueId, SIZE);
+                        footer.Add(button[style: "margin: 2px;", onclick: paginateScriptLast]("⏭️"));
+                    }
+                    else
+                    {
+                        BuildHideRowsScript(uniqueId);
+                        footer.Add(b[style: "margin: 2px;"]("Page"));
+                        footer.Add(b[id: $"page_{uniqueId}", style: "margin: 2px;"]("0"));
+                    }
+
+                    //table
+                    var t = table[id: $"table_{uniqueId}"](
+                        caption(title),
+                        thead(tr(header)),
+                        tbody(rows.Select(r => tr[style: "display: none"](r))),
+                        tfoot(tr(td[colspan: df.Columns.Count + 1, style: "text-align: center;"](footer)))
+                    );
+                    writer.Write(t);
+
                 }
                 else
                 {
-                    BuildHideRowsScript(uniqueId);
-                    footer.Add(b[style: "margin: 2px;"]("Page"));
-                    footer.Add(b[id: $"page_{uniqueId}", style: "margin: 2px;"]("0"));
-                }
+                    var rows = new List<List<IHtmlContent>>();
+                    for (var index = 0; index < df.Rows.Count; index++)
+                    {
+                        var cells = new List<IHtmlContent>
+                        {
+                            td(i((index)))
+                        };
+                        foreach (var obj in df.Rows[index])
+                        {
+                            cells.Add(td(obj));
+                        }
+                        rows.Add(cells);
+                    }
 
-                //table
-                var t = table[id: $"table_{uniqueId}"](
-                    caption(title),
-                    thead(tr(header)),
-                    tbody(rows.Select(r => tr[style: "display: none"](r))),
-                    tfoot(tr(td[colspan: df.Columns.Count + 1, style: "text-align: center;"](footer)))
-                );
-                writer.Write(t);
+                    //table
+                    var t = table[id: $"table_{uniqueId}"](
+                        thead(tr(header)),
+                        tbody(rows.Select(r => tr(r)))
+                    );
+                    writer.Write(t);
+                }
 
                 //show first page
                 writer.Write($"<script>{BuildPageScript(uniqueId, SIZE)}</script>");
