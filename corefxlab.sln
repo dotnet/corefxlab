@@ -119,11 +119,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.CaseFolding", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.Analysis.Interactive", "src\Microsoft.Data.Analysis.Interactive\Microsoft.Data.Analysis.Interactive.csproj", "{0C11386C-E3CC-45EB-B932-9297A8DD6649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Data.Analysis.nuget", "src\Microsoft.Data.Analysis.nuget\Microsoft.Data.Analysis.nuget.csproj", "{D4B13DCE-913F-41BE-B132-ED2175848DA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Data.Analysis.nuget", "src\Microsoft.Data.Analysis.nuget\Microsoft.Data.Analysis.nuget.csproj", "{D4B13DCE-913F-41BE-B132-ED2175848DA4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Web.Compatibility", "src\System.Web.Compatibility\System.Web.Compatibility.csproj", "{1051DFD2-A38C-4368-8FF7-CC7046F90161}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Web.Compatibility.Tests", "tests\System.Web.Compatibility.Tests\System.Web.Compatibility.Tests.csproj", "{904B608D-0D3A-4019-A70A-AAFE0DBC92C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Data.Analysis.Interactive.Tests", "tests\Microsoft.Data.Analysis.Interactive.Tests\Microsoft.Data.Analysis.Interactive.Tests.csproj", "{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -795,6 +797,18 @@ Global
 		{904B608D-0D3A-4019-A70A-AAFE0DBC92C4}.Release|x64.Build.0 = Release|Any CPU
 		{904B608D-0D3A-4019-A70A-AAFE0DBC92C4}.Release|x86.ActiveCfg = Release|Any CPU
 		{904B608D-0D3A-4019-A70A-AAFE0DBC92C4}.Release|x86.Build.0 = Release|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Debug|x64.Build.0 = Debug|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Debug|x86.Build.0 = Debug|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Release|x64.ActiveCfg = Release|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Release|x64.Build.0 = Release|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -855,6 +869,7 @@ Global
 		{D4B13DCE-913F-41BE-B132-ED2175848DA4} = {4B000021-5278-4F2A-B734-DE49F55D4024}
 		{1051DFD2-A38C-4368-8FF7-CC7046F90161} = {4B000021-5278-4F2A-B734-DE49F55D4024}
 		{904B608D-0D3A-4019-A70A-AAFE0DBC92C4} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
+		{C4DEF44E-2FAA-4887-9C7F-36D54A4E975D} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9DD4022C-A010-4A9B-BCC5-171566D4CB17}
