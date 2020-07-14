@@ -5,3 +5,7 @@ T:System.Web.HttpUtility
 P:System.Web.HttpContext.Current
 P:System.Web.Hosting.HostingEnvironment.IsHosted
 P:System.Web.Hosting.HostingEnvironment.SiteName
+T:System.Web.Routing.RequestContext
+T:System.Web.Routing.RouteData
+T:System.Web.Routing.RouteValueDictionary
+T:System.Web.Routing.StopRoutingHandler

@@ -68,5 +68,14 @@ namespace System.Web {
                 return ResourceManager.GetString("PlatformNotSupportedSystemWeb", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The RouteData must contain an item named &apos;{0}&apos; with a non-empty string value..
+        /// </summary>
+        internal static string RouteData_RequiredValue {
+            get {
+                return ResourceManager.GetString("RouteData_RequiredValue", resourceCulture);
+            }
+        }
     }
 }
