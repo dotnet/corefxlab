@@ -120,4 +120,7 @@
   <data name="PlatformNotSupportedSystemWeb" xml:space="preserve">
     <value>System.Web is not supported on this platform</value>
   </data>
+  <data name="RouteData_RequiredValue" xml:space="preserve">
+    <value>The RouteData must contain an item named '{0}' with a non-empty string value.</value>
+  </data>
 </root>
