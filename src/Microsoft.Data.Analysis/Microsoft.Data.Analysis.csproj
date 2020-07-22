@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SuppressFinalPackageVersion>false</SuppressFinalPackageVersion>
@@ -11,25 +11,27 @@
     <PackageReleaseNotes>Initial preview of robust and extensible types and algorithms for manipulating structured data that supports aggregations, statistical funtions, sorting, grouping, joins, merges, handling missing values and more. </PackageReleaseNotes>
     <PackageTags>ML.NET ML Machine Learning Data Science DataFrame Preparation DataView Analytics Exploration</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- Documentation warnings -->
-    <NoWarn>$(NoWarn);1591</NoWarn>
-    <TargetsForTfmSpecificBuildOutput>GatherProjectReferenceAssets</TargetsForTfmSpecificBuildOutput>
+    <!-- 
+      1591: Documentation warnings
+      NU5100: Warning that gets triggered because a .dll is not placed under lib folder on package. This is by design as we want MDAI to be under interactive-extensions folder.
+       -->
+    <NoWarn>$(NoWarn);1591;NU5100</NoWarn>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddMDAIToInteractiveExtensionsFolder</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 
-  <!-- The following properties are set to package M.D.A.Interactive with the M.D.A nuget package. If M.D.A.I undergoes TFM or dependency changes, we need to update the dependencies below-->
-  <Target Name="GatherProjectReferenceAssets" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+  <!-- The following properties are set to package M.D.A.Interactive with the M.D.A nuget package. If M.D.A.I undergoes TFM or dependency changes, we need to update the TargetFramework passed in below-->
+  <Target Name="AddMDAIToInteractiveExtensionsFolder">
     <MSBuild Projects="./../Microsoft.Data.Analysis.Interactive/Microsoft.Data.Analysis.Interactive.csproj"
              Targets="_GetBuildOutputFilesWithTfm"
-             Properties="TargetFramework=$(TargetFramework)">
-      <Output TaskParameter="TargetOutputs" ItemName="BuildOutputInPackage" />
+             Properties="TargetFramework=netcoreapp3.1"> <!-- Manually hardcoding the TargetFramework to netcoreapp3.1 as that is the one that MDAI targets -->
+      <Output TaskParameter="TargetOutputs" ItemName="_ItemsToIncludeForInteractive" />
     </MSBuild>
-  </Target>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.24" />
-    <PackageReference Include="Microsoft.DotNet.Interactive" Version="1.0.0-beta.20154.7" />
-    <PackageReference Include="Microsoft.DotNet.Interactive.Formatting" Version="1.0.0-beta.20154.7" />
-  </ItemGroup>
+    <ItemGroup>
+      <_ItemsToIncludeForInteractive Update="@(_ItemsToIncludeForInteractive)" PackagePath="interactive-extensions/dotnet" />
+      <TfmSpecificPackageFile Include="@(_ItemsToIncludeForInteractive)" />
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <None Include="Converters.cs">
