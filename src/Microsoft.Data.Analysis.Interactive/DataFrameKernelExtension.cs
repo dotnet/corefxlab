@@ -45,7 +45,7 @@ namespace Microsoft.Data.Analysis.Interactive
                     // table body
                     var maxRows = Math.Min(MAX, df.Rows.Count);
                     var rows = new List<List<IHtmlContent>>();
-                    for (var index = 0; index < Math.Min(MAX, df.Rows.Count); index++)
+                    for (var index = 0; index < maxRows; index++)
                     {
                         var cells = new List<IHtmlContent>
                         {
