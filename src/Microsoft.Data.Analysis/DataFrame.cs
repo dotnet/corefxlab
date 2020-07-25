@@ -331,13 +331,9 @@ namespace Microsoft.Data.Analysis
                 shuffleArray[shuffleSize] = shuffleArray[randomIndex];
                 shuffleArray[randomIndex] = temp;
             }
+            ArraySegment<int> segment = new ArraySegment<int>(shuffleArray, 0, numberOfRows);
 
-            PrimitiveDataFrameColumn<long> indices = new PrimitiveDataFrameColumn<long>("Indices", numberOfRows);
-            
-            for(long i = 0; i < numberOfRows; i++)
-            {
-                indices[i] = shuffleArray[i];
-            }
+            PrimitiveDataFrameColumn<int> indices = new PrimitiveDataFrameColumn<int>("indices", segment);
             
             return Clone(indices);
         }
