@@ -15,7 +15,7 @@ namespace Microsoft.Data.Analysis.Interactive
 {
     public class DataFrameKernelExtension : IKernelExtension
     {
-        public Task OnLoadAsync(IKernel kernel)
+        public Task OnLoadAsync(Kernel kernel)
         {
             RegisterDataFrame();
 
