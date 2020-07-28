@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Microsoft.Data.Analysis
@@ -109,6 +110,56 @@ namespace Microsoft.Data.Analysis
                 return LoadCsv(fileStream,
                                   separator: separator, header: header, columnNames: columnNames, dataTypes: dataTypes, numberOfRowsToRead: numRows,
                                   guessRows: guessRows, addIndexColumn: addIndexColumn, encoding: encoding);
+            }
+        }
+
+        public static void WriteCsv(DataFrame dataFrame, string filename,
+                           char separator = ',', bool header = true,
+                           bool addIndexColumn = false, Encoding encoding = null)
+        {
+            using (FileStream csvStream = new FileStream(filename, FileMode.Create))
+            {
+                WriteCsv(dataFrame: dataFrame, csvStream: csvStream,
+                           separator: separator, header: header,
+                           addIndexColumn: addIndexColumn, encoding: encoding);
+            }
+        }
+
+        public static void WriteCsv(DataFrame dataFrame, Stream csvStream,
+                           char separator = ',', bool header = true,
+                           bool addIndexColumn = false, Encoding encoding = null)
+        {
+            using (StreamWriter csvFile = new StreamWriter(csvStream, encoding))
+            {
+                if (dataFrame != null)
+                {
+                    List<string> selectedColumnNames = dataFrame.Columns.GetColumnNames().ToList();
+
+                    if (addIndexColumn)
+                    {
+                        selectedColumnNames.Insert(0, "index");
+                    }
+
+                    if (header)
+                    {
+                        var headerColumns = string.Join(separator.ToString(), selectedColumnNames);
+                        csvFile.WriteLine(headerColumns);
+                    }
+
+                    var index = 0;
+                    foreach (var row in dataFrame.Rows)
+                    {
+                        var rowCells = row.ToList();
+
+                        if (addIndexColumn)
+                        {
+                            rowCells.Insert(0, index++);
+                        }
+                        var rowValues = string.Join(separator.ToString(), rowCells);
+
+                        csvFile.WriteLine(rowValues);
+                    }
+                }
             }
         }
 
