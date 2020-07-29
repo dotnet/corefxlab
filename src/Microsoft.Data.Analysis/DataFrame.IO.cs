@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Microsoft.Data.Analysis
@@ -304,6 +305,76 @@ namespace Microsoft.Data.Analysis
                     columns.Insert(0, indexColumn);
                 }
                 return ret;
+            }
+        }
+
+        /// <summary>
+        /// Writes a DataFrame into a CSV.
+        /// Follows pandas API.
+        /// </summary>
+        /// <param name="dataFrame"><see cref="DataFrame"/></param>
+        /// <param name="path">CSV file path</param>
+        /// <param name="separator">column separator</param>
+        /// <param name="header">has a header or not</param>
+        /// <param name="addIndexColumn">add one column with the row index</param>
+        /// <param name="encoding">The character encoding. Defaults to UTF8 if not specified</param>
+        public static void WriteCsv(DataFrame dataFrame, string path,
+                                   char separator = ',', bool header = true,
+                                   bool addIndexColumn = false, Encoding encoding = null)
+        {
+            using (FileStream csvStream = new FileStream(path, FileMode.Create))
+            {
+                WriteCsv(dataFrame: dataFrame, csvStream: csvStream,
+                           separator: separator, header: header,
+                           addIndexColumn: addIndexColumn, encoding: encoding);
+            }
+        }
+
+        /// <summary>
+        /// Writes a DataFrame into a CSV.
+        /// Follows pandas API.
+        /// </summary>
+        /// <param name="dataFrame"><see cref="DataFrame"/></param>
+        /// <param name="csvStream">stream of CSV data to be write out</param>
+        /// <param name="separator">column separator</param>
+        /// <param name="header">has a header or not</param>
+        /// <param name="addIndexColumn">add one column with the row index</param>
+        /// <param name="encoding">The character encoding. Defaults to UTF8 if not specified</param>
+        public static void WriteCsv(DataFrame dataFrame, Stream csvStream,
+                           char separator = ',', bool header = true,
+                           bool addIndexColumn = false, Encoding encoding = null)
+        {
+            using (StreamWriter csvFile = new StreamWriter(csvStream, encoding ?? Encoding.UTF8))
+            {
+                if (dataFrame != null)
+                {
+                    List<string> selectedColumnNames = dataFrame.Columns.GetColumnNames().ToList();
+
+                    if (addIndexColumn)
+                    {
+                        selectedColumnNames.Insert(0, "index");
+                    }
+
+                    if (header)
+                    {
+                        var headerColumns = string.Join(separator.ToString(), selectedColumnNames);
+                        csvFile.WriteLine(headerColumns);
+                    }
+
+                    var index = 0;
+                    foreach (var row in dataFrame.Rows)
+                    {
+                        var rowCells = row.ToList();
+
+                        if (addIndexColumn)
+                        {
+                            rowCells.Insert(0, index++);
+                        }
+                        var rowValues = string.Join(separator.ToString(), rowCells);
+
+                        csvFile.WriteLine(rowValues);
+                    }
+                }
             }
         }
     }
