@@ -154,14 +154,12 @@ CMT,1,1,181,0.6,CSH,4.5";
         [Fact]
         public void TestWriteCsvWithHeader()
         {
-            //HERE
-            
             using MemoryStream csvStream = new MemoryStream();
             DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10, true);
 
             DataFrame.WriteCsv(dataFrame, csvStream);
 
-            var text = Encoding.ASCII.GetString(csvStream.ToArray());
+            var text = Encoding.UTF8.GetString(csvStream.ToArray());
             var rows = text.Split('\n');
             var headerColumns = rows[0].Split(',');
             var rowColumns = rows[1].Split(',');
@@ -173,14 +171,12 @@ CMT,1,1,181,0.6,CSH,4.5";
         [Fact]
         public void TestWriteCsvWithIndexColumn()
         {
-            //HERE
-
             using MemoryStream csvStream = new MemoryStream();
             DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10, true);
 
             DataFrame.WriteCsv(dataFrame, csvStream, addIndexColumn: true);
 
-            var text = Encoding.ASCII.GetString(csvStream.ToArray());
+            var text = Encoding.UTF8.GetString(csvStream.ToArray());
             var rows = text.Split('\n');
             var headerColumns = rows[0].Split(',');
             var rowColumns = rows[1].Split(',');
@@ -193,34 +189,30 @@ CMT,1,1,181,0.6,CSH,4.5";
         [Fact]
         public void TestWriteCsvWithNoHeader()
         {
-            //HERE
-
             using MemoryStream csvStream = new MemoryStream();
             DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10, true);
 
             DataFrame.WriteCsv(dataFrame, csvStream, header: false);
 
-            var text = Encoding.ASCII.GetString(csvStream.ToArray());
+            var text = Encoding.UTF8.GetString(csvStream.ToArray());
             var rows = text.Split('\n');
             var rowColumns = rows[0].Split(',');
             Assert.Equal(11, rows.Length);
             Assert.Equal(15, rowColumns.Length);
-            Assert.Equal("0", rowColumns[0]);
+            Assert.Equal("True", rowColumns[13]);
             Assert.Equal("A", rowColumns[12]);
         }
 
         [Fact]
         public void TestWriteCsvWithSemicolonSeparator()
         {
-            //HERE
-
             using MemoryStream csvStream = new MemoryStream();
             DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10, true);
 
             var separator = ':';
             DataFrame.WriteCsv(dataFrame, csvStream, separator: separator);
 
-            var text = Encoding.ASCII.GetString(csvStream.ToArray());
+            var text = Encoding.UTF8.GetString(csvStream.ToArray());
             var rows = text.Split('\n');
             var headerColumns = rows[0].Split(separator);
             var rowColumns = rows[1].Split(separator);

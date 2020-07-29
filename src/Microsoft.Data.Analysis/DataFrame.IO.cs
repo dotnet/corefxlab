@@ -129,7 +129,7 @@ namespace Microsoft.Data.Analysis
                            char separator = ',', bool header = true,
                            bool addIndexColumn = false, Encoding encoding = null)
         {
-            using (StreamWriter csvFile = new StreamWriter(csvStream, encoding))
+            using (StreamWriter csvFile = new StreamWriter(csvStream, encoding ?? Encoding.UTF8))
             {
                 if (dataFrame != null)
                 {
