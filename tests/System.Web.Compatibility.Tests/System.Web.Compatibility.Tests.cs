@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Web;
 using System.Web.Hosting;
 using Xunit;
 
@@ -17,6 +16,28 @@ namespace System.Web.Compatibility.Tests
         }
 
         [Fact]
+        public void HttpContextItemsGetDoesNotThrow()
+        {
+            var context = new HttpContext(new HttpRequest(null, null, null), new HttpResponse(null));
+
+            Assert.Null(context.Items);
+        }
+
+        [Fact]
+        public void HttpContextUserGetDoesNotThrow()
+        {
+            var context = new HttpContext(new HttpRequest(null, null, null), new HttpResponse(null));
+
+            Assert.Null(context.User);
+        }
+
+        [Fact]
+        public void HostingEnvironmentApplicationPathGetDoesNotThrow()
+        {
+            Assert.Null(HostingEnvironment.ApplicationPath);
+        }
+
+        [Fact]
         public void HostingEnvironmentIsHostedDoesNotThrow()
         {
             Assert.False(HostingEnvironment.IsHosted);
@@ -26,6 +47,12 @@ namespace System.Web.Compatibility.Tests
         public void HostingEnvironmentSiteNameDoesNotThrow()
         {
             Assert.Null(HostingEnvironment.SiteName);
+        }
+
+        [Fact]
+        public void HostingEnvironmentMapPathDoesNotThrow()
+        {
+            Assert.Null(HostingEnvironment.MapPath(null));
         }
 
         [Fact]
