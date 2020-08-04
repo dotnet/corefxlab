@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security.Principal;
 
@@ -28,6 +29,18 @@ namespace System.Web
             get => null;
             set => throw new PlatformNotSupportedException(Strings.PlatformNotSupportedSystemWeb);
         }
+
+        public HttpContext(HttpRequest request, HttpResponse response) { }
+    }
+
+    public sealed partial class HttpRequest
+    {
+        public HttpRequest(string filename, string url, string queryString) { }
+    }
+
+    public sealed partial class HttpResponse
+    {
+        public HttpResponse(TextWriter writer) { }
     }
 }
 

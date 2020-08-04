@@ -5,6 +5,9 @@ T:System.Web.HttpUtility
 P:System.Web.HttpContext.Current
 P:System.Web.HttpContext.Items
 P:System.Web.HttpContext.User
+M:System.Web.HttpContext.#ctor(System.Web.HttpRequest request, System.Web.HttpResponse response)
+M:System.Web.HttpRequest.#ctor(System.String, System.String, System.String)
+M:System.Web.HttpResponse.#ctor(System.IO.TextWriter)
 P:System.Web.Hosting.HostingEnvironment.ApplicationPath
 P:System.Web.Hosting.HostingEnvironment.IsHosted
 P:System.Web.Hosting.HostingEnvironment.SiteName
