@@ -16,7 +16,7 @@ namespace System.Web
         public static HttpContext Current
         {
             get => null;
-            set => throw new PlatformNotSupportedException(Strings.PlatformNotSupportedSystemWeb);
+            set => throw new PlatformNotSupportedException(SR.PlatformNotSupportedSystemWeb);
         }
 
         public IDictionary Items
@@ -27,7 +27,7 @@ namespace System.Web
         public IPrincipal User
         {
             get => null;
-            set => throw new PlatformNotSupportedException(Strings.PlatformNotSupportedSystemWeb);
+            set => throw new PlatformNotSupportedException(SR.PlatformNotSupportedSystemWeb);
         }
 
         public HttpContext(HttpRequest request, HttpResponse response) { }
@@ -61,14 +61,14 @@ namespace System.Web.UI
     // There appears to be a bug in GenAPI where it emits internal abstract members but doesn't emit the internal implementations in derived types
     public sealed partial class PageParser
     {
-        internal override string UnknownOutputCacheAttributeError => throw new PlatformNotSupportedException(Strings.PlatformNotSupportedSystemWeb);
+        internal override string UnknownOutputCacheAttributeError => throw new PlatformNotSupportedException(SR.PlatformNotSupportedSystemWeb);
     }
     public partial class StaticPartialCachingControl
     {
-        internal override Control CreateCachedControl() => throw new PlatformNotSupportedException(Strings.PlatformNotSupportedSystemWeb);
+        internal override Control CreateCachedControl() => throw new PlatformNotSupportedException(SR.PlatformNotSupportedSystemWeb);
     }
     public partial class PartialCachingControl
     {
-        internal override Control CreateCachedControl() => throw new PlatformNotSupportedException(Strings.PlatformNotSupportedSystemWeb);
+        internal override Control CreateCachedControl() => throw new PlatformNotSupportedException(SR.PlatformNotSupportedSystemWeb);
     }
 }
