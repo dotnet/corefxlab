@@ -16,6 +16,22 @@ namespace System.Web.Compatibility.Tests
             Assert.Null(HttpContext.Current);
         }
 
+        /*
+        [Fact]
+        public void HttpContextItemsDoesNotThrow()
+        {
+            var context = new HttpContext(new HttpRequest(string.Empty, string.Empty, string.Empty), new HttpResponse());
+
+            Assert.Null(context.Items);
+        }
+        */
+
+        [Fact]
+        public void HostingEnvironmentApplicationPathGetDoesNotThrow()
+        {
+            Assert.Null(HostingEnvironment.ApplicationPath);
+        }
+
         [Fact]
         public void HostingEnvironmentIsHostedDoesNotThrow()
         {
@@ -26,6 +42,12 @@ namespace System.Web.Compatibility.Tests
         public void HostingEnvironmentSiteNameDoesNotThrow()
         {
             Assert.Null(HostingEnvironment.SiteName);
+        }
+
+        [Fact]
+        public void HostingEnvironmentMapPathDoesNotThrow()
+        {
+            Assert.Null(HostingEnvironment.MapPath(null));
         }
 
         [Fact]

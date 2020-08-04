@@ -3,8 +3,12 @@ T:System.Web.HttpUtility
 
 # implemented
 P:System.Web.HttpContext.Current
+P:System.Web.HttpContext.Items
+P:System.Web.HttpContext.User
+P:System.Web.Hosting.HostingEnvironment.ApplicationPath
 P:System.Web.Hosting.HostingEnvironment.IsHosted
 P:System.Web.Hosting.HostingEnvironment.SiteName
+M:System.Web.Hosting.HostingEnvironment.MapPath
 T:System.Web.Routing.RequestContext
 T:System.Web.Routing.RouteData
 T:System.Web.Routing.RouteValueDictionary
