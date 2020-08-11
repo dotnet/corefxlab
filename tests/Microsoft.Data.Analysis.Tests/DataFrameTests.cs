@@ -802,32 +802,42 @@ namespace Microsoft.Data.Analysis.Tests
             df.Columns["Int"][0] = 100;
             df.Columns["Int"][19] = -1;
             df.Columns["Int"][5] = 2000;
+            df.Columns["Int"][6] = null;
+            df.Columns["Int"][7] = null;
 
             // Sort by "Int" in ascending order
             var sortedDf = df.OrderBy("Int");
-            Assert.Null(sortedDf.Columns["Int"][19]);
             Assert.Equal(-1, sortedDf.Columns["Int"][0]);
-            Assert.Equal(100, sortedDf.Columns["Int"][17]);
-            Assert.Equal(2000, sortedDf.Columns["Int"][18]);
+            Assert.Equal(12, sortedDf.Columns["Int"][8]);
+            Assert.Equal(14, sortedDf.Columns["Int"][10]);
+            Assert.Equal(2000, sortedDf.Columns["Int"][16]);
+            Assert.Null(sortedDf.Columns["Int"][17]);
+            Assert.Null(sortedDf.Columns["Int"][19]);
 
             // Sort by "Int" in descending order
             sortedDf = df.OrderByDescending("Int");
             Assert.Null(sortedDf.Columns["Int"][19]);
-            Assert.Equal(-1, sortedDf.Columns["Int"][18]);
+            Assert.Null(sortedDf.Columns["Int"][17]);
+            Assert.Equal(-1, sortedDf.Columns["Int"][16]);
+            Assert.Equal(11, sortedDf.Columns["Int"][9]);
             Assert.Equal(100, sortedDf.Columns["Int"][1]);
             Assert.Equal(2000, sortedDf.Columns["Int"][0]);
 
             // Sort by "String" in ascending order
             sortedDf = df.OrderBy("String");
-            Assert.Null(sortedDf.Columns["Int"][19]);
             Assert.Equal(1, sortedDf.Columns["Int"][1]);
-            Assert.Equal(8, sortedDf.Columns["Int"][17]);
+            Assert.Equal(14, sortedDf.Columns["Int"][5]);
+            Assert.Equal(2000, sortedDf.Columns["Int"][14]);
+            Assert.Null(sortedDf.Columns["Int"][15]);
             Assert.Equal(9, sortedDf.Columns["Int"][18]);
+            Assert.Null(sortedDf.Columns["Int"][19]);
 
             // Sort by "String" in descending order
             sortedDf = df.OrderByDescending("String");
             Assert.Null(sortedDf.Columns["Int"][19]);
-            Assert.Equal(8, sortedDf.Columns["Int"][1]);
+            Assert.Equal(14, sortedDf.Columns["Int"][13]);
+            Assert.Equal(-1, sortedDf.Columns["Int"][8]);
+            Assert.Equal(2000, sortedDf.Columns["Int"][4]);
             Assert.Equal(9, sortedDf.Columns["Int"][0]);
         }
 
