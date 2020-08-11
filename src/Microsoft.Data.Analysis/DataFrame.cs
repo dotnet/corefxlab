@@ -320,18 +320,21 @@ namespace Microsoft.Data.Analysis
             {
                 throw new ArgumentException(string.Format(Strings.ExceedsNumberOfRows, Rows.Count), nameof(numberOfRows));
             }
+
+            int shuffleLowerLimit = 0;
+            int shuffleUpperLimit = (int)Math.Min(Int32.MaxValue, Rows.Count);
             
-            int shuffleSize = (int)Math.Min(Int32.MaxValue, Rows.Count);
-            int[] shuffleArray = Enumerable.Range(0, shuffleSize).ToArray();
+            int[] shuffleArray = Enumerable.Range(0, shuffleUpperLimit).ToArray();
             Random rand = new Random();
-            while (shuffleSize > 1)
+            while (shuffleLowerLimit < numberOfRows)
             {
-                int randomIndex = rand.Next(shuffleSize--);
-                int temp = shuffleArray[shuffleSize];
-                shuffleArray[shuffleSize] = shuffleArray[randomIndex];
+                int randomIndex = rand.Next(shuffleLowerLimit, shuffleUpperLimit);
+                int temp = shuffleArray[shuffleLowerLimit];
+                shuffleArray[shuffleLowerLimit] = shuffleArray[randomIndex];
                 shuffleArray[randomIndex] = temp;
+                shuffleLowerLimit++;
             }
-            ArraySegment<int> segment = new ArraySegment<int>(shuffleArray, 0, numberOfRows);
+            ArraySegment<int> segment = new ArraySegment<int>(shuffleArray, 0, shuffleLowerLimit);
 
             PrimitiveDataFrameColumn<int> indices = new PrimitiveDataFrameColumn<int>("indices", segment);
             
