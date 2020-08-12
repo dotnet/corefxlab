@@ -1,129 +1,65 @@
 ﻿# Priority queue proposal
 
-Before proposing the classes, let's explain the scenarios they meet...
+[Revised 8/11/20]
 
-## Scenario 1 - Priority queue - data items *are* intrinsically priorities
+# Scenario and key assumptions.
 
-They can be numbers, or any other `IComparable<>` type. Importantly, comparing
-any two items must *always return the same result*. In other words, relative item 
-priorities never change. So there is no 'update priority' operation.
+## A priority queue is a set of items with *updatable* priorities
 
-## Scenario 2 - Priority queue - data items have *updatable* priorities
+A priority queue is used to track priorities of a *set* of distinct objects (or *keys*). 
+A priority is a *value* used to prioritize
+keys so the one with first priority can easily be dequeued and processed first. 
+Any key should be assigned a *unique* priority value.
 
-Sometimes a priority queue is used to track *changing* priority of a *set* of 
-unique objects (or *keys*). Priorities can change, and items may be added and 
-removed at any time. A priority is an *attached value* which just prioritizes 
-which object (or key) will be removed first.
+You may notice this sounds a bit like a dictionary where the objects are the 
+unique *keys*, and the priorities are their *values* - with the minor addition of being 
+able to easily dequeue items in priority order.
 
-This is like a dictionary where the objects are the unique *keys*, and the 
-priorities are their *values* - with the addition of being able to easily 
-dequeue items in priority order.
-
-## Note: smallest priority comes first
+## Smallest priority comes first
 
 The queues are *smallest-priority-first*, i.e. small priorities
-are the 'highest' priority.
+are the 'highest' priority. This is practical for many algorithms.
+
+## Priorities are updatable
+Priorities can change, and items may be added and 
+removed from the set at any time. This is optimizing for convenience.
 
 ## Prerequisites
 
-### Priorities must have an IComparer 
+### Priorities must be ordered (i.e. have an IComparer)
 
-Priorities have to function like numbers. There needs to be a 
+Priorities need a definite ordering, like numbers. There needs to be a 
 'total ordering' on the set, which can optionally be supplied via the 
 `IComparer<>` abstraction. If you use a numeric type like `int`, 
 there is a default comparer.
 
-### Keys in a priority dictionary are equality comparable (and hashable)
+### Keys in a priority dictionary are hashable (i.e. have an IEqualityComparer)
 
 This can be optionally supplied via the `IEqualityComparer<>` abstraction. 
-But by default it uses `Equals()` and  `GetHashCode()`.
+The default is to use `object.Equals()` and  `object.GetHashCode()`.
 
-# `PriorityQueue<T>`
+# `PriorityQueue<TKey, TPriority>`
 
-`PriorityQueue<T>` is a queue of items, where the least item (according to 
-the comparer) will be dequeued first. Duplicates are allowed.
-
-```csharp
-public class PriorityQueue<T>:
-    ICollection<T>
-    IEnumerable<T> // inherited from ICollection<T>
-    IEnumerable
-{
-    public PriorityQueue();
-    public PriorityQueue(IComparer<T> priorityComparer);
-
-    public PriorityQueue(IEnumerable<T> items);
-    public PriorityQueue(IEnumerable<T> items, IComparer<T> priorityComparer);
-
-    // (inherited from ICollection<T>)
-    public int Count { get; }
-    public bool IsReadOnly { get; } // returns false
-
-    // new
-    public IComparer<T> Comparer { get; } // compares priorities using .CompareTo(T)
-    
-    // (inherited from IEnumerable<T>)
-    public IEnumerator<T> GetEnumerator(); // enumeration is not in strict priority order, so that it is O(n) (inherited from IEnumerable<T>)
-    public IEnumerator GetEnumerator();
-
-    // (inherited from ICollection<T>)
-    public void Add(T item); // synonym for Enqueue
-    public void Clear();
-    public bool Contains(T item); // performance is worst-case O(n)
-    public void CopyTo (T[] array, int arrayIndex); // performance is O(n)
-    public bool Remove(T item); // removes the object from the collection. Returns true if successfully removed.
-
-    // new
-    public void Enqueue(T item); // performance is O(log n)
-    public T Dequeue();  // performance is O(log n) throws InvalidOperationException if the queue is empty (like Queue<>)
-    public T Peek(); // performance is O(1) throws InvalidOperationException if the queue is empty (like Queue<>)
-    public bool TryPeek(out T item); // returns false if the queue is empty (like Queue<>)
-    public bool TryDequeue(out T item); // returns false if the queue is empty (like Queue<>)
-
-    public struct Enumerator : IEnumerator<T> {} // enumerates the collection in priority order
-    {
-        // member declarations omitted for brevity
-    }
-}
-```
-
-### Example usage
+`PriorityQueue<TKey, TPriority>` is a set (or dictionary if you like), of items and their 
+priorities. If not otherwise specified, it should uss the 'default equality 
+comparer' for comparing objects of type `TKey` and a 'default priority comparer' 
+for comparing priorities of type `TPriority`. Keys in the 
+set are required to be unique.
 
 ```csharp
-var queue = new PriorityQueue<int>();
-queue.Enqueue(3);
-queue.Enqueue(2);
-queue.Enqueue(5);
-queue.Enqueue(3);
-Assert.Equal(2, queue.Dequeue());
-Assert.Equal(3, queue.Dequeue());
-Assert.Equal(3, queue.Dequeue());
-Assert.Equal(5, queue.Dequeue());
-Assert.True(queue.Empty());
-```
-
-# `PriorityDictionary<TKey, TPriority>`
-
-`PriorityDictionary<TKey, TPriority>` is a dictionary of items and their 
-priorities. If not otherwise  specified, it will use a 'default equality 
-comparer' for comparing objects (of type `TKey`) and a 'default priority comparer' 
-for comparing priorities (of type `TPriority`). Items or keys in the 
-dictionary must be unique.
-
-```csharp
-public class PriorityDictionary<TKey, TPriority> :
+public class PriorityQueue<TKey, TPriority> :
     IDictionary<TKey, TPriority>,
     ICollection<KeyValuePair<TKey key, TPriority priority>>, // inherited from IDictionary<TKey,TPriority>
     IEnumerable<KeyValuePair<TKey key, TPriority priority>>, // inherited from ICollection<KeyValuePair<TKey,TPriority>>
     IEnumerable // inherited from IEnumerable<KeyValuePair<TKey, TPriority>>
 {
-    public PriorityDictionary();
-    public PriorityDictionary(IComparer<TPriority> priorityComparer);
-    public PriorityDictionary(IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
+    public PriorityQueue();
+    public PriorityQueue(IComparer<TPriority> priorityComparer);
+    public PriorityQueue(IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
 
-    public PriorityDictionary(IEnumerable<TKey, TPriority> dictionary);
-    public PriorityDictionary(IEnumerable<TKey, TPriority> dictionary, IComparer<TPriority> priorityComparer);
-    public PriorityDictionary(IEnumerable<TKey, TPriority> dictionary, IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
+    public PriorityQueue(IEnumerable<TKey, TPriority> dictionary);
+    public PriorityQueue(IEnumerable<TKey, TPriority> dictionary, IComparer<TPriority> priorityComparer);
+    public PriorityQueue(IEnumerable<TKey, TPriority> dictionary, IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
 
     // new
     public IComparer<TPriority> PriorityComparer { get; }
@@ -155,10 +91,10 @@ public class PriorityDictionary<TKey, TPriority> :
     public KeyValuePair<TKey, TPriority> Dequeue();  // throws InvalidOperationException if the queue is empty (like Queue<>)
     public void Enqueue(TKey key, TPriority priority); // an alias for IDictionary<TKey,TPriority>.Add()
     public KeyValuePair<TKey, TPriority> Peek(); // throws InvalidOperationException if the queue is empty (like Queue<>)
-    public bool TryDequeue(out TKey key, out TPriority priority);
+    public bool TryDequeue(out TKey key, out TPriority priority); // returns false if the queue is empty
     public bool TryPeek(out TKey key, out TPriority priority); // returns false if the queue is empty
 
-    public struct Enumerator : IEnumerator<KeyValuePair<TKey key, TPriority priority>> {} // enumerates the collection in priority order
+    public struct Enumerator : IEnumerator<KeyValuePair<TKey key, TPriority priority>> {} // enumerates the collection in arbitrary order, but with the least element first
     {
         // member declarations omitted for brevity
     }
@@ -169,10 +105,13 @@ public class PriorityDictionary<TKey, TPriority> :
 
 ```csharp
 WorkItem workItem = new WorkItem(/* initial parameters */);
-var work = new PriorityDictionary<WorkItem, int>();
-work.Enqueue(workItem, priority: 5); //adds with initial priority
+var work = new PriorityQueue<WorkItem, int>();
+work.Enqueue(workItem, priority: 5); //adds it with an initial priority
 work[workItem] = 7; //updates priority
-workItem todo = work.Dequeue();
+WorkItem todo = work.Dequeue(); //dequeues item with the lowest priority
+if (work.TryDequeue(out var todoNext, out var priority))
+{
+}
 ```
 
 ## General Notes
@@ -181,14 +120,14 @@ workItem todo = work.Dequeue();
 * `TryPeek` and `TryDequeue` is modelled on the Queue class behavior, returning false if used when the collection is empty.
 * `Peek` and `Dequeue` throw an exception if used when the collection is empty.
 * `Add` behavior for PriorityQueue is modelled on Collection.Add behavior and always succeeds
-* `Add` and `Enqueue` behavior for PriorityDictionary is modelled on Dictionary.Add(), not Queue<T>.Enqueue because keys have a uniqueness constraint.
+* `Add` and `Enqueue` behavior for PriorityQueue is modelled on Dictionary.Add(), not Queue<T>.Enqueue because keys have a uniqueness constraint.
 * `Remove` returns false when the item to remove is not found, modelled on Collection<T> behavior
 
 ## FAQ 
-* Question: Why does `PriorityDictionary<TKey,TPriority>.Add()` throw for duplicate keys, but `PriorityQueue<T>.Add()` does not?
-* Answer: Because each `Add` method actually conforms to a different interface, with different behavior, and those have different requirements on uniqueness! PriorityQueue conforms to the `ICollection<T>.Add(T item)` interface, whereas PriorityDictionary must conform to the `IDictionary<TKey, TValue>.Add(TKey key, TValue value)` interface.
+* Question: Why does `PriorityQueue<TKey,TPriority>.Add()` throw for duplicate keys, but `PriorityQueue<T>.Add()` does not?
+* Answer: Because each `Add` method actually conforms to a different interface, with different behavior, and those have different requirements on uniqueness! PriorityQueue conforms to the `ICollection<T>.Add(T item)` interface, whereas PriorityQueue must conform to the `IDictionary<TKey, TValue>.Add(TKey key, TValue value)` interface.
 
-* Question: Why are the type parameters different for the two optional comparers of `PriorityDictionary<TKey, TPriority>` - `IEqualityComparer<TKey>` but with `IComparer<TPriority>`?
+* Question: Why are the type parameters different for the two optional comparers of `PriorityQueue<TKey, TPriority>` - `IEqualityComparer<TKey>` but with `IComparer<TPriority>`?
 * Answer: Because they serve different purposes. Equality comparison is needed for locating unique items (keys) in the collection and updating their priority. Relative priority comparison with `IComparer<TPriority>` is needed so that items can be partially-sorted internally, and then dequeued in priority order.
 
 * Question: Why no new interfaces? Don't we need an interface since there could be different implementations of priority queue / priority dictionary? 
@@ -196,3 +135,18 @@ workItem todo = work.Dequeue();
 
 * Question: Why smallest priority first?
 * Answer: mainly becuase its convenient for shortest-path algorithms.
+
+* Question: Why doesn't the enumerator return the elements in sorted order?
+* Answer: so that it doesn't have to modify or copy the collection. You can sort the collection with OrderBy etc if you need fully sorted order, or use SortedSet.
+
+* Question: Why doesn't the enumerator return the elements in sorted order?
+* Answer: so that it doesn't have to modify or copy the collection. You can sort the collection with OrderBy etc if you need fully sorted order, or use SortedSet.
+
+* Question: Why isn't it thread-safe or concurrency optimized?
+* Answer: because its guessed that the main killer app for this is simple single-threaded algorithm implementations, not fancy high performance work schedulers.
+
+* Question: Why not call it heap? Or priority dictionary?
+* Answer: priority queue is fairly self-explanatory, and lowest common denominator in a good, accessible way. And heap has another common meaning.
+
+* Question: Why isn't it implementing an IQueue interface?
+* Answer: there's no such interface today, and it doesn't seem worth complicating this further by trying to add one now.
