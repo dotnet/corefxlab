@@ -489,13 +489,25 @@ namespace Microsoft.Data.Analysis
                         {
                             value = Convert.ChangeType(value, column.DataType);
                         }
-                        catch
+                        catch (FormatException)
                         {
-                            throw new FormatException($"Value \"{value}\" cannot be converted to type {column.DataType} (Column name: {column.Name})");
-                        }
-                        if (value is null)
-                        {
-                            throw new ArgumentException(string.Format(Strings.MismatchedValueType, column.DataType), value.GetType().ToString());
+                            Console.Write($"Value \"{value}\" cannot be converted to type {column.DataType} (Column name: {column.Name}). ");
+
+                            if (column.DataType == typeof(double))
+                            {
+                                Console.WriteLine("Converting to Double.NaN instead.");
+                                value = Double.NaN;
+                            }
+                            else if (column.DataType == typeof(float))
+                            {
+                                Console.WriteLine("Converting to Single.NaN instead.");
+                                value = Single.NaN;
+                            }
+                            //throw FormatException with above message
+                            else
+                            {
+                                throw;
+                            }
                         }
                     }
                     cachedObjectConversions.Add(value);
