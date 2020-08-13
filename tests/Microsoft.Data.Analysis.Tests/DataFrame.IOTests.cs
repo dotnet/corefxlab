@@ -603,5 +603,24 @@ CMT,1,1,null";
             Assert.Null(df[2, 2]);
             Assert.Null(df[5, 3]);
         }
+
+        [Fact]
+        public void TestReadCsvWithInvalidDoubleValues()
+        {
+            string data = @"date,value
+                18-2-2001,18.4
+                29-9-2010,$22.411
+                1-11-2007,%%812.34";
+
+            Stream GetStream(string streamData)
+            {
+                return new MemoryStream(Encoding.Default.GetBytes(streamData));
+            }
+
+            DataFrame df = DataFrame.LoadCsv(GetStream(data), dataTypes: new Type[] { typeof(string), typeof(double) });
+
+            Assert.True(Double.IsNaN(Convert.ToDouble(df.Columns["value"][1])));
+            Assert.True(Double.IsNaN(Convert.ToDouble(df.Columns["value"][2])));
+        }
     }
 }
