@@ -107,7 +107,39 @@ work[workItem] = 7; //updates priority, now its less urgent
 WorkItem todoFirst = work.Dequeue(); //dequeues item with the lowest priority, 6
 if (work.TryDequeue(out var todoNext, out var priority)) // true, gets item with priority 7
 {
+...
 ```
+
+## Add Time Complexities
+| Operation         | Complexity    | Notes    |
+| ----------------- | --------------| -------- |
+| Construct         |    Θ(1)       ||
+| Construct Using IEnumerable   | Θ(n)        ||
+| Enqueue           | 	Θ(log n)    ||
+| Dequeue           | 	Θ(log n)    ||
+| UpdatePriority    | 	O(log n)    ||
+| Peek              | 	  Θ(l)      ||
+| Dequeue           | 	Θ(log n)    ||
+| Count             |     Θ(1)      ||
+| Clear             |     O(n)      ||
+| CopyTo            |     Θ(n)      ||
+| ToArray           |     Θ(n)      ||
+| GetEnumerator     |     O(1)      ||
+| Enumerator.MoveNext   |   O(1)    ||
+
+Operation	Complexity	Notes
+Construct	Θ(1)	
+Construct Using IEnumerable	Θ(n)	
+Enqueue	Θ(log n)	
+Dequeue	Θ(log n)	
+Peek	Θ(1)	
+Count	Θ(1)	
+Clear	Θ(N)	
+Contains	Θ(N)	
+CopyTo	Θ(N)	Uses Array.Copy, actual complexity may be lower
+ToArray	Θ(N)	Uses Array.Copy, actual complexity may be lower
+GetEnumerator	Θ(1)	
+Enumerator.MoveNext	Θ(1)	
 
 ## General Notes
 
