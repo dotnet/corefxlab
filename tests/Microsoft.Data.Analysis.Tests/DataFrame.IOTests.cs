@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using Apache.Arrow;
@@ -622,21 +623,69 @@ CMT,1,1,null";
         }
 
         [Fact]
-        public void TestWriteCsvWithIndexColumn()
+        public void TestWriteCsvWithCultureInfoRomanianAndSemiColon()
         {
             using MemoryStream csvStream = new MemoryStream();
-            DataFrame dataFrame = MakeDataFrameWithAllColumnTypes(10, true);
+            DataFrame dataFrame = MakeDataFrameWithNumericColumns(10, true);
+            dataFrame[1, 1] = 1.1M;
+            dataFrame[1, 2] = 1.2D;
+            dataFrame[1, 3] = 1.3F;
 
-            DataFrame.WriteCsv(dataFrame, csvStream, addIndexColumn: true);
+            var cultureInfo = new CultureInfo("ro-RO");
+            var separator = cultureInfo.NumberFormat.NumberDecimalSeparator.Equals(",") ? ';' : ',';
+            DataFrame.WriteCsv(dataFrame, csvStream, separator: separator, cultureInfo: cultureInfo);
+
+            ////DataFrame readIn = DataFrame.LoadCsv(csvStream, separator: separator);
 
             var text = Encoding.UTF8.GetString(csvStream.ToArray());
             var rows = text.Split('\n');
-            var headerColumns = rows[0].Split(',');
-            var rowColumns = rows[1].Split(',');
+            var headerColumns = rows[0].Split(separator);
+            var rowColumns = rows[2].Split(separator);
             Assert.Equal(12, rows.Length);
-            Assert.Equal(16, headerColumns.Length);
-            Assert.Equal("0", rowColumns[0]);
-            Assert.Equal("A", rowColumns[13]);
+            Assert.Equal(11, headerColumns.Length);
+            Assert.Equal("1", rowColumns[0]);
+            Assert.Equal("1,1", rowColumns[1]);
+            Assert.Equal("1,2", rowColumns[2]);
+            Assert.Equal("1,3", rowColumns[3]);
+        }
+
+        [Fact]
+        public void TestWriteCsvWithCultureInfo()
+        {
+            using MemoryStream csvStream = new MemoryStream();
+            DataFrame dataFrame = MakeDataFrameWithNumericColumns(10, true);
+            dataFrame[1, 1] = 1.1M;
+            dataFrame[1, 2] = 1.2D;
+            dataFrame[1, 3] = 1.3F;
+
+            var cultureInfo = new CultureInfo("en-US");
+            var separator = cultureInfo.NumberFormat.NumberDecimalSeparator.Equals(",") ? ';' : ',';
+            DataFrame.WriteCsv(dataFrame, csvStream, separator: separator, cultureInfo: cultureInfo);
+
+            ////DataFrame readIn = DataFrame.LoadCsv(csvStream, separator: separator);
+
+            var text = Encoding.UTF8.GetString(csvStream.ToArray());
+            var rows = text.Split('\n');
+            var headerColumns = rows[0].Split(separator);
+            var rowColumns = rows[2].Split(separator);
+            Assert.Equal(12, rows.Length);
+            Assert.Equal(11, headerColumns.Length);
+            Assert.Equal("1", rowColumns[0]);
+            Assert.Equal("1.1", rowColumns[1]);
+            Assert.Equal("1.2", rowColumns[2]);
+            Assert.Equal("1.3", rowColumns[3]);
+        }
+
+        [Fact]
+        public void TestWriteCsvWithCultureInfoRomanianAndComma()
+        {
+            using MemoryStream csvStream = new MemoryStream();
+            DataFrame dataFrame = MakeDataFrameWithNumericColumns(10, true);
+
+            var cultureInfo = new CultureInfo("ro-RO");
+            var separator = ',';
+
+            Assert.Throws<ArgumentException>(() => DataFrame.WriteCsv(dataFrame, csvStream, separator: separator, cultureInfo: cultureInfo));
         }
 
         [Fact]

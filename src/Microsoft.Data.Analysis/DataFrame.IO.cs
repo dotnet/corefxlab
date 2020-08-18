@@ -4,9 +4,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.ML;
 
 namespace Microsoft.Data.Analysis
 {
@@ -316,17 +318,17 @@ namespace Microsoft.Data.Analysis
         /// <param name="path">CSV file path</param>
         /// <param name="separator">column separator</param>
         /// <param name="header">has a header or not</param>
-        /// <param name="addIndexColumn">add one column with the row index</param>
         /// <param name="encoding">The character encoding. Defaults to UTF8 if not specified</param>
+        /// <param name="cultureInfo">culture info for handeling decimal values</param>
         public static void WriteCsv(DataFrame dataFrame, string path,
                                    char separator = ',', bool header = true,
-                                   bool addIndexColumn = false, Encoding encoding = null)
+                                   Encoding encoding = null, CultureInfo cultureInfo = null)
         {
             using (FileStream csvStream = new FileStream(path, FileMode.Create))
             {
                 WriteCsv(dataFrame: dataFrame, csvStream: csvStream,
                            separator: separator, header: header,
-                           addIndexColumn: addIndexColumn, encoding: encoding);
+                           encoding: encoding, cultureInfo: cultureInfo);
             }
         }
 
@@ -338,41 +340,78 @@ namespace Microsoft.Data.Analysis
         /// <param name="csvStream">stream of CSV data to be write out</param>
         /// <param name="separator">column separator</param>
         /// <param name="header">has a header or not</param>
-        /// <param name="addIndexColumn">add one column with the row index</param>
-        /// <param name="encoding">The character encoding. Defaults to UTF8 if not specified</param>
+        /// <param name="encoding">the character encoding. Defaults to UTF8 if not specified</param>
+        /// <param name="cultureInfo">culture info for handeling decimal values</param>
         public static void WriteCsv(DataFrame dataFrame, Stream csvStream,
                            char separator = ',', bool header = true,
-                           bool addIndexColumn = false, Encoding encoding = null)
+                           Encoding encoding = null, CultureInfo cultureInfo = null)
         {
+            if (cultureInfo is null)
+            {
+                cultureInfo = CultureInfo.InvariantCulture;
+            }
+            else
+            {
+                if (cultureInfo.NumberFormat.NumberDecimalSeparator.Equals(",") && separator.Equals(','))
+                {
+                    throw new ArgumentException("Decimal separator cannot match the column separator");
+                }
+            }
+
             using (StreamWriter csvFile = new StreamWriter(csvStream, encoding ?? Encoding.UTF8))
             {
                 if (dataFrame != null)
                 {
-                    List<string> selectedColumnNames = dataFrame.Columns.GetColumnNames().ToList();
-
-                    if (addIndexColumn)
-                    {
-                        selectedColumnNames.Insert(0, "index");
-                    }
+                    var columnNames = dataFrame.Columns.GetColumnNames();
 
                     if (header)
                     {
-                        var headerColumns = string.Join(separator.ToString(), selectedColumnNames);
+                        var headerColumns = string.Join(separator.ToString(), columnNames);
                         csvFile.WriteLine(headerColumns);
                     }
 
-                    var index = 0;
+                    var currPosition = csvStream.Position;
+
                     foreach (var row in dataFrame.Rows)
                     {
-                        var rowCells = row.ToList();
+                        var record = new StringBuilder();
 
-                        if (addIndexColumn)
+                        bool firstRow = true;
+                        foreach (var cell in row)
                         {
-                            rowCells.Insert(0, index++);
-                        }
-                        var rowValues = string.Join(separator.ToString(), rowCells);
+                            if (!firstRow)
+                            {
+                                record.Append(separator);
+                            }
+                            else
+                            {
+                                firstRow = false;
+                            }
 
-                        csvFile.WriteLine(rowValues);
+                            Type t = cell?.GetType();
+
+                            if (t == typeof(decimal))
+                            {
+                                record.Append(((decimal)cell).ToString(cultureInfo));
+                                continue;
+                            }
+
+                            if (t == typeof(double))
+                            {
+                                record.Append(((double)cell).ToString(cultureInfo));
+                                continue;
+                            }
+
+                            if (t == typeof(float))
+                            {
+                                record.Append(((float)cell).ToString(cultureInfo));
+                                continue;
+                            }
+
+                            record.Append(cell);
+                        }
+
+                        csvFile.WriteLine(record);
                     }
                 }
             }
