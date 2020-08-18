@@ -1771,6 +1771,8 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(3, arrowColumnFilled.Length);
             Assert.Equal(0, arrowColumnFilled.NullCount);
             Assert.Equal("foo", arrowColumnFilled[1]);
+            Assert.Equal(arrowColumn[0], arrowColumnFilled[0]);
+            Assert.Equal(arrowColumn[2], arrowColumnFilled[2]);
         }
 
         [Fact]
