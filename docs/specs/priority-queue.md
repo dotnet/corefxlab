@@ -121,8 +121,8 @@ if (work.TryDequeue(out var todoNext, out var priority)) // true, gets item with
 | UpdatePriority (of one item)    | 	O(log n)    ||
 | Count             |     Θ(1)      ||
 | Clear             |     O(n)      ||
-| CopyTo            |     Θ(n)      || Uses Array.Copy, actual complexity may be lower
-| ToArray           |     Θ(n)      || Uses Array.Copy, actual complexity may be lower
+| CopyTo            |     Θ(n)      | Uses Array.Copy, actual complexity may be lower |
+| ToArray           |     Θ(n)      | Uses Array.Copy, actual complexity may be lower |
 | GetEnumerator     |     O(1)      ||
 | Enumerator.MoveNext   |   O(1)    ||
 
