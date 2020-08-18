@@ -121,24 +121,10 @@ if (work.TryDequeue(out var todoNext, out var priority)) // true, gets item with
 | UpdatePriority (of one item)    | 	O(log n)    ||
 | Count             |     Θ(1)      ||
 | Clear             |     O(n)      ||
-| CopyTo            |     Θ(n)      ||
-| ToArray           |     Θ(n)      ||
+| CopyTo            |     Θ(n)      || Uses Array.Copy, actual complexity may be lower
+| ToArray           |     Θ(n)      || Uses Array.Copy, actual complexity may be lower
 | GetEnumerator     |     O(1)      ||
 | Enumerator.MoveNext   |   O(1)    ||
-
-Operation	Complexity	Notes
-Construct	Θ(1)	
-Construct Using IEnumerable	Θ(n)	
-Enqueue	Θ(log n)	
-Dequeue	Θ(log n)	
-Peek	Θ(1)	
-Count	Θ(1)	
-Clear	Θ(N)	
-Contains	Θ(N)	
-CopyTo	Θ(N)	Uses Array.Copy, actual complexity may be lower
-ToArray	Θ(N)	Uses Array.Copy, actual complexity may be lower
-GetEnumerator	Θ(1)	
-Enumerator.MoveNext	Θ(1)	
 
 ## General Notes
 
