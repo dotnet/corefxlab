@@ -1,6 +1,6 @@
 ﻿# Priority queue proposal
 
-[Revised 8/17/20]
+[Revised 8/19/20]
 
 # Scenario and key assumptions.
 
@@ -63,9 +63,9 @@ public class PriorityQueue<TKey, TPriority> :
     
     public TPriority Item[TKey] { get; set; } // can get priorities, update priorities, or add items and their priorities
 
-    public KeyValuePair<TKey, TPriority> Dequeue();  // throws InvalidOperationException if the queue is empty (like Queue<>)
+    public TKey Dequeue();  // throws InvalidOperationException if the queue is empty (like Queue<>)
+    public TKey Peek(); // throws InvalidOperationException if the queue is empty (like Queue<>)
     public void Enqueue(TKey key, TPriority priority); // throws ArgumentException if the key was already in the collection, like IDictionary<TKey,TPriority>.Add(), since  adding a distinct item twice with different priorities may be a programming error
-    public KeyValuePair<TKey, TPriority> Peek(); // throws InvalidOperationException if the queue is empty (like Queue<>)
     public bool TryDequeue(out TKey key, out TPriority priority); // returns false if the queue is empty
     public bool TryPeek(out TKey key, out TPriority priority); // returns false if the queue is empty
 
