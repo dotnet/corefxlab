@@ -94,7 +94,7 @@ public class PriorityQueue<TKey, TPriority> :
     public IEnumerator<KeyValuePair<TKey key, TPriority priority>> GetEnumerator();
     public bool Remove(KeyValuePair<TKey, TPriority> item);
 
-    public struct Enumerator : IEnumerator<KeyValuePair<TKey key, TPriority priority>> {} // enumerates the collection in arbitrary order, but with the least element first
+    public struct Enumerator : IEnumerator<KeyValuePair<TKey key, TPriority priority>> {} // enumerates the collection in some arbitrary order
     {
         // member declarations omitted for brevity
     }
