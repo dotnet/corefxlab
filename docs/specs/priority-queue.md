@@ -1,6 +1,6 @@
 ﻿# Priority queue proposal
 
-[Revised 8/19/20]
+[Revised 8/21/20]
 
 # Scenario and key assumptions.
 
@@ -54,9 +54,11 @@ public class PriorityQueue<TKey, TPriority> :
     public PriorityQueue(IComparer<TPriority> priorityComparer);
     public PriorityQueue(IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
 
-    public PriorityQueue(IEnumerable<TKey, TPriority> keysAndPriorities);
-    public PriorityQueue(IEnumerable<TKey, TPriority> keysAndPriorities, IComparer<TPriority> priorityComparer);
-    public PriorityQueue(IEnumerable<TKey, TPriority> keysAndPriorities, IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
+    public PriorityQueue(IEnumerable<TKey> keys, Func<TKey,TPriority> prioritySelector);
+    public PriorityQueue(IEnumerable<TKey> keys, IEnumerable<TPriority> priorities);
+    public PriorityQueue(IEnumerable<KeyValuePair<TKey, TPriority>> keysAndPriorities);
+    public PriorityQueue(IEnumerable<KeyValuePair<TKey, TPriority>> keysAndPriorities, IComparer<TPriority> priorityComparer);
+    public PriorityQueue(IEnumerable<KeyValuePair<TKey, TPriority>> keysAndPriorities, IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
 
     public IComparer<TPriority> PriorityComparer { get; }
     public IEqualityComparer<TKey> EqualityComparer { get; }
@@ -65,6 +67,9 @@ public class PriorityQueue<TKey, TPriority> :
 
     public TKey Dequeue();  // throws InvalidOperationException if the queue is empty (like Queue<>)
     public TKey Peek(); // throws InvalidOperationException if the queue is empty (like Queue<>)
+    public void Enqueue(TKey key, TPriority priority); // throws ArgumentException if the key was already in the collection, like IDictionary<TKey,TPriority>.Add(), since  adding a distinct item twice with different priorities may be a programming error
+    public void Update(TElement key, TPriority priority); // throws ArgumentException if the key was not in the collection
+    public void EnqueueOrUpdate(TElement key, TPriority priority); // doesn't throw, always updates priority of keys aready in the colleciton
     public void Enqueue(TKey key, TPriority priority); // throws ArgumentException if the key was already in the collection, like IDictionary<TKey,TPriority>.Add(), since  adding a distinct item twice with different priorities may be a programming error
     public bool TryDequeue(out TKey key, out TPriority priority); // returns false if the queue is empty
     public bool TryPeek(out TKey key, out TPriority priority); // returns false if the queue is empty
