@@ -1,6 +1,6 @@
 ﻿# Priority queue proposal
 
-[Revised 8/21/20]
+[Revised 8/22/20]
 
 # Scenario and key assumptions.
 
