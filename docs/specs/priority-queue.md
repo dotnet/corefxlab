@@ -52,27 +52,29 @@ public class PriorityQueue<TKey, TPriority> :
 {
     public PriorityQueue();
     public PriorityQueue(IComparer<TPriority> priorityComparer);
-    public PriorityQueue(IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
+    public PriorityQueue(IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> keyComparer);
 
     public PriorityQueue(IEnumerable<TKey> keys, Func<TKey,TPriority> prioritySelector);
     public PriorityQueue(IEnumerable<TKey> keys, IEnumerable<TPriority> priorities);
     public PriorityQueue(IEnumerable<KeyValuePair<TKey, TPriority>> keysAndPriorities);
     public PriorityQueue(IEnumerable<KeyValuePair<TKey, TPriority>> keysAndPriorities, IComparer<TPriority> priorityComparer);
-    public PriorityQueue(IEnumerable<KeyValuePair<TKey, TPriority>> keysAndPriorities, IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> equalityComparer);
+    public PriorityQueue(IEnumerable<KeyValuePair<TKey, TPriority>> keysAndPriorities, IComparer<TPriority> priorityComparer, IEqualityComparer<TKey> keyComparer);
 
     public IComparer<TPriority> PriorityComparer { get; }
-    public IEqualityComparer<TKey> EqualityComparer { get; }
+    public IEqualityComparer<TKey> KeyComparer { get; }
     
     public TPriority Item[TKey] { get; set; } // can get priorities, update priorities, or add items and their priorities
 
     public TKey Dequeue();  // throws InvalidOperationException if the queue is empty (like Queue<>)
     public TKey Peek(); // throws InvalidOperationException if the queue is empty (like Queue<>)
     public void Enqueue(TKey key, TPriority priority); // throws ArgumentException if the key was already in the collection, like IDictionary<TKey,TPriority>.Add(), since  adding a distinct item twice with different priorities may be a programming error
-    public void Update(TElement key, TPriority priority); // throws ArgumentException if the key was not in the collection
-    public void EnqueueOrUpdate(TElement key, TPriority priority); // doesn't throw, always updates priority of keys aready in the colleciton
-    public void Enqueue(TKey key, TPriority priority); // throws ArgumentException if the key was already in the collection, like IDictionary<TKey,TPriority>.Add(), since  adding a distinct item twice with different priorities may be a programming error
+    public void Update(TKey key, TPriority priority); // throws ArgumentException if the key was not in the collection
+    public void EnqueueOrUpdate(TKey key, TPriority priority); // doesn't throw, always updates priority of keys already in the collection
     public bool TryDequeue(out TKey key, out TPriority priority); // returns false if the queue is empty
     public bool TryPeek(out TKey key, out TPriority priority); // returns false if the queue is empty
+    
+    public void EnqueueOrDeccreasePriority(TKey key, TPriority priority); // doesn't throw, only updates priority of keys already in the collection if new priority is lesser
+    public void EnqueueOrIncreasePriority(TKey key, TPriority priority); // doesn't throw, only updates priority of keys already in the collection if new priority is greater
 
     // inherited from ICollection<KeyValuePair<TKey, TPriority>>
     public int Count { get; }
@@ -116,20 +118,23 @@ if (work.TryDequeue(out var todoNext, out var priority)) // true, gets item with
 ```
 
 ## Add Time Complexities
-| Operation         | Complexity    | Notes    |
-| ----------------- | --------------| -------- |
-| Construct         |    Θ(1)       ||
-| Construct Using IEnumerable   | Θ(n)        ||
-| Enqueue           | 	Θ(log n)    ||
-| Peek              | 	  Θ(1)      ||
-| Dequeue           | 	Θ(log n)    ||
-| UpdatePriority (of one item)    | 	O(log n)    ||
-| Count             |     Θ(1)      ||
-| Clear             |     O(n)      ||
-| CopyTo            |     Θ(n)      | Uses Array.Copy, actual complexity may be lower |
-| ToArray           |     Θ(n)      | Uses Array.Copy, actual complexity may be lower |
-| GetEnumerator     |     O(1)      ||
-| Enumerator.MoveNext   |   O(1)    ||
+| Operation         | Complexity    |
+| ----------------- | --------------|
+| Construct         |    Θ(1)       |
+| Construct Using IEnumerable   | Θ(n)        |
+| Enqueue           | 	Θ(log n)    |
+| EnqueueOrDecreasePriority  | 	Θ(log n)    |
+| EnqueueOrIncreasePriority  | 	Θ(log n)    |
+| EnqueueOrUpdate   | 	Θ(log n)    |
+| Peek              | 	  Θ(1)      |
+| Dequeue           | 	Θ(log n)    |
+| UpdatePriority (of one item)    | 	O(log n)    |
+| Count             |     Θ(1)      |
+| Clear             |     O(n)      |
+| CopyTo            |     Θ(n)      |
+| ToArray           |     Θ(n)      |
+| GetEnumerator     |     O(1)      |
+| Enumerator.MoveNext   |   O(1)    |
 
 ## General Notes
 
