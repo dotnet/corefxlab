@@ -1,6 +1,6 @@
 ﻿# Priority queue proposal
 
-[Revised 8/22/20]
+[Revised 8/24/20]
 
 # Scenario and key assumptions.
 
@@ -69,12 +69,11 @@ public class PriorityQueue<TKey, TPriority> :
     public TKey Peek(); // throws InvalidOperationException if the queue is empty (like Queue<>)
     public void Enqueue(TKey key, TPriority priority); // throws ArgumentException if the key was already in the collection, like IDictionary<TKey,TPriority>.Add(), since  adding a distinct item twice with different priorities may be a programming error
     public void Update(TKey key, TPriority priority); // throws ArgumentException if the key was not in the collection
-    public void EnqueueOrUpdate(TKey key, TPriority priority); // doesn't throw, always updates priority of keys already in the collection
+    public bool EnqueueOrUpdate(TKey key, TPriority priority); // doesn't throw, always updates priority of keys already in the collection. Returns true if an item was newly enqueued.
     public bool TryDequeue(out TKey key, out TPriority priority); // returns false if the queue is empty
     public bool TryPeek(out TKey key, out TPriority priority); // returns false if the queue is empty
     
-    public void EnqueueOrDeccreasePriority(TKey key, TPriority priority); // doesn't throw, only updates priority of keys already in the collection if new priority is lesser
-    public void EnqueueOrIncreasePriority(TKey key, TPriority priority); // doesn't throw, only updates priority of keys already in the collection if new priority is greater
+    public bool EnqueueOrDecreasePriority(TKey key, TPriority priority); // doesn't throw, only updates priority of keys already in the collection if new priority is lesser. Returns true if an item was newly enqueued.
 
     // inherited from ICollection<KeyValuePair<TKey, TPriority>>
     public int Count { get; }
