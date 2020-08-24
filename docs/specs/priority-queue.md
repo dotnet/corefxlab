@@ -123,7 +123,6 @@ if (work.TryDequeue(out var todoNext, out var priority)) // true, gets item with
 | Construct Using IEnumerable   | Θ(n)        |
 | Enqueue           | 	Θ(log n)    |
 | EnqueueOrDecreasePriority  | 	Θ(log n)    |
-| EnqueueOrIncreasePriority  | 	Θ(log n)    |
 | EnqueueOrUpdate   | 	Θ(log n)    |
 | Peek              | 	  Θ(1)      |
 | Dequeue           | 	Θ(log n)    |
