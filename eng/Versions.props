@@ -18,6 +18,6 @@
     <SnVersion>1.0.0</SnVersion>
     <VSWhereVersion>2.5.2</VSWhereVersion>
     <MicroBuildCoreVersion>0.2.0</MicroBuildCoreVersion>
-    <MicrosoftDotNetGenAPIVersion>5.0.0-beta.20426.1</MicrosoftDotNetGenAPIVersion>
+    <MicrosoftDotNetGenAPIVersion>5.0.0-beta.20426.6</MicrosoftDotNetGenAPIVersion>
   </PropertyGroup>
 </Project>
