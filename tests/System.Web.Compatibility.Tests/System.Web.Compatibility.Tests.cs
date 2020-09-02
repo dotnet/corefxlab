@@ -38,6 +38,12 @@ namespace System.Web.Compatibility.Tests
         }
 
         [Fact]
+        public void HostingEnvironmentApplicationVirtualPathGetDoesNotThrow()
+        {
+            Assert.Null(HostingEnvironment.ApplicationVirtualPath);
+        }
+
+        [Fact]
         public void HostingEnvironmentIsHostedDoesNotThrow()
         {
             Assert.False(HostingEnvironment.IsHosted);
