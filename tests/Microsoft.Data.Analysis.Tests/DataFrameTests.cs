@@ -204,6 +204,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(1000, (int)column[2]);
 
             Assert.Throws<ArgumentException>(() => dataFrame["Int5"]);
+            Assert.Throws<ArgumentException>(() => dataFrame[(string)null]);
         }
 
         [Fact]
