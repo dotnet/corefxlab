@@ -38,7 +38,7 @@ namespace System.Web.Routing {
             throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.CurrentUICulture,
-                    Strings.RouteData_RequiredValue,
+                    SR.RouteData_RequiredValue,
                     valueName));
         }
     }
