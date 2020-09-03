@@ -85,5 +85,6 @@
     </ItemGroup>
   </Target>
 
+  <Import Project="generateNotSupported.targets" />
 </Project>
  
