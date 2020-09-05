@@ -597,41 +597,14 @@ namespace Microsoft.Data.Analysis
         private DataFrame Sort(string columnName, bool isAscending)
         {
             DataFrameColumn column = Columns[columnName];
-
-            List<long?> sortIndicesNonNull = column.GetAscendingSortIndices().ToList();
-            HashSet<long?> lookUp = new HashSet<long?>(sortIndicesNonNull);
-            List<long?> sortIndicesNull = new List<long?>();
-            
-            for (int i = 0; i < column.Length; i++)
-            {
-                if (!lookUp.Contains(i))
-                {
-                    sortIndicesNull.Add(i);
-                }
-            }
-            DataFrameColumn sortedCol;
-            if (isAscending)
-            {
-                // if the sort is ascending then add the null values to the end of the new column.
-                sortIndicesNonNull.AddRange(sortIndicesNull);
-                sortedCol = new PrimitiveDataFrameColumn<long>("temp", sortIndicesNonNull);
-            }
-            else
-            {
-                /* if the sort is descending then reverse the null values
-                 * and then add the nullvalues to the front the of the new column. 
-                 * This is because the final clone is inverted and will put all null values at the end.*/
-                sortIndicesNull.Reverse();
-                sortIndicesNull.AddRange(sortIndicesNonNull);
-                sortedCol = new PrimitiveDataFrameColumn<long>("temp", sortIndicesNull);
-            }
-
+            DataFrameColumn sortIndices = column.GetAscendingSortIndices();
             List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
 
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn oldColumn = Columns[i];
-                DataFrameColumn newColumn = oldColumn.Clone(sortedCol, !isAscending);
+                long nullCount = oldColumn.Length - sortIndices.Length;
+                DataFrameColumn newColumn = oldColumn.Clone(sortIndices, !isAscending, nullCount);
                 Debug.Assert(newColumn.NullCount == oldColumn.NullCount);
                 newColumns.Add(newColumn);
             }
