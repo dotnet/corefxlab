@@ -625,28 +625,29 @@ CMT,1,1,null";
         [Fact]
         public void TestWriteCsvWithCultureInfoRomanianAndSemiColon()
         {
-            using MemoryStream csvStream = new MemoryStream();
             DataFrame dataFrame = MakeDataFrameWithNumericColumns(10, true);
             dataFrame[1, 1] = 1.1M;
             dataFrame[1, 2] = 1.2D;
             dataFrame[1, 3] = 1.3F;
 
+            using MemoryStream csvStream = new MemoryStream();
             var cultureInfo = new CultureInfo("ro-RO");
             var separator = cultureInfo.NumberFormat.NumberDecimalSeparator.Equals(",") ? ';' : ',';
             DataFrame.WriteCsv(dataFrame, csvStream, separator: separator, cultureInfo: cultureInfo);
 
-            ////DataFrame readIn = DataFrame.LoadCsv(csvStream, separator: separator);
+            csvStream.Seek(0, SeekOrigin.Begin);
+            DataFrame readIn = DataFrame.LoadCsv(csvStream, separator: separator);
 
-            var text = Encoding.UTF8.GetString(csvStream.ToArray());
-            var rows = text.Split('\n');
-            var headerColumns = rows[0].Split(separator);
-            var rowColumns = rows[2].Split(separator);
-            Assert.Equal(12, rows.Length);
-            Assert.Equal(11, headerColumns.Length);
-            Assert.Equal("1", rowColumns[0]);
-            Assert.Equal("1,1", rowColumns[1]);
-            Assert.Equal("1,2", rowColumns[2]);
-            Assert.Equal("1,3", rowColumns[3]);
+            Assert.Equal(dataFrame.Rows.Count, readIn.Rows.Count);
+            Assert.Equal(dataFrame.Columns.Count, readIn.Columns.Count);
+            
+            // WriteCsv converts all numbers to single, therefore byte will be read as float
+            Assert.Equal(Convert.ToByte(dataFrame[1, 0]), Convert.ToSingle(readIn[1, 0]));
+            
+            // LoadCsv does not support cultureInfo, therefore the float numbers like 1,1 will be read as 11
+            Assert.Equal(11F, Convert.ToSingle(readIn[1, 1]));
+            Assert.Equal(12F, Convert.ToSingle(readIn[1, 2]));
+            Assert.Equal(13F, Convert.ToSingle(readIn[1, 3]));
         }
 
         [Fact]

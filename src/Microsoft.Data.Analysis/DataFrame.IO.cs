@@ -358,7 +358,7 @@ namespace Microsoft.Data.Analysis
                 }
             }
 
-            using (StreamWriter csvFile = new StreamWriter(csvStream, encoding ?? Encoding.UTF8))
+            using (StreamWriter csvFile = new StreamWriter(csvStream, encoding ?? Encoding.UTF8, bufferSize: DefaultStreamReaderBufferSize, leaveOpen: true))
             {
                 if (dataFrame != null)
                 {
@@ -370,12 +370,10 @@ namespace Microsoft.Data.Analysis
                         csvFile.WriteLine(headerColumns);
                     }
 
-                    var currPosition = csvStream.Position;
+                    var record = new StringBuilder();
 
                     foreach (var row in dataFrame.Rows)
                     {
-                        var record = new StringBuilder();
-
                         bool firstRow = true;
                         foreach (var cell in row)
                         {
@@ -390,21 +388,17 @@ namespace Microsoft.Data.Analysis
 
                             Type t = cell?.GetType();
 
-                            if (t == typeof(decimal))
+                            //TODO supporting strings, numbers and bools only
+
+                            if (t == typeof(bool))
                             {
-                                record.Append(((decimal)cell).ToString(cultureInfo));
+                                record.AppendFormat(cultureInfo, "{0}", Convert.ToBoolean(cell));
                                 continue;
                             }
 
-                            if (t == typeof(double))
+                            if (t == typeof(float) || t == typeof(double) || t == typeof(decimal))
                             {
-                                record.Append(((double)cell).ToString(cultureInfo));
-                                continue;
-                            }
-
-                            if (t == typeof(float))
-                            {
-                                record.Append(((float)cell).ToString(cultureInfo));
+                                record.AppendFormat(cultureInfo, "{0}", Convert.ToSingle(cell));
                                 continue;
                             }
 
@@ -412,6 +406,8 @@ namespace Microsoft.Data.Analysis
                         }
 
                         csvFile.WriteLine(record);
+
+                        record.Clear();
                     }
                 }
             }
