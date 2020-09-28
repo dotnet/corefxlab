@@ -346,7 +346,7 @@ namespace Microsoft.Data.Analysis
         {
             if (cultureInfo is null)
             {
-                cultureInfo = CultureInfo.InvariantCulture;
+                cultureInfo = CultureInfo.CurrentCulture;
             }
 
             if (cultureInfo.NumberFormat.NumberDecimalSeparator.Equals(separator.ToString()))

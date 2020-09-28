@@ -5,6 +5,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Apache.Arrow;
 using Xunit;
@@ -675,11 +676,10 @@ CMT,1,1,null";
             dataFrame[1, 3] = 1.3F;
 
             var cultureInfo = new CultureInfo("en-US");
-            var separator = cultureInfo.NumberFormat.NumberDecimalSeparator.Equals(",") ? ';' : ',';
-            DataFrame.WriteCsv(dataFrame, csvStream, separator: separator, cultureInfo: cultureInfo);
+            DataFrame.WriteCsv(dataFrame, csvStream, cultureInfo: cultureInfo);
 
             csvStream.Seek(0, SeekOrigin.Begin);
-            DataFrame readIn = DataFrame.LoadCsv(csvStream, separator: separator);
+            DataFrame readIn = DataFrame.LoadCsv(csvStream);
 
             Assert.Equal(dataFrame.Rows.Count, readIn.Rows.Count);
             Assert.Equal(dataFrame.Columns.Count, readIn.Columns.Count);
@@ -703,7 +703,7 @@ CMT,1,1,null";
             DataFrame dataFrame = MakeDataFrameWithNumericColumns(10, true);
 
             var cultureInfo = new CultureInfo("ro-RO");
-            var separator = ',';
+            var separator = cultureInfo.NumberFormat.NumberDecimalSeparator.First();
 
             Assert.Throws<ArgumentException>(() => DataFrame.WriteCsv(dataFrame, csvStream, separator: separator, cultureInfo: cultureInfo));
         }
