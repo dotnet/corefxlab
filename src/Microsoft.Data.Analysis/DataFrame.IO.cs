@@ -312,7 +312,6 @@ namespace Microsoft.Data.Analysis
 
         /// <summary>
         /// Writes a DataFrame into a CSV.
-        /// Follows pandas API.
         /// </summary>
         /// <param name="dataFrame"><see cref="DataFrame"/></param>
         /// <param name="path">CSV file path</param>
@@ -334,7 +333,6 @@ namespace Microsoft.Data.Analysis
 
         /// <summary>
         /// Writes a DataFrame into a CSV.
-        /// Follows pandas API.
         /// </summary>
         /// <param name="dataFrame"><see cref="DataFrame"/></param>
         /// <param name="csvStream">stream of CSV data to be write out</param>
@@ -350,15 +348,18 @@ namespace Microsoft.Data.Analysis
             {
                 cultureInfo = CultureInfo.InvariantCulture;
             }
-            else
+
+            if (cultureInfo.NumberFormat.NumberDecimalSeparator.Equals(separator.ToString()))
             {
-                if (cultureInfo.NumberFormat.NumberDecimalSeparator.Equals(",") && separator.Equals(','))
-                {
-                    throw new ArgumentException("Decimal separator cannot match the column separator");
-                }
+                throw new ArgumentException("Decimal separator cannot match the column separator");
             }
 
-            using (StreamWriter csvFile = new StreamWriter(csvStream, encoding ?? Encoding.UTF8, bufferSize: DefaultStreamReaderBufferSize, leaveOpen: true))
+            if (encoding is null)
+            {
+                encoding = Encoding.ASCII;
+            }
+
+            using (StreamWriter csvFile = new StreamWriter(csvStream, encoding, bufferSize: DefaultStreamReaderBufferSize, leaveOpen: true))
             {
                 if (dataFrame != null)
                 {
@@ -388,17 +389,31 @@ namespace Microsoft.Data.Analysis
 
                             Type t = cell?.GetType();
 
-                            //TODO supporting strings, numbers and bools only
-
                             if (t == typeof(bool))
                             {
-                                record.AppendFormat(cultureInfo, "{0}", Convert.ToBoolean(cell));
+                                //record.AppendFormat(cultureInfo, "{0}", Convert.ToBoolean(cell));
+                                record.AppendFormat(cultureInfo, "{0}", cell);
                                 continue;
                             }
 
-                            if (t == typeof(float) || t == typeof(double) || t == typeof(decimal))
+                            if (t == typeof(float))
                             {
-                                record.AppendFormat(cultureInfo, "{0}", Convert.ToSingle(cell));
+                                //record.AppendFormat(cultureInfo, "{0:G9}", Convert.ToSingle(cell));
+                                record.AppendFormat(cultureInfo, "{0:G9}", cell);
+                                continue;
+                            }
+
+                            if (t == typeof(double))
+                            {
+                                //record.AppendFormat(cultureInfo, "{0:G17}", Convert.ToDouble(cell));
+                                record.AppendFormat(cultureInfo, "{0:G17}", cell);
+                                continue;
+                            }
+
+                            if (t == typeof(decimal))
+                            {
+                                //record.AppendFormat(cultureInfo, "{0:G31}", Convert.ToDecimal(cell));
+                                record.AppendFormat(cultureInfo, "{0:G31}", cell);
                                 continue;
                             }
 
