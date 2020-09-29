@@ -802,7 +802,6 @@ namespace Microsoft.Data.Analysis.Tests
             df.Columns["Int"][0] = 100;
             df.Columns["Int"][19] = -1;
             df.Columns["Int"][5] = 2000;
-
             // Sort by "Int" in ascending order
             var sortedDf = df.OrderBy("Int");
             Assert.Null(sortedDf.Columns["Int"][19]);
@@ -874,6 +873,7 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(14, sortedDf.Columns["Int"][13]);
             Assert.Equal(-1, sortedDf.Columns["Int"][8]);
             Assert.Equal(2000, sortedDf.Columns["Int"][4]);
+            Assert.Null(sortedDf.Columns["Int"][2]);
             Assert.Equal(9, sortedDf.Columns["Int"][0]);
         }
 

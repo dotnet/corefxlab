@@ -226,7 +226,7 @@ namespace Microsoft.Data.Analysis
             if (Length == 0)
                 return 0;
             PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
-            long middle = sortIndices.Length / 2;
+            long middle = (sortIndices.Length - NullCount) / 2;
             double middleValue = (double)Convert.ChangeType(this[sortIndices[middle].Value].Value, typeof(double));
             if (Length % 2 == 0)
             {

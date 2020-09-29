@@ -14,20 +14,53 @@ namespace Microsoft.Data.Analysis
     {
         public new PrimitiveDataFrameColumn<T> Sort(bool ascending = true)
         {
-            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
-            return Clone(sortIndices, !ascending, NullCount);
+            PrimitiveDataFrameColumn<long> sortIndices;
+            if (ascending)
+            {
+                sortIndices = GetAscendingSortIndices();
+            }
+            else
+            {
+                sortIndices = GetDescendingSortIndices();
+            }
+            return Clone(sortIndices);
         }
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()
         {
             // The return sortIndices contains only the non null indices. 
-            GetSortIndices(Comparer<T>.Default, out PrimitiveDataFrameColumn<long> sortIndices);
+            PrimitiveDataFrameColumn<long> sortIndices = GetSortIndices(Comparer<T>.Default, out PrimitiveDataFrameColumn<long> columnNullIndices);
+            if(columnNullIndices.Length > 0)
+            {
+                for(int i = 0; i < columnNullIndices.Length; i++)
+                {
+                    sortIndices.Append(columnNullIndices[i]);
+                }
+            }
             return sortIndices;
         }
 
-        private void GetSortIndices(IComparer<T> comparer, out PrimitiveDataFrameColumn<long> columnSortIndices)
+        internal override PrimitiveDataFrameColumn<long> GetDescendingSortIndices()
+        {
+            Comparison<T> descendingComparison = new Comparison<T>((T a, T b) =>
+            {
+                return Comparer<T>.Default.Compare(b, a);
+            });
+            Comparer<T> descending = Comparer<T>.Create(descendingComparison);
+            // The return sortIndices contains only the non null indices. 
+            PrimitiveDataFrameColumn<long> sortIndices = GetSortIndices(descending, out PrimitiveDataFrameColumn<long> nullIndices);
+            for (long i = 0; i < nullIndices.Length; i++)
+            {
+                sortIndices.Append(nullIndices[i]);
+            }
+            return sortIndices;
+        }
+
+        private PrimitiveDataFrameColumn<long> GetSortIndices(IComparer<T> comparer, out PrimitiveDataFrameColumn<long> columnNullIndices)
         {
             List<List<int>> bufferSortIndices = new List<List<int>>(_columnContainer.Buffers.Count);
+            columnNullIndices = new PrimitiveDataFrameColumn<long>("columnNullIndices");
+
             // Sort each buffer first
             for (int b = 0; b < _columnContainer.Buffers.Count; b++)
             {
@@ -43,6 +76,10 @@ namespace Microsoft.Data.Analysis
                 {
                     if (_columnContainer.IsValid(nullBitMapSpan, sortIndices[i]))
                         nonNullSortIndices.Add(sortIndices[i]);
+                    else
+                    {
+                        columnNullIndices.Append(sortIndices[i] + b * _columnContainer.Buffers[0].Length);
+                    }
 
                 }
                 bufferSortIndices.Add(nonNullSortIndices);
@@ -90,11 +127,12 @@ namespace Microsoft.Data.Analysis
                     heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(valueAndBufferIndex.Item1, new List<ValueTuple<int, int>>() { (valueAndBufferIndex.Item2, i) });
                 }
             }
-            columnSortIndices = new PrimitiveDataFrameColumn<long>("SortIndices");
+            PrimitiveDataFrameColumn<long> columnSortIndices = new PrimitiveDataFrameColumn<long>("SortIndices");
             GetBufferSortIndex getBufferSortIndex = new GetBufferSortIndex((int bufferIndex, int sortIndex) => (bufferSortIndices[bufferIndex][sortIndex]) + bufferIndex * bufferSortIndices[0].Count);
             GetValueAndBufferSortIndexAtBuffer<T> getValueAndBufferSortIndexAtBuffer = new GetValueAndBufferSortIndexAtBuffer<T>((int bufferIndex, int sortIndex) => GetFirstNonNullValueAndBufferIndexStartingAtIndex(bufferIndex, sortIndex));
             GetBufferLengthAtIndex getBufferLengthAtIndex = new GetBufferLengthAtIndex((int bufferIndex) => bufferSortIndices[bufferIndex].Count);
             PopulateColumnSortIndicesWithHeap(heapOfValueAndListOfTupleOfSortAndBufferIndex, columnSortIndices, getBufferSortIndex, getValueAndBufferSortIndexAtBuffer, getBufferLengthAtIndex);
+            return columnSortIndices;
         }
     }
 }

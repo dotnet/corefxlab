@@ -199,8 +199,16 @@ namespace Microsoft.Data.Analysis
         /// <param name="ascending"></param>
         public virtual DataFrameColumn Sort(bool ascending = true)
         {
-            PrimitiveDataFrameColumn<long> sortIndices = GetAscendingSortIndices();
-            return Clone(sortIndices, !ascending, NullCount);
+            PrimitiveDataFrameColumn<long> sortIndices;
+            if (ascending)
+            {
+                sortIndices = GetAscendingSortIndices();
+            }
+            else
+            {
+                sortIndices = GetDescendingSortIndices();
+            }
+            return Clone(sortIndices);
         }
 
         public virtual Dictionary<TKey, ICollection<long>> GroupColumnValues<TKey>() => throw new NotImplementedException();
@@ -318,6 +326,7 @@ namespace Microsoft.Data.Analysis
         public virtual DataFrameColumn Description() => throw new NotImplementedException();
 
         internal virtual PrimitiveDataFrameColumn<long> GetAscendingSortIndices() => throw new NotImplementedException();
+        internal virtual PrimitiveDataFrameColumn<long> GetDescendingSortIndices() => throw new NotImplementedException();
 
         internal delegate long GetBufferSortIndex(int bufferIndex, int sortIndex);
         internal delegate ValueTuple<T, int> GetValueAndBufferSortIndexAtBuffer<T>(int bufferIndex, int valueIndex);

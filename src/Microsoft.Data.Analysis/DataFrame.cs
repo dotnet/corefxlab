@@ -596,15 +596,22 @@ namespace Microsoft.Data.Analysis
 
         private DataFrame Sort(string columnName, bool isAscending)
         {
+            DataFrameColumn sortIndices;
             DataFrameColumn column = Columns[columnName];
-            DataFrameColumn sortIndices = column.GetAscendingSortIndices();
+            if (isAscending)
+            {
+                sortIndices = column.GetAscendingSortIndices();
+            }
+            else
+            {
+                sortIndices = column.GetDescendingSortIndices();
+            }
             List<DataFrameColumn> newColumns = new List<DataFrameColumn>(Columns.Count);
 
             for (int i = 0; i < Columns.Count; i++)
             {
                 DataFrameColumn oldColumn = Columns[i];
-                long nullCount = oldColumn.Length - sortIndices.Length;
-                DataFrameColumn newColumn = oldColumn.Clone(sortIndices, !isAscending, nullCount);
+                DataFrameColumn newColumn = oldColumn.Clone(sortIndices);
                 Debug.Assert(newColumn.NullCount == oldColumn.NullCount);
                 newColumns.Add(newColumn);
             }

@@ -171,22 +171,57 @@ namespace Microsoft.Data.Analysis
 
         public new StringDataFrameColumn Sort(bool ascending = true)
         {
-            PrimitiveDataFrameColumn<long> columnSortIndices = GetAscendingSortIndices();
-            return Clone(columnSortIndices, !ascending, NullCount);
+            PrimitiveDataFrameColumn<long> columnSortIndices;
+            if (ascending)
+            {
+                columnSortIndices = GetAscendingSortIndices();
+            }
+            else
+            {
+                columnSortIndices = GetDescendingSortIndices();
+            }
+            return Clone(columnSortIndices);
         }
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()
         {
-            GetSortIndices(Comparer<string>.Default, out PrimitiveDataFrameColumn<long> columnSortIndices);
-            return columnSortIndices;
+            PrimitiveDataFrameColumn<long> sortIndices = GetSortIndices(Comparer<string>.Default, out PrimitiveDataFrameColumn<long> columnNullIndices);
+            if(columnNullIndices.Length > 0)
+            {
+                for (int i=0; i< columnNullIndices.Length; i++)
+                {
+                    sortIndices.Append(columnNullIndices[i]);
+                }
+            }
+            return sortIndices;
         }
 
-        private void GetSortIndices(Comparer<string> comparer, out PrimitiveDataFrameColumn<long> columnSortIndices)
+        internal override PrimitiveDataFrameColumn<long> GetDescendingSortIndices()
+        {
+            Comparison<string> descendingComparison = new Comparison<string>((string a, string b) =>
+            {
+                return Comparer<string>.Default.Compare(b, a);
+            });
+            Comparer<string> descending = Comparer<string>.Create(descendingComparison);
+            // The return sortIndices contains only the non null indices. 
+            PrimitiveDataFrameColumn<long> sortIndices = GetSortIndices(descending, out PrimitiveDataFrameColumn<long> nullIndices);
+            for (long i = 0; i < nullIndices.Length; i++)
+            {
+                sortIndices.Append(nullIndices[i]);
+            }
+            return sortIndices;
+        }
+
+        private PrimitiveDataFrameColumn<long> GetSortIndices(Comparer<string> comparer, out PrimitiveDataFrameColumn<long> columnNullIndices)
         {
             List<int[]> bufferSortIndices = new List<int[]>(_stringBuffers.Count);
+            columnNullIndices = new PrimitiveDataFrameColumn<long>("columnNullIndices");
+            
             foreach (List<string> buffer in _stringBuffers)
             {
                 var sortIndices = new int[buffer.Count];
+
+
                 for (int i = 0; i < buffer.Count; i++)
                 {
                     sortIndices[i] = i;
@@ -194,6 +229,15 @@ namespace Microsoft.Data.Analysis
                 // TODO: Refactor the sort routine to also work with IList?
                 string[] array = buffer.ToArray();
                 IntrospectiveSort(array, array.Length, sortIndices, comparer);
+                // do a for loop here and get the nonnulls together
+                for(int i=0; i<sortIndices.Length; i++)
+                {
+                    if (buffer[i] is null)
+                    {
+                        columnNullIndices.Append(i);
+                    }
+                }
+                
                 bufferSortIndices.Add(sortIndices);
             }
             // Simple merge sort to build the full column's sort indices
@@ -227,11 +271,12 @@ namespace Microsoft.Data.Analysis
                     heapOfValueAndListOfTupleOfSortAndBufferIndex.Add(valueAndBufferSortIndex.Item1, new List<ValueTuple<int, int>>() { (valueAndBufferSortIndex.Item2, i) });
                 }
             }
-            columnSortIndices = new PrimitiveDataFrameColumn<long>("SortIndices");
+            PrimitiveDataFrameColumn<long> columnSortIndices = new PrimitiveDataFrameColumn<long>("SortIndices");
             GetBufferSortIndex getBufferSortIndex = new GetBufferSortIndex((int bufferIndex, int sortIndex) => (bufferSortIndices[bufferIndex][sortIndex]) + bufferIndex * bufferSortIndices[0].Length);
             GetValueAndBufferSortIndexAtBuffer<string> getValueAtBuffer = new GetValueAndBufferSortIndexAtBuffer<string>((int bufferIndex, int sortIndex) => GetFirstNonNullValueStartingAtIndex(bufferIndex, sortIndex));
             GetBufferLengthAtIndex getBufferLengthAtIndex = new GetBufferLengthAtIndex((int bufferIndex) => bufferSortIndices[bufferIndex].Length);
             PopulateColumnSortIndicesWithHeap(heapOfValueAndListOfTupleOfSortAndBufferIndex, columnSortIndices, getBufferSortIndex, getValueAtBuffer, getBufferLengthAtIndex);
+            return columnSortIndices;
         }
 
         public new StringDataFrameColumn Clone(DataFrameColumn mapIndices, bool invertMapIndices, long numberOfNullsToAppend)
