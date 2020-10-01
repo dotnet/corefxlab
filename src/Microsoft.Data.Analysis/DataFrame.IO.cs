@@ -391,7 +391,6 @@ namespace Microsoft.Data.Analysis
 
                             if (t == typeof(bool))
                             {
-                                //record.AppendFormat(cultureInfo, "{0}", Convert.ToBoolean(cell));
                                 record.AppendFormat(cultureInfo, "{0}", cell);
                                 continue;
                             }
