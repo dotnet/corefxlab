@@ -403,7 +403,6 @@ namespace Microsoft.Data.Analysis
 
                             if (t == typeof(double))
                             {
-                                //record.AppendFormat(cultureInfo, "{0:G17}", Convert.ToDouble(cell));
                                 record.AppendFormat(cultureInfo, "{0:G17}", cell);
                                 continue;
                             }
