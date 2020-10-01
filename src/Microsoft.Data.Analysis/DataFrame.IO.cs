@@ -409,7 +409,6 @@ namespace Microsoft.Data.Analysis
 
                             if (t == typeof(decimal))
                             {
-                                //record.AppendFormat(cultureInfo, "{0:G31}", Convert.ToDecimal(cell));
                                 record.AppendFormat(cultureInfo, "{0:G31}", cell);
                                 continue;
                             }
