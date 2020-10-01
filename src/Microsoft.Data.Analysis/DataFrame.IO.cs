@@ -375,7 +375,7 @@ namespace Microsoft.Data.Analysis
 
                     foreach (var row in dataFrame.Rows)
                     {
-                        bool firstRow = true;
+                        bool firstColumn = true;
                         foreach (var cell in row)
                         {
                             if (!firstRow)
