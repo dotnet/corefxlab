@@ -397,7 +397,6 @@ namespace Microsoft.Data.Analysis
 
                             if (t == typeof(float))
                             {
-                                //record.AppendFormat(cultureInfo, "{0:G9}", Convert.ToSingle(cell));
                                 record.AppendFormat(cultureInfo, "{0:G9}", cell);
                                 continue;
                             }
