@@ -318,7 +318,7 @@ namespace Microsoft.Data.Analysis
         /// <param name="separator">column separator</param>
         /// <param name="header">has a header or not</param>
         /// <param name="encoding">The character encoding. Defaults to UTF8 if not specified</param>
-        /// <param name="cultureInfo">culture info for handeling decimal values</param>
+        /// <param name="cultureInfo">culture info for formatting values</param>
         public static void WriteCsv(DataFrame dataFrame, string path,
                                    char separator = ',', bool header = true,
                                    Encoding encoding = null, CultureInfo cultureInfo = null)
