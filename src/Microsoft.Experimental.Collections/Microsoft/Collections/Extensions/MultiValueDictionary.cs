@@ -129,7 +129,7 @@ namespace Microsoft.Collections.Extensions
         public MultiValueDictionary(IEnumerable<KeyValuePair<TKey, TValue>> enumerable)
             : this()
         { 
-            for (var item in enumerable)
+            foreach (var item in enumerable)
                 this.Add(item.Key,item.Value);
         }
         
