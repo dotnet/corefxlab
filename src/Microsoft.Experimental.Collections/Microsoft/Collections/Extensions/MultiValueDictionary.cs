@@ -118,7 +118,21 @@ namespace Microsoft.Collections.Extensions
         public MultiValueDictionary(IEnumerable<KeyValuePair<TKey, IReadOnlyCollection<TValue>>> enumerable)
             : this(enumerable, null)
         { }
-
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that contains 
+        /// elements copied from the specified IEnumerable&lt;KeyValuePair&lt;TKey, Value&gt;&gt; and uses the 
+        /// default <see cref="IEqualityComparer{TKey}" /> for the <typeparamref name="TKey"/> type.
+        /// </summary>
+        /// <param name="enumerable">IEnumerable to copy elements into this from</param>
+        /// <exception cref="ArgumentNullException">enumerable must be non-null</exception>
+        public MultiValueDictionary(IEnumerable<KeyValuePair<TKey, TValue>> enumerable)
+            : this()
+        { 
+            for (var item in enumerable)
+                this.Add(item.Key,item.Value);
+        }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that contains 
         /// elements copied from the specified IEnumerable&lt;KeyValuePair&lt;TKey, IReadOnlyCollection&lt;TValue&gt;&gt;&gt; and uses the 
