@@ -94,7 +94,7 @@ namespace Microsoft.Data.Analysis
                     StructArray structArray = (StructArray)arrowArray;
                     StructType structType = (StructType)field.DataType;
                     IEnumerator<Field> fieldsEnumerator = structType.Fields.GetEnumerator();
-                    IEnumerator<Apache.Arrow.Array> structArrayEnumerator = structArray.Fields.GetEnumerator();
+                    IEnumerator<IArrowArray> structArrayEnumerator = structArray.Fields.GetEnumerator();
                     while (fieldsEnumerator.MoveNext() && structArrayEnumerator.MoveNext())
                     {
                         AppendDataFrameColumnFromArrowArray(fieldsEnumerator.Current, structArrayEnumerator.Current, ret);
