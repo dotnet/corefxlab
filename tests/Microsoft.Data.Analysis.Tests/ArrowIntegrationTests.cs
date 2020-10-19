@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using Apache.Arrow;
 using Apache.Arrow.Ipc;
+using Apache.Arrow.Types;
 using Xunit;
 
 namespace Microsoft.Data.Analysis.Tests
@@ -49,14 +50,26 @@ namespace Microsoft.Data.Analysis.Tests
                 .Append("UByteColumn", false, new UInt8Array.Builder().AppendRange(Enumerable.Repeat((byte)1, 10)).Build())
                 .Build();
 
-            DataFrame df = DataFrame.FromArrowRecordBatch(originalBatch);
+            ArrowBuffer.Builder<bool> nullBitmapBufferBuilder = new ArrowBuffer.Builder<bool>();
+            for (int i = 0; i < originalBatch.Length; i++)
+            {
+                nullBitmapBufferBuilder.Append(true);
+            }
+            var nullBitmapBuffer = nullBitmapBufferBuilder.Build();
+
+            StructType structType = new StructType(originalBatch.Schema.Fields.Select((KeyValuePair<string, Field> pair) => pair.Value));
+            StructArray structArray = new StructArray(structType, originalBatch.Length, originalBatch.Arrays.Cast<Apache.Arrow.Array>(), nullBitmapBuffer);
+            Schema schema = new Schema.Builder().Field(new Field("Struct", structType, false)).Build();
+            RecordBatch recordBatch = new RecordBatch(schema, new[] { structArray }, originalBatch.Length);
+
+            DataFrame df = DataFrame.FromArrowRecordBatch(recordBatch);
             DataFrameTests.VerifyColumnTypes(df, testArrowStringColumn: true);
 
             IEnumerable<RecordBatch> recordBatches = df.ToArrowRecordBatches();
 
             foreach (RecordBatch batch in recordBatches)
             {
-                RecordBatchComparer.CompareBatches(originalBatch, batch);
+                RecordBatchComparer.CompareBatches(recordBatch, batch);
             }
         }
 
