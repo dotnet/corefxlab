@@ -32,33 +32,20 @@ namespace Microsoft.Data.Analysis
                     continue;
                 }
 
-                bool boolParse = bool.TryParse(val, out bool boolResult);
-                if (boolParse)
+                if (!string.IsNullOrEmpty(val))
                 {
-                    res = DetermineType(nbline == 0, typeof(bool), res);
-                    ++nbline;
-                    continue;
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(val))
+                    bool boolParse = bool.TryParse(val, out bool boolResult);
+                    if (boolParse)
                     {
                         res = DetermineType(nbline == 0, typeof(bool), res);
+                        ++nbline;
                         continue;
                     }
-                }
-                bool floatParse = float.TryParse(val, out float floatResult);
-                if (floatParse)
-                {
-                    res = DetermineType(nbline == 0, typeof(float), res);
-                    ++nbline;
-                    continue;
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(val))
+                    bool floatParse = float.TryParse(val, out float floatResult);
+                    if (floatParse)
                     {
                         res = DetermineType(nbline == 0, typeof(float), res);
+                        ++nbline;
                         continue;
                     }
                 }
