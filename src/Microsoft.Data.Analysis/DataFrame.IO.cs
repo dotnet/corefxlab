@@ -48,9 +48,10 @@ namespace Microsoft.Data.Analysis
                         ++nbline;
                         continue;
                     }
+
+                    res = DetermineType(nbline == 0, typeof(string), res);
+                    ++nbline;
                 }
-                res = DetermineType(nbline == 0, typeof(string), res);
-                ++nbline;
             }
             return res;
         }
