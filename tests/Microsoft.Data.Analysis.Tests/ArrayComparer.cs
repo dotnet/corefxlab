@@ -64,12 +64,11 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Equal(expectedArray.NullCount, array.NullCount);
             Assert.Equal(expectedArray.Offset, array.Offset);
             Assert.Equal(expectedArray.Data.Children.Length, array.Data.Children.Length);
+            Assert.Equal(expectedArray.Fields.Count, array.Fields.Count);
 
-            var arrayFieldsEnumerator = array.Fields.GetEnumerator();
-            var expectedArrayFieldsEnumerator = expectedArray.Fields.GetEnumerator();
-            while (arrayFieldsEnumerator.MoveNext() && expectedArrayFieldsEnumerator.MoveNext())
+            for (int i = 0; i < array.Fields.Count; i++)
             {
-                arrayFieldsEnumerator.Current.Accept(new ArrayComparer(expectedArrayFieldsEnumerator.Current));
+                array.Fields[i].Accept(new ArrayComparer(expectedArray.Fields[i]));
             }
         }
 

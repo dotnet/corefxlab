@@ -50,6 +50,58 @@ namespace Microsoft.Data.Analysis.Tests
                 .Append("UByteColumn", false, new UInt8Array.Builder().AppendRange(Enumerable.Repeat((byte)1, 10)).Build())
                 .Build();
 
+            DataFrame df = DataFrame.FromArrowRecordBatch(originalBatch);
+            DataFrameTests.VerifyColumnTypes(df, testArrowStringColumn: true);
+
+            IEnumerable<RecordBatch> recordBatches = df.ToArrowRecordBatches();
+
+            foreach (RecordBatch batch in recordBatches)
+            {
+                RecordBatchComparer.CompareBatches(originalBatch, batch);
+            }
+        }
+
+        [Fact]
+        public void TestRecordBatchWithStructArrays()
+        {
+            RecordBatch CreateRecordBatch(string prependColumnNamesWith = "")
+            {
+                RecordBatch ret = new RecordBatch.Builder()
+                    .Append(prependColumnNamesWith + "Column1", false, col => col.Int32(array => array.AppendRange(Enumerable.Range(0, 10))))
+                    .Append(prependColumnNamesWith + "Column2", true, new Int32Array(
+                        valueBuffer: new ArrowBuffer.Builder<int>().AppendRange(Enumerable.Range(0, 10)).Build(),
+                        nullBitmapBuffer: new ArrowBuffer.Builder<byte>().Append(0xfd).Append(0xff).Build(),
+                        length: 10,
+                        nullCount: 1,
+                        offset: 0))
+                    .Append(prependColumnNamesWith + "Column3", true, new Int32Array(
+                        valueBuffer: new ArrowBuffer.Builder<int>().AppendRange(Enumerable.Range(0, 10)).Build(),
+                        nullBitmapBuffer: new ArrowBuffer.Builder<byte>().Append(0x00).Append(0x00).Build(),
+                        length: 10,
+                        nullCount: 10,
+                        offset: 0))
+                    .Append(prependColumnNamesWith + "NullableBooleanColumn", true, new BooleanArray(
+                        valueBuffer: new ArrowBuffer.Builder<byte>().Append(0xfd).Append(0xff).Build(),
+                        nullBitmapBuffer: new ArrowBuffer.Builder<byte>().Append(0xed).Append(0xff).Build(),
+                        length: 10,
+                        nullCount: 2,
+                        offset: 0))
+                    .Append(prependColumnNamesWith + "StringDataFrameColumn", false, new StringArray.Builder().AppendRange(Enumerable.Range(0, 10).Select(x => x.ToString())).Build())
+                    .Append(prependColumnNamesWith + "DoubleColumn", false, new DoubleArray.Builder().AppendRange(Enumerable.Repeat(1.0, 10)).Build())
+                    .Append(prependColumnNamesWith + "FloatColumn", false, new FloatArray.Builder().AppendRange(Enumerable.Repeat(1.0f, 10)).Build())
+                    .Append(prependColumnNamesWith + "ShortColumn", false, new Int16Array.Builder().AppendRange(Enumerable.Repeat((short)1, 10)).Build())
+                    .Append(prependColumnNamesWith + "LongColumn", false, new Int64Array.Builder().AppendRange(Enumerable.Repeat((long)1, 10)).Build())
+                    .Append(prependColumnNamesWith + "UIntColumn", false, new UInt32Array.Builder().AppendRange(Enumerable.Repeat((uint)1, 10)).Build())
+                    .Append(prependColumnNamesWith + "UShortColumn", false, new UInt16Array.Builder().AppendRange(Enumerable.Repeat((ushort)1, 10)).Build())
+                    .Append(prependColumnNamesWith + "ULongColumn", false, new UInt64Array.Builder().AppendRange(Enumerable.Repeat((ulong)1, 10)).Build())
+                    .Append(prependColumnNamesWith + "ByteColumn", false, new Int8Array.Builder().AppendRange(Enumerable.Repeat((sbyte)1, 10)).Build())
+                    .Append(prependColumnNamesWith + "UByteColumn", false, new UInt8Array.Builder().AppendRange(Enumerable.Repeat((byte)1, 10)).Build())
+                    .Build();
+
+                return ret;
+            }
+
+            RecordBatch originalBatch = CreateRecordBatch();
             ArrowBuffer.BitmapBuilder nullBitmapBufferBuilder = new ArrowBuffer.BitmapBuilder();
             for (int i = 0; i < originalBatch.Length; i++)
             {
@@ -67,9 +119,10 @@ namespace Microsoft.Data.Analysis.Tests
 
             IEnumerable<RecordBatch> recordBatches = df.ToArrowRecordBatches();
 
+            RecordBatch expected = CreateRecordBatch("Struct.");
             foreach (RecordBatch batch in recordBatches)
             {
-                RecordBatchComparer.CompareBatches(recordBatch, batch);
+                RecordBatchComparer.CompareBatches(expected, batch);
             }
         }
 
