@@ -11,11 +11,11 @@ namespace Microsoft.Data.Analysis
 {
     public partial class DataFrame
     {
-        private static void AppendDataFrameColumnFromArrowArray(Field field, IArrowArray arrowArray, DataFrame ret, string structName = "")
+        private static void AppendDataFrameColumnFromArrowArray(Field field, IArrowArray arrowArray, DataFrame ret, string fieldNamePrefix = "")
         {
             IArrowType fieldType = field.DataType;
             DataFrameColumn dataFrameColumn = null;
-            string fieldName = structName + field.Name;
+            string fieldName = fieldNamePrefix + field.Name;
             switch (fieldType.TypeId)
             {
                 case ArrowTypeId.Boolean:
@@ -98,7 +98,7 @@ namespace Microsoft.Data.Analysis
                     IEnumerator<IArrowArray> structArrayEnumerator = structArray.Fields.GetEnumerator();
                     while (fieldsEnumerator.MoveNext() && structArrayEnumerator.MoveNext())
                     {
-                        AppendDataFrameColumnFromArrowArray(fieldsEnumerator.Current, structArrayEnumerator.Current, ret, field.Name + ".");
+                        AppendDataFrameColumnFromArrowArray(fieldsEnumerator.Current, structArrayEnumerator.Current, ret, field.Name + "_");
                     }
                     break;
                 case ArrowTypeId.Decimal:

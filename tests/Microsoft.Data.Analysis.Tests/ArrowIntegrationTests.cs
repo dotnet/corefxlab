@@ -119,7 +119,7 @@ namespace Microsoft.Data.Analysis.Tests
 
             IEnumerable<RecordBatch> recordBatches = df.ToArrowRecordBatches();
 
-            RecordBatch expected = CreateRecordBatch("Struct.");
+            RecordBatch expected = CreateRecordBatch("Struct_");
             foreach (RecordBatch batch in recordBatches)
             {
                 RecordBatchComparer.CompareBatches(expected, batch);
