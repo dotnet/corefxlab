@@ -102,15 +102,15 @@ namespace Microsoft.Data.Analysis.Tests
             }
 
             RecordBatch originalBatch = CreateRecordBatch();
-            ArrowBuffer.BitmapBuilder nullBitmapBufferBuilder = new ArrowBuffer.BitmapBuilder();
+            ArrowBuffer.BitmapBuilder validityBitmapBuilder = new ArrowBuffer.BitmapBuilder();
             for (int i = 0; i < originalBatch.Length; i++)
             {
-                nullBitmapBufferBuilder.Append(true);
+                validityBitmapBuilder.Append(true);
             }
-            var nullBitmapBuffer = nullBitmapBufferBuilder.Build();
+            ArrowBuffer validityBitmap = validityBitmapBuilder.Build();
 
             StructType structType = new StructType(originalBatch.Schema.Fields.Select((KeyValuePair<string, Field> pair) => pair.Value).ToList());
-            StructArray structArray = new StructArray(structType, originalBatch.Length, originalBatch.Arrays.Cast<Apache.Arrow.Array>(), nullBitmapBuffer);
+            StructArray structArray = new StructArray(structType, originalBatch.Length, originalBatch.Arrays.Cast<Apache.Arrow.Array>(), validityBitmap);
             Schema schema = new Schema.Builder().Field(new Field("Struct", structType, false)).Build();
             RecordBatch recordBatch = new RecordBatch(schema, new[] { structArray }, originalBatch.Length);
 
