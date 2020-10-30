@@ -175,8 +175,8 @@ namespace Microsoft.Data.Analysis
         private static DataFrame ReadCsvLinesIntoDataFrame(IEnumerable<string> lines,
                                 char separator = ',', bool header = true,
                                 string[] columnNames = null, Type[] dataTypes = null,
-                                long numberOfRowsToRead = -1, int guessRows = 10, bool addIndexColumn = false,
-                                Encoding encoding = null)
+                                long numberOfRowsToRead = -1, int guessRows = 10, bool addIndexColumn = false
+                                )
         {
             if (dataTypes == null && guessRows <= 0)
             {
@@ -272,7 +272,7 @@ namespace Microsoft.Data.Analysis
             return ret;
         }
 
-        private struct CsvLines : IEnumerable<string>
+        private class CsvLines : IEnumerable<string>
         {
             private CsvLineEnumerator enumerator;
             public CsvLines(CsvLineEnumerator csvLineEnumerator)
@@ -285,7 +285,7 @@ namespace Microsoft.Data.Analysis
             IEnumerator IEnumerable.GetEnumerator() => enumerator;
         }
 
-        private struct CsvLineEnumerator : IEnumerator<string>
+        private class CsvLineEnumerator : IEnumerator<string>
         {
             private StreamReader streamReader;
             private string currentLine;
@@ -330,16 +330,14 @@ namespace Microsoft.Data.Analysis
         /// <param name="numberOfRowsToRead">number of rows to read not including the header(if present)</param>
         /// <param name="guessRows">number of rows used to guess types</param>
         /// <param name="addIndexColumn">add one column with the row index</param>
-        /// <param name="encoding">The character encoding. Defaults to UTF8 if not specified</param>
         /// <returns><see cref="DataFrame"/></returns>
         public static DataFrame LoadCsvFromString(string csvString,
                                 char separator = ',', bool header = true,
                                 string[] columnNames = null, Type[] dataTypes = null,
-                                long numberOfRowsToRead = -1, int guessRows = 10, bool addIndexColumn = false,
-                                Encoding encoding = null)
+                                long numberOfRowsToRead = -1, int guessRows = 10, bool addIndexColumn = false)
         {
             string[] lines = csvString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            return ReadCsvLinesIntoDataFrame(lines, separator, header, columnNames, dataTypes, numberOfRowsToRead, guessRows, addIndexColumn, encoding);
+            return ReadCsvLinesIntoDataFrame(lines, separator, header, columnNames, dataTypes, numberOfRowsToRead, guessRows, addIndexColumn);
         }
 
         /// <summary>
@@ -375,7 +373,7 @@ namespace Microsoft.Data.Analysis
             {
                 CsvLineEnumerator linesEnumerator = new CsvLineEnumerator(streamReader);
                 IEnumerable<string> lines = new CsvLines(linesEnumerator);
-                return ReadCsvLinesIntoDataFrame(lines, separator, header, columnNames, dataTypes, numberOfRowsToRead, guessRows, addIndexColumn, encoding);
+                return ReadCsvLinesIntoDataFrame(lines, separator, header, columnNames, dataTypes, numberOfRowsToRead, guessRows, addIndexColumn);
             }
         }
 
