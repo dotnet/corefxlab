@@ -1465,6 +1465,16 @@ namespace Microsoft.Data.Analysis.Tests
         }
 
         [Fact]
+        public void TestMeanAndMedian()
+        {
+            Int32DataFrameColumn ints = new Int32DataFrameColumn("Ints", new int?[] { 1, 3, 3, 2, null, 9, 10 });
+            double mean = ints.Mean();
+            double median = ints.Median();
+            Assert.Equal(4, mean);
+            Assert.Equal(3, median);
+        }
+
+        [Fact]
         public void TestDataFrameClamp()
         {
             DataFrame df = MakeDataFrameWithAllColumnTypes(10);

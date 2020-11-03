@@ -28,14 +28,10 @@ namespace Microsoft.Data.Analysis
 
         internal override PrimitiveDataFrameColumn<long> GetAscendingSortIndices()
         {
-            // The return sortIndices contains only the non null indices. 
             PrimitiveDataFrameColumn<long> sortIndices = GetSortIndices(Comparer<T>.Default, out PrimitiveDataFrameColumn<long> columnNullIndices);
-            if(columnNullIndices.Length > 0)
+            for (int i = 0; i < columnNullIndices.Length; i++)
             {
-                for(int i = 0; i < columnNullIndices.Length; i++)
-                {
-                    sortIndices.Append(columnNullIndices[i]);
-                }
+                sortIndices.Append(columnNullIndices[i]);
             }
             return sortIndices;
         }
@@ -47,7 +43,6 @@ namespace Microsoft.Data.Analysis
                 return Comparer<T>.Default.Compare(b, a);
             });
             Comparer<T> descending = Comparer<T>.Create(descendingComparison);
-            // The return sortIndices contains only the non null indices. 
             PrimitiveDataFrameColumn<long> sortIndices = GetSortIndices(descending, out PrimitiveDataFrameColumn<long> nullIndices);
             for (long i = 0; i < nullIndices.Length; i++)
             {
