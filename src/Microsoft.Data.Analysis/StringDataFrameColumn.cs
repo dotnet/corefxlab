@@ -228,7 +228,7 @@ namespace Microsoft.Data.Analysis
                 // TODO: Refactor the sort routine to also work with IList?
                 string[] array = buffer.ToArray();
                 IntrospectiveSort(array, array.Length, sortIndices, comparer);
-                // do a for loop here and get the nonnulls together
+
                 List<int> nonNullSortIndices = new List<int>();
                 for(int i=0; i<sortIndices.Length; i++)
                 {
@@ -241,7 +241,7 @@ namespace Microsoft.Data.Analysis
                         nonNullSortIndices.Add(sortIndices[i]);
                     }
                 }
-                
+
                 bufferSortIndices.Add(nonNullSortIndices);
             }
             // Simple merge sort to build the full column's sort indices
