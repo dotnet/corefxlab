@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics.Experimental;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Data.Analysis
@@ -274,6 +275,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):

@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics.Experimental;
 
 namespace Microsoft.Data.Analysis
 {
@@ -72,7 +73,20 @@ namespace Microsoft.Data.Analysis
     {
         public <#=type#> Get<#=typeFirstCharUpper#>(<#=typeLoop.Key#> value)
         {
+<# 
+        if (typeLoop.Key == "Half")
+        {
+#>
+            return (<#=type#>)(float)value;
+<# 
+        }
+        else
+        {
+#>
             return (<#=type#>)value;
+<# 
+        }
+#>
         }
     }
 <#

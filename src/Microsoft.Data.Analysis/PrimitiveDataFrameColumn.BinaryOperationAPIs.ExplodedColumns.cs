@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics.Experimental;
 
 namespace Microsoft.Data.Analysis
 {
@@ -117,6 +118,31 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(column, inPlace: true);
         }
         public Int32DataFrameColumn Add(Int32DataFrameColumn column)
         {
@@ -604,6 +630,31 @@ namespace Microsoft.Data.Analysis
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ModuloImplementation(otherdoubleColumn, inPlace);
         }
+        public DoubleDataFrameColumn Add(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return AddImplementation(otherdoubleColumn, inPlace);
+        }
+        public DoubleDataFrameColumn Subtract(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return SubtractImplementation(otherdoubleColumn, inPlace);
+        }
+        public DoubleDataFrameColumn Multiply(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return MultiplyImplementation(otherdoubleColumn, inPlace);
+        }
+        public DoubleDataFrameColumn Divide(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return DivideImplementation(otherdoubleColumn, inPlace);
+        }
+        public DoubleDataFrameColumn Modulo(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return ModuloImplementation(otherdoubleColumn, inPlace);
+        }
         public DoubleDataFrameColumn Add(Int32DataFrameColumn column, bool inPlace = false)
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
@@ -852,6 +903,31 @@ namespace Microsoft.Data.Analysis
         {
             return ModuloImplementation(column, inPlace);
         }
+        public SingleDataFrameColumn Add(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return AddImplementation(otherfloatColumn, inPlace);
+        }
+        public SingleDataFrameColumn Subtract(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return SubtractImplementation(otherfloatColumn, inPlace);
+        }
+        public SingleDataFrameColumn Multiply(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return MultiplyImplementation(otherfloatColumn, inPlace);
+        }
+        public SingleDataFrameColumn Divide(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return DivideImplementation(otherfloatColumn, inPlace);
+        }
+        public SingleDataFrameColumn Modulo(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return ModuloImplementation(otherfloatColumn, inPlace);
+        }
         public SingleDataFrameColumn Add(Int32DataFrameColumn column, bool inPlace = false)
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
@@ -1028,6 +1104,279 @@ namespace Microsoft.Data.Analysis
             return ModuloImplementation(otherfloatColumn, inPlace);
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        public HalfDataFrameColumn Add(ByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return AddImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(ByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return SubtractImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(ByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return MultiplyImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Divide(ByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return DivideImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(ByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ModuloImplementation(otherHalfColumn, inPlace);
+        }
+        public DoubleDataFrameColumn Add(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.AddImplementation(column, inPlace: true);
+        }
+        public DoubleDataFrameColumn Subtract(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public DoubleDataFrameColumn Multiply(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public DoubleDataFrameColumn Divide(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.DivideImplementation(column, inPlace: true);
+        }
+        public DoubleDataFrameColumn Modulo(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ModuloImplementation(column, inPlace: true);
+        }
+        public SingleDataFrameColumn Add(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.AddImplementation(column, inPlace: true);
+        }
+        public SingleDataFrameColumn Subtract(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public SingleDataFrameColumn Multiply(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public SingleDataFrameColumn Divide(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(column, inPlace: true);
+        }
+        public SingleDataFrameColumn Modulo(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            return AddImplementation(column, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            return SubtractImplementation(column, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            return MultiplyImplementation(column, inPlace);
+        }
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            return DivideImplementation(column, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            return ModuloImplementation(column, inPlace);
+        }
+        public HalfDataFrameColumn Add(Int32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return AddImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(Int32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return SubtractImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(Int32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return MultiplyImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Divide(Int32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return DivideImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(Int32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ModuloImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Add(Int64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return AddImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(Int64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return SubtractImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(Int64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return MultiplyImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Divide(Int64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return DivideImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(Int64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ModuloImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Add(SByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return AddImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(SByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return SubtractImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(SByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return MultiplyImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Divide(SByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return DivideImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(SByteDataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ModuloImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Add(Int16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return AddImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(Int16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return SubtractImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(Int16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return MultiplyImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Divide(Int16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return DivideImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(Int16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ModuloImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Add(UInt32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return AddImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(UInt32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return SubtractImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(UInt32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return MultiplyImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Divide(UInt32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return DivideImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(UInt32DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ModuloImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Add(UInt64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return AddImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(UInt64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return SubtractImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(UInt64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return MultiplyImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Divide(UInt64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return DivideImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(UInt64DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ModuloImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Add(UInt16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return AddImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(UInt16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return SubtractImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(UInt16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return MultiplyImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Divide(UInt16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return DivideImplementation(otherHalfColumn, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(UInt16DataFrameColumn column, bool inPlace = false)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ModuloImplementation(otherHalfColumn, inPlace);
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         public Int32DataFrameColumn Add(ByteDataFrameColumn column, bool inPlace = false)
@@ -1129,6 +1478,31 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(column, inPlace: true);
         }
         public Int32DataFrameColumn Add(Int32DataFrameColumn column, bool inPlace = false)
         {
@@ -1255,35 +1629,35 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Add(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Add(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Subtract(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Multiply(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Divide(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Modulo(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(otherHalfColumn, inPlace: true);
         }
         public Int32DataFrameColumn Add(UInt16DataFrameColumn column, bool inPlace = false)
         {
@@ -1412,6 +1786,31 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(column, inPlace: true);
         }
         public Int64DataFrameColumn Add(Int32DataFrameColumn column, bool inPlace = false)
         {
@@ -1666,6 +2065,31 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
         }
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(column, inPlace: true);
+        }
         public Int32DataFrameColumn Add(Int32DataFrameColumn column)
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
@@ -1806,35 +2230,35 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Add(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Add(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Subtract(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Multiply(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Divide(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Modulo(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(otherHalfColumn, inPlace: true);
         }
         public Int32DataFrameColumn Add(UInt16DataFrameColumn column)
         {
@@ -1974,6 +2398,31 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
         }
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(column, inPlace: true);
+        }
         public Int32DataFrameColumn Add(Int32DataFrameColumn column)
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
@@ -2114,35 +2563,35 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
             return longColumn.ModuloImplementation(otherlongColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Add(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Add(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Subtract(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Multiply(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Divide(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(UInt64DataFrameColumn column)
+        public HalfDataFrameColumn Modulo(UInt64DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(otherHalfColumn, inPlace: true);
         }
         public Int32DataFrameColumn Add(UInt16DataFrameColumn column)
         {
@@ -2276,6 +2725,31 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(column, inPlace: true);
         }
         public Int64DataFrameColumn Add(Int32DataFrameColumn column)
         {
@@ -2565,95 +3039,120 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
         }
-        public SingleDataFrameColumn Add(Int32DataFrameColumn column)
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(column, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(Int32DataFrameColumn column)
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(column, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(Int32DataFrameColumn column)
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(column, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(Int32DataFrameColumn column)
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(column, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(Int32DataFrameColumn column)
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(column, inPlace: true);
         }
-        public SingleDataFrameColumn Add(SByteDataFrameColumn column)
+        public HalfDataFrameColumn Add(Int32DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(SByteDataFrameColumn column)
+        public HalfDataFrameColumn Subtract(Int32DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(SByteDataFrameColumn column)
+        public HalfDataFrameColumn Multiply(Int32DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(SByteDataFrameColumn column)
+        public HalfDataFrameColumn Divide(Int32DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(SByteDataFrameColumn column)
+        public HalfDataFrameColumn Modulo(Int32DataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Add(Int16DataFrameColumn column)
+        public HalfDataFrameColumn Add(SByteDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.AddImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(Int16DataFrameColumn column)
+        public HalfDataFrameColumn Subtract(SByteDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(Int16DataFrameColumn column)
+        public HalfDataFrameColumn Multiply(SByteDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(Int16DataFrameColumn column)
+        public HalfDataFrameColumn Divide(SByteDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(otherHalfColumn, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(Int16DataFrameColumn column)
+        public HalfDataFrameColumn Modulo(SByteDataFrameColumn column)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(otherfloatColumn, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(otherHalfColumn, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(otherHalfColumn, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(otherHalfColumn, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(otherHalfColumn, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(otherHalfColumn, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(otherHalfColumn, inPlace: true);
         }
         public UInt64DataFrameColumn Add(UInt32DataFrameColumn column, bool inPlace = false)
         {
@@ -2832,6 +3331,31 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ModuloImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(column, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(column, inPlace: true);
         }
         public Int32DataFrameColumn Add(Int32DataFrameColumn column)
         {
@@ -3225,6 +3749,56 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseAdd(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseSubtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseMultiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseDivide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseModulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Add(int value)
         {
@@ -4162,6 +4736,56 @@ namespace Microsoft.Data.Analysis
             double convertedValue = (double)value;
             return ReverseModuloImplementation(convertedValue, inPlace);
         }
+        public DoubleDataFrameColumn Add(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn ReverseAdd(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn Subtract(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn ReverseSubtract(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn Multiply(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn ReverseMultiply(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn Divide(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn ReverseDivide(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn Modulo(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn ReverseModulo(Half value, bool inPlace = false)
+        {
+            double convertedValue = (double)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
         public DoubleDataFrameColumn Add(int value, bool inPlace = false)
         {
             double convertedValue = (double)value;
@@ -4655,6 +5279,56 @@ namespace Microsoft.Data.Analysis
         {
             return ReverseModuloImplementation(value, inPlace);
         }
+        public SingleDataFrameColumn Add(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn ReverseAdd(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn Subtract(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn ReverseSubtract(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn Multiply(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn ReverseMultiply(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn Divide(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn ReverseDivide(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn Modulo(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public SingleDataFrameColumn ReverseModulo(Half value, bool inPlace = false)
+        {
+            float convertedValue = (float)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
         public SingleDataFrameColumn Add(int value, bool inPlace = false)
         {
             float convertedValue = (float)value;
@@ -5006,6 +5680,549 @@ namespace Microsoft.Data.Analysis
             return ReverseModuloImplementation(convertedValue, inPlace);
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        public HalfDataFrameColumn Add(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Divide(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(byte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
+        public DoubleDataFrameColumn Add(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.AddImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn ReverseAdd(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn Subtract(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn ReverseSubtract(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn Multiply(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn ReverseMultiply(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn Divide(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.DivideImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn ReverseDivide(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn Modulo(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public DoubleDataFrameColumn ReverseModulo(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Add(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.AddImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseAdd(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Subtract(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseSubtract(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Multiply(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseMultiply(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Divide(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.DivideImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseDivide(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn Modulo(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public SingleDataFrameColumn ReverseModulo(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(Half value, bool inPlace = false)
+        {
+            return AddImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(Half value, bool inPlace = false)
+        {
+            return ReverseAddImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(Half value, bool inPlace = false)
+        {
+            return SubtractImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(Half value, bool inPlace = false)
+        {
+            return ReverseSubtractImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(Half value, bool inPlace = false)
+        {
+            return MultiplyImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(Half value, bool inPlace = false)
+        {
+            return ReverseMultiplyImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn Divide(Half value, bool inPlace = false)
+        {
+            return DivideImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(Half value, bool inPlace = false)
+        {
+            return ReverseDivideImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(Half value, bool inPlace = false)
+        {
+            return ModuloImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(Half value, bool inPlace = false)
+        {
+            return ReverseModuloImplementation(value, inPlace);
+        }
+        public HalfDataFrameColumn Add(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Divide(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(int value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Add(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Divide(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(long value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Add(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Divide(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(sbyte value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Add(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Divide(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(short value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Add(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Divide(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(uint value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Add(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Divide(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(ulong value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Add(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return AddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseAdd(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseAddImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Subtract(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return SubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseSubtract(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseSubtractImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Multiply(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return MultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseMultiply(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseMultiplyImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Divide(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return DivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseDivide(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseDivideImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn Modulo(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ModuloImplementation(convertedValue, inPlace);
+        }
+        public HalfDataFrameColumn ReverseModulo(ushort value, bool inPlace = false)
+        {
+            Half convertedValue = (Half)value;
+            return ReverseModuloImplementation(convertedValue, inPlace);
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         public Int32DataFrameColumn Add(byte value, bool inPlace = false)
@@ -5207,6 +6424,56 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseAdd(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseSubtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseMultiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseDivide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseModulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Add(int value, bool inPlace = false)
         {
@@ -5448,55 +6715,55 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Add(ulong value)
+        public HalfDataFrameColumn Add(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.AddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseAdd(ulong value)
+        public HalfDataFrameColumn ReverseAdd(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseAddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(ulong value)
+        public HalfDataFrameColumn Subtract(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseSubtract(ulong value)
+        public HalfDataFrameColumn ReverseSubtract(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(ulong value)
+        public HalfDataFrameColumn Multiply(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseMultiply(ulong value)
+        public HalfDataFrameColumn ReverseMultiply(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(ulong value)
+        public HalfDataFrameColumn Divide(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseDivide(ulong value)
+        public HalfDataFrameColumn ReverseDivide(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(ulong value)
+        public HalfDataFrameColumn Modulo(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseModulo(ulong value)
+        public HalfDataFrameColumn ReverseModulo(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Add(ushort value, bool inPlace = false)
         {
@@ -5750,6 +7017,56 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseAdd(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseSubtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseMultiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseDivide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseModulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int64DataFrameColumn Add(int value, bool inPlace = false)
         {
@@ -6244,6 +7561,56 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
+        public HalfDataFrameColumn Add(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseAdd(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseSubtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseMultiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseDivide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseModulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
         public Int32DataFrameColumn Add(int value)
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
@@ -6494,55 +7861,55 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Add(ulong value)
+        public HalfDataFrameColumn Add(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.AddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseAdd(ulong value)
+        public HalfDataFrameColumn ReverseAdd(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseAddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(ulong value)
+        public HalfDataFrameColumn Subtract(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseSubtract(ulong value)
+        public HalfDataFrameColumn ReverseSubtract(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(ulong value)
+        public HalfDataFrameColumn Multiply(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseMultiply(ulong value)
+        public HalfDataFrameColumn ReverseMultiply(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(ulong value)
+        public HalfDataFrameColumn Divide(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseDivide(ulong value)
+        public HalfDataFrameColumn ReverseDivide(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(ulong value)
+        public HalfDataFrameColumn Modulo(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseModulo(ulong value)
+        public HalfDataFrameColumn ReverseModulo(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Add(ushort value)
         {
@@ -6797,6 +8164,56 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
+        public HalfDataFrameColumn Add(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseAdd(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseSubtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseMultiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseDivide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseModulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
         public Int32DataFrameColumn Add(int value)
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
@@ -7047,55 +8464,55 @@ namespace Microsoft.Data.Analysis
             Int64DataFrameColumn longColumn = CloneAsInt64Column();
             return longColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Add(ulong value)
+        public HalfDataFrameColumn Add(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.AddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseAdd(ulong value)
+        public HalfDataFrameColumn ReverseAdd(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseAddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(ulong value)
+        public HalfDataFrameColumn Subtract(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseSubtract(ulong value)
+        public HalfDataFrameColumn ReverseSubtract(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(ulong value)
+        public HalfDataFrameColumn Multiply(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseMultiply(ulong value)
+        public HalfDataFrameColumn ReverseMultiply(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(ulong value)
+        public HalfDataFrameColumn Divide(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseDivide(ulong value)
+        public HalfDataFrameColumn ReverseDivide(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(ulong value)
+        public HalfDataFrameColumn Modulo(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseModulo(ulong value)
+        public HalfDataFrameColumn ReverseModulo(ulong value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Add(ushort value)
         {
@@ -7349,6 +8766,56 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseAdd(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseSubtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseMultiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseDivide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseModulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int64DataFrameColumn Add(int value)
         {
@@ -7893,155 +9360,205 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Add(int value)
+        public HalfDataFrameColumn Add(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.AddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseAdd(int value)
+        public HalfDataFrameColumn ReverseAdd(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseAddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(int value)
+        public HalfDataFrameColumn Subtract(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseSubtract(int value)
+        public HalfDataFrameColumn ReverseSubtract(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(int value)
+        public HalfDataFrameColumn Multiply(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseMultiply(int value)
+        public HalfDataFrameColumn ReverseMultiply(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(int value)
+        public HalfDataFrameColumn Divide(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseDivide(int value)
+        public HalfDataFrameColumn ReverseDivide(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(int value)
+        public HalfDataFrameColumn Modulo(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseModulo(int value)
+        public HalfDataFrameColumn ReverseModulo(Half value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Add(sbyte value)
+        public HalfDataFrameColumn Add(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.AddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseAdd(sbyte value)
+        public HalfDataFrameColumn ReverseAdd(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseAddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(sbyte value)
+        public HalfDataFrameColumn Subtract(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseSubtract(sbyte value)
+        public HalfDataFrameColumn ReverseSubtract(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(sbyte value)
+        public HalfDataFrameColumn Multiply(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseMultiply(sbyte value)
+        public HalfDataFrameColumn ReverseMultiply(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(sbyte value)
+        public HalfDataFrameColumn Divide(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseDivide(sbyte value)
+        public HalfDataFrameColumn ReverseDivide(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(sbyte value)
+        public HalfDataFrameColumn Modulo(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseModulo(sbyte value)
+        public HalfDataFrameColumn ReverseModulo(int value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Add(short value)
+        public HalfDataFrameColumn Add(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.AddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseAdd(short value)
+        public HalfDataFrameColumn ReverseAdd(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseAddImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Subtract(short value)
+        public HalfDataFrameColumn Subtract(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.SubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseSubtract(short value)
+        public HalfDataFrameColumn ReverseSubtract(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseSubtractImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Multiply(short value)
+        public HalfDataFrameColumn Multiply(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.MultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseMultiply(short value)
+        public HalfDataFrameColumn ReverseMultiply(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseMultiplyImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Divide(short value)
+        public HalfDataFrameColumn Divide(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.DivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseDivide(short value)
+        public HalfDataFrameColumn ReverseDivide(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseDivideImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn Modulo(short value)
+        public HalfDataFrameColumn Modulo(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
         }
-        public SingleDataFrameColumn ReverseModulo(short value)
+        public HalfDataFrameColumn ReverseModulo(sbyte value)
         {
-            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
-            return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseAdd(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseSubtract(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseMultiply(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseDivide(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseModulo(short value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public UInt64DataFrameColumn Add(uint value, bool inPlace = false)
         {
@@ -8385,6 +9902,56 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ReverseModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Add(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.AddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseAdd(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseAddImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Subtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.SubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseSubtract(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseSubtractImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Multiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.MultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseMultiply(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseMultiplyImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Divide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.DivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseDivide(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseDivideImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn Modulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ModuloImplementation(value, inPlace: true);
+        }
+        public HalfDataFrameColumn ReverseModulo(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ReverseModuloImplementation(value, inPlace: true);
         }
         public Int32DataFrameColumn Add(int value)
         {
@@ -8946,6 +10513,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
@@ -9511,6 +11108,36 @@ namespace Microsoft.Data.Analysis
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
             return ElementwiseLessThanImplementation(otherdoubleColumn);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return ElementwiseEqualsImplementation(otherdoubleColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return ElementwiseNotEqualsImplementation(otherdoubleColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherdoubleColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherdoubleColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return ElementwiseGreaterThanImplementation(otherdoubleColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
+            return ElementwiseLessThanImplementation(otherdoubleColumn);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
             DoubleDataFrameColumn otherdoubleColumn = column.CloneAsDoubleColumn();
@@ -9808,6 +11435,36 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseLessThanImplementation(column);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return ElementwiseEqualsImplementation(otherfloatColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return ElementwiseNotEqualsImplementation(otherfloatColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherfloatColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherfloatColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return ElementwiseGreaterThanImplementation(otherfloatColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
+            return ElementwiseLessThanImplementation(otherfloatColumn);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
             SingleDataFrameColumn otherfloatColumn = column.CloneAsSingleColumn();
@@ -10019,6 +11676,333 @@ namespace Microsoft.Data.Analysis
             return ElementwiseLessThanImplementation(otherfloatColumn);
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        public BooleanDataFrameColumn ElementwiseEquals(ByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(ByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseNotEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(ByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(ByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(ByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(ByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(DoubleDataFrameColumn column)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseLessThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(SingleDataFrameColumn column)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseLessThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            return ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            return ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            return ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            return ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            return ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            return ElementwiseLessThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Int32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseNotEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Int32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Int32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Int32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Int32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Int64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Int64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseNotEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Int64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Int64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Int64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Int64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(SByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(SByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseNotEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(SByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(SByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(SByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(SByteDataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseNotEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Int16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(UInt32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(UInt32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseNotEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(UInt32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(UInt32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(UInt32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(UInt32DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(UInt64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(UInt64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseNotEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(UInt64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(UInt64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(UInt64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(UInt64DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(UInt16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(UInt16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseNotEqualsImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(UInt16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(UInt16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanOrEqualImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(UInt16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseGreaterThanImplementation(otherHalfColumn);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(UInt16DataFrameColumn column)
+        {
+            HalfDataFrameColumn otherHalfColumn = column.CloneAsHalfColumn();
+            return ElementwiseLessThanImplementation(otherHalfColumn);
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         public BooleanDataFrameColumn ElementwiseEquals(ByteDataFrameColumn column)
@@ -10140,6 +12124,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
@@ -10468,6 +12482,36 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(column);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(column);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
             Int64DataFrameColumn otherlongColumn = column.CloneAsInt64Column();
@@ -10764,6 +12808,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
@@ -11092,6 +13166,36 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(column);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(column);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
@@ -11418,6 +13522,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
@@ -11746,6 +13880,36 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(column);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(column);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
             UInt64DataFrameColumn otherulongColumn = column.CloneAsUInt64Column();
@@ -12042,6 +14206,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(column);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(HalfDataFrameColumn column)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(column);
         }
         public BooleanDataFrameColumn ElementwiseEquals(Int32DataFrameColumn column)
         {
@@ -12390,6 +14584,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
@@ -12955,6 +15179,36 @@ namespace Microsoft.Data.Analysis
             double otherdoubleValue = (double)value;
             return ElementwiseLessThanImplementation(otherdoubleValue);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            double otherdoubleValue = (double)value;
+            return ElementwiseEqualsImplementation(otherdoubleValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            double otherdoubleValue = (double)value;
+            return ElementwiseNotEqualsImplementation(otherdoubleValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            double otherdoubleValue = (double)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherdoubleValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            double otherdoubleValue = (double)value;
+            return ElementwiseLessThanOrEqualImplementation(otherdoubleValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            double otherdoubleValue = (double)value;
+            return ElementwiseGreaterThanImplementation(otherdoubleValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            double otherdoubleValue = (double)value;
+            return ElementwiseLessThanImplementation(otherdoubleValue);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
             double otherdoubleValue = (double)value;
@@ -13252,6 +15506,36 @@ namespace Microsoft.Data.Analysis
         {
             return ElementwiseLessThanImplementation(value);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            float otherfloatValue = (float)value;
+            return ElementwiseEqualsImplementation(otherfloatValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            float otherfloatValue = (float)value;
+            return ElementwiseNotEqualsImplementation(otherfloatValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            float otherfloatValue = (float)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherfloatValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            float otherfloatValue = (float)value;
+            return ElementwiseLessThanOrEqualImplementation(otherfloatValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            float otherfloatValue = (float)value;
+            return ElementwiseGreaterThanImplementation(otherfloatValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            float otherfloatValue = (float)value;
+            return ElementwiseLessThanImplementation(otherfloatValue);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
             float otherfloatValue = (float)value;
@@ -13463,6 +15747,333 @@ namespace Microsoft.Data.Analysis
             return ElementwiseLessThanImplementation(otherfloatValue);
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        public BooleanDataFrameColumn ElementwiseEquals(byte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(byte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseNotEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(byte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(byte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(byte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(byte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(double value)
+        {
+            DoubleDataFrameColumn doubleColumn = CloneAsDoubleColumn();
+            return doubleColumn.ElementwiseLessThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(float value)
+        {
+            SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
+            return floatColumn.ElementwiseLessThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            return ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            return ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            return ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            return ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            return ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            return ElementwiseLessThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(int value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(int value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseNotEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(int value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(int value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(int value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(int value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(long value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(long value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseNotEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(long value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(long value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(long value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(long value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(sbyte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(sbyte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseNotEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(sbyte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(sbyte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(sbyte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(sbyte value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(short value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(short value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseNotEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(short value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(short value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(short value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(short value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(uint value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(uint value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseNotEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(uint value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(uint value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(uint value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(uint value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(ulong value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(ulong value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseNotEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(ulong value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(ulong value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(ulong value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(ulong value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(ushort value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(ushort value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseNotEqualsImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(ushort value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(ushort value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanOrEqualImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(ushort value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseGreaterThanImplementation(otherHalfValue);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(ushort value)
+        {
+            Half otherHalfValue = (Half)value;
+            return ElementwiseLessThanImplementation(otherHalfValue);
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         public BooleanDataFrameColumn ElementwiseEquals(byte value)
@@ -13584,6 +16195,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
@@ -13912,6 +16553,36 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(value);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(value);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
             long otherlongValue = (long)value;
@@ -14208,6 +16879,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
@@ -14536,6 +17237,36 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(value);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(value);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
             Int32DataFrameColumn intColumn = CloneAsInt32Column();
@@ -14862,6 +17593,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
@@ -15190,6 +17951,36 @@ namespace Microsoft.Data.Analysis
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(value);
         }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(value);
+        }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {
             ulong otherulongValue = (ulong)value;
@@ -15486,6 +18277,36 @@ namespace Microsoft.Data.Analysis
         {
             SingleDataFrameColumn floatColumn = CloneAsSingleColumn();
             return floatColumn.ElementwiseLessThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseNotEquals(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseNotEqualsImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThanOrEqual(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanOrEqualImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseGreaterThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseGreaterThanImplementation(value);
+        }
+        public BooleanDataFrameColumn ElementwiseLessThan(Half value)
+        {
+            HalfDataFrameColumn HalfColumn = CloneAsHalfColumn();
+            return HalfColumn.ElementwiseLessThanImplementation(value);
         }
         public BooleanDataFrameColumn ElementwiseEquals(int value)
         {

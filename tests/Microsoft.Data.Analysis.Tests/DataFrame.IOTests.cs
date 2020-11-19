@@ -6,6 +6,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics.Experimental;
 using System.Text;
 using Apache.Arrow;
 using Xunit;
@@ -94,6 +95,10 @@ namespace Microsoft.Data.Analysis.Tests
                     {
                         Assert.IsType<ArrowStringDataFrameColumn>(column);
                     }
+                }
+                else if (dataType == typeof(Half))
+                {
+                    Assert.IsType<HalfDataFrameColumn>(column);
                 }
                 else
                 {

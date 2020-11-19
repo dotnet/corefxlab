@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics.Experimental;
 using System.Text;
 using System.Threading.Tasks;
 using Apache.Arrow;
@@ -39,17 +40,23 @@ namespace Microsoft.Data.Analysis
                         ReadOnlyMemory<byte> nullBitMapBuffer = arrowBooleanArray.NullBitmapBuffer.Memory;
                         dataFrameColumn = new BooleanDataFrameColumn(field.Name, valueBuffer, nullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
-                    case ArrowTypeId.Double:
-                        PrimitiveArray<double> arrowDoubleArray = (PrimitiveArray<double>)arrowArray;
-                        ReadOnlyMemory<byte> doubleValueBuffer = arrowDoubleArray.ValueBuffer.Memory;
-                        ReadOnlyMemory<byte> doubleNullBitMapBuffer = arrowDoubleArray.NullBitmapBuffer.Memory;
-                        dataFrameColumn = new DoubleDataFrameColumn(field.Name, doubleValueBuffer, doubleNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                    case ArrowTypeId.HalfFloat:
+                        PrimitiveArray<Half> arrowHalfArray = (PrimitiveArray<Half>)arrowArray;
+                        ReadOnlyMemory<byte> halfValueBuffer = arrowHalfArray.ValueBuffer.Memory;
+                        ReadOnlyMemory<byte> halfNullBitMapBuffer = arrowHalfArray.NullBitmapBuffer.Memory;
+                        dataFrameColumn = new HalfDataFrameColumn(field.Name, halfValueBuffer, halfNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Float:
                         PrimitiveArray<float> arrowFloatArray = (PrimitiveArray<float>)arrowArray;
                         ReadOnlyMemory<byte> floatValueBuffer = arrowFloatArray.ValueBuffer.Memory;
                         ReadOnlyMemory<byte> floatNullBitMapBuffer = arrowFloatArray.NullBitmapBuffer.Memory;
                         dataFrameColumn = new SingleDataFrameColumn(field.Name, floatValueBuffer, floatNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
+                        break;
+                    case ArrowTypeId.Double:
+                        PrimitiveArray<double> arrowDoubleArray = (PrimitiveArray<double>)arrowArray;
+                        ReadOnlyMemory<byte> doubleValueBuffer = arrowDoubleArray.ValueBuffer.Memory;
+                        ReadOnlyMemory<byte> doubleNullBitMapBuffer = arrowDoubleArray.NullBitmapBuffer.Memory;
+                        dataFrameColumn = new DoubleDataFrameColumn(field.Name, doubleValueBuffer, doubleNullBitMapBuffer, arrowArray.Length, arrowArray.NullCount);
                         break;
                     case ArrowTypeId.Int8:
                         PrimitiveArray<sbyte> arrowsbyteArray = (PrimitiveArray<sbyte>)arrowArray;
@@ -112,7 +119,6 @@ namespace Microsoft.Data.Analysis
                     case ArrowTypeId.Date64:
                     case ArrowTypeId.Dictionary:
                     case ArrowTypeId.FixedSizedBinary:
-                    case ArrowTypeId.HalfFloat:
                     case ArrowTypeId.Interval:
                     case ArrowTypeId.List:
                     case ArrowTypeId.Map:

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics.Experimental;
 using System.Text;
 using Microsoft.ML;
 
@@ -178,6 +179,10 @@ namespace Microsoft.Data.Analysis
             else if (kind == typeof(ushort))
             {
                 ret = new UInt16DataFrameColumn(GetColumnName(columnNames, columnIndex));
+            }
+            else if (kind == typeof(Half))
+            {
+                ret = new HalfDataFrameColumn(GetColumnName(columnNames, columnIndex));
             }
             else
             {

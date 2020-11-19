@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics.Experimental;
 
 namespace Microsoft.Data.Analysis
 {
@@ -49,6 +50,16 @@ namespace Microsoft.Data.Analysis
         }
         
         public static DataFrame operator +(float value, DataFrame df)
+        {
+            return df.ReverseAdd(value);
+        }
+
+        public static DataFrame operator +(DataFrame df, Half value)
+        {
+            return df.Add(value);
+        }
+        
+        public static DataFrame operator +(Half value, DataFrame df)
         {
             return df.ReverseAdd(value);
         }
@@ -163,6 +174,16 @@ namespace Microsoft.Data.Analysis
             return df.ReverseSubtract(value);
         }
 
+        public static DataFrame operator -(DataFrame df, Half value)
+        {
+            return df.Subtract(value);
+        }
+        
+        public static DataFrame operator -(Half value, DataFrame df)
+        {
+            return df.ReverseSubtract(value);
+        }
+
         public static DataFrame operator -(DataFrame df, int value)
         {
             return df.Subtract(value);
@@ -269,6 +290,16 @@ namespace Microsoft.Data.Analysis
         }
         
         public static DataFrame operator *(float value, DataFrame df)
+        {
+            return df.ReverseMultiply(value);
+        }
+
+        public static DataFrame operator *(DataFrame df, Half value)
+        {
+            return df.Multiply(value);
+        }
+        
+        public static DataFrame operator *(Half value, DataFrame df)
         {
             return df.ReverseMultiply(value);
         }
@@ -383,6 +414,16 @@ namespace Microsoft.Data.Analysis
             return df.ReverseDivide(value);
         }
 
+        public static DataFrame operator /(DataFrame df, Half value)
+        {
+            return df.Divide(value);
+        }
+        
+        public static DataFrame operator /(Half value, DataFrame df)
+        {
+            return df.ReverseDivide(value);
+        }
+
         public static DataFrame operator /(DataFrame df, int value)
         {
             return df.Divide(value);
@@ -489,6 +530,16 @@ namespace Microsoft.Data.Analysis
         }
         
         public static DataFrame operator %(float value, DataFrame df)
+        {
+            return df.ReverseModulo(value);
+        }
+
+        public static DataFrame operator %(DataFrame df, Half value)
+        {
+            return df.Modulo(value);
+        }
+        
+        public static DataFrame operator %(Half value, DataFrame df)
         {
             return df.ReverseModulo(value);
         }

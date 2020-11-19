@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics.Experimental;
 using Apache.Arrow;
 using Apache.Arrow.Types;
 using Microsoft.ML;
@@ -480,7 +481,6 @@ namespace Microsoft.Data.Analysis
             return new Int16DataFrameColumn(Name, newColumnContainer);
         }
 
-
         internal UInt16DataFrameColumn CloneAsUInt16Column()
         {
             PrimitiveColumnContainer<ushort> newColumnContainer = _columnContainer.CloneAsUShortContainer();
@@ -515,6 +515,12 @@ namespace Microsoft.Data.Analysis
         {
             PrimitiveColumnContainer<float> newColumnContainer = _columnContainer.CloneAsFloatContainer();
             return new SingleDataFrameColumn(Name, newColumnContainer);
+        }
+
+        internal HalfDataFrameColumn CloneAsHalfColumn()
+        {
+            PrimitiveColumnContainer<Half> newColumnContainer = _columnContainer.CloneAsHalfContainer();
+            return new HalfDataFrameColumn(Name, newColumnContainer);
         }
 
         /// <inheritdoc/>

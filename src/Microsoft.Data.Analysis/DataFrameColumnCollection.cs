@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Numerics.Experimental;
 
 namespace Microsoft.Data.Analysis
 {
@@ -333,6 +334,23 @@ namespace Microsoft.Data.Analysis
             }
 
             throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Single)));
+        }
+
+        /// <summary>
+        /// Gets the <see cref="HalfDataFrameColumn"/> with the specified <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the column</param>
+        /// <returns><see cref="HalfDataFrameColumn"/>.</returns>
+        /// <exception cref="ArgumentException">A column named <paramref name="name"/> cannot be found, or if the column's type doesn't match.</exception>
+        public HalfDataFrameColumn GetHalfColumn(string name)
+        {
+            DataFrameColumn column = this[name];
+            if (column is HalfDataFrameColumn ret)
+            {
+                return ret;
+            }
+
+            throw new ArgumentException(string.Format(Strings.BadColumnCast, column.DataType, typeof(Half)));
         }
 
         /// <summary>

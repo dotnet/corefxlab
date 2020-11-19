@@ -7,6 +7,7 @@
 // Generated from PrimitiveDataFrameColumnArithmetic.tt. Do not modify directly
 
 using System;
+using System.Numerics.Experimental;
 
 namespace Microsoft.Data.Analysis
 {
@@ -87,6 +88,10 @@ namespace Microsoft.Data.Analysis
             else if (typeof(T) == typeof(float))
             {
                 return (IPrimitiveDataFrameColumnArithmetic<T>)new FloatArithmetic();
+            }
+            else if (typeof(T) == typeof(Half))
+            {
+                return (IPrimitiveDataFrameColumnArithmetic<T>)new HalfArithmetic();
             }
             else if (typeof(T) == typeof(int))
             {
@@ -2855,6 +2860,450 @@ namespace Microsoft.Data.Analysis
             {
                 var buffer = column.Buffers[b];
                 var mutableBuffer = DataFrameBuffer<float>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] < scalar);
+                }
+            }
+        }
+    }
+    internal class HalfArithmetic : IPrimitiveDataFrameColumnArithmetic<Half>
+    {
+        public void Add(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] + otherSpan[i]);
+                }
+            }
+        }
+        public void Add(PrimitiveColumnContainer<Half> column, Half scalar)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] + scalar);
+                }
+            }
+        }
+ 
+        public void Add(Half scalar, PrimitiveColumnContainer<Half> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b]; 
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++) 
+                {
+                    span[i] = (Half)(scalar + span[i]);
+                }
+            }
+        }
+        public void Subtract(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] - otherSpan[i]);
+                }
+            }
+        }
+        public void Subtract(PrimitiveColumnContainer<Half> column, Half scalar)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] - scalar);
+                }
+            }
+        }
+ 
+        public void Subtract(Half scalar, PrimitiveColumnContainer<Half> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b]; 
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++) 
+                {
+                    span[i] = (Half)(scalar - span[i]);
+                }
+            }
+        }
+        public void Multiply(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] * otherSpan[i]);
+                }
+            }
+        }
+        public void Multiply(PrimitiveColumnContainer<Half> column, Half scalar)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] * scalar);
+                }
+            }
+        }
+ 
+        public void Multiply(Half scalar, PrimitiveColumnContainer<Half> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b]; 
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++) 
+                {
+                    span[i] = (Half)(scalar * span[i]);
+                }
+            }
+        }
+        public void Divide(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] / otherSpan[i]);
+                }
+            }
+        }
+        public void Divide(PrimitiveColumnContainer<Half> column, Half scalar)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] / scalar);
+                }
+            }
+        }
+ 
+        public void Divide(Half scalar, PrimitiveColumnContainer<Half> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b]; 
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++) 
+                {
+                    span[i] = (Half)(scalar / span[i]);
+                }
+            }
+        }
+        public void Modulo(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] % otherSpan[i]);
+                }
+            }
+        }
+        public void Modulo(PrimitiveColumnContainer<Half> column, Half scalar)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (Half)(span[i] % scalar);
+                }
+            }
+        }
+ 
+        public void Modulo(Half scalar, PrimitiveColumnContainer<Half> column)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b]; 
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++) 
+                {
+                    span[i] = (Half)(scalar % span[i]);
+                }
+            }
+        }
+        public void And(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right)
+        {
+            throw new NotSupportedException();
+        }
+        public void And(PrimitiveColumnContainer<Half> column, Half scalar)
+        {
+            throw new NotSupportedException();
+        }
+ 
+        public void And(Half scalar, PrimitiveColumnContainer<Half> column)
+        {
+            throw new NotSupportedException(); 
+        }
+        public void Or(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right)
+        {
+            throw new NotSupportedException();
+        }
+        public void Or(PrimitiveColumnContainer<Half> column, Half scalar)
+        {
+            throw new NotSupportedException();
+        }
+ 
+        public void Or(Half scalar, PrimitiveColumnContainer<Half> column)
+        {
+            throw new NotSupportedException(); 
+        }
+        public void Xor(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right)
+        {
+            throw new NotSupportedException();
+        }
+        public void Xor(PrimitiveColumnContainer<Half> column, Half scalar)
+        {
+            throw new NotSupportedException();
+        }
+ 
+        public void Xor(Half scalar, PrimitiveColumnContainer<Half> column)
+        {
+            throw new NotSupportedException(); 
+        }
+        public void LeftShift(PrimitiveColumnContainer<Half> column, int value)
+        {
+            throw new NotSupportedException();
+        }
+        public void RightShift(PrimitiveColumnContainer<Half> column, int value)
+        {
+            throw new NotSupportedException();
+        }
+        public void ElementwiseEquals(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] == otherSpan[i]);
+                }
+            }
+        }
+        public void ElementwiseEquals(PrimitiveColumnContainer<Half> column, Half scalar, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] == scalar);
+                }
+            }
+        }
+        public void ElementwiseNotEquals(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] != otherSpan[i]);
+                }
+            }
+        }
+        public void ElementwiseNotEquals(PrimitiveColumnContainer<Half> column, Half scalar, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] != scalar);
+                }
+            }
+        }
+        public void ElementwiseGreaterThanOrEqual(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] >= otherSpan[i]);
+                }
+            }
+        }
+        public void ElementwiseGreaterThanOrEqual(PrimitiveColumnContainer<Half> column, Half scalar, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] >= scalar);
+                }
+            }
+        }
+        public void ElementwiseLessThanOrEqual(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] <= otherSpan[i]);
+                }
+            }
+        }
+        public void ElementwiseLessThanOrEqual(PrimitiveColumnContainer<Half> column, Half scalar, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] <= scalar);
+                }
+            }
+        }
+        public void ElementwiseGreaterThan(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] > otherSpan[i]);
+                }
+            }
+        }
+        public void ElementwiseGreaterThan(PrimitiveColumnContainer<Half> column, Half scalar, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                column.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] > scalar);
+                }
+            }
+        }
+        public void ElementwiseLessThan(PrimitiveColumnContainer<Half> left, PrimitiveColumnContainer<Half> right, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < left.Buffers.Count; b++)
+            {
+                var buffer = left.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
+                left.Buffers[b] = mutableBuffer;
+                var span = mutableBuffer.Span;
+                var otherSpan = right.Buffers[b].ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    ret[i] = (span[i] < otherSpan[i]);
+                }
+            }
+        }
+        public void ElementwiseLessThan(PrimitiveColumnContainer<Half> column, Half scalar, PrimitiveColumnContainer<bool> ret)
+        {
+            for (int b = 0 ; b < column.Buffers.Count; b++)
+            {
+                var buffer = column.Buffers[b];
+                var mutableBuffer = DataFrameBuffer<Half>.GetMutableBuffer(buffer);
                 column.Buffers[b] = mutableBuffer;
                 var span = mutableBuffer.Span;
                 for (int i = 0; i < span.Length; i++)

@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics.Experimental;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Data.Analysis
@@ -48,6 +49,7 @@ namespace Microsoft.Data.Analysis
                 case PrimitiveDataFrameColumn<char> charColumn:
                 case PrimitiveDataFrameColumn<double> doubleColumn:
                 case PrimitiveDataFrameColumn<float> floatColumn:
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
                 case PrimitiveDataFrameColumn<int> intColumn:
                 case PrimitiveDataFrameColumn<long> longColumn:
                 case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
@@ -122,6 +124,7 @@ namespace Microsoft.Data.Analysis
                 case PrimitiveDataFrameColumn<char> charColumn:
                 case PrimitiveDataFrameColumn<double> doubleColumn:
                 case PrimitiveDataFrameColumn<float> floatColumn:
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
                 case PrimitiveDataFrameColumn<int> intColumn:
                 case PrimitiveDataFrameColumn<long> longColumn:
                 case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
@@ -196,6 +199,7 @@ namespace Microsoft.Data.Analysis
                 case PrimitiveDataFrameColumn<char> charColumn:
                 case PrimitiveDataFrameColumn<double> doubleColumn:
                 case PrimitiveDataFrameColumn<float> floatColumn:
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
                 case PrimitiveDataFrameColumn<int> intColumn:
                 case PrimitiveDataFrameColumn<long> longColumn:
                 case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
@@ -270,6 +274,7 @@ namespace Microsoft.Data.Analysis
                 case PrimitiveDataFrameColumn<char> charColumn:
                 case PrimitiveDataFrameColumn<double> doubleColumn:
                 case PrimitiveDataFrameColumn<float> floatColumn:
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
                 case PrimitiveDataFrameColumn<int> intColumn:
                 case PrimitiveDataFrameColumn<long> longColumn:
                 case PrimitiveDataFrameColumn<sbyte> sbyteColumn:
@@ -344,6 +349,7 @@ namespace Microsoft.Data.Analysis
                 case PrimitiveDataFrameColumn<char> charColumn:
                 case PrimitiveDataFrameColumn<double> doubleColumn:
                 case PrimitiveDataFrameColumn<float> floatColumn:
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
                 case PrimitiveDataFrameColumn<int> intColumn:
                 case PrimitiveDataFrameColumn<long> longColumn:
                 case PrimitiveDataFrameColumn<sbyte> sbyteColumn:

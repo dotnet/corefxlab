@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics.Experimental;
 using System.Text;
 using Apache.Arrow;
 using Microsoft.ML;
@@ -129,6 +130,7 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrameColumn decimalColumn = new DecimalDataFrameColumn("Decimal", Enumerable.Range(0, length).Select(x => (decimal)x));
             DataFrameColumn doubleColumn = new DoubleDataFrameColumn("Double", Enumerable.Range(0, length).Select(x => (double)x));
             DataFrameColumn floatColumn = new SingleDataFrameColumn("Float", Enumerable.Range(0, length).Select(x => (float)x));
+            DataFrameColumn halfColumn = new HalfDataFrameColumn("Half", Enumerable.Range(0, length).Select(x => (Half)x));
             DataFrameColumn intColumn = new Int32DataFrameColumn("Int", Enumerable.Range(0, length).Select(x => x));
             DataFrameColumn longColumn = new Int64DataFrameColumn("Long", Enumerable.Range(0, length).Select(x => (long)x));
             DataFrameColumn sbyteColumn = new SByteDataFrameColumn("Sbyte", Enumerable.Range(0, length).Select(x => (sbyte)x));
@@ -137,7 +139,7 @@ namespace Microsoft.Data.Analysis.Tests
             DataFrameColumn ulongColumn = new UInt64DataFrameColumn("Ulong", Enumerable.Range(0, length).Select(x => (ulong)x));
             DataFrameColumn ushortColumn = new UInt16DataFrameColumn("Ushort", Enumerable.Range(0, length).Select(x => (ushort)x));
 
-            DataFrame dataFrame = new DataFrame(new List<DataFrameColumn> { byteColumn, decimalColumn, doubleColumn, floatColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
+            DataFrame dataFrame = new DataFrame(new List<DataFrameColumn> { byteColumn, decimalColumn, doubleColumn, floatColumn, halfColumn, intColumn, longColumn, sbyteColumn, shortColumn, uintColumn, ulongColumn, ushortColumn });
 
             if (withNulls)
             {
@@ -673,6 +675,8 @@ namespace Microsoft.Data.Analysis.Tests
             Assert.Throws<NotSupportedException>(() => df.Columns["Double"].Any());
             Assert.Throws<NotSupportedException>(() => df.Columns["Float"].All());
             Assert.Throws<NotSupportedException>(() => df.Columns["Float"].Any());
+            Assert.Throws<NotSupportedException>(() => df.Columns["Half"].All());
+            Assert.Throws<NotSupportedException>(() => df.Columns["Half"].Any());
             Assert.Throws<NotSupportedException>(() => df.Columns["Int"].All());
             Assert.Throws<NotSupportedException>(() => df.Columns["Int"].Any());
             Assert.Throws<NotSupportedException>(() => df.Columns["Long"].All());
@@ -730,6 +734,25 @@ namespace Microsoft.Data.Analysis.Tests
                     Assert.Null(df.Columns["Float"][i]);
                 else
                     Assert.Equal(-10.0f, (float)df.Columns["Float"][i]);
+            }
+
+            df.Columns["Half"][0] = (Half)(-10.0);
+            DataFrameColumn halfColumn = df.Columns["Half"].CumulativeMin();
+            for (int i = 0; i < halfColumn.Length; i++)
+            {
+                if (i == 5)
+                    Assert.Null(halfColumn[i]);
+                else
+                    Assert.Equal((Half)(-10.0), (Half)halfColumn[i]);
+            }
+            Assert.Equal((Half)9.0, df.Columns["Half"][9]);
+            df.Columns["Half"].CumulativeMin(true);
+            for (int i = 0; i < df.Columns["Half"].Length; i++)
+            {
+                if (i == 5)
+                    Assert.Null(df.Columns["Half"][i]);
+                else
+                    Assert.Equal((Half)(-10.0), (Half)df.Columns["Half"][i]);
             }
 
             DataFrameColumn uintColumn = df.Columns["Uint"].CumulativeProduct();
@@ -2154,6 +2177,8 @@ namespace Microsoft.Data.Analysis.Tests
             AssertLengthTypeAndValues(doubleColumn, typeof(double));
             DataFrameColumn floatColumn = DataFrameColumn.Create("Float", Enumerable.Range(0, length).Select(x => (float)x));
             AssertLengthTypeAndValues(floatColumn, typeof(float));
+            DataFrameColumn halfColumn = DataFrameColumn.Create("Half", Enumerable.Range(0, length).Select(x => (Half)x));
+            AssertLengthTypeAndValues(halfColumn, typeof(Half));
             DataFrameColumn intColumn = DataFrameColumn.Create("Int", Enumerable.Range(0, length).Select(x => x));
             AssertLengthTypeAndValues(intColumn, typeof(int));
             DataFrameColumn longColumn = DataFrameColumn.Create("Long", Enumerable.Range(0, length).Select(x => (long)x));
@@ -2294,6 +2319,10 @@ namespace Microsoft.Data.Analysis.Tests
             SingleDataFrameColumn singles = dataFrame.Columns.GetSingleColumn("Float");
             Assert.NotNull(singles);
             Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetDoubleColumn("Float"));
+
+            HalfDataFrameColumn halfs = dataFrame.Columns.GetHalfColumn("Half");
+            Assert.NotNull(halfs);
+            Assert.Throws<ArgumentException>(() => dataFrame.Columns.GetSingleColumn("Half"));
 
             Int64DataFrameColumn longs = dataFrame.Columns.GetInt64Column("Long");
             Assert.NotNull(longs);

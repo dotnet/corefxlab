@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics.Experimental;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Data.Analysis
@@ -31,6 +32,8 @@ namespace Microsoft.Data.Analysis
                     return AddImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return AddImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return AddImplementation(column as PrimitiveDataFrameColumn<Half>, inPlace);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return AddImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -76,6 +79,8 @@ namespace Microsoft.Data.Analysis
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return SubtractImplementation(column as PrimitiveDataFrameColumn<Half>, inPlace);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return SubtractImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -121,6 +126,8 @@ namespace Microsoft.Data.Analysis
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return MultiplyImplementation(column as PrimitiveDataFrameColumn<Half>, inPlace);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return MultiplyImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -166,6 +173,8 @@ namespace Microsoft.Data.Analysis
                     return DivideImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return DivideImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return DivideImplementation(column as PrimitiveDataFrameColumn<Half>, inPlace);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return DivideImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -211,6 +220,8 @@ namespace Microsoft.Data.Analysis
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return ModuloImplementation(column as PrimitiveDataFrameColumn<Half>, inPlace);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return ModuloImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -256,6 +267,8 @@ namespace Microsoft.Data.Analysis
                     return AndImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return AndImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return AndImplementation(column as PrimitiveDataFrameColumn<Half>, inPlace);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return AndImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -296,6 +309,8 @@ namespace Microsoft.Data.Analysis
                     return OrImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return OrImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return OrImplementation(column as PrimitiveDataFrameColumn<Half>, inPlace);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return OrImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -336,6 +351,8 @@ namespace Microsoft.Data.Analysis
                     return XorImplementation(column as PrimitiveDataFrameColumn<double>, inPlace);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return XorImplementation(column as PrimitiveDataFrameColumn<float>, inPlace);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return XorImplementation(column as PrimitiveDataFrameColumn<Half>, inPlace);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return XorImplementation(column as PrimitiveDataFrameColumn<int>, inPlace);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -386,6 +403,8 @@ namespace Microsoft.Data.Analysis
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<double>);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<float>);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<Half>);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return ElementwiseEqualsImplementation(column as PrimitiveDataFrameColumn<int>);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -431,6 +450,8 @@ namespace Microsoft.Data.Analysis
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<double>);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<float>);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<Half>);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return ElementwiseNotEqualsImplementation(column as PrimitiveDataFrameColumn<int>);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -476,6 +497,8 @@ namespace Microsoft.Data.Analysis
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<double>);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<float>);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<Half>);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return ElementwiseGreaterThanOrEqualImplementation(column as PrimitiveDataFrameColumn<int>);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -521,6 +544,8 @@ namespace Microsoft.Data.Analysis
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<double>);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<float>);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<Half>);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return ElementwiseLessThanOrEqualImplementation(column as PrimitiveDataFrameColumn<int>);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -566,6 +591,8 @@ namespace Microsoft.Data.Analysis
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<double>);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<float>);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<Half>);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return ElementwiseGreaterThanImplementation(column as PrimitiveDataFrameColumn<int>);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -611,6 +638,8 @@ namespace Microsoft.Data.Analysis
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<double>);
                 case PrimitiveDataFrameColumn<float> floatColumn:
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<float>);
+                case PrimitiveDataFrameColumn<Half> HalfColumn:
+                    return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<Half>);
                 case PrimitiveDataFrameColumn<int> intColumn:
                     return ElementwiseLessThanImplementation(column as PrimitiveDataFrameColumn<int>);
                 case PrimitiveDataFrameColumn<long> longColumn:
@@ -678,6 +707,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -753,6 +783,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -833,6 +864,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -908,6 +940,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -988,6 +1021,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1063,6 +1097,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1143,6 +1178,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1218,6 +1254,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1298,6 +1335,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1373,6 +1411,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1438,6 +1477,7 @@ namespace Microsoft.Data.Analysis
                 case Type decimalType when decimalType == typeof(decimal):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type HalfType when HalfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1467,6 +1507,7 @@ namespace Microsoft.Data.Analysis
                 case Type decimalType when decimalType == typeof(decimal):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type HalfType when HalfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1501,6 +1542,7 @@ namespace Microsoft.Data.Analysis
                 case Type decimalType when decimalType == typeof(decimal):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type HalfType when HalfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1530,6 +1572,7 @@ namespace Microsoft.Data.Analysis
                 case Type decimalType when decimalType == typeof(decimal):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type HalfType when HalfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1564,6 +1607,7 @@ namespace Microsoft.Data.Analysis
                 case Type decimalType when decimalType == typeof(decimal):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type HalfType when HalfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1593,6 +1637,7 @@ namespace Microsoft.Data.Analysis
                 case Type decimalType when decimalType == typeof(decimal):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type HalfType when HalfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1625,6 +1670,8 @@ namespace Microsoft.Data.Analysis
                 case Type doubleType when doubleType == typeof(double):
                     throw new NotSupportedException();
                 case Type floatType when floatType == typeof(float):
+                    throw new NotSupportedException();
+                case Type HalfType when HalfType == typeof(Half):
                     throw new NotSupportedException();
                 case Type intType when intType == typeof(int):
                     PrimitiveDataFrameColumn<int> intColumn = this as PrimitiveDataFrameColumn<int>;
@@ -1686,6 +1733,8 @@ namespace Microsoft.Data.Analysis
                 case Type doubleType when doubleType == typeof(double):
                     throw new NotSupportedException();
                 case Type floatType when floatType == typeof(float):
+                    throw new NotSupportedException();
+                case Type HalfType when HalfType == typeof(Half):
                     throw new NotSupportedException();
                 case Type intType when intType == typeof(int):
                     PrimitiveDataFrameColumn<int> intColumn = this as PrimitiveDataFrameColumn<int>;
@@ -1767,6 +1816,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1843,6 +1893,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -1924,6 +1975,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2000,6 +2052,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2075,6 +2128,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2145,6 +2199,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2220,6 +2275,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2290,6 +2346,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2365,6 +2422,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2435,6 +2493,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2510,6 +2569,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):
@@ -2580,6 +2640,7 @@ namespace Microsoft.Data.Analysis
                 case Type charType when charType == typeof(char):
                 case Type doubleType when doubleType == typeof(double):
                 case Type floatType when floatType == typeof(float):
+                case Type halfType when halfType == typeof(Half):
                 case Type intType when intType == typeof(int):
                 case Type longType when longType == typeof(long):
                 case Type sbyteType when sbyteType == typeof(sbyte):

@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics.Experimental;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -840,6 +841,26 @@ namespace Microsoft.Data.Analysis
                 for (int i = 0; i < span.Length; i++)
                 {
                     newBuffer.Append(SingleConverter<T>.Instance.GetSingle(span[i]));
+                }
+            }
+            ret.NullBitMapBuffers = CloneNullBitMapBuffers();
+            ret.NullCount = NullCount;
+            return ret;
+        }
+
+        internal PrimitiveColumnContainer<Half> CloneAsHalfContainer()
+        {
+            var ret = new PrimitiveColumnContainer<Half>();
+            foreach (ReadOnlyDataFrameBuffer<T> buffer in Buffers)
+            {
+                ret.Length += buffer.Length;
+                DataFrameBuffer<Half> newBuffer = new DataFrameBuffer<Half>();
+                ret.Buffers.Add(newBuffer);
+                newBuffer.EnsureCapacity(buffer.Length);
+                ReadOnlySpan<T> span = buffer.ReadOnlySpan;
+                for (int i = 0; i < span.Length; i++)
+                {
+                    newBuffer.Append(HalfConverter<T>.Instance.GetHalf(span[i]));
                 }
             }
             ret.NullBitMapBuffers = CloneNullBitMapBuffers();

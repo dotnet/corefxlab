@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics.Experimental;
 
 namespace Microsoft.Data.Analysis
 {
@@ -570,6 +571,120 @@ namespace Microsoft.Data.Analysis
             return (ulong)value;
         }
     }
+    internal interface IHalfConverter<T>
+    {
+        Half GetHalf(T value);
+    }
+    internal static class HalfConverter<T>
+    {
+        public static IHalfConverter<T> Instance { get; } = HalfConverter.GetHalfConverter<T>();
+    }
+    internal static class HalfConverter
+    {
+        public static IHalfConverter<T> GetHalfConverter<T>()
+        {
+            if (typeof(T) == typeof(byte))
+            {
+                return (IHalfConverter<T>)new ByteHalfConverter();
+            }
+            if (typeof(T) == typeof(sbyte))
+            {
+                return (IHalfConverter<T>)new SByteHalfConverter();
+            }
+            if (typeof(T) == typeof(short))
+            {
+                return (IHalfConverter<T>)new Int16HalfConverter();
+            }
+            if (typeof(T) == typeof(ushort))
+            {
+                return (IHalfConverter<T>)new UInt16HalfConverter();
+            }
+            if (typeof(T) == typeof(int))
+            {
+                return (IHalfConverter<T>)new Int32HalfConverter();
+            }
+            if (typeof(T) == typeof(uint))
+            {
+                return (IHalfConverter<T>)new UInt32HalfConverter();
+            }
+            if (typeof(T) == typeof(long))
+            {
+                return (IHalfConverter<T>)new Int64HalfConverter();
+            }
+            if (typeof(T) == typeof(ulong))
+            {
+                return (IHalfConverter<T>)new UInt64HalfConverter();
+            }
+            if (typeof(T) == typeof(Half))
+            {
+                return (IHalfConverter<T>)new HalfHalfConverter();
+            }
+            throw new NotSupportedException();
+        }
+    }
+    internal class ByteHalfConverter : IHalfConverter<byte>
+    {
+        public Half GetHalf(byte value)
+        {
+            return (Half)value;
+        }
+    }
+    internal class SByteHalfConverter : IHalfConverter<sbyte>
+    {
+        public Half GetHalf(sbyte value)
+        {
+            return (Half)value;
+        }
+    }
+    internal class Int16HalfConverter : IHalfConverter<short>
+    {
+        public Half GetHalf(short value)
+        {
+            return (Half)value;
+        }
+    }
+    internal class UInt16HalfConverter : IHalfConverter<ushort>
+    {
+        public Half GetHalf(ushort value)
+        {
+            return (Half)value;
+        }
+    }
+    internal class Int32HalfConverter : IHalfConverter<int>
+    {
+        public Half GetHalf(int value)
+        {
+            return (Half)value;
+        }
+    }
+    internal class UInt32HalfConverter : IHalfConverter<uint>
+    {
+        public Half GetHalf(uint value)
+        {
+            return (Half)value;
+        }
+    }
+    internal class Int64HalfConverter : IHalfConverter<long>
+    {
+        public Half GetHalf(long value)
+        {
+            return (Half)value;
+        }
+    }
+    internal class UInt64HalfConverter : IHalfConverter<ulong>
+    {
+        public Half GetHalf(ulong value)
+        {
+            return (Half)value;
+        }
+    }
+    internal class HalfHalfConverter : IHalfConverter<Half>
+    {
+        public Half GetHalf(Half value)
+        {
+            return (Half)(float)value;
+        }
+    }
     internal interface ISingleConverter<T>
     {
         float GetSingle(T value);
@@ -613,6 +728,10 @@ namespace Microsoft.Data.Analysis
             if (typeof(T) == typeof(ulong))
             {
                 return (ISingleConverter<T>)new UInt64SingleConverter();
+            }
+            if (typeof(T) == typeof(Half))
+            {
+                return (ISingleConverter<T>)new HalfSingleConverter();
             }
             if (typeof(T) == typeof(float))
             {
@@ -677,6 +796,13 @@ namespace Microsoft.Data.Analysis
             return (float)value;
         }
     }
+    internal class HalfSingleConverter : ISingleConverter<Half>
+    {
+        public float GetSingle(Half value)
+        {
+            return (float)(float)value;
+        }
+    }
     internal class SingleSingleConverter : ISingleConverter<float>
     {
         public float GetSingle(float value)
@@ -727,6 +853,10 @@ namespace Microsoft.Data.Analysis
             if (typeof(T) == typeof(ulong))
             {
                 return (IDoubleConverter<T>)new UInt64DoubleConverter();
+            }
+            if (typeof(T) == typeof(Half))
+            {
+                return (IDoubleConverter<T>)new HalfDoubleConverter();
             }
             if (typeof(T) == typeof(float))
             {
@@ -795,6 +925,13 @@ namespace Microsoft.Data.Analysis
             return (double)value;
         }
     }
+    internal class HalfDoubleConverter : IDoubleConverter<Half>
+    {
+        public double GetDouble(Half value)
+        {
+            return (double)(float)value;
+        }
+    }
     internal class SingleDoubleConverter : IDoubleConverter<float>
     {
         public double GetDouble(float value)
@@ -852,6 +989,10 @@ namespace Microsoft.Data.Analysis
             if (typeof(T) == typeof(ulong))
             {
                 return (IDecimalConverter<T>)new UInt64DecimalConverter();
+            }
+            if (typeof(T) == typeof(Half))
+            {
+                return (IDecimalConverter<T>)new HalfDecimalConverter();
             }
             if (typeof(T) == typeof(float))
             {
@@ -922,6 +1063,13 @@ namespace Microsoft.Data.Analysis
         public decimal GetDecimal(ulong value)
         {
             return (decimal)value;
+        }
+    }
+    internal class HalfDecimalConverter : IDecimalConverter<Half>
+    {
+        public decimal GetDecimal(Half value)
+        {
+            return (decimal)(float)value;
         }
     }
     internal class SingleDecimalConverter : IDecimalConverter<float>

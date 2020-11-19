@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics.Experimental;
 
 namespace Microsoft.Data.Analysis
 {
@@ -46,6 +47,19 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.Add(column.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn AddImplementation(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            if (column.Length != Length)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.Add(column.ColumnContainer);
             return newColumn;
         }
@@ -129,6 +143,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn AddImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
+            newColumn.ColumnContainer.Add(value);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal Int32DataFrameColumn AddImplementation(int value, bool inPlace = false)
@@ -188,6 +211,15 @@ namespace Microsoft.Data.Analysis
         internal SingleDataFrameColumn ReverseAddImplementation(float value, bool inPlace = false)
         {
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.ReverseAdd(value);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn ReverseAddImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.ReverseAdd(value);
             return newColumn;
         }
@@ -263,6 +295,19 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.Subtract(column.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn SubtractImplementation(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            if (column.Length != Length)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.Subtract(column.ColumnContainer);
             return newColumn;
         }
@@ -346,6 +391,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn SubtractImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
+            newColumn.ColumnContainer.Subtract(value);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal Int32DataFrameColumn SubtractImplementation(int value, bool inPlace = false)
@@ -405,6 +459,15 @@ namespace Microsoft.Data.Analysis
         internal SingleDataFrameColumn ReverseSubtractImplementation(float value, bool inPlace = false)
         {
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.ReverseSubtract(value);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn ReverseSubtractImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.ReverseSubtract(value);
             return newColumn;
         }
@@ -480,6 +543,19 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.Multiply(column.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn MultiplyImplementation(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            if (column.Length != Length)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.Multiply(column.ColumnContainer);
             return newColumn;
         }
@@ -563,6 +639,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn MultiplyImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
+            newColumn.ColumnContainer.Multiply(value);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal Int32DataFrameColumn MultiplyImplementation(int value, bool inPlace = false)
@@ -622,6 +707,15 @@ namespace Microsoft.Data.Analysis
         internal SingleDataFrameColumn ReverseMultiplyImplementation(float value, bool inPlace = false)
         {
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.ReverseMultiply(value);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn ReverseMultiplyImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.ReverseMultiply(value);
             return newColumn;
         }
@@ -697,6 +791,19 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.Divide(column.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn DivideImplementation(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            if (column.Length != Length)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.Divide(column.ColumnContainer);
             return newColumn;
         }
@@ -780,6 +887,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn DivideImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
+            newColumn.ColumnContainer.Divide(value);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal Int32DataFrameColumn DivideImplementation(int value, bool inPlace = false)
@@ -839,6 +955,15 @@ namespace Microsoft.Data.Analysis
         internal SingleDataFrameColumn ReverseDivideImplementation(float value, bool inPlace = false)
         {
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.ReverseDivide(value);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn ReverseDivideImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.ReverseDivide(value);
             return newColumn;
         }
@@ -914,6 +1039,19 @@ namespace Microsoft.Data.Analysis
                 throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
             }
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.Modulo(column.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn ModuloImplementation(HalfDataFrameColumn column, bool inPlace = false)
+        {
+            if (column.Length != Length)
+            {
+                throw new ArgumentException(Strings.MismatchedColumnLengths, nameof(column));
+            }
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.Modulo(column.ColumnContainer);
             return newColumn;
         }
@@ -997,6 +1135,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn ModuloImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
+            newColumn.ColumnContainer.Modulo(value);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal Int32DataFrameColumn ModuloImplementation(int value, bool inPlace = false)
@@ -1056,6 +1203,15 @@ namespace Microsoft.Data.Analysis
         internal SingleDataFrameColumn ReverseModuloImplementation(float value, bool inPlace = false)
         {
             SingleDataFrameColumn newColumn = inPlace ? this : CloneAsSingleColumn();
+            newColumn.ColumnContainer.ReverseModulo(value);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal HalfDataFrameColumn ReverseModuloImplementation(Half value, bool inPlace = false)
+        {
+            HalfDataFrameColumn newColumn = inPlace ? this : CloneAsHalfColumn();
             newColumn.ColumnContainer.ReverseModulo(value);
             return newColumn;
         }
@@ -1135,6 +1291,15 @@ namespace Microsoft.Data.Analysis
     public partial class SingleDataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseEqualsImplementation(SingleDataFrameColumn column)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseEquals(column.ColumnContainer, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseEqualsImplementation(HalfDataFrameColumn column)
         {
             BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             ColumnContainer.ElementwiseEquals(column.ColumnContainer, newColumn.ColumnContainer);
@@ -1249,6 +1414,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseEqualsImplementation(Half value)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseEquals(value, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseEqualsImplementation(int value)
@@ -1351,6 +1525,15 @@ namespace Microsoft.Data.Analysis
     public partial class SingleDataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseNotEqualsImplementation(SingleDataFrameColumn column)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseNotEquals(column.ColumnContainer, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseNotEqualsImplementation(HalfDataFrameColumn column)
         {
             BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             ColumnContainer.ElementwiseNotEquals(column.ColumnContainer, newColumn.ColumnContainer);
@@ -1465,6 +1648,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseNotEqualsImplementation(Half value)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseNotEquals(value, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseNotEqualsImplementation(int value)
@@ -1567,6 +1759,15 @@ namespace Microsoft.Data.Analysis
     public partial class SingleDataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(SingleDataFrameColumn column)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseGreaterThanOrEqual(column.ColumnContainer, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(HalfDataFrameColumn column)
         {
             BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             ColumnContainer.ElementwiseGreaterThanOrEqual(column.ColumnContainer, newColumn.ColumnContainer);
@@ -1681,6 +1882,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(Half value)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseGreaterThanOrEqual(value, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseGreaterThanOrEqualImplementation(int value)
@@ -1783,6 +1993,15 @@ namespace Microsoft.Data.Analysis
     public partial class SingleDataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(SingleDataFrameColumn column)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseLessThanOrEqual(column.ColumnContainer, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(HalfDataFrameColumn column)
         {
             BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             ColumnContainer.ElementwiseLessThanOrEqual(column.ColumnContainer, newColumn.ColumnContainer);
@@ -1897,6 +2116,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(Half value)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseLessThanOrEqual(value, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseLessThanOrEqualImplementation(int value)
@@ -1999,6 +2227,15 @@ namespace Microsoft.Data.Analysis
     public partial class SingleDataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseGreaterThanImplementation(SingleDataFrameColumn column)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseGreaterThan(column.ColumnContainer, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseGreaterThanImplementation(HalfDataFrameColumn column)
         {
             BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             ColumnContainer.ElementwiseGreaterThan(column.ColumnContainer, newColumn.ColumnContainer);
@@ -2113,6 +2350,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseGreaterThanImplementation(Half value)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseGreaterThan(value, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseGreaterThanImplementation(int value)
@@ -2221,6 +2467,15 @@ namespace Microsoft.Data.Analysis
             return newColumn;
         }
     }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseLessThanImplementation(HalfDataFrameColumn column)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseLessThan(column.ColumnContainer, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
     public partial class Int32DataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseLessThanImplementation(Int32DataFrameColumn column)
@@ -2323,6 +2578,15 @@ namespace Microsoft.Data.Analysis
     public partial class SingleDataFrameColumn
     {
         internal BooleanDataFrameColumn ElementwiseLessThanImplementation(float value)
+        {
+            BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
+            ColumnContainer.ElementwiseLessThan(value, newColumn.ColumnContainer);
+            return newColumn;
+        }
+    }
+    public partial class HalfDataFrameColumn
+    {
+        internal BooleanDataFrameColumn ElementwiseLessThanImplementation(Half value)
         {
             BooleanDataFrameColumn newColumn = CloneAsBooleanColumn();
             ColumnContainer.ElementwiseLessThan(value, newColumn.ColumnContainer);

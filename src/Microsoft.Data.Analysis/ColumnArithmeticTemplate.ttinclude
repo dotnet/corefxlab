@@ -48,9 +48,10 @@
         {"uint", 3},
         {"long", 4},
         {"ulong", 4},
-        {"float", 5},
-        {"double", 6},
-        {"decimal", 7}
+        {"Half", 5},
+        {"float", 6},
+        {"double", 7},
+        {"decimal", 8}
     };
 
     public string GetCapitalizedPrimitiveTypes(string type)
@@ -123,14 +124,15 @@
     // These are a subset of the implicit conversions allowed in C#. They are used to generate the return type for binary ops
     // https://github.com/dotnet/csharplang/blob/master/spec/conversions.md#implicit-numeric-conversions
     public Dictionary<string, IReadOnlyList<string>> primitiveTypeToImplicitConversions = new Dictionary<string, IReadOnlyList<string>> {
-        {"sbyte", new List<string> {"int", "long", "float", "double", "decimal"}},
-        {"byte", new List<string> {"int", "uint", "long", "ulong", "float", "double", "decimal"}},
-        {"short", new List<string> {"int", "long", "float", "double", "decimal"}},
-        {"ushort", new List<string> {"int", "uint", "long", "ulong", "float", "double", "decimal"}},
-        {"int", new List<string> {"int", "long", "float", "double", "decimal"}},
-        {"uint", new List<string> {"uint", "long", "ulong", "float", "double", "decimal"}},
-        {"long", new List<string> {"long", "float", "double", "decimal"}},
-        {"ulong", new List<string> {"ulong", "float", "double", "decimal"}},
+        {"sbyte", new List<string> {"int", "long", "Half", "float", "double", "decimal"}},
+        {"byte", new List<string> {"int", "uint", "long", "ulong", "Half", "float", "double", "decimal"}},
+        {"short", new List<string> {"int", "long", "Half", "float", "double", "decimal"}},
+        {"ushort", new List<string> {"int", "uint", "long", "ulong", "Half", "float", "double", "decimal"}},
+        {"int", new List<string> {"int", "long", "Half", "float", "double", "decimal"}},
+        {"uint", new List<string> {"uint", "long", "ulong", "Half", "float", "double", "decimal"}},
+        {"long", new List<string> {"long", "Half", "float", "double", "decimal"}},
+        {"ulong", new List<string> {"ulong", "Half", "float", "double", "decimal"}},
+        {"Half", new List<string> {"Half", "float", "double"}},
         {"float", new List<string> {"float", "double"}},
         {"double", new List<string> {"double"}},
         {"decimal", new List<string> {"decimal"}},
@@ -144,6 +146,7 @@
         new TypeConfiguration("decimal", supportsBitwise: false, unsupportedMethods: new[] {"All", "Any"}),
         new TypeConfiguration("double", oneLiteral:"1.0", supportsBitwise: false, unsupportedMethods: new[] {"All", "Any"}),
         new TypeConfiguration("float", oneLiteral:"1.0f", supportsBitwise: false, unsupportedMethods: new[] {"All", "Any"}),
+        new TypeConfiguration("Half", oneLiteral:"(Half)1.0", supportsBitwise: false, unsupportedMethods: new[] {"All", "Any"}),
         new TypeConfiguration("int", unsupportedMethods: new[] {"All", "Any"}),
         new TypeConfiguration("long", unsupportedMethods: new[] {"All", "Any"}),
         new TypeConfiguration("sbyte", classPrefix:"SByte", unsupportedMethods: new[] {"All", "Any"}),
