@@ -5,6 +5,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -101,69 +104,69 @@ namespace Microsoft.Data.Analysis
             }
         }
 
-        private static string GetColumnName(string[] columnNames, int columnIndex)
+        private static string GetColumnName(string columnName, int columnIndex)
         {
-            return columnNames == null ? "Column" + columnIndex.ToString() : columnNames[columnIndex];
+            return columnName ?? "Column" + columnIndex.ToString();
         }
 
-        private static DataFrameColumn CreateColumn(Type kind, string[] columnNames, int columnIndex)
+        private static DataFrameColumn CreateColumn(Type kind, string columnName, int columnIndex)
         {
             DataFrameColumn ret;
             if (kind == typeof(bool))
             {
-                ret = new BooleanDataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new BooleanDataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(int))
             {
-                ret = new Int32DataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new Int32DataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(float))
             {
-                ret = new SingleDataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new SingleDataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(string))
             {
-                ret = new StringDataFrameColumn(GetColumnName(columnNames, columnIndex), 0);
+                ret = new StringDataFrameColumn(GetColumnName(columnName, columnIndex), 0);
             }
             else if (kind == typeof(long))
             {
-                ret = new Int64DataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new Int64DataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(decimal))
             {
-                ret = new DecimalDataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new DecimalDataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(byte))
             {
-                ret = new ByteDataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new ByteDataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(char))
             {
-                ret = new CharDataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new CharDataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(double))
             {
-                ret = new DoubleDataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new DoubleDataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(sbyte))
             {
-                ret = new SByteDataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new SByteDataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(short))
             {
-                ret = new Int16DataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new Int16DataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(uint))
             {
-                ret = new UInt32DataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new UInt32DataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(ulong))
             {
-                ret = new UInt64DataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new UInt64DataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else if (kind == typeof(ushort))
             {
-                ret = new UInt16DataFrameColumn(GetColumnName(columnNames, columnIndex));
+                ret = new UInt16DataFrameColumn(GetColumnName(columnName, columnIndex));
             }
             else
             {
@@ -236,7 +239,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < numberOfColumns; ++i)
             {
                 Type kind = dataTypes == null ? GuessKind(i, linesForGuessType) : dataTypes[i];
-                columns.Add(CreateColumn(kind, columnNames, i));
+                columns.Add(CreateColumn(kind, columnNames[i], i));
             }
 
             DataFrame ret = new DataFrame(columns);
@@ -375,6 +378,104 @@ namespace Microsoft.Data.Analysis
                 IEnumerable<string> lines = new CsvLines(linesEnumerator);
                 return ReadCsvLinesIntoDataFrame(lines, separator, header, columnNames, dataTypes, numberOfRowsToRead, guessRows, addIndexColumn);
             }
+        }
+
+
+        static ReadOnlyCollection<DbColumn> GetSchema(IDataReader dataReader)
+        {
+            if (dataReader is DbDataReader ddr && ddr.CanGetColumnSchema())
+            {
+                return ddr.GetColumnSchema();
+            }
+            else
+            {
+                var schemaTable = dataReader.GetSchemaTable();
+                //TODO: convert the DataTAble into the 
+                throw new NotImplementedException();
+            }
+        }
+
+        static object[] DefaultValues;
+
+        static void InitDefaultValues()
+        {
+            if (DefaultValues == null)
+            {
+                var values = new object[19];
+                values[(int)TypeCode.Boolean] = false;
+                values[(int)TypeCode.Char] = '\0';
+                values[(int)TypeCode.Byte] = (byte)0;
+                values[(int)TypeCode.SByte] = (sbyte)0;
+                values[(int)TypeCode.Int16] = (short)0;
+                values[(int)TypeCode.UInt16] = (ushort)0;
+                values[(int)TypeCode.Int32] = (int)0;
+                values[(int)TypeCode.UInt32] = (uint)0;
+                values[(int)TypeCode.Int64] = (long)0;
+                values[(int)TypeCode.UInt64] = (ulong)0;
+                values[(int)TypeCode.Single] = (float)0;
+                values[(int)TypeCode.Double] = (double)0;
+                values[(int)TypeCode.Decimal] = (decimal)0;
+                values[(int)TypeCode.DateTime] = DateTime.MinValue;
+                values[(int)TypeCode.String] = null; // ""?
+                DefaultValues = values;
+            }
+        }
+
+        static object GetDefaultValue(Type type)
+        {
+            var idx = (int)Type.GetTypeCode(type);
+            InitDefaultValues();
+            return DefaultValues[idx];
+        }
+
+        public static DataFrame Load(IDataReader dataReader, bool loadDefaultValuesForNull = true, int numberOfRowsToRead = -1, bool addIndexColumn = false)
+        {
+            var schema = GetSchema(dataReader);
+
+            var columns = new List<DataFrameColumn>(schema.Count);
+            for (int i = 0; i < schema.Count; ++i)
+            {
+                var col = schema[i];
+                columns.Add(CreateColumn(col.DataType, col.ColumnName, i));
+            }
+
+            DataFrame dataFrame = new DataFrame(columns);
+
+            object[] rowData = new object[schema.Count];
+
+            long rowNumber = 0;
+            while (dataReader.Read() && (numberOfRowsToRead == -1 || rowNumber < numberOfRowsToRead))
+            {
+                dataReader.GetValues(rowData);
+
+                for (int i = 0; i < rowData.Length; i++)
+                {
+                    if (rowData[i] == DBNull.Value || rowData[i] == null)
+                    {
+                        if (loadDefaultValuesForNull)
+                        {
+                            rowData[i] = GetDefaultValue(schema[i].DataType);
+                        }
+                        else
+                        {
+                            throw new InvalidDataException($"Row {rowNumber}, column {i} contains a null value.");
+                        } 
+                    }
+                }
+                dataFrame.Append(rowData, true);
+                ++rowNumber;
+            }
+
+            if (addIndexColumn)
+            {
+                var indexColumn = new PrimitiveDataFrameColumn<int>("IndexColumn", columns[0].Length);
+                for (int i = 0; i < columns[0].Length; i++)
+                {
+                    indexColumn[i] = i;
+                }
+                columns.Insert(0, indexColumn);
+            }
+            return dataFrame;
         }
 
         /// <summary>
