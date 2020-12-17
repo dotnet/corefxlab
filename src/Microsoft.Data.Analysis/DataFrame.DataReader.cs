@@ -50,7 +50,7 @@ namespace Microsoft.Data.Analysis
             {
                 public DataFrameDbColumn(DataFrameColumn col, int ordinal)
                 {
-                    
+
                     this.ColumnOrdinal = ordinal;
                     this.ColumnName = col.Name;
                     this.DataType = col.DataType;
@@ -179,7 +179,7 @@ namespace Microsoft.Data.Analysis
 
             public override string GetString(int ordinal)
             {
-                return (string)GetValue(ordinal);
+                return (string)dataFrame.Columns[ordinal][row];
             }
 
             public override object GetValue(int ordinal)
@@ -232,7 +232,7 @@ namespace Microsoft.Data.Analysis
 
             public override bool IsDBNull(int ordinal)
             {
-                return false;
+                return dataFrame.Columns[ordinal].IsNull(row);
             }
 
             public override bool NextResult()

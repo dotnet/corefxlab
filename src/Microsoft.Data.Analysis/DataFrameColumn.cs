@@ -99,6 +99,8 @@ namespace Microsoft.Data.Analysis
         /// </summary>
         public string Name => _name;
 
+        internal abstract bool IsNull(int row);
+
         /// <summary>
         /// Updates the name of this column.
         /// </summary>

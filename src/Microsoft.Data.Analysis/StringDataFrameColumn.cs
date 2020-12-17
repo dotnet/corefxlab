@@ -90,6 +90,11 @@ namespace Microsoft.Data.Analysis
             return _stringBuffers[bufferIndex][(int)rowIndex];
         }
 
+        internal override bool IsNull(int row)
+        {
+            return GetValue(row) == null;
+        }
+
         protected override IReadOnlyList<object> GetValues(long startIndex, int length)
         {
             var ret = new List<object>();

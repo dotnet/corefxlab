@@ -275,6 +275,11 @@ namespace Microsoft.Data.Analysis
 
         public bool IsValid(long index) => _columnContainer.IsValid(index);
 
+        internal override bool IsNull(int row)
+        {
+            return !IsValid(row);
+        }
+
         public IEnumerator<T?> GetEnumerator() => _columnContainer.GetEnumerator();
 
         protected override IEnumerator GetEnumeratorCore() => GetEnumerator();

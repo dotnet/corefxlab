@@ -77,6 +77,11 @@ namespace Microsoft.Data.Analysis
         /// <returns>A boolean value indicating the validity at this <paramref name="index"/>.</returns>
         public bool IsValid(long index) => NullCount == 0 || GetValidityBit(index);
 
+        internal override bool IsNull(int row)
+        {
+            return IsValid(row) == false;
+        }
+
         private bool GetValidityBit(long index)
         {
             if ((ulong)index > (ulong)Length)
