@@ -5,9 +5,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -378,104 +375,6 @@ namespace Microsoft.Data.Analysis
                 IEnumerable<string> lines = new CsvLines(linesEnumerator);
                 return ReadCsvLinesIntoDataFrame(lines, separator, header, columnNames, dataTypes, numberOfRowsToRead, guessRows, addIndexColumn);
             }
-        }
-
-
-        static ReadOnlyCollection<DbColumn> GetSchema(IDataReader dataReader)
-        {
-            if (dataReader is DbDataReader ddr && ddr.CanGetColumnSchema())
-            {
-                return ddr.GetColumnSchema();
-            }
-            else
-            {
-                var schemaTable = dataReader.GetSchemaTable();
-                //TODO: convert the DataTAble into the 
-                throw new NotImplementedException();
-            }
-        }
-
-        static object[] DefaultValues;
-
-        static void InitDefaultValues()
-        {
-            if (DefaultValues == null)
-            {
-                var values = new object[19];
-                values[(int)TypeCode.Boolean] = false;
-                values[(int)TypeCode.Char] = '\0';
-                values[(int)TypeCode.Byte] = (byte)0;
-                values[(int)TypeCode.SByte] = (sbyte)0;
-                values[(int)TypeCode.Int16] = (short)0;
-                values[(int)TypeCode.UInt16] = (ushort)0;
-                values[(int)TypeCode.Int32] = (int)0;
-                values[(int)TypeCode.UInt32] = (uint)0;
-                values[(int)TypeCode.Int64] = (long)0;
-                values[(int)TypeCode.UInt64] = (ulong)0;
-                values[(int)TypeCode.Single] = (float)0;
-                values[(int)TypeCode.Double] = (double)0;
-                values[(int)TypeCode.Decimal] = (decimal)0;
-                values[(int)TypeCode.DateTime] = DateTime.MinValue;
-                values[(int)TypeCode.String] = null; // ""?
-                DefaultValues = values;
-            }
-        }
-
-        static object GetDefaultValue(Type type)
-        {
-            var idx = (int)Type.GetTypeCode(type);
-            InitDefaultValues();
-            return DefaultValues[idx];
-        }
-
-        public static DataFrame Load(IDataReader dataReader, bool loadDefaultValuesForNull = true, int numberOfRowsToRead = -1, bool addIndexColumn = false)
-        {
-            var schema = GetSchema(dataReader);
-
-            var columns = new List<DataFrameColumn>(schema.Count);
-            for (int i = 0; i < schema.Count; ++i)
-            {
-                var col = schema[i];
-                columns.Add(CreateColumn(col.DataType, col.ColumnName, i));
-            }
-
-            DataFrame dataFrame = new DataFrame(columns);
-
-            object[] rowData = new object[schema.Count];
-
-            long rowNumber = 0;
-            while (dataReader.Read() && (numberOfRowsToRead == -1 || rowNumber < numberOfRowsToRead))
-            {
-                dataReader.GetValues(rowData);
-
-                for (int i = 0; i < rowData.Length; i++)
-                {
-                    if (rowData[i] == DBNull.Value || rowData[i] == null)
-                    {
-                        if (loadDefaultValuesForNull)
-                        {
-                            rowData[i] = GetDefaultValue(schema[i].DataType);
-                        }
-                        else
-                        {
-                            throw new InvalidDataException($"Row {rowNumber}, column {i} contains a null value.");
-                        } 
-                    }
-                }
-                dataFrame.Append(rowData, true);
-                ++rowNumber;
-            }
-
-            if (addIndexColumn)
-            {
-                var indexColumn = new PrimitiveDataFrameColumn<int>("IndexColumn", columns[0].Length);
-                for (int i = 0; i < columns[0].Length; i++)
-                {
-                    indexColumn[i] = i;
-                }
-                columns.Insert(0, indexColumn);
-            }
-            return dataFrame;
         }
 
         /// <summary>
