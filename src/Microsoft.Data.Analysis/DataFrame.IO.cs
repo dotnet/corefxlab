@@ -236,7 +236,7 @@ namespace Microsoft.Data.Analysis
             for (int i = 0; i < numberOfColumns; ++i)
             {
                 Type kind = dataTypes == null ? GuessKind(i, linesForGuessType) : dataTypes[i];
-                columns.Add(CreateColumn(kind, columnNames[i], i));
+                columns.Add(CreateColumn(kind, columnNames?[i], i));
             }
 
             DataFrame ret = new DataFrame(columns);
