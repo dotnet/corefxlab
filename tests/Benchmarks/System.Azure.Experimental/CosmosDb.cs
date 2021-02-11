@@ -19,7 +19,7 @@ namespace System.Azure.Experimental.Benchmarks
 {
     public class CosmosDb
     {
-        static string fakeKey = "TjW7xr4kKR67qgt2y3fAAMxvC2neMHT6cKawiliGCsDkxSS34V0EnwL8GKrA6ZTIfNrXK91t1Ey3RmEKQLrrCA==";
+        static string fakeKey = "";
         static string keyType = "master";
         static string resourceType = "dbs";
         static string version = "1.0";
