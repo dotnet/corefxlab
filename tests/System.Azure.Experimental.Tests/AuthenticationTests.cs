@@ -15,7 +15,7 @@ namespace System.Azure.Tests
     public class AzureSdk
     {
         DateTime utc = DateTime.UtcNow;
-        string fakeKey = "TjW7xr4kKR67qgt2y3fAAMxvC2neMHT6cKawiliGCsDkxSS34V0EnwL8GKrA6ZTIfNrXK91t1Ey3RmEKQLrrCA==";
+        string fakeKey = "";
         string keyType = "master";
         string resourceType = "dbs";
         string version = "1.0";
