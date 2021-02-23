@@ -49,7 +49,6 @@ jobs:
               value: -Configuration $(_BuildConfig) -ci -sign -pack -publish $(_InternalBuildArgs)
             - name: _SignType
               value: real
-            - group: DotNet-MyGet-Publish
             - group: DotNet-Symbol-Server-Pats
             - name: _SymwebSymbolServerPath
               value: https://microsoft.artifacts.visualstudio.com/DefaultCollection

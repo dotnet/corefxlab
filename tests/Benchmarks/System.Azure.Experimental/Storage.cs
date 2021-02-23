@@ -17,7 +17,7 @@ namespace System.Azure.Experimental.Benchmarks
     public class Storage
     {
         static string canonicalizedResource = "/myaccount /mycontainer\ncomp:metadata\nrestype:container\ntimeout:20";
-        static string fakeKey = "TjW7xr4kKR67qgt2y3fAAMxvC2neMHT6cKawiliGCsDkxSS34V0EnwL8GKrA6ZTIfNrXK91t1Ey3RmEKQLrrCA==";
+        static string fakeKey = "";
         static string verb = "GET";
 
         static Utf8String canonicalizedResourceU8 = (Utf8String)"/myaccount /mycontainer\ncomp:metadata\nrestype:container\ntimeout:20";
